@@ -1,0 +1,71 @@
+{
+  "id": "openeofed",
+  "type": "Feature",
+  "conformsTo": [
+     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-05-17T00:00:00Z",
+    "updated": "2024-05-17T00:00:00Z",
+    "type": "openeo_backend",
+    "title": "openEO processing backend",
+    "description": "The CDSE openEO federation enables processing using openEO.",
+    "keywords": [
+      "openeo",
+      "data analysis",
+      "platform as a service"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "VITO",
+        "links": [
+           {
+             "href": "https://www.vito.be/",
+             "rel": "about",
+             "type": "text/html"
+           }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [ "operator" ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "DATA ANALYSIS"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ]
+    "license": "other"
+  },
+  "linkTemplates": [
+
+  ],
+  "links": [
+     {
+      "rel": "alternate",
+      "type": "text/html",
+      "title": "CDSE openEO documentation",
+      "href": "https://documentation.dataspace.copernicus.eu/APIs/openEO/openEO.html"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO service",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    }
+  ]
+}
