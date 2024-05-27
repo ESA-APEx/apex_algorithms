@@ -1,0 +1,26 @@
+[
+
+  {
+    "id": "maize_2020_belgium",
+    "description": "Maize detection in Belgium in 2020",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "openeo_graph":  {
+            "biopar1": {
+                "process_id": "worldcereal_maize",
+                "namespace": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_maize.json",
+                "arguments": {
+                    "bbox": {
+                        "west": 5.15183687210083,
+                        "east": 5.153381824493408,
+                        "south": 51.18192559252128,
+                        "north": 51.18469636040683,
+                        "crs": "EPSG:4326"
+                    },
+                    "year": 2021
+                },
+                "result": true
+            }
+        }
+
+  }
+]
