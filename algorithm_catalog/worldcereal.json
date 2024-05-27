@@ -10,6 +10,8 @@
     "type": "apex_algorithm",
     "title": "ESA worldcereal global maize detector",
     "description": "A maize detection algorithm.",
+    "cost_estimate": 0.1,
+    "cost_unit": "platform credits per km²",
     "keywords": [
       "agriculture",
       "crops"
@@ -25,6 +27,25 @@
       }
     ],
     "contacts": [
+      {
+        "name": "Kristof Van Tricht",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+           {
+             "href": "https://www.vito.be/",
+             "rel": "about",
+             "type": "text/html"
+           },
+          {
+            "href": "https://github.com/kvantricht",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [ "principal investigator" ]
+      },
       {
         "name": "VITO",
         "links": [
