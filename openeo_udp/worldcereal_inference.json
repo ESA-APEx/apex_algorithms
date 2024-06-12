@@ -10,7 +10,16 @@
             }
          }
       ],
+    "returns": {
+      "description": "netCDF file",
+      "schema": {
+        "type": "object",
+        "subtype": "raster-cube"
+      }
+    },
       "public":true,
+      "description": "Computes ESA WorldCereal croptype product",
+      "summary": "Computes ESA WorldCereal croptype product",
       "id":"worldcereal_croptype",
     "process_graph": {
       "aggregatetemporalperiod1": {
@@ -835,7 +844,8 @@
             "classification"
           ]
         },
-        "process_id": "rename_labels"
+        "process_id": "rename_labels",
+        "result": true
       },
       "resamplespatial1": {
         "arguments": {
@@ -875,17 +885,6 @@
           "noise_removal": true
         },
         "process_id": "sar_backscatter"
-      },
-      "saveresult1": {
-        "arguments": {
-          "data": {
-            "from_node": "renamelabels6"
-          },
-          "format": "NetCDF",
-          "options": {}
-        },
-        "process_id": "save_result",
-        "result": true
       },
       "toscldilationmask1": {
         "arguments": {
