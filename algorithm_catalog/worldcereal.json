@@ -85,7 +85,7 @@
       "rel": "udp",
       "type": "application/json",
       "title": "openEO UDP",
-      "href": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_maize.json"
+      "href": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_inference.json"
     },
     {
       "rel": "git",
