@@ -1,15 +1,15 @@
 {
   "specification": {
-     "parameters":[
-         {
-            "name":"bbox",
-            "description":"A bounding box with the required fields `west`, `south`, `east`, `north` and optionally `base`, `height`, `crs`. The `crs` is a EPSG code or a WKT2:2018 string.",
-            "schema":{
-               "type":"object",
-               "subtype":"bounding-box"
-            }
-         }
-      ],
+    "parameters": [
+      {
+        "name": "bbox",
+        "description": "A bounding box with the required fields `west`, `south`, `east`, `north` and optionally `base`, `height`, `crs`. The `crs` is a EPSG code or a WKT2:2018 string.",
+        "schema": {
+          "type": "object",
+          "subtype": "bounding-box"
+        }
+      }
+    ],
     "returns": {
       "description": "netCDF file",
       "schema": {
@@ -17,10 +17,10 @@
         "subtype": "raster-cube"
       }
     },
-      "public":true,
-      "description": "Computes ESA WorldCereal croptype product",
-      "summary": "Computes ESA WorldCereal croptype product",
-      "id":"worldcereal_croptype",
+    "public": true,
+    "description": "Computes ESA WorldCereal croptype product",
+    "summary": "Computes ESA WorldCereal croptype product",
+    "id": "worldcereal_croptype",
     "process_graph": {
       "aggregatetemporalperiod1": {
         "arguments": {
@@ -494,7 +494,7 @@
             }
           },
           "spatial_extent": {
-            "from_parameter":"bbox"
+            "from_parameter": "bbox"
           },
           "temporal_extent": [
             "2023-01-01",
@@ -526,7 +526,7 @@
             }
           },
           "spatial_extent": {
-           "from_parameter":"bbox"
+            "from_parameter": "bbox"
           },
           "temporal_extent": [
             "2023-01-01",
@@ -543,7 +543,7 @@
           ],
           "id": "SENTINEL1_GRD",
           "spatial_extent": {
-            "from_parameter":"bbox"
+            "from_parameter": "bbox"
           },
           "temporal_extent": [
             "2023-01-01",
@@ -559,7 +559,7 @@
           ],
           "id": "COPERNICUS_30",
           "spatial_extent": {
-            "from_parameter":"bbox"
+            "from_parameter": "bbox"
           },
           "temporal_extent": null
         },
@@ -911,6 +911,7 @@
           "scl_band_name": "SCL"
         },
         "process_id": "to_scl_dilation_mask"
-      }}
+      }
+    }
   }
 }

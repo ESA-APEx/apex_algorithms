@@ -10,3 +10,5 @@ repos:
       - id: check-json
       - id: check-yaml
       - id: check-toml
+      - id: pretty-format-json
+        args: ["--autofix", "--no-sort-keys"]

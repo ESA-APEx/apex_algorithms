@@ -2,7 +2,7 @@
   "id": "worldcereal_maize",
   "type": "Feature",
   "conformsTo": [
-     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "properties": {
     "created": "2024-05-17T00:00:00Z",
@@ -11,7 +11,7 @@
     "title": "ESA worldcereal global maize detector",
     "description": "A maize detection algorithm.",
     "cost_estimate": 0.1,
-    "cost_unit": "platform credits per km²",
+    "cost_unit": "platform credits per km\u00b2",
     "keywords": [
       "agriculture",
       "crops"
@@ -32,11 +32,11 @@
         "position": "Researcher",
         "organization": "VITO",
         "links": [
-           {
-             "href": "https://www.vito.be/",
-             "rel": "about",
-             "type": "text/html"
-           },
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          },
           {
             "href": "https://github.com/kvantricht",
             "rel": "about",
@@ -44,19 +44,23 @@
           }
         ],
         "contactInstructions": "Contact via VITO",
-        "roles": [ "principal investigator" ]
+        "roles": [
+          "principal investigator"
+        ]
       },
       {
         "name": "VITO",
         "links": [
-           {
-             "href": "https://www.vito.be/",
-             "rel": "about",
-             "type": "text/html"
-           }
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          }
         ],
         "contactInstructions": "SEE WEBSITE",
-        "roles": [ "processor" ]
+        "roles": [
+          "processor"
+        ]
       }
     ],
     "themes": [
@@ -66,7 +70,7 @@
             "id": "AGRICULTURE"
           },
           {
-            "id":"FIELD CROP PRODUCTS"
+            "id": "FIELD CROP PRODUCTS"
           }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
@@ -77,11 +81,9 @@
     ],
     "license": "other"
   },
-  "linkTemplates": [
-
-  ],
+  "linkTemplates": [],
   "links": [
-     {
+    {
       "rel": "udp",
       "type": "application/json",
       "title": "openEO UDP",

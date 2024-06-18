@@ -2,7 +2,7 @@
   "id": "openeofed",
   "type": "Feature",
   "conformsTo": [
-     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "properties": {
     "created": "2024-05-17T00:00:00Z",
@@ -29,14 +29,16 @@
       {
         "name": "VITO",
         "links": [
-           {
-             "href": "https://www.vito.be/",
-             "rel": "about",
-             "type": "text/html"
-           }
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          }
         ],
         "contactInstructions": "SEE WEBSITE",
-        "roles": [ "operator" ]
+        "roles": [
+          "operator"
+        ]
       }
     ],
     "themes": [
@@ -51,11 +53,9 @@
     ],
     "license": "other"
   },
-  "linkTemplates": [
-
-  ],
+  "linkTemplates": [],
   "links": [
-     {
+    {
       "rel": "alternate",
       "type": "text/html",
       "title": "CDSE openEO documentation",
