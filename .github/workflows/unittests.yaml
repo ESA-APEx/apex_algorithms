@@ -1,0 +1,21 @@
+name: "Unit tests"
+
+on: [push]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package with test dependencies
+        run: |
+          python -m pip install qa/tools
+          python -m pip install -r qa/unittests/requirements.txt
+      - name: Test with pytest
+        run: |
+          cd qa/unittests
+          pytest

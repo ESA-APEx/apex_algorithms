@@ -1,3 +1,2 @@
 apex-algorithm-qa-tools
-openeo>=0.30.0
 pytest>=8.2.0

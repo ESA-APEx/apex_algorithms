@@ -16,10 +16,10 @@ Install the test dependencies, including the reusable tools from `apex-algorithm
 e.g. when working from the `qa/benchmarks` folder:
 
 ```bash
-# Install general test requirements
-pip install -r requirements.txt
 # Install apex-algorithm-qa-tools
 pip install ../tools
+# Install general test requirements
+pip install -r requirements.txt
 ```
 
 When intending to do development on `apex-algorithm-qa-tools`,
@@ -29,6 +29,6 @@ make sure to include the `-e` flag to install in editable mode.
 
 From `qa/benchmarks` folder, run:
 
-```
+```bash
 pytest
 ```
