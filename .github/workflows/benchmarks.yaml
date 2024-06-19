@@ -1,7 +1,6 @@
 name: "Benchmarks"
 
 # TODO: trigger based on schedule
-# TODO: only run subset of benchmarks
 on: [push]
 
 jobs:
@@ -20,4 +19,4 @@ jobs:
       - name: Test with pytest
         run: |
           cd qa/benchmarks
-          pytest
+          pytest --random-subset=1
