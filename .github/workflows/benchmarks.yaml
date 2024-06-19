@@ -1,5 +1,7 @@
-name: "Unit tests"
+name: "Benchmarks"
 
+# TODO: trigger based on schedule
+# TODO: only run subset of benchmarks
 on: [push]
 
 jobs:
@@ -11,11 +13,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install test suite dependencies
+      - name: Install benchmark dependencies
         run: |
           python -m pip install qa/tools
-          python -m pip install -r qa/unittests/requirements.txt
+          python -m pip install -r qa/benchmarks/requirements.txt
       - name: Test with pytest
         run: |
-          cd qa/unittests
+          cd qa/benchmarks
           pytest
