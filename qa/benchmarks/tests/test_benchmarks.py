@@ -3,8 +3,9 @@ import pytest
 from apex_algorithm_qa_tools.usecases import UseCase, get_use_cases
 
 
-# TODO: use case id as parametrization id?
-@pytest.mark.parametrize("use_case", get_use_cases())
+@pytest.mark.parametrize(
+    "use_case", [pytest.param(uc, id=uc.id) for uc in get_use_cases()]
+)
 def test_run_benchmark(use_case: UseCase):
     # TODO: cache connection?
     # TODO: authentication

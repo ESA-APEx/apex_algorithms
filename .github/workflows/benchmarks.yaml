@@ -18,6 +18,4 @@ jobs:
           python -m pip install qa/tools
           python -m pip install -r qa/benchmarks/requirements.txt
       - name: Test with pytest
-        run: |
-          cd qa/benchmarks
-          pytest
+        run: pytest --rootdir=qa/benchmarks
