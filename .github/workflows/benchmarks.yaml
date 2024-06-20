@@ -1,7 +1,9 @@
 name: "Benchmarks"
 
-# TODO: trigger based on schedule
-on: [push]
+on:
+  workflow_dispatch:
+  schedule:
+      - cron: "37 12 * * *"
 
 jobs:
   unit-tests:
