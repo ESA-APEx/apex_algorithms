@@ -67,6 +67,7 @@ def get_algorithm_invocation_root() -> Path:
 
 def get_use_cases() -> List[UseCase]:
     # TODO: instead of flat list, keep original grouping/structure of "algorithm_invocations" files?
+    # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
     use_cases = []
     for path in get_algorithm_invocation_root().glob("*.json"):
         with open(path) as f:
