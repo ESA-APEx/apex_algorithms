@@ -22,3 +22,6 @@ jobs:
         run: |
           cd qa/benchmarks
           pytest --random-subset=1
+        env:
+          OPENEO_AUTH_METHOD: client_credentials
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
