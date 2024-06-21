@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 from typing import List
 
+import requests
+
 _log = logging.getLogger(__name__)
 
 
@@ -103,9 +105,14 @@ def lint_usecase(usecase: UseCase):
 
         if "namespace" in node:
             namespace = node["namespace"]
-            if re.match(
-                "https://github.com/.*/blob/.*", namespace, flags=re.IGNORECASE
-            ):
-                raise ValueError(
-                    f"Invalid github.com based namespace {namespace!r}: should be a raw URL"
-                )
+            if re.match("^https://", namespace):
+                if re.match(
+                    "https://github.com/.*/blob/.*", namespace, flags=re.IGNORECASE
+                ):
+                    raise ValueError(
+                        f"Invalid github.com based namespace {namespace!r}: should be a raw URL"
+                    )
+                # Inspect UDP URL
+                udp_resp = requests.get(namespace)
+                udp_resp.raise_for_status()
+                assert udp_resp.json()["id"] == node["process_id"]
