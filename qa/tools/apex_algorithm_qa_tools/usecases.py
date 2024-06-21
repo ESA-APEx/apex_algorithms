@@ -4,10 +4,14 @@ import dataclasses
 import json
 import logging
 import os
+import re
 from pathlib import Path
 from typing import List
 
 _log = logging.getLogger(__name__)
+
+
+# TODO: rename `algorithm_invocations` and `qa/tools/apex_algorithm_qa_tools/usecases.py` to more descriptive "scenarios" or "benchmark-scenarios"?
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -76,3 +80,32 @@ def get_use_cases() -> List[UseCase]:
         assert isinstance(data, list)
         use_cases.extend(UseCase.from_dict(item) for item in data)
     return use_cases
+
+
+def lint_usecase(usecase: UseCase):
+    """
+    Various sanity checks for use case data.
+    To be used in unit tests and pre-commit hooks.
+    """
+    # TODO integrate this as a pre-commit hook
+    # TODO raise descriptive exceptions instead of asserts?
+    assert re.match(r"^[a-zA-Z0-9_-]+$", usecase.id)
+    # TODO: proper allow-list of backends?
+    assert usecase.backend in ["openeofed.dataspace.copernicus.eu"]
+    # TODO: refactor this out to a more generic process graph validator? Or use an existing tool?
+    # TODO: more advanced process graph validation?
+    assert isinstance(usecase.process_graph, dict)
+    for node_id, node in usecase.process_graph.items():
+        assert isinstance(node, dict)
+        assert re.match(r"^[a-z0-9_-]+$", node["process_id"])
+        assert "arguments" in node
+        assert isinstance(node["arguments"], dict)
+
+        if "namespace" in node:
+            namespace = node["namespace"]
+            if re.match(
+                "https://github.com/.*/blob/.*", namespace, flags=re.IGNORECASE
+            ):
+                raise ValueError(
+                    f"Invalid github.com based namespace {namespace!r}: should be a raw URL"
+                )
