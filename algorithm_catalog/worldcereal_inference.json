@@ -84,7 +84,7 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "udp",
+      "rel": "openeo-udp",
       "type": "application/json",
       "title": "openEO UDP",
       "href": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_inference.json"
