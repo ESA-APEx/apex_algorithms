@@ -1,14 +1,5 @@
 import pytest
-from apex_algorithm_qa_tools.usecases import (
-    UseCase,
-    get_algorithm_invocation_root,
-    get_use_cases,
-    lint_usecase,
-)
-
-
-def test_get_algorithm_invocation_root():
-    assert get_algorithm_invocation_root().is_dir()
+from apex_algorithm_qa_tools.usecases import UseCase, get_use_cases, lint_usecase
 
 
 def test_get_use_cases():
