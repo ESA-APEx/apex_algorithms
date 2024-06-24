@@ -18,5 +18,5 @@ classifiers = [
 requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
-    "openeo>=0.30.0",
+    "requests>=2.32.0",
 ]
