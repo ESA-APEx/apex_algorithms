@@ -81,3 +81,5 @@ def lint_usecase(usecase: UseCase):
                 udp_resp = requests.get(namespace)
                 udp_resp.raise_for_status()
                 assert udp_resp.json()["id"] == node["process_id"]
+                # TODO: check that github URL is a "pinned" reference
+            # TODO: check that provided parameters match expected parameters from UDP

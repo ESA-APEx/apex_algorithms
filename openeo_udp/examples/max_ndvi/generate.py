@@ -43,4 +43,5 @@ def generate() -> dict:
 
 
 if __name__ == "__main__":
+    # TODO: how to enforce a useful order of top-level keys?
     json.dump(generate(), sys.stdout, indent=2)
