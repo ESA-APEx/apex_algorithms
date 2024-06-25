@@ -5,7 +5,12 @@ from apex_algorithm_qa_tools.common import get_project_root
 
 
 @pytest.mark.parametrize(
-    "path", list((get_project_root() / "openeo_udp").glob("**/*.json"))
+    "path",
+    [
+        # Use filename as parameterization id to give nicer test names.
+        pytest.param(p, id=p.name)
+        for p in (get_project_root() / "openeo_udp").glob("**/*.json")
+    ],
 )
 def test_lint_openeo_udp_json_file(path):
     data = json.loads(path.read_text())
