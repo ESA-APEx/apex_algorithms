@@ -11,7 +11,7 @@ _log = logging.getLogger(__name__)
 
 
 def get_project_root() -> Path:
-    """Try to find project root for common project use cases."""
+    """Try to find project root for common project use cases and CI situations."""
 
     def candidates() -> Iterator[Path]:
         # TODO: support a environment variable to override the project root detection?
@@ -27,9 +27,9 @@ def get_project_root() -> Path:
     for candidate in candidates():
         if candidate.is_dir() and all(
             (candidate / p).is_dir()
-            for p in ["algorithm_catalog", "algorithm_invocations", "qa/tools"]
+            for p in ["algorithm_catalog", "benchmark_scenarios", "qa/tools"]
         ):
             _log.info(f"Detected project root {candidate!r}")
             return candidate
 
-    raise RuntimeError("Could not determine algorithm invocations root directory.")
+    raise RuntimeError("Could not determine project root directory.")

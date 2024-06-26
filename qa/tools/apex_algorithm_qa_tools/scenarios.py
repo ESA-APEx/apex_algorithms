@@ -13,19 +13,18 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: Flatten apex_algorithm_qa_tools to a single module and push as much functionality to https://github.com/ESA-APEx/esa-apex-toolbox-python
-# TODO: rename `algorithm_invocations` and `qa/tools/apex_algorithm_qa_tools/usecases.py` to more descriptive "scenarios" or "benchmark-scenarios"?
 
 
 @dataclasses.dataclass(kw_only=True)
-class UseCase:
-    # TODO: need for differentiation between different types of use cases?
+class BenchmarkScenario:
+    # TODO: need for differentiation between different types of scenarios?
     id: str
     description: str | None = None
     backend: str
     process_graph: dict
 
     @classmethod
-    def from_dict(cls, data: dict) -> UseCase:
+    def from_dict(cls, data: dict) -> BenchmarkScenario:
         # TODO: standardization of these types? What about other types and how to support them?
         assert data["type"] == "openeo"
         return cls(
@@ -36,33 +35,33 @@ class UseCase:
         )
 
 
-def get_use_cases() -> List[UseCase]:
-    # TODO: instead of flat list, keep original grouping/structure of "algorithm_invocations" files?
+def get_benchmark_scenarios() -> List[BenchmarkScenario]:
+    # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
     # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
-    use_cases = []
-    for path in (get_project_root() / "algorithm_invocations").glob("**/*.json"):
+    scenarios = []
+    for path in (get_project_root() / "benchmark_scenarios").glob("**/*.json"):
         with open(path) as f:
             data = json.load(f)
-        # TODO: support single use case files in addition to listings?
+        # TODO: support single scenario files in addition to listings?
         assert isinstance(data, list)
-        use_cases.extend(UseCase.from_dict(item) for item in data)
-    return use_cases
+        scenarios.extend(BenchmarkScenario.from_dict(item) for item in data)
+    return scenarios
 
 
-def lint_usecase(usecase: UseCase):
+def lint_benchmark_scenario(scenario: BenchmarkScenario):
     """
-    Various sanity checks for use case data.
+    Various sanity checks for scenario data.
     To be used in unit tests and pre-commit hooks.
     """
     # TODO integrate this as a pre-commit hook
     # TODO raise descriptive exceptions instead of asserts?
-    assert re.match(r"^[a-zA-Z0-9_-]+$", usecase.id)
+    assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
     # TODO: proper allow-list of backends?
-    assert usecase.backend in ["openeofed.dataspace.copernicus.eu"]
+    assert scenario.backend in ["openeofed.dataspace.copernicus.eu"]
     # TODO: refactor this out to a more generic process graph validator? Or use an existing tool?
     # TODO: more advanced process graph validation?
-    assert isinstance(usecase.process_graph, dict)
-    for node_id, node in usecase.process_graph.items():
+    assert isinstance(scenario.process_graph, dict)
+    for node_id, node in scenario.process_graph.items():
         assert isinstance(node, dict)
         assert re.match(r"^[a-z0-9_-]+$", node["process_id"])
         assert "arguments" in node
