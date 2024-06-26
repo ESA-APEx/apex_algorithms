@@ -81,7 +81,6 @@ def connection_factory(request, capfd) -> Callable[[], openeo.Connection]:
         auth_env_var = _get_client_credentials_env_var(url)
         _log.info(f"Checking for {auth_env_var=} to drive auth against {url=}.")
         if auth_env_var in os.environ:
-            # TODO: document expected format of client credentials env var
             client_credentials = os.environ[auth_env_var]
             provider_id, client_id, client_secret = client_credentials.split("/", 2)
             connection.authenticate_oidc_client_credentials(
