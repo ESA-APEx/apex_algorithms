@@ -14,7 +14,7 @@ from apex_algorithm_qa_tools.scenarios import BenchmarkScenario, get_benchmark_s
 def test_run_benchmark(scenario: BenchmarkScenario, connection_factory):
     connection: openeo.Connection = connection_factory(url=scenario.backend)
 
-    # TODO: scenario option to use synchronous instead of batch job mode?
+    # TODO #14 scenario option to use synchronous instead of batch job mode?
     job = connection.create_job(
         process_graph=scenario.process_graph,
         title=f"APEx benchmark {scenario.id}",
@@ -22,4 +22,4 @@ def test_run_benchmark(scenario: BenchmarkScenario, connection_factory):
 
     job.start_and_wait()
 
-    # TODO download job results and inspect
+    # TODO #5 download job results and inspect

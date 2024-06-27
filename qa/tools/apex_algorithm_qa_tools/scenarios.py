@@ -17,7 +17,7 @@ _log = logging.getLogger(__name__)
 
 @dataclasses.dataclass(kw_only=True)
 class BenchmarkScenario:
-    # TODO: need for differentiation between different types of scenarios?
+    # TODO #14 need for differentiation between different types of scenarios?
     id: str
     description: str | None = None
     backend: str
@@ -25,7 +25,7 @@ class BenchmarkScenario:
 
     @classmethod
     def from_dict(cls, data: dict) -> BenchmarkScenario:
-        # TODO: standardization of these types? What about other types and how to support them?
+        # TODO #14 standardization of these types? What about other types and how to support them?
         assert data["type"] == "openeo"
         return cls(
             id=data["id"],
