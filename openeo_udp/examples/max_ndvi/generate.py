@@ -6,7 +6,7 @@ import openeo
 from openeo.api.process import Parameter
 from openeo.rest.udp import build_process_dict
 
-# TODO: where to put reusable helpers? e.g. load description from README.md, dummy openeo connection, properly write to JSON file, ...
+# TODO #15 where to put reusable helpers? e.g. load description from README.md, dummy openeo connection, properly write to JSON file, ...
 
 
 def generate() -> dict:

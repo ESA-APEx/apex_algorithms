@@ -19,5 +19,5 @@ def test_lint_openeo_udp_json_file(path):
     assert "description" in data
     assert "parameters" in data
     assert "process_graph" in data
-    # TODO more checks
+    # TODO #17 more checks
     # TODO require a standardized openEO "type"? https://github.com/Open-EO/openeo-api/issues/539

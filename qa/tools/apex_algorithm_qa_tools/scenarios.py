@@ -12,7 +12,7 @@ from apex_algorithm_qa_tools.common import get_project_root
 _log = logging.getLogger(__name__)
 
 
-# TODO: Flatten apex_algorithm_qa_tools to a single module and push as much functionality to https://github.com/ESA-APEx/esa-apex-toolbox-python
+# TODO #15 Flatten apex_algorithm_qa_tools to a single module and push as much functionality to https://github.com/ESA-APEx/esa-apex-toolbox-python
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -53,12 +53,12 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
     Various sanity checks for scenario data.
     To be used in unit tests and pre-commit hooks.
     """
+    # TODO #17 use JSON Schema based validation instead of ad-hoc checks?
     # TODO integrate this as a pre-commit hook
     # TODO raise descriptive exceptions instead of asserts?
     assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
     # TODO: proper allow-list of backends?
     assert scenario.backend in ["openeofed.dataspace.copernicus.eu"]
-    # TODO: refactor this out to a more generic process graph validator? Or use an existing tool?
     # TODO: more advanced process graph validation?
     assert isinstance(scenario.process_graph, dict)
     for node_id, node in scenario.process_graph.items():
