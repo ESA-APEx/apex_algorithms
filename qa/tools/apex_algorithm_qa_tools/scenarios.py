@@ -76,9 +76,10 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
                     raise ValueError(
                         f"Invalid github.com based namespace {namespace!r}: should be a raw URL"
                     )
-                # Inspect UDP URL
-                udp_resp = requests.get(namespace)
-                udp_resp.raise_for_status()
-                assert udp_resp.json()["id"] == node["process_id"]
+                # Inspect openEO process definition URL
+                resp = requests.get(namespace)
+                resp.raise_for_status()
+                # TODO: also support process listings?
+                assert resp.json()["id"] == node["process_id"]
                 # TODO: check that github URL is a "pinned" reference
-            # TODO: check that provided parameters match expected parameters from UDP
+            # TODO: check that provided parameters match expected process parameters

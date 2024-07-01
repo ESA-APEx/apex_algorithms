@@ -19,5 +19,5 @@ def test_lint_algorithm_catalog_json_file(path):
 
     assert data["properties"]["type"] == "apex_algorithm"
 
-    assert "openeo-udp" in {k["rel"] for k in data["links"]}
+    assert "openeo-process" in {k["rel"] for k in data["links"]}
     # TODO more checks
