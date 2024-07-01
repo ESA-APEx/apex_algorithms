@@ -6,6 +6,7 @@ import logging
 import re
 from typing import List
 
+import jsonschema
 import requests
 from apex_algorithm_qa_tools.common import get_project_root
 
@@ -13,6 +14,11 @@ _log = logging.getLogger(__name__)
 
 
 # TODO #15 Flatten apex_algorithm_qa_tools to a single module and push as much functionality to https://github.com/ESA-APEx/esa-apex-toolbox-python
+
+
+def _get_benchmark_scenario_schema() -> dict:
+    with open(get_project_root() / "schema/benchmark_scenario.json") as f:
+        return json.load(f)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -25,6 +31,9 @@ class BenchmarkScenario:
 
     @classmethod
     def from_dict(cls, data: dict) -> BenchmarkScenario:
+        jsonschema.validate(instance=data, schema=_get_benchmark_scenario_schema())
+        # TODO: also include the `lint_benchmark_scenario` stuff here (maybe with option to toggle deep URL inspection)?
+
         # TODO #14 standardization of these types? What about other types and how to support them?
         assert data["type"] == "openeo"
         return cls(
@@ -55,9 +64,9 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
     """
     # TODO #17 use JSON Schema based validation instead of ad-hoc checks?
     # TODO integrate this as a pre-commit hook
-    # TODO raise descriptive exceptions instead of asserts?
+    # TODO #17 raise descriptive exceptions instead of asserts?
     assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
-    # TODO: proper allow-list of backends?
+    # TODO proper allow-list of backends or leave this freeform?
     assert scenario.backend in ["openeofed.dataspace.copernicus.eu"]
     # TODO: more advanced process graph validation?
     assert isinstance(scenario.process_graph, dict)

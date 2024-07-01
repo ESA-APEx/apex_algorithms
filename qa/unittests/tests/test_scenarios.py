@@ -1,3 +1,4 @@
+import jsonschema
 import pytest
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
@@ -24,3 +25,22 @@ def test_get_benchmark_scenarios():
 )
 def test_lint_scenario(scenario: BenchmarkScenario):
     lint_benchmark_scenario(scenario)
+
+
+class TestBenchmarkScenario:
+    def test_validation_minimal(self):
+        bs = BenchmarkScenario.from_dict(
+            {
+                "id": "foo",
+                "type": "openeo",
+                "backend": "openeo.test",
+                "process_graph": {},
+            }
+        )
+        assert bs.id == "foo"
+        assert bs.backend == "openeo.test"
+        assert bs.process_graph == {}
+
+    def test_validation_missing_essentials(self):
+        with pytest.raises(jsonschema.ValidationError):
+            BenchmarkScenario.from_dict({})

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Benchmark Scenario",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the benchmark scenario."
+    },
+    "type": {
+      "type": "string",
+      "description": "The type of the benchmark scenario.",
+      "enum": [
+        "openeo"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the benchmark scenario."
+    },
+    "backend": {
+      "type": "string",
+      "description": "The openEO backend URL to connect to."
+    },
+    "process_graph": {
+      "type": "object",
+      "description": "The openEO process graph to execute."
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "backend",
+    "process_graph"
+  ]
+}

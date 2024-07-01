@@ -19,4 +19,5 @@ requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
     "requests>=2.32.0",
+    "jsonschema>=4.0.0",
 ]
