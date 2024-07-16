@@ -22,6 +22,39 @@
         },
         "result": true
       }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi.json:max_ndvi:reference:job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi.json:max_ndvi:reference:openEO.tif"
+    }
+  },
+  {
+    "id": "max_ndvi_fail",
+    "type": "openeo",
+    "description": "max_ndvi example, intentionally failing",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "maxndvi1": {
+        "process_id": "max_ndvi",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f99f351d74d291d628e3aaa07fd078527a0cb631/openeo_udp/examples/max_ndvi/max_ndvi.json",
+        "arguments": {
+          "bbox": {
+            "west": 6.07,
+            "east": 6.09,
+            "south": 51.21,
+            "north": 51.23
+          },
+          "temporal_extent": [
+            "2023-08-01",
+            "2023-09-30"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi.json:max_ndvi:reference:job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi.json:max_ndvi:reference:openEO.tif"
     }
   }
 ]
