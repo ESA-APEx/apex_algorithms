@@ -20,4 +20,5 @@ dynamic = ["version"]
 dependencies = [
     "requests>=2.32.0",
     "jsonschema>=4.0.0",
+    "openeo>=0.30.0",
 ]
