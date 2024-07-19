@@ -21,7 +21,14 @@ jobs:
       - name: Test with pytest
         run: |
           cd qa/benchmarks
-          pytest --random-subset=1
+          mkdir report
+          pytest -k dummy --html report/report.html --self-contained-html --junit-xml=report/report.xml
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
+      - name: upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report
+          path: qa/benchmarks/report/
