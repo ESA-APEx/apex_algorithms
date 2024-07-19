@@ -1,7 +1,9 @@
+import json
 import logging
 import os
 import random
-from typing import Callable
+from pathlib import Path
+from typing import Any, Callable, List, Tuple, Union
 
 import openeo
 import pytest
@@ -20,6 +22,33 @@ def pytest_addoption(parser):
         type=int,
         help="Only run random selected subset benchmarks.",
     )
+    parser.addoption(
+        "--openeo-metrics",
+        metavar="path",
+        action="store",
+        dest="openeo_metrics_path",
+        default=None,
+        help="File to store openEO metrics.",
+    )
+
+
+def pytest_configure(config):
+    openeo_metrics_path = config.getoption("openeo_metrics_path")
+    if (
+        openeo_metrics_path
+        # Don't register on xdist worker nodes
+        and not hasattr(config, "workerinput")
+    ):
+        config.pluginmanager.register(
+            # TODO: create config for this path
+            OpeneoMetricReporter(openeo_metrics_path),
+            name="openeo_metrics_reporter",
+        )
+
+
+def pytest_unconfigure(config):
+    if config.pluginmanager.hasplugin("openeo_metrics_report"):
+        config.pluginmanager.unregister(name="openeo_metrics_reporter")
 
 
 def pytest_collection_modifyitems(session, config, items):
@@ -35,6 +64,61 @@ def pytest_collection_modifyitems(session, config, items):
             f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
         )
         items[:] = random.sample(items, k=subset_size)
+
+
+@pytest.fixture
+def openeo_metric(request: pytest.FixtureRequest) -> Callable[[str, Any], None]:
+    """
+    Fixture to record openEO metrics during openEO tests/benchmarks,
+    which will be stored in the pytest node's "user_properties".
+
+    Collect and export these metrics with OpeneoMetricReporter.
+    """
+
+    def append(name: str, value: Any):
+        _get_openeo_metrics(request.node.user_properties).append((name, value))
+
+    return append
+
+
+def _get_openeo_metrics(user_properties: List[Tuple[str, Any]]) -> List:
+    for name, value in user_properties:
+        if name == OpeneoMetricReporter.USER_PROPERTY_KEY:
+            return value
+    # Not found: create it
+    metrics = []
+    user_properties.append((OpeneoMetricReporter.USER_PROPERTY_KEY, metrics))
+    return metrics
+
+
+class OpeneoMetricReporter:
+    # TODO: isolate all this openeo_metrics stuff to proper plugin
+    USER_PROPERTY_KEY = "openeo_metrics"
+
+    def __init__(self, path: Union[str, Path]):
+        self.path = Path(path)
+        self.metrics = []
+
+    def pytest_runtest_logreport(self, report: pytest.TestReport):
+        if report.when == "call":
+            self.metrics.append(
+                {
+                    "nodeid": report.nodeid,
+                    "outcome": report.outcome,
+                    "openeo_metrics": _get_openeo_metrics(report.user_properties),
+                    "duration": report.duration,
+                    "start": report.start,
+                    "stop": report.stop,
+                    "longrepr": repr(report.longrepr),
+                }
+            )
+
+    def pytest_sessionfinish(self, session):
+        with self.path.open("w") as f:
+            json.dump(self.metrics, f, indent=2)
+
+    def pytest_terminal_summary(self, terminalreporter):
+        terminalreporter.write_sep("-", f"Generated openEO metrics report: {self.path}")
 
 
 def _get_client_credentials_env_var(url: str) -> str:
