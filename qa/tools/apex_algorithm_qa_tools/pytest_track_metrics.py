@@ -1,5 +1,5 @@
 """
-Pytest plugin to record test/benchmark metrics to a JSON file.
+Pytest plugin to track test/benchmark metrics and report them with a JSON file.
 
 
 Usage:
@@ -8,64 +8,65 @@ Usage:
 
     ```python
     pytest_plugins = [
-        "apex_algorithm_qa_tools.test_metrics",
+        "apex_algorithm_qa_tools.pytest_track_metrics",
     ]
     ```
 
--   Use the `test_metric` fixture to record test metrics:
+-   Use the `track_metric` fixture to record metrics during tests:
 
     ```python
-    def test_dummy(test_metric):
+    def test_dummy(track_metric):
         x = 3
-        test_metric("x squared", x*x)
+        track_metric("x squared", x*x)
     ...
 
--   Run the tests with `--test-metrics=path/to/metrics.json`
+-   Run the tests with `--track-metrics-report=path/to/metrics.json`
     to store metrics in a JSON file
 """
 
 import json
+import warnings
 from pathlib import Path
 from typing import Any, Callable, List, Tuple, Union
 
 import pytest
 
-_TEST_METRICS_PATH = "test_metrics_path"
-_TEST_METRICS_REPORTER = "test_metrics_reporter"
+_TRACK_METRICS_PATH = "track_metrics_path"
+_TRACK_METRICS_NAME = "track_metrics"
 
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--test-metrics",
+        "--track-metrics-report",
         metavar="PATH",
         action="store",
-        dest=_TEST_METRICS_PATH,
+        dest=_TRACK_METRICS_PATH,
         default=None,
         help="Path to JSON file to store test/benchmark metrics.",
     )
 
 
 def pytest_configure(config):
-    test_metrics_path = config.getoption(_TEST_METRICS_PATH)
+    track_metrics_path = config.getoption(_TRACK_METRICS_PATH)
     if (
-        test_metrics_path
+        track_metrics_path
         # Don't register on xdist worker nodes
         and not hasattr(config, "workerinput")
     ):
         config.pluginmanager.register(
-            MetricsReporter(path=test_metrics_path),
-            name=_TEST_METRICS_REPORTER,
+            TrackMetricsReporter(path=track_metrics_path),
+            name=_TRACK_METRICS_NAME,
         )
 
 
 def pytest_unconfigure(config):
-    if config.pluginmanager.hasplugin(_TEST_METRICS_REPORTER):
-        config.pluginmanager.unregister(name=_TEST_METRICS_REPORTER)
+    if config.pluginmanager.hasplugin(_TRACK_METRICS_NAME):
+        config.pluginmanager.unregister(name=_TRACK_METRICS_NAME)
 
 
-class MetricsReporter:
+class TrackMetricsReporter:
     def __init__(
-        self, path: Union[str, Path], user_properties_key: str = "test_metrics"
+        self, path: Union[str, Path], user_properties_key: str = "track_metrics"
     ):
         self.path = Path(path)
         self.metrics: List[dict] = []
@@ -82,7 +83,7 @@ class MetricsReporter:
                         "start": report.start,
                         "stop": report.stop,
                     },
-                    "metrics": self.get_test_metrics(report.user_properties),
+                    "metrics": self.get_metrics(report.user_properties),
                 }
             )
 
@@ -91,9 +92,9 @@ class MetricsReporter:
             json.dump(self.metrics, f, indent=2)
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", f"Generated test metrics report: {self.path}")
+        terminalreporter.write_sep("-", f"Generated track_metrics report: {self.path}")
 
-    def get_test_metrics(
+    def get_metrics(
         self, user_properties: List[Tuple[str, Any]]
     ) -> List[Tuple[str, Any]]:
         """
@@ -110,17 +111,30 @@ class MetricsReporter:
 
 
 @pytest.fixture
-def test_metric(
+def track_metric(
     pytestconfig: pytest.Config, request: pytest.FixtureRequest
 ) -> Callable[[str, Any], None]:
     """
-    Fixture to record a test metrics during openEO tests/benchmarks,
+    Fixture to record a metric during tests/benchmarks,
     which will be stored in the pytest node's "user_properties".
+
+    Returns a callable that expects a metric name and value
     """
 
-    reporter = pytestconfig.pluginmanager.get_plugin(_TEST_METRICS_REPORTER)
+    reporter: Union[TrackMetricsReporter, None] = pytestconfig.pluginmanager.get_plugin(
+        _TRACK_METRICS_NAME
+    )
 
-    def append(name: str, value: Any):
-        reporter.get_test_metrics(request.node.user_properties).append((name, value))
+    if reporter:
+
+        def append(name: str, value: Any):
+            reporter.get_metrics(request.node.user_properties).append((name, value))
+    else:
+        warnings.warn(
+            "The `track_metric` fixture is requested, but no output file is defined (e.g. with `--metrics-tracker-report=path/to/metrics.json`."
+        )
+
+        def append(name: str, value: Any):
+            pass
 
     return append

@@ -22,7 +22,7 @@ jobs:
         run: |
           cd qa/benchmarks
           mkdir report
-          pytest -k dummy --html report/report.html --self-contained-html --test-metrics=report/metrics.json
+          pytest -k dummy --html report/report.html --self-contained-html --track-metrics-report=report/metrics.json
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
