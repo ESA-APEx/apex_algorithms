@@ -3,11 +3,11 @@ Dummy tests to allow setting up additional test tooling
 """
 
 
-def test_dummy(openeo_metric):
+def test_dummy(test_metric):
     x = 3
     y = 5
-    openeo_metric("x", x)
-    openeo_metric("y", y)
+    test_metric("x squared", x * x)
+    test_metric("y", y)
     assert x + y == 7
 
 
