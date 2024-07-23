@@ -10,6 +10,10 @@ import requests
 # TODO: how to make sure the logging/printing from this plugin is actually visible by default?
 _log = logging.getLogger(__name__)
 
+pytest_plugins = [
+    "apex_algorithm_qa_tools.pytest_track_metrics",
+]
+
 
 def pytest_addoption(parser):
     parser.addoption(
