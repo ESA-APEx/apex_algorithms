@@ -18,7 +18,9 @@ from openeo.testing.results import assert_job_results_allclose
         for uc in get_benchmark_scenarios()
     ],
 )
-def test_run_benchmark(scenario: BenchmarkScenario, connection_factory, tmp_path: Path):
+def test_run_benchmark(
+    scenario: BenchmarkScenario, connection_factory, tmp_path: Path, track_metric
+):
     connection: openeo.Connection = connection_factory(url=scenario.backend)
 
     # TODO #14 scenario option to use synchronous instead of batch job mode?
@@ -30,6 +32,10 @@ def test_run_benchmark(scenario: BenchmarkScenario, connection_factory, tmp_path
     # TODO: monitor timing and progress
     # TODO: abort excessively long batch jobs? https://github.com/Open-EO/openeo-python-client/issues/589
     job.start_and_wait()
+
+    job_metadata = job.describe()
+    track_metric("costs", job_metadata.get("costs"))
+    track_metric("usage", job_metadata.get("usage"))
 
     # Download actual results
     actual_dir = tmp_path / "actual"
