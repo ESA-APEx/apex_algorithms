@@ -110,9 +110,10 @@ def upload_assets(pytestconfig, tmp_path) -> Callable[[Path], None]:
     """
     uploader = pytestconfig.pluginmanager.get_plugin(_PLUGIN_NAME)
 
-    def collect(path: Path):
-        assert path.is_relative_to(tmp_path)
-        name = str(path.relative_to(tmp_path))
-        uploader.collector.collect(path=path, name=name)
+    def collect(*paths: Path):
+        for path in paths:
+            assert path.is_relative_to(tmp_path)
+            name = str(path.relative_to(tmp_path))
+            uploader.collector.collect(path=path, name=name)
 
     return collect
