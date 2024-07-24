@@ -22,13 +22,21 @@ jobs:
         run: |
           cd qa/benchmarks
           mkdir report
+          mkdir tmp_path_root
           pytest \
             --dummy \
             --html report/report.html --self-contained-html \
-            --track-metrics-report=report/metrics.json
+            --track-metrics-report=report/metrics.json \
+            --basetemp=tmp_path_root
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
+      - name: List local reports
+        if: always()
+        run: ls -alR qa/benchmarks/report
+      - name: List local results
+        if: always()
+        run: ls -alR qa/benchmarks/tmp_path_root
       - name: upload report
         uses: actions/upload-artifact@v4
         if: always()
