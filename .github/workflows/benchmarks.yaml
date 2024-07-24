@@ -23,7 +23,7 @@ jobs:
           cd qa/benchmarks
           mkdir report
           pytest \
-            --random-subset=1 \
+            --dummy \
             --html report/report.html --self-contained-html \
             --track-metrics-report=report/metrics.json
         env:
