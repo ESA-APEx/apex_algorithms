@@ -36,3 +36,11 @@ def test_produce_files_fail(tmp_path):
     path = tmp_path / "hello.txt"
     path.write_text("Hello, world.\n")
     assert 1 == 2
+
+
+@pytest.mark.parametrize("x", [3, 5])
+def test_upload_assets(tmp_path, upload_assets, x):
+    path = tmp_path / "hello.txt"
+    path.write_text("Hello, world.\n")
+    upload_assets(path)
+    assert x == 5
