@@ -96,7 +96,13 @@ class S3UploadPlugin:
             key = f"{self.run_id}!{nodeid}!{name}"
             # TODO: get upload info in report?
             _log.info(f"Uploading {path} to {self.bucket}/{key}")
-            self.s3_client.upload_file(Filename=str(path), Bucket=self.bucket, Key=key)
+            self.s3_client.upload_file(
+                Filename=str(path),
+                Bucket=self.bucket,
+                Key=key,
+                # TODO: option to override ACL, or ExtraArgs in general?
+                ExtraArgs={"ACL": "public-read"},
+            )
 
 
 @pytest.fixture
