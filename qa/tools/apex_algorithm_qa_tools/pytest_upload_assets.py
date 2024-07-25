@@ -44,7 +44,7 @@ _UPLOAD_ASSETS_PLUGIN_NAME = "upload_assets"
 
 
 def pytest_addoption(parser: pytest.Parser):
-    # TODO: option to always upload (also on success).
+    # TODO #22: option to always upload (also on success).
     parser.addoption(
         "--upload-assets-run-id",
         metavar="RUNID",
@@ -111,7 +111,7 @@ class S3UploadPlugin:
         self.collected_assets = {}
 
     def pytest_runtest_logreport(self, report: pytest.TestReport):
-        # TODO: option to upload on other outcome as well?
+        # TODO #22: option to upload on other outcome as well?
         if report.when == "call" and report.outcome == "failed":
             # TODO: what to do when upload fails?
             uploaded = self._upload(nodeid=report.nodeid)
