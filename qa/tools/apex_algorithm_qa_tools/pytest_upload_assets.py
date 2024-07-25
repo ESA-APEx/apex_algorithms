@@ -27,6 +27,7 @@ Usage:
     - and env vars `UPLOAD_ASSETS_ACCESS_KEY_ID` and `UPLOAD_ASSETS_SECRET_ACCESS_KEY` set.
 """
 
+import collections
 import logging
 import os
 import re
@@ -85,7 +86,8 @@ class S3UploadPlugin:
         self.collected_assets: Dict[str, Path] | None = None
         self.s3_client = s3_client
         self.bucket = bucket
-        self.upload_stats = {"uploaded": 0}
+        self.upload_stats = collections.defaultdict(int, uploaded=0)
+        self.upload_reports: Dict[str, dict] = {}
 
     def collect(self, path: Path, name: str):
         """Collect assets to upload"""
@@ -99,37 +101,58 @@ class S3UploadPlugin:
     def pytest_runtest_logreport(self, report: pytest.TestReport):
         # TODO #22: option to upload on other outcome as well?
         if report.when == "call" and report.outcome == "failed":
-            # TODO: what to do when upload fails?
-            uploaded = self._upload(nodeid=report.nodeid)
-            # TODO: report the uploaded assets somewhere (e.g. in user_properties or JSON report?)
+            self._upload_collected_assets(nodeid=report.nodeid)
 
     def pytest_runtest_logfinish(self, nodeid):
         # Reset collection of assets
         self.collected_assets = None
 
-    def _upload(self, nodeid: str) -> Dict[str, str]:
-        assets = {}
+    def _upload_collected_assets(self, nodeid: str):
+        upload_report = {}
         for name, path in self.collected_assets.items():
-            safe_nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", nodeid)
-            key = f"{self.run_id}!{safe_nodeid}!{name}"
-            # TODO: is this manual URL building correct and isn't there a boto utility for that?
-            url = f"{self.s3_client.meta.endpoint_url.rstrip('/')}/{self.bucket}/{key}"
-            _log.info(f"Uploading {path} to {url}")
-            self.s3_client.upload_file(
-                Filename=str(path),
-                Bucket=self.bucket,
-                Key=key,
-                # TODO: option to override ACL, or ExtraArgs in general?
-                ExtraArgs={"ACL": "public-read"},
-            )
-            assets[name] = url
-            self.upload_stats["uploaded"] += 1
+            try:
+                url = self._upload_asset(nodeid=nodeid, name=name, path=path)
+                upload_report[name] = {"url": url}
+                self.upload_stats["uploaded"] += 1
+            except Exception as e:
+                _log.error(f"Failed to upload asset {name=} from {path=}: {e}")
+                upload_report[name] = {"error": str(e)}
+                self.upload_stats["failed"] += 1
+        self.upload_reports[nodeid] = upload_report
+
+    def _upload_asset(self, nodeid: str, name: str, path: Path) -> str:
+        safe_nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", nodeid)
+        key = f"{self.run_id}!{safe_nodeid}!{name}"
+        # TODO: is this manual URL building correct? And isn't there a boto utility for that?
+        url = f"{self.s3_client.meta.endpoint_url.rstrip('/')}/{self.bucket}/{key}"
+        _log.info(f"Uploading asset {name=} from {path=} to {url=}")
+        self.s3_client.upload_file(
+            Filename=str(path),
+            Bucket=self.bucket,
+            Key=key,
+            # TODO: option to override ACL, or ExtraArgs in general?
+            ExtraArgs={"ACL": "public-read"},
+        )
+        return url
 
     def pytest_report_header(self):
         return f"Plugin `upload_assets` is active, with upload to {self.bucket!r}"
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", f"`upload_assets` stats: {self.upload_stats}")
+        terminalreporter.write_sep(
+            "-", f"`upload_assets` stats: {dict(self.upload_stats)}"
+        )
+        for nodeid, upload_report in self.upload_reports.items():
+            terminalreporter.write_line(f"- {nodeid}:")
+            for name, report in upload_report.items():
+                if "url" in report:
+                    terminalreporter.write_line(
+                        f"  - {name!r} uploaded to {report['url']!r}"
+                    )
+                elif "error" in report:
+                    terminalreporter.write_line(
+                        f"  - {name!r} failed with: {report['error']!r}"
+                    )
 
 
 @pytest.fixture

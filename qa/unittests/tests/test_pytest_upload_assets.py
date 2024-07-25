@@ -73,7 +73,12 @@ def test_basic_upload_on_fail(
     actual = s3_client.get_object(Bucket=s3_bucket, Key=expected_key)
     assert actual["Body"].read().decode("utf8") == "Hello world."
 
-    run_result.stdout.re_match_lines([r".*`upload_assets` stats: \{'uploaded': 1\}"])
+    run_result.stdout.re_match_lines(
+        [
+            r".*`upload_assets` stats: \{'uploaded': 1\}",
+            r"\s+-\s+'hello.txt' uploaded to 'http://.*?/test-bucket-\w+/test-run-123!test_file_maker.py__test_fail_and_upload!hello.txt'",
+        ]
+    )
 
 
 def test_nop_on_success(pytester: pytest.Pytester, moto_server, s3_client, s3_bucket):
