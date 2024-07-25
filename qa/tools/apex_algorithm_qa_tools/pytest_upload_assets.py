@@ -15,8 +15,8 @@ Usage:
 
     ```python
     def test_dummy(upload_assets, tmp_path):
-        path = tmp_path / "dummy.txt"
-        path.write_text("dummy content")
+        path = tmp_path / "hello.txt"
+        path.write_text("Hello world.")
         upload_assets(path)
     ```
 
@@ -33,7 +33,7 @@ import re
 import uuid
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, Union
+from typing import Callable, Dict
 
 import boto3
 import pytest
@@ -80,6 +80,7 @@ def pytest_configure(config: pytest.Config):
 
 
 def pytest_report_header(config):
+    # TODO Move inside S3UploadPlugin
     plugin: S3UploadPlugin | None = config.pluginmanager.get_plugin(
         _UPLOAD_ASSETS_PLUGIN_NAME
     )
@@ -92,49 +93,42 @@ def pytest_unconfigure(config):
         config.pluginmanager.unregister(name=_UPLOAD_ASSETS_PLUGIN_NAME)
 
 
-class _Collector:
-    """
-    Collects test outcomes and files to upload for a single test node.
-    """
-
-    def __init__(self, nodeid: str) -> None:
-        self.nodeid = nodeid
-        self.outcomes: Dict[str, str] = {}
-        self.assets: Dict[str, Path] = {}
-
-    def set_outcome(self, when: str, outcome: str):
-        self.outcomes[when] = outcome
-
-    def collect(self, path: Path, name: str):
-        self.assets[name] = path
-
-
 class S3UploadPlugin:
     def __init__(self, *, run_id: str | None = None, s3_client, bucket: str) -> None:
         self.run_id = run_id or uuid.uuid4().hex
-        self.collector: Union[_Collector, None] = None
+        self.collected_assets: Dict[str, Path] | None = None
         self.s3_client = s3_client
         self.bucket = bucket
+        self.upload_stats = {"uploaded": 0}
 
-    def pytest_runtest_logstart(self, nodeid, location):
-        self.collector = _Collector(nodeid=nodeid)
+    def collect(self, path: Path, name: str):
+        """Collect assets to upload"""
+        assert self.collected_assets is not None, "No active collection of assets"
+        self.collected_assets[name] = path
+
+    def pytest_runtest_logstart(self, nodeid):
+        # Start new collection of assets for current test node
+        self.collected_assets = {}
 
     def pytest_runtest_logreport(self, report: pytest.TestReport):
-        self.collector.set_outcome(when=report.when, outcome=report.outcome)
+        # TODO: option to upload on other outcome as well?
+        if report.when == "call" and report.outcome == "failed":
+            # TODO: what to do when upload fails?
+            uploaded = self._upload(nodeid=report.nodeid)
+            # TODO: report the uploaded assets somewhere (e.g. in user_properties or JSON report?)
 
-    def pytest_runtest_logfinish(self, nodeid, location):
-        # TODO: option to also upload on success?
-        if self.collector.outcomes.get("call") == "failed":
-            self._upload(self.collector)
+    def pytest_runtest_logfinish(self, nodeid):
+        # Reset collection of assets
+        self.collected_assets = None
 
-        self.collector = None
-
-    def _upload(self, collector: _Collector):
-        for name, path in collector.assets.items():
-            nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", collector.nodeid)
-            key = f"{self.run_id}!{nodeid}!{name}"
-            # TODO: get upload info in report?
-            _log.info(f"Uploading {path} to {self.bucket}/{key}")
+    def _upload(self, nodeid: str) -> Dict[str, str]:
+        assets = {}
+        for name, path in self.collected_assets.items():
+            safe_nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", nodeid)
+            key = f"{self.run_id}!{safe_nodeid}!{name}"
+            # TODO: is this manual URL building correct and isn't there a boto utility for that?
+            url = f"{self.s3_client.meta.endpoint_url.rstrip('/')}/{self.bucket}/{key}"
+            _log.info(f"Uploading {path} to {url}")
             self.s3_client.upload_file(
                 Filename=str(path),
                 Bucket=self.bucket,
@@ -142,6 +136,11 @@ class S3UploadPlugin:
                 # TODO: option to override ACL, or ExtraArgs in general?
                 ExtraArgs={"ACL": "public-read"},
             )
+            assets[name] = url
+            self.upload_stats["uploaded"] += 1
+
+    def pytest_terminal_summary(self, terminalreporter):
+        terminalreporter.write_sep("-", f"`upload_assets` stats: {self.upload_stats}")
 
 
 @pytest.fixture
@@ -163,7 +162,7 @@ def upload_assets(pytestconfig: pytest.Config, tmp_path) -> Callable:
                 #       (e.g. when test uses an `actual` folder for actual results)
                 assert path.is_relative_to(tmp_path)
                 name = str(path.relative_to(tmp_path))
-                uploader.collector.collect(path=path, name=name)
+                uploader.collect(path=path, name=name)
     else:
         warnings.warn("Fixture `upload_assets` is a no-op (incomplete set up).")
 

@@ -1,2 +1,3 @@
 apex-algorithm-qa-tools
 pytest>=8.2.0
+moto[s3, server]
