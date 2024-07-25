@@ -1,12 +1,37 @@
 """
 Pytest plugin to collect files generated during benchmark/test
 and upload them to S3 (e.g. on test failure).
+
+Usage:
+
+-  Enable the plugin in `conftest.py`:
+
+    ```python
+    pytest_plugins = [
+        "apex_algorithm_qa_tools.pytest_upload_assets",
+    ]
+
+-  Use the `upload_assets` fixture to register files for upload:
+
+    ```python
+    def test_dummy(upload_assets, tmp_path):
+        path = tmp_path / "dummy.txt"
+        path.write_text("dummy content")
+        upload_assets(path)
+    ```
+
+- Run the tests with:
+    - `--upload-assets-run-id=RUNID` (optional, defaults to random UUID)
+    - `--upload-assets-endpoint-url=URL`
+    - `--upload-assets-bucket=BUCKET`
+    - and env vars `UPLOAD_ASSETS_ACCESS_KEY_ID` and `UPLOAD_ASSETS_SECRET_ACCESS_KEY` set.
 """
 
 import logging
 import os
 import re
 import uuid
+import warnings
 from pathlib import Path
 from typing import Callable, Dict, Union
 
@@ -41,12 +66,7 @@ def pytest_configure(config: pytest.Config):
     run_id = config.getoption("upload_assets_run_id")
     endpoint_url = config.getoption("upload_assets_endpoint_url")
     bucket = config.getoption("upload_assets_bucket")
-    if (
-        endpoint_url
-        and bucket
-        # Don't register on xdist worker nodes
-        and not hasattr(config, "workerinput")
-    ):
+    if endpoint_url and bucket:
         s3_client = boto3.client(
             service_name="s3",
             aws_access_key_id=os.environ.get("UPLOAD_ASSETS_ACCESS_KEY_ID"),
@@ -57,6 +77,19 @@ def pytest_configure(config: pytest.Config):
             S3UploadPlugin(run_id=run_id, s3_client=s3_client, bucket=bucket),
             name=_UPLOAD_ASSETS_PLUGIN_NAME,
         )
+
+
+def pytest_report_header(config):
+    plugin: S3UploadPlugin | None = config.pluginmanager.get_plugin(
+        _UPLOAD_ASSETS_PLUGIN_NAME
+    )
+    if plugin:
+        return f"Plugin `upload_assets` is active, with upload to {plugin.bucket!r}"
+
+
+def pytest_unconfigure(config):
+    if config.pluginmanager.hasplugin(_UPLOAD_ASSETS_PLUGIN_NAME):
+        config.pluginmanager.unregister(name=_UPLOAD_ASSETS_PLUGIN_NAME)
 
 
 class _Collector:
@@ -112,17 +145,29 @@ class S3UploadPlugin:
 
 
 @pytest.fixture
-def upload_assets(pytestconfig, tmp_path) -> Callable[[Path], None]:
+def upload_assets(pytestconfig: pytest.Config, tmp_path) -> Callable:
     """
     Fixture to register a file (under `tmp_path`) for S3 upload
-    after the test failed.
+    after the test failed. The fixture is a function that
+    can be called with one or more `Path` objects to upload.
     """
-    uploader = pytestconfig.pluginmanager.get_plugin(_UPLOAD_ASSETS_PLUGIN_NAME)
+    uploader: S3UploadPlugin | None = pytestconfig.pluginmanager.get_plugin(
+        _UPLOAD_ASSETS_PLUGIN_NAME
+    )
 
-    def collect(*paths: Path):
-        for path in paths:
-            assert path.is_relative_to(tmp_path)
-            name = str(path.relative_to(tmp_path))
-            uploader.collector.collect(path=path, name=name)
+    if uploader:
+
+        def collect(*paths: Path):
+            for path in paths:
+                # TODO: option to make relative from other root
+                #       (e.g. when test uses an `actual` folder for actual results)
+                assert path.is_relative_to(tmp_path)
+                name = str(path.relative_to(tmp_path))
+                uploader.collector.collect(path=path, name=name)
+    else:
+        warnings.warn("Fixture `upload_assets` is a no-op (incomplete set up).")
+
+        def collect(*paths: Path):
+            pass
 
     return collect

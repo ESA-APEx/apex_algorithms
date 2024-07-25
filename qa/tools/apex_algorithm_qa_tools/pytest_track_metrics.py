@@ -43,16 +43,24 @@ def pytest_addoption(parser: pytest.Parser):
 
 
 def pytest_configure(config):
+    if hasattr(config, "workerinput"):
+        warnings.warn("`track_metrics` plugin is not supported on xdist worker nodes.")
+        return
+
     track_metrics_path = config.getoption("track_metrics_report")
-    if (
-        track_metrics_path
-        # Don't register on xdist worker nodes
-        and not hasattr(config, "workerinput")
-    ):
+    if track_metrics_path:
         config.pluginmanager.register(
             TrackMetricsReporter(path=track_metrics_path),
             name=_TRACK_METRICS_PLUGIN_NAME,
         )
+
+
+def pytest_report_header(config):
+    plugin: TrackMetricsReporter | None = config.pluginmanager.get_plugin(
+        _TRACK_METRICS_PLUGIN_NAME
+    )
+    if plugin:
+        return f"Plugin `track_metrics` is active, reporting to {plugin.path}"
 
 
 def pytest_unconfigure(config):
@@ -117,7 +125,7 @@ def track_metric(
     Returns a callable that expects a metric name and value
     """
 
-    reporter: Union[TrackMetricsReporter, None] = pytestconfig.pluginmanager.get_plugin(
+    reporter: TrackMetricsReporter | None = pytestconfig.pluginmanager.get_plugin(
         _TRACK_METRICS_PLUGIN_NAME
     )
 
@@ -126,9 +134,7 @@ def track_metric(
         def append(name: str, value: Any):
             reporter.get_metrics(request.node.user_properties).append((name, value))
     else:
-        warnings.warn(
-            "The `track_metric` fixture is requested, but no output file is defined (e.g. with `--metrics-tracker-report=path/to/metrics.json`."
-        )
+        warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 
         def append(name: str, value: Any):
             pass
