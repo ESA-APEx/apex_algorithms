@@ -6,7 +6,7 @@ and upload them to S3 (e.g. on test failure).
 import logging
 import os
 import re
-import time
+import uuid
 from pathlib import Path
 from typing import Callable, Dict, Union
 
@@ -19,10 +19,14 @@ _PLUGIN_NAME = "upload_assets"
 
 
 def pytest_addoption(parser):
-    # TODO: option to inject github run id
     # TODO: options for S3 bucket, credentials, ...
     # TODO: option to always upload (also on success).
-    ...
+    parser.addoption(
+        "--upload-assets-runid",
+        metavar="ID",
+        action="store",
+        help="The run ID to use for building the S3 key.",
+    )
 
 
 def pytest_configure(config: pytest.Config):
@@ -39,15 +43,9 @@ def pytest_configure(config: pytest.Config):
             endpoint_url=os.environ.get("UPLOAD_ASSETS_ENDPOINT_URL"),
         )
         bucket = os.environ.get("UPLOAD_ASSETS_BUCKET")
-        # TODO: do run id through option
-        if os.environ.get("GITHUB_RUN_ID"):
-            run_id = "github-" + os.environ["GITHUB_RUN_ID"]
-        else:
-            run_id = f"local-{int(time.time())}"
-
         config.pluginmanager.register(
             S3UploadPlugin(
-                run_id=run_id,
+                run_id=config.getoption("upload_assets_runid"),
                 s3_client=s3_client,
                 bucket=bucket,
             ),
@@ -73,9 +71,8 @@ class _Collector:
 
 
 class S3UploadPlugin:
-    def __init__(self, run_id: str, s3_client, bucket: str) -> None:
-        # TODO: bucket, credentials, githubrunid, ...
-        self.run_id = run_id
+    def __init__(self, *, run_id: str | None = None, s3_client, bucket: str) -> None:
+        self.run_id = run_id or uuid.uuid4().hex
         self.collector: Union[_Collector, None] = None
         self.s3_client = s3_client
         self.bucket = bucket
