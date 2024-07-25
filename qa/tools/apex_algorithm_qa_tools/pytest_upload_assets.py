@@ -19,36 +19,45 @@ _PLUGIN_NAME = "upload_assets"
 
 
 def pytest_addoption(parser):
-    # TODO: options for S3 bucket, credentials, ...
     # TODO: option to always upload (also on success).
     parser.addoption(
-        "--upload-assets-runid",
+        "--upload-assets-run-id",
         metavar="ID",
         action="store",
         help="The run ID to use for building the S3 key.",
     )
+    parser.addoption(
+        "--upload-assets-endpoint-url",
+        metavar="URL",
+        action="store",
+        help="The S3 endpoint URL to upload to.",
+    )
+    parser.addoption(
+        "--upload-assets-bucket",
+        metavar="BUCKET",
+        action="store",
+        help="The S3 bucket to upload to.",
+    )
 
 
 def pytest_configure(config: pytest.Config):
+    run_id = config.getoption("upload_assets_run_id")
+    endpoint_url = config.getoption("upload_assets_endpoint_url")
+    bucket = config.getoption("upload_assets_bucket")
     if (
-        # TODO only register if enough config is available for setup
+        endpoint_url
+        and bucket
         # Don't register on xdist worker nodes
-        not hasattr(config, "workerinput")
+        and not hasattr(config, "workerinput")
     ):
         s3_client = boto3.client(
             service_name="s3",
             aws_access_key_id=os.environ.get("UPLOAD_ASSETS_ACCESS_KEY_ID"),
             aws_secret_access_key=os.environ.get("UPLOAD_ASSETS_SECRET_ACCESS_KEY"),
-            # TODO Option for endpoint url
-            endpoint_url=os.environ.get("UPLOAD_ASSETS_ENDPOINT_URL"),
+            endpoint_url=endpoint_url,
         )
-        bucket = os.environ.get("UPLOAD_ASSETS_BUCKET")
         config.pluginmanager.register(
-            S3UploadPlugin(
-                run_id=config.getoption("upload_assets_runid"),
-                s3_client=s3_client,
-                bucket=bucket,
-            ),
+            S3UploadPlugin(run_id=run_id, s3_client=s3_client, bucket=bucket),
             name=_PLUGIN_NAME,
         )
 

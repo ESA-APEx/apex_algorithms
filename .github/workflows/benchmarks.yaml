@@ -29,12 +29,12 @@ jobs:
             --html report/report.html --self-contained-html \
             --track-metrics-report=report/metrics.json \
             --basetemp=tmp_path_root \
-            --upload-assets-runid="gh-$GITHUB_RUN_ID"
+            --upload-assets-run-id="gh-$GITHUB_RUN_ID" \
+            --upload-assets-endpoint-url="https://s3.waw3-1.cloudferro.com" \
+            --upload-assets-bucket="APEx-benchmarks"
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
-          UPLOAD_ASSETS_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
-          UPLOAD_ASSETS_BUCKET: "APEx-benchmarks"
           UPLOAD_ASSETS_ACCESS_KEY_ID: ${{ secrets.UPLOAD_ASSETS_ACCESS_KEY_ID }}
           UPLOAD_ASSETS_SECRET_ACCESS_KEY: ${{ secrets.UPLOAD_ASSETS_SECRET_ACCESS_KEY }}
       - name: List local reports
