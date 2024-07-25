@@ -15,27 +15,24 @@ import pytest
 
 _log = logging.getLogger(__name__)
 
-_PLUGIN_NAME = "upload_assets"
+_UPLOAD_ASSETS_PLUGIN_NAME = "upload_assets"
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: pytest.Parser):
     # TODO: option to always upload (also on success).
     parser.addoption(
         "--upload-assets-run-id",
-        metavar="ID",
-        action="store",
+        metavar="RUNID",
         help="The run ID to use for building the S3 key.",
     )
     parser.addoption(
         "--upload-assets-endpoint-url",
         metavar="URL",
-        action="store",
         help="The S3 endpoint URL to upload to.",
     )
     parser.addoption(
         "--upload-assets-bucket",
         metavar="BUCKET",
-        action="store",
         help="The S3 bucket to upload to.",
     )
 
@@ -58,7 +55,7 @@ def pytest_configure(config: pytest.Config):
         )
         config.pluginmanager.register(
             S3UploadPlugin(run_id=run_id, s3_client=s3_client, bucket=bucket),
-            name=_PLUGIN_NAME,
+            name=_UPLOAD_ASSETS_PLUGIN_NAME,
         )
 
 
@@ -120,7 +117,7 @@ def upload_assets(pytestconfig, tmp_path) -> Callable[[Path], None]:
     Fixture to register a file (under `tmp_path`) for S3 upload
     after the test failed.
     """
-    uploader = pytestconfig.pluginmanager.get_plugin(_PLUGIN_NAME)
+    uploader = pytestconfig.pluginmanager.get_plugin(_UPLOAD_ASSETS_PLUGIN_NAME)
 
     def collect(*paths: Path):
         for path in paths:

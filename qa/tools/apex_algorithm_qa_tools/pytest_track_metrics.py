@@ -31,23 +31,19 @@ from typing import Any, Callable, List, Tuple, Union
 
 import pytest
 
-_TRACK_METRICS_PATH = "track_metrics_path"
-_TRACK_METRICS_NAME = "track_metrics"
+_TRACK_METRICS_PLUGIN_NAME = "track_metrics"
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: pytest.Parser):
     parser.addoption(
         "--track-metrics-report",
         metavar="PATH",
-        action="store",
-        dest=_TRACK_METRICS_PATH,
-        default=None,
         help="Path to JSON file to store test/benchmark metrics.",
     )
 
 
 def pytest_configure(config):
-    track_metrics_path = config.getoption(_TRACK_METRICS_PATH)
+    track_metrics_path = config.getoption("track_metrics_report")
     if (
         track_metrics_path
         # Don't register on xdist worker nodes
@@ -55,13 +51,13 @@ def pytest_configure(config):
     ):
         config.pluginmanager.register(
             TrackMetricsReporter(path=track_metrics_path),
-            name=_TRACK_METRICS_NAME,
+            name=_TRACK_METRICS_PLUGIN_NAME,
         )
 
 
 def pytest_unconfigure(config):
-    if config.pluginmanager.hasplugin(_TRACK_METRICS_NAME):
-        config.pluginmanager.unregister(name=_TRACK_METRICS_NAME)
+    if config.pluginmanager.hasplugin(_TRACK_METRICS_PLUGIN_NAME):
+        config.pluginmanager.unregister(name=_TRACK_METRICS_PLUGIN_NAME)
 
 
 class TrackMetricsReporter:
@@ -122,7 +118,7 @@ def track_metric(
     """
 
     reporter: Union[TrackMetricsReporter, None] = pytestconfig.pluginmanager.get_plugin(
-        _TRACK_METRICS_NAME
+        _TRACK_METRICS_PLUGIN_NAME
     )
 
     if reporter:
