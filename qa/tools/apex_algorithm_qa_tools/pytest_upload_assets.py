@@ -79,20 +79,6 @@ def pytest_configure(config: pytest.Config):
         )
 
 
-def pytest_report_header(config):
-    # TODO Move inside S3UploadPlugin
-    plugin: S3UploadPlugin | None = config.pluginmanager.get_plugin(
-        _UPLOAD_ASSETS_PLUGIN_NAME
-    )
-    if plugin:
-        return f"Plugin `upload_assets` is active, with upload to {plugin.bucket!r}"
-
-
-def pytest_unconfigure(config):
-    if config.pluginmanager.hasplugin(_UPLOAD_ASSETS_PLUGIN_NAME):
-        config.pluginmanager.unregister(name=_UPLOAD_ASSETS_PLUGIN_NAME)
-
-
 class S3UploadPlugin:
     def __init__(self, *, run_id: str | None = None, s3_client, bucket: str) -> None:
         self.run_id = run_id or uuid.uuid4().hex
@@ -138,6 +124,9 @@ class S3UploadPlugin:
             )
             assets[name] = url
             self.upload_stats["uploaded"] += 1
+
+    def pytest_report_header(self):
+        return f"Plugin `upload_assets` is active, with upload to {self.bucket!r}"
 
     def pytest_terminal_summary(self, terminalreporter):
         terminalreporter.write_sep("-", f"`upload_assets` stats: {self.upload_stats}")

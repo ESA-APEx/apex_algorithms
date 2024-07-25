@@ -55,19 +55,6 @@ def pytest_configure(config):
         )
 
 
-def pytest_report_header(config):
-    plugin: TrackMetricsReporter | None = config.pluginmanager.get_plugin(
-        _TRACK_METRICS_PLUGIN_NAME
-    )
-    if plugin:
-        return f"Plugin `track_metrics` is active, reporting to {plugin.path}"
-
-
-def pytest_unconfigure(config):
-    if config.pluginmanager.hasplugin(_TRACK_METRICS_PLUGIN_NAME):
-        config.pluginmanager.unregister(name=_TRACK_METRICS_PLUGIN_NAME)
-
-
 class TrackMetricsReporter:
     def __init__(
         self, path: Union[str, Path], user_properties_key: str = "track_metrics"
@@ -94,6 +81,9 @@ class TrackMetricsReporter:
     def pytest_sessionfinish(self, session):
         with self.path.open("w", encoding="utf8") as f:
             json.dump(self.metrics, f, indent=2)
+
+    def pytest_report_header(self):
+        return f"Plugin `track_metrics` is active, reporting to {self.path}"
 
     def pytest_terminal_summary(self, terminalreporter):
         terminalreporter.write_sep("-", f"Generated track_metrics report: {self.path}")

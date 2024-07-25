@@ -25,11 +25,17 @@ def test_track_metric_basics(pytester: pytest.Pytester, tmp_path):
     )
 
     metrics_path = tmp_path / "metrics.json"
-    result = pytester.runpytest(f"--track-metrics-report={metrics_path}")
-    result.assert_outcomes(passed=1, failed=1)
+    run_result = pytester.runpytest(
+        f"--track-metrics-report={metrics_path}",
+    )
+    run_result.stdout.re_match_lines(
+        [r"Plugin `track_metrics` is active, reporting to"]
+    )
+
+    run_result.assert_outcomes(passed=1, failed=1)
 
     assert metrics_path.exists()
-    result.stdout.re_match_lines([f".*Generated.*{re.escape(str(metrics_path))}.*"])
+    run_result.stdout.re_match_lines([f".*Generated.*{re.escape(str(metrics_path))}.*"])
 
     with metrics_path.open("r", encoding="utf8") as f:
         metrics = json.load(f)
