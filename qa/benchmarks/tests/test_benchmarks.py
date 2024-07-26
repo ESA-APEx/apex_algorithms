@@ -19,7 +19,11 @@ from openeo.testing.results import assert_job_results_allclose
     ],
 )
 def test_run_benchmark(
-    scenario: BenchmarkScenario, connection_factory, tmp_path: Path, track_metric
+    scenario: BenchmarkScenario,
+    connection_factory,
+    tmp_path: Path,
+    track_metric,
+    upload_assets_on_fail,
 ):
     connection: openeo.Connection = connection_factory(url=scenario.backend)
 
@@ -39,8 +43,12 @@ def test_run_benchmark(
 
     # Download actual results
     actual_dir = tmp_path / "actual"
-    job.get_results().download_files(target=actual_dir, include_stac_metadata=True)
-    # TODO: upload actual results to somewhere?
+    paths = job.get_results().download_files(
+        target=actual_dir, include_stac_metadata=True
+    )
+
+    # Upload assets on failure
+    upload_assets_on_fail(*paths)
 
     # Compare actual results with reference data
     reference_dir = download_reference_data(

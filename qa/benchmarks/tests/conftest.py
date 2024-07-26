@@ -12,6 +12,7 @@ _log = logging.getLogger(__name__)
 
 pytest_plugins = [
     "apex_algorithm_qa_tools.pytest_track_metrics",
+    "apex_algorithm_qa_tools.pytest_upload_assets",
 ]
 
 
@@ -24,21 +25,48 @@ def pytest_addoption(parser):
         type=int,
         help="Only run random selected subset benchmarks.",
     )
+    parser.addoption(
+        "--dummy",
+        action="store_true",
+        help="Toggle to only run dummy benchmarks/tests (instead of skipping them)",
+    )
 
 
+def pytest_ignore_collect(collection_path, config):
+    """
+    Pytest hook to ignore certain directories/files during test collection.
+    """
+    # Note: there as some subtleties about the return values of this hook,
+    # which makes the logic slightly more complex than a naive approach would suggest:
+    # - `True` means to ignore the path,
+    # - `False` means to forcefully include it regardless of other plugins,
+    # - `None` means to keep it for now, but allow other plugins to still ignore.
+    dummy_mode = bool(config.getoption("--dummy"))
+    is_dummy_path = bool("dummy" in collection_path.name)
+    if dummy_mode and not is_dummy_path:
+        return True
+    elif not dummy_mode and is_dummy_path:
+        return True
+    else:
+        return None
+
+
+@pytest.hookimpl(trylast=True)
 def pytest_collection_modifyitems(session, config, items):
     """
-    Pytest plugin to select a random subset of benchmarks to run.
-
-    based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
+    Pytest hook to filter/reorder collected test items.
     """
+    # Optionally, select a random subset of benchmarks to run.
+    # based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
+    # Note that with current pytest versions the collection/summary stats might be messed up,
+    # see https://github.com/pytest-dev/pytest/issues/12663
     subset_size = config.getoption("--random-subset")
-
     if subset_size >= 0:
         _log.warning(
             f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
         )
-        items[:] = random.sample(items, k=subset_size)
+        if subset_size < len(items):
+            items[:] = random.sample(items, k=subset_size)
 
 
 def _get_client_credentials_env_var(url: str) -> str:

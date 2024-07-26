@@ -31,37 +31,28 @@ from typing import Any, Callable, List, Tuple, Union
 
 import pytest
 
-_TRACK_METRICS_PATH = "track_metrics_path"
-_TRACK_METRICS_NAME = "track_metrics"
+_TRACK_METRICS_PLUGIN_NAME = "track_metrics"
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: pytest.Parser):
     parser.addoption(
         "--track-metrics-report",
         metavar="PATH",
-        action="store",
-        dest=_TRACK_METRICS_PATH,
-        default=None,
         help="Path to JSON file to store test/benchmark metrics.",
     )
 
 
 def pytest_configure(config):
-    track_metrics_path = config.getoption(_TRACK_METRICS_PATH)
-    if (
-        track_metrics_path
-        # Don't register on xdist worker nodes
-        and not hasattr(config, "workerinput")
-    ):
+    if hasattr(config, "workerinput"):
+        warnings.warn("`track_metrics` plugin is not supported on xdist worker nodes.")
+        return
+
+    track_metrics_path = config.getoption("track_metrics_report")
+    if track_metrics_path:
         config.pluginmanager.register(
             TrackMetricsReporter(path=track_metrics_path),
-            name=_TRACK_METRICS_NAME,
+            name=_TRACK_METRICS_PLUGIN_NAME,
         )
-
-
-def pytest_unconfigure(config):
-    if config.pluginmanager.hasplugin(_TRACK_METRICS_NAME):
-        config.pluginmanager.unregister(name=_TRACK_METRICS_NAME)
 
 
 class TrackMetricsReporter:
@@ -90,6 +81,9 @@ class TrackMetricsReporter:
     def pytest_sessionfinish(self, session):
         with self.path.open("w", encoding="utf8") as f:
             json.dump(self.metrics, f, indent=2)
+
+    def pytest_report_header(self):
+        return f"Plugin `track_metrics` is active, reporting to {self.path}"
 
     def pytest_terminal_summary(self, terminalreporter):
         terminalreporter.write_sep("-", f"Generated track_metrics report: {self.path}")
@@ -121,8 +115,8 @@ def track_metric(
     Returns a callable that expects a metric name and value
     """
 
-    reporter: Union[TrackMetricsReporter, None] = pytestconfig.pluginmanager.get_plugin(
-        _TRACK_METRICS_NAME
+    reporter: TrackMetricsReporter | None = pytestconfig.pluginmanager.get_plugin(
+        _TRACK_METRICS_PLUGIN_NAME
     )
 
     if reporter:
@@ -130,9 +124,7 @@ def track_metric(
         def append(name: str, value: Any):
             reporter.get_metrics(request.node.user_properties).append((name, value))
     else:
-        warnings.warn(
-            "The `track_metric` fixture is requested, but no output file is defined (e.g. with `--metrics-tracker-report=path/to/metrics.json`."
-        )
+        warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 
         def append(name: str, value: Any):
             pass
