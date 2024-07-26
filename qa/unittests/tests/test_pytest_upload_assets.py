@@ -8,10 +8,12 @@ import pytest
 @pytest.fixture(scope="module")
 def moto_server() -> str:
     """Fixture to run a mocked AWS server for testing."""
-    server = moto.server.ThreadedMotoServer()
+    # Note: pass `port=0` to get a random free port.
+    # TODO avoid the private `_server` attribute https://github.com/getmoto/moto/issues/7894
+    server = moto.server.ThreadedMotoServer(port=0)
     server.start()
-    # TODO: avoid hardcoded port (5000)
-    yield "http://localhost:5000"
+    host, port = server._server.server_address
+    yield f"http://{host}:{port}"
     server.stop()
 
 
