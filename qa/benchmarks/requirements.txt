@@ -1,7 +1,5 @@
-# TODO: get rid of artifactory extra index url once openeo 0.31.0 is released
---extra-index-url https://artifactory.vgt.vito.be/api/pypi/python-openeo/simple
 apex-algorithm-qa-tools
-openeo>=0.31.0.a2.dev
+openeo>=0.31.0
 pytest>=8.2.0
 requests>=2.32.0
 xarray>=2024.6.0
