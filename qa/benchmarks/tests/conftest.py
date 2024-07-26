@@ -51,19 +51,22 @@ def pytest_ignore_collect(collection_path, config):
         return None
 
 
+@pytest.hookimpl(trylast=True)
 def pytest_collection_modifyitems(session, config, items):
     """
     Pytest hook to filter/reorder collected test items.
     """
-
     # Optionally, select a random subset of benchmarks to run.
     # based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
+    # Note that with current pytest versions the collection/summary stats might be messed up,
+    # see https://github.com/pytest-dev/pytest/issues/12663
     subset_size = config.getoption("--random-subset")
     if subset_size >= 0:
         _log.warning(
             f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
         )
-        items[:] = random.sample(items, k=subset_size)
+        if subset_size < len(items):
+            items[:] = random.sample(items, k=subset_size)
 
 
 def _get_client_credentials_env_var(url: str) -> str:
