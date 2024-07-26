@@ -62,7 +62,7 @@ def pytest_collection_modifyitems(session, config, items):
     # see https://github.com/pytest-dev/pytest/issues/12663
     subset_size = config.getoption("--random-subset")
     if subset_size >= 0:
-        _log.warning(
+        _log.info(
             f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
         )
         if subset_size < len(items):

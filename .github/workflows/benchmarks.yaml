@@ -18,7 +18,7 @@ jobs:
         run: |
           python -m pip install qa/tools
           python -m pip install -r qa/benchmarks/requirements.txt
-      - name: Test with pytest
+      - name: Run benchmark pytest suite
         run: |
           cd qa/benchmarks
           mkdir report
