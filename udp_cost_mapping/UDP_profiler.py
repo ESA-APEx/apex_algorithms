@@ -1,26 +1,23 @@
 import pandas as pd
 import itertools
 import json
+import matplotlib.pyplot as plt
+from matplotlib.colors import BoundaryNorm
 
-import time
-import logging
+import seaborn as sns
+import numpy as np
+
 
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Union, Optional, Callable
-from pathlib import Path
+from typing import Any, Dict, List, Union
 
-from openeo import BatchJob
-from openeo.rest import OpenEoApiError
-
-
-_log = logging.getLogger(__name__)
 
 #constants
 BASE_SPATIAL_START = {"west": 664000.0, "south": 5611120.0, "crs": "EPSG:32631", "srs": "EPSG:32631"}
 BASE_TEMPORAL_START = '2020-01-01'
 
 #class to prepare the dataframe and output csv for the JobManager
-class UDPProfilerJobPreparer:
+class JobPreparer:
     def __init__(self, process_graph_path: str):
         self.process_graph_path = process_graph_path
         self.process_graph = self.load_process_graph(process_graph_path)
@@ -58,9 +55,7 @@ class UDPProfilerJobPreparer:
             combinations = itertools.product(spatial_range, temporal_range)
             for size, months in combinations:
                 jobs.append({
-                    "spatial_range": size,
                     "spatial_extent": self.create_spatial_extent(size=size),
-                    "temporal_range": months,
                     "temporal_extent": self.calculate_temporal_extent(months=months),
                     "process_graph_path": self.process_graph_path,
                     "process_graph_id": self.process_graph["id"],
@@ -85,5 +80,102 @@ class UDPProfilerJobPreparer:
         if not isinstance(item, (list, tuple)):
             return [item]
         return item
+    
 
+class DataProcessor:
+    @staticmethod
+    def get_job_cost_info(connection, job_id):
+        try:
+            job = connection.job(job_id).describe_job()
+            return float(job["costs"])
+        except:
+            return None
+    
+    def update_job_costs(self, df, connection):
+        df['job_cost (credits)'] = df.apply(lambda row: self.get_job_cost_info(connection, row['id']), axis=1)
+        return df
+
+    def add_units_to_column_headers(self, df):
+        df = df.rename(columns={
+            'input_pixel': 'input_pixel (mega-pixel)',
+            'cpu': 'cpu (cpu-seconds)',
+            'memory': 'memory (mb-seconds)',
+            'duration': 'duration (seconds)',
+            'max_executor_memory': 'max_executor_memory (gb)',
+            'network_received': 'network_received (b)'
+        })
+        return df
+
+    @staticmethod
+    def remove_unit(value, unit):
+        """Remove unit from the value and convert to float."""
+        if pd.isna(value):
+            return None
+        try:
+            return float(str(value).replace(unit, '').strip())
+        except ValueError:
+            return None
+
+    def clean_units(self, df):
+        df['input_pixel (mega-pixel)'] = df['input_pixel (mega-pixel)'].apply(lambda x: self.remove_unit(x, ' mega-pixel'))
+        df['cpu (cpu-seconds)'] = df['cpu (cpu-seconds)'].apply(lambda x: self.remove_unit(x, ' cpu-seconds'))
+        df['memory (mb-seconds)'] = df['memory (mb-seconds)'].apply(lambda x: self.remove_unit(x, ' mb-seconds'))
+        df['duration (seconds)'] = df['duration (seconds)'].apply(lambda x: self.remove_unit(x, ' seconds'))
+        df['max_executor_memory (gb)'] = df['max_executor_memory (gb)'].apply(lambda x: self.remove_unit(x, ' gb'))
+        df['network_received (b)'] = df['network_received (b)'].apply(lambda x: self.remove_unit(x, ' b'))
+        return df
+
+class Plotter:
+    def plot_heatmap(self, df, output_modality):
+        df_filtered = df[df[output_modality].notna() & (df[output_modality] != '')]
+
+        unique_combinations = df_filtered[['spatial_range', 'temporal_range']].drop_duplicates()
+        average_modality = df_filtered.groupby(['spatial_range', 'temporal_range'])[output_modality].mean().reset_index()
+
+        spatial_range = sorted(average_modality['spatial_range'].unique())
+        temporal_range = sorted(average_modality['temporal_range'].unique())
+
+        job_cost_grid = np.full((len(spatial_range), len(temporal_range)), np.nan)
+
+        for _, row in average_modality.iterrows():
+            i = spatial_range.index(row['spatial_range'])
+            j = temporal_range.index(row['temporal_range'])
+            job_cost_grid[i, j] = int(row[output_modality])
+
+        # Define the colormap and normalization
+        cmap = plt.get_cmap('rainbow', len(np.unique(average_modality[output_modality])))
+        norm = BoundaryNorm(boundaries=np.arange(int(average_modality[output_modality].min()), 
+                                                 int(average_modality[output_modality].max()) + 2), 
+                            ncolors=cmap.N, clip=True)
+
+        # Plotting the heatmap using seaborn
+        plt.figure(figsize=(12, 8))
+        ax = sns.heatmap(job_cost_grid, cmap=cmap, norm=norm, annot=True, fmt='.1f', 
+                         xticklabels=temporal_range, yticklabels=spatial_range, 
+                         cbar_kws={'label': f'Average {output_modality}'})
+
+        # Overlay scatter points
+        plt.scatter(average_modality['temporal_range'].map(temporal_range.index), 
+                    average_modality['spatial_range'].map(spatial_range.index), 
+                    color='white', edgecolor='black', s=100, label='Sampled Points')
+
+        plt.xlabel('Temporal Range')
+        plt.ylabel('Spatial Range')
+        plt.title('Heatmap of Temporal and Spatial Range vs. Credit Consumption')
+        plt.legend(loc='upper right')
+        plt.show()
+    
+    def plot_scatter_with_fit(self, df, output_modality):
+        df_filtered = df[df[output_modality].notna() & (df[output_modality] != '')]
+        df_filtered['input_pixel (mega-pixel)'] = df_filtered['input_pixel (mega-pixel)'].astype(float)
+
+        plt.figure(figsize=(10, 6))
+        sns.regplot(x='input_pixel (mega-pixel)', y=output_modality, data=df_filtered, scatter_kws={'s': 50}, line_kws={'color': 'red'})
+
+        plt.xlabel('Input Pixel (Mega-Pixel)')
+        plt.ylabel(f'{output_modality}')
+        plt.title('Scatter Plot with Regression Line: Input Pixel vs Job Cost')
+
+        plt.grid(True)
+        plt.show()
 
