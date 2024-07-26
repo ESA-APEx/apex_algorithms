@@ -129,10 +129,9 @@ class Plotter:
     def plot_heatmap(self, df, output_modality):
         df_filtered = df[df[output_modality].notna() & (df[output_modality] != '')]
 
-        unique_combinations = df_filtered[['spatial_range', 'temporal_range']].drop_duplicates()
         average_modality = df_filtered.groupby(['spatial_range', 'temporal_range'])[output_modality].mean().reset_index()
 
-        spatial_range = sorted(average_modality['spatial_range'].unique())
+        spatial_range = sorted(average_modality['spatial_range'].unique())[::-1]
         temporal_range = sorted(average_modality['temporal_range'].unique())
 
         job_cost_grid = np.full((len(spatial_range), len(temporal_range)), np.nan)
@@ -153,11 +152,6 @@ class Plotter:
         ax = sns.heatmap(job_cost_grid, cmap=cmap, norm=norm, annot=True, fmt='.1f', 
                          xticklabels=temporal_range, yticklabels=spatial_range, 
                          cbar_kws={'label': f'Average {output_modality}'})
-
-        # Overlay scatter points
-        plt.scatter(average_modality['temporal_range'].map(temporal_range.index), 
-                    average_modality['spatial_range'].map(spatial_range.index), 
-                    color='white', edgecolor='black', s=100, label='Sampled Points')
 
         plt.xlabel('Temporal Range')
         plt.ylabel('Spatial Range')
