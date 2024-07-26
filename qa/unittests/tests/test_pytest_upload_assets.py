@@ -48,10 +48,10 @@ def test_basic_upload_on_fail(
     )
     pytester.makepyfile(
         test_file_maker="""
-            def test_fail_and_upload(upload_assets, tmp_path):
+            def test_fail_and_upload(upload_assets_on_fail, tmp_path):
                 path = tmp_path / "hello.txt"
                 path.write_text("Hello world.")
-                upload_assets(path)
+                upload_assets_on_fail(path)
                 assert 3 == 5
         """
     )
@@ -93,10 +93,10 @@ def test_nop_on_success(pytester: pytest.Pytester, moto_server, s3_client, s3_bu
     )
     pytester.makepyfile(
         test_file_maker="""
-            def test_success(upload_assets, tmp_path):
+            def test_success(upload_assets_on_fail, tmp_path):
                 path = tmp_path / "hello.txt"
                 path.write_text("Hello world.")
-                upload_assets(path)
+                upload_assets_on_fail(path)
                 assert 3 == 3
         """
     )

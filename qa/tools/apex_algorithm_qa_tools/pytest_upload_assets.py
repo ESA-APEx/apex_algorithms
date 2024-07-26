@@ -11,13 +11,14 @@ Usage:
         "apex_algorithm_qa_tools.pytest_upload_assets",
     ]
 
--  Use the `upload_assets` fixture to register files for upload:
+-  Use the `upload_assets_on_fail` fixture to register files for upload
+   when the test fails:
 
     ```python
-    def test_dummy(upload_assets, tmp_path):
+    def test_dummy(upload_assets_on_fail, tmp_path):
         path = tmp_path / "hello.txt"
         path.write_text("Hello world.")
-        upload_assets(path)
+        upload_assets_on_fail(path)
     ```
 
 - Run the tests with:
@@ -156,7 +157,7 @@ class S3UploadPlugin:
 
 
 @pytest.fixture
-def upload_assets(pytestconfig: pytest.Config, tmp_path) -> Callable:
+def upload_assets_on_fail(pytestconfig: pytest.Config, tmp_path) -> Callable:
     """
     Fixture to register a file (under `tmp_path`) for S3 upload
     after the test failed. The fixture is a function that

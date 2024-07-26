@@ -23,7 +23,7 @@ def test_run_benchmark(
     connection_factory,
     tmp_path: Path,
     track_metric,
-    upload_assets,
+    upload_assets_on_fail,
 ):
     connection: openeo.Connection = connection_factory(url=scenario.backend)
 
@@ -48,7 +48,7 @@ def test_run_benchmark(
     )
 
     # Upload assets on failure
-    upload_assets(*paths)
+    upload_assets_on_fail(*paths)
 
     # Compare actual results with reference data
     reference_dir = download_reference_data(
