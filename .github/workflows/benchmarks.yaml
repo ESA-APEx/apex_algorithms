@@ -25,9 +25,8 @@ jobs:
           mkdir tmp_path_root
           pytest \
             -vv \
-            --random-subset=1 \
-            -k max_ndvi_fail_intentionally \
             --log-cli-level=INFO \
+            --random-subset=1 \
             --html report/report.html --self-contained-html \
             --track-metrics-report=report/metrics.json \
             --basetemp=tmp_path_root \
