@@ -1,2 +1,3 @@
 # apex_algorithms
-Hosted APEx algorithms
+
+APEx Algorithm Propagation Service
