@@ -170,3 +170,4 @@ pyrightconfig.json
 
 tmp*
 temp*
+.envrc
