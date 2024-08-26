@@ -26,7 +26,7 @@ def test_track_metric_basics(pytester: pytest.Pytester, tmp_path):
 
     metrics_path = tmp_path / "metrics.json"
     run_result = pytester.runpytest(
-        f"--track-metrics-report={metrics_path}",
+        f"--track-metrics-json={metrics_path}",
     )
     run_result.stdout.re_match_lines(
         [r"Plugin `track_metrics` is active, reporting to"]

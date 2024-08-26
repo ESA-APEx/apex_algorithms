@@ -20,7 +20,7 @@ Usage:
         track_metric("x squared", x*x)
     ...
 
--   Run the tests with `--track-metrics-report=path/to/metrics.json`
+-   Run the tests with `--track-metrics-json=path/to/metrics.json`
     to store metrics in a JSON file
 """
 
@@ -36,7 +36,7 @@ _TRACK_METRICS_PLUGIN_NAME = "track_metrics"
 
 def pytest_addoption(parser: pytest.Parser):
     parser.addoption(
-        "--track-metrics-report",
+        "--track-metrics-json",
         metavar="PATH",
         help="Path to JSON file to store test/benchmark metrics.",
     )
@@ -47,10 +47,10 @@ def pytest_configure(config):
         warnings.warn("`track_metrics` plugin is not supported on xdist worker nodes.")
         return
 
-    track_metrics_path = config.getoption("track_metrics_report")
-    if track_metrics_path:
+    track_metrics_json = config.getoption("track_metrics_json")
+    if track_metrics_json:
         config.pluginmanager.register(
-            TrackMetricsReporter(path=track_metrics_path),
+            TrackMetricsReporter(path=track_metrics_json),
             name=_TRACK_METRICS_PLUGIN_NAME,
         )
 
@@ -59,7 +59,7 @@ class TrackMetricsReporter:
     def __init__(
         self, path: Union[str, Path], user_properties_key: str = "track_metrics"
     ):
-        self.path = Path(path)
+        self._json_path = Path(path)
         self.metrics: List[dict] = []
         self.user_properties_key = user_properties_key
 
@@ -79,14 +79,16 @@ class TrackMetricsReporter:
             )
 
     def pytest_sessionfinish(self, session):
-        with self.path.open("w", encoding="utf8") as f:
+        with self._json_path.open("w", encoding="utf8") as f:
             json.dump(self.metrics, f, indent=2)
 
     def pytest_report_header(self):
-        return f"Plugin `track_metrics` is active, reporting to {self.path}"
+        return f"Plugin `track_metrics` is active, reporting to {self._json_path}"
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", f"Generated track_metrics report: {self.path}")
+        terminalreporter.write_sep(
+            "-", f"Generated track_metrics report: {self._json_path}"
+        )
 
     def get_metrics(
         self, user_properties: List[Tuple[str, Any]]
