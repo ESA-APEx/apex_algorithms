@@ -29,6 +29,8 @@ import warnings
 from pathlib import Path
 from typing import Any, Callable, List, Tuple, Union
 
+import pyarrow
+import pyarrow.parquet
 import pytest
 
 _TRACK_METRICS_PLUGIN_NAME = "track_metrics"
@@ -40,6 +42,12 @@ def pytest_addoption(parser: pytest.Parser):
         metavar="PATH",
         help="Path to JSON file to store test/benchmark metrics.",
     )
+    parser.addoption(
+        "--track-metrics-parquet",
+        metavar="PATH",
+        # TODO: allow "s3://" URLs too?
+        help="Path to JSON file to store test/benchmark metrics.",
+    )
 
 
 def pytest_configure(config):
@@ -48,24 +56,31 @@ def pytest_configure(config):
         return
 
     track_metrics_json = config.getoption("track_metrics_json")
-    if track_metrics_json:
+    track_metrics_parquet = config.getoption("track_metrics_parquet")
+    if track_metrics_json or track_metrics_parquet:
         config.pluginmanager.register(
-            TrackMetricsReporter(path=track_metrics_json),
+            TrackMetricsReporter(
+                json_path=track_metrics_json, parquet_path=track_metrics_parquet
+            ),
             name=_TRACK_METRICS_PLUGIN_NAME,
         )
 
 
 class TrackMetricsReporter:
     def __init__(
-        self, path: Union[str, Path], user_properties_key: str = "track_metrics"
+        self,
+        json_path: Union[None, str, Path] = None,
+        parquet_path: Union[None, str, Path] = None,
+        user_properties_key: str = "track_metrics",
     ):
-        self._json_path = Path(path)
-        self.metrics: List[dict] = []
-        self.user_properties_key = user_properties_key
+        self._json_path = Path(json_path) if json_path else None
+        self._parquet_path = parquet_path
+        self._suite_metrics: List[dict] = []
+        self._user_properties_key = user_properties_key
 
     def pytest_runtest_logreport(self, report: pytest.TestReport):
         if report.when == "call":
-            self.metrics.append(
+            self._suite_metrics.append(
                 {
                     "nodeid": report.nodeid,
                     "report": {
@@ -79,16 +94,56 @@ class TrackMetricsReporter:
             )
 
     def pytest_sessionfinish(self, session):
-        with self._json_path.open("w", encoding="utf8") as f:
-            json.dump(self.metrics, f, indent=2)
+        if self._json_path:
+            self._write_json_report(self._json_path)
+
+        if self._parquet_path:
+            self._write_parquet_report(self._parquet_path)
+
+    def _write_json_report(self, path: Union[str, Path]):
+        with Path(path).open("w", encoding="utf8") as f:
+            json.dump(self._suite_metrics, f, indent=2)
+
+    def _write_parquet_report(self, path: Union[str, Path]):
+        # Compile all (free-form) metrics into a more rigid table
+        columns = set()
+        suite_metrics = []
+        for m in self._suite_metrics:
+            node_metrics = {
+                "nodeid": m["nodeid"],
+                "outcome": m["report"]["outcome"],
+                "duration": m["report"]["duration"],
+                "start": m["report"]["start"],
+                "stop": m["report"]["stop"],
+                # TODO: also include runid (like in upload_assets)
+            }
+            for k, v in m["metrics"]:
+                assert k not in node_metrics, f"Duplicate metric key: {k}"
+                node_metrics[k] = v
+            columns.update(node_metrics.keys())
+            suite_metrics.append(node_metrics)
+
+        table = pyarrow.Table.from_pydict(
+            {col: [m.get(col) for m in suite_metrics] for col in columns}
+        )
+
+        # TODO: add support for partitioning (date and nodeid)
+        # TODO: support for S3 with custom credential env vars
+        pyarrow.parquet.write_table(table, self._parquet_path)
 
     def pytest_report_header(self):
-        return f"Plugin `track_metrics` is active, reporting to {self._json_path}"
+        return f"Plugin `track_metrics` is active, reporting to json={self._json_path}, parquet={self._parquet_path}"
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep(
-            "-", f"Generated track_metrics report: {self._json_path}"
-        )
+        reports = []
+        if self._json_path:
+            reports.append(str(self._json_path))
+        if self._parquet_path:
+            reports.append(str(self._parquet_path))
+        if reports:
+            terminalreporter.write_sep(
+                "-", f"Generated track_metrics report: {', '.join(reports)}"
+            )
 
     def get_metrics(
         self, user_properties: List[Tuple[str, Any]]
@@ -98,11 +153,11 @@ class TrackMetricsReporter:
         or create new one.
         """
         for name, value in user_properties:
-            if name == self.user_properties_key:
+            if name == self._user_properties_key:
                 return value
         # Not found: create it
         metrics = []
-        user_properties.append((self.user_properties_key, metrics))
+        user_properties.append((self._user_properties_key, metrics))
         return metrics
 
 
