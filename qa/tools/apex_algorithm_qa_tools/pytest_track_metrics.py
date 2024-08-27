@@ -148,9 +148,11 @@ class TrackMetricsReporter:
             node_metrics = {
                 "nodeid": m["nodeid"],
                 "outcome": m["report"]["outcome"],
+                # TODO: more explicit that this about timing of test, not just the job
                 "duration": m["report"]["duration"],
                 "start": m["report"]["start"],
                 "stop": m["report"]["stop"],
+                # TODO: add start date as iso date string
                 # TODO: also include runid (like in upload_assets)
             }
             for k, v in m["metrics"]:

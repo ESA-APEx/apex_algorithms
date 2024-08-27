@@ -30,7 +30,7 @@ jobs:
             --html report/report.html --self-contained-html \
             --track-metrics-json=report/metrics.json \
             --track-metrics-parquet-s3-bucket="APEx-benchmarks" \
-            --track-metrics-parquet-s3-key="tmp/metrics-v0.parquet" \
+            --track-metrics-parquet-s3-key="tmp/metrics-v3.parquet" \
             --basetemp=tmp_path_root \
             --upload-assets-run-id="gh-$GITHUB_RUN_ID" \
             --upload-assets-bucket="APEx-benchmarks"
