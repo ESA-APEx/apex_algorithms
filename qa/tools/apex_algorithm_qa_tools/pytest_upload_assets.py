@@ -21,11 +21,15 @@ Usage:
         upload_assets_on_fail(path)
     ```
 
-- Run the tests with:
-    - `--upload-assets-run-id=RUNID` (optional, defaults to random UUID)
-    - `--upload-assets-endpoint-url=URL`
-    - `--upload-assets-bucket=BUCKET`
-    - and env vars `UPLOAD_ASSETS_ACCESS_KEY_ID` and `UPLOAD_ASSETS_SECRET_ACCESS_KEY` set.
+- Run the tests with with desired configuration through CLI options and env vars:
+    - CLI option to set S3 bucket: `--upload-assets-bucket={BUCKET}`
+    - S3 credentials with env vars `APEX_ALGORITHMS_S3_ACCESS_KEY_ID`
+      and `APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY`
+      (Note that the classic `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+      are also supported as fallback)
+    - S3 endpoint URL with env var `APEX_ALGORITHMS_S3_ENDPOINT_URL`
+      (Note that the classic `AWS_ENDPOINT_URL` is also supported as fallback).
+    - CLI option `--upload-assets-run-id=RUNID` (optional, defaults to random UUID)
 """
 
 import collections
@@ -47,16 +51,13 @@ _UPLOAD_ASSETS_PLUGIN_NAME = "upload_assets"
 
 def pytest_addoption(parser: pytest.Parser):
     # TODO #22: option to always upload (also on success).
+    # TODO: handle run id at other level, so that it can be used transparently in track_metrics plugin too
     parser.addoption(
         "--upload-assets-run-id",
         metavar="RUNID",
         help="The run ID to use for building the S3 key.",
     )
-    parser.addoption(
-        "--upload-assets-endpoint-url",
-        metavar="URL",
-        help="The S3 endpoint URL to upload to.",
-    )
+    # TODO: include "s3" in the option name?
     parser.addoption(
         "--upload-assets-bucket",
         metavar="BUCKET",
@@ -65,15 +66,16 @@ def pytest_addoption(parser: pytest.Parser):
 
 
 def pytest_configure(config: pytest.Config):
-    run_id = config.getoption("upload_assets_run_id")
-    endpoint_url = config.getoption("upload_assets_endpoint_url")
-    bucket = config.getoption("upload_assets_bucket")
-    if endpoint_url and bucket:
+    run_id = config.getoption("--upload-assets-run-id")
+    bucket = config.getoption("--upload-assets-bucket")
+    if bucket:
         s3_client = boto3.client(
             service_name="s3",
-            aws_access_key_id=os.environ.get("UPLOAD_ASSETS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.environ.get("UPLOAD_ASSETS_SECRET_ACCESS_KEY"),
-            endpoint_url=endpoint_url,
+            aws_access_key_id=os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.environ.get(
+                "APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY"
+            ),
+            endpoint_url=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL"),
         )
         config.pluginmanager.register(
             S3UploadPlugin(run_id=run_id, s3_client=s3_client, bucket=bucket),
