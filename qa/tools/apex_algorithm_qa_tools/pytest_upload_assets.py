@@ -22,7 +22,7 @@ Usage:
     ```
 
 - Run the tests with with desired configuration through CLI options and env vars:
-    - CLI option to set S3 bucket: `--upload-assets-bucket={BUCKET}`
+    - CLI option to set S3 bucket: `--upload-assets-s3-bucket={BUCKET}`
     - S3 credentials with env vars `APEX_ALGORITHMS_S3_ACCESS_KEY_ID`
       and `APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY`
       (Note that the classic `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
@@ -57,9 +57,8 @@ def pytest_addoption(parser: pytest.Parser):
         metavar="RUNID",
         help="The run ID to use for building the S3 key.",
     )
-    # TODO: include "s3" in the option name?
     parser.addoption(
-        "--upload-assets-bucket",
+        "--upload-assets-s3-bucket",
         metavar="BUCKET",
         help="The S3 bucket to upload to.",
     )
@@ -67,7 +66,7 @@ def pytest_addoption(parser: pytest.Parser):
 
 def pytest_configure(config: pytest.Config):
     run_id = config.getoption("--upload-assets-run-id")
-    bucket = config.getoption("--upload-assets-bucket")
+    bucket = config.getoption("--upload-assets-s3-bucket")
     if bucket:
         s3_client = boto3.client(
             service_name="s3",
