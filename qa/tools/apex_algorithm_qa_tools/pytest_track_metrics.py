@@ -35,6 +35,8 @@ Usage:
         are also supported as fallback)
         - S3 endpoint URL with env var `APEX_ALGORITHMS_S3_ENDPOINT_URL`
         (Note that the classic `AWS_ENDPOINT_URL` is also supported as fallback).
+    - CLI option `--track-metrics-parquet-partitioning=PARTITIONING`
+      to define how to partition the Parquet files.
 """
 
 import dataclasses
@@ -43,9 +45,10 @@ import json
 import os
 import warnings
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Tuple, Union
 
 import pyarrow
+import pyarrow.dataset
 import pyarrow.fs
 import pyarrow.parquet
 import pytest
@@ -78,6 +81,17 @@ def pytest_addoption(parser: pytest.Parser):
         default=_S3_KEY_DEFAULT,
         help="S3 key to use for Parquet storage of metrics.",
     )
+    parser.addoption(
+        "--track-metrics-parquet-partitioning",
+        metavar="PARTITIONING",
+        default=None,
+        help="""
+            Define how to partition the Parquet files. One of:
+            - "false" to disable partitioning (will overwrite existing files).
+            - "simple" to just put everything in a single partition in append mode.
+            - "YYYYMM" to partition by year and month (in append mode).
+        """,
+    )
 
 
 def pytest_configure(config):
@@ -94,18 +108,24 @@ def pytest_configure(config):
     track_metrics_parquet_s3_key = config.getoption(
         "--track-metrics-parquet-s3-key", _S3_KEY_DEFAULT
     )
+    track_metrics_parquet_partitioning = config.getoption(
+        "--track-metrics-parquet-partitioning", None
+    )
 
     if track_metrics_json or track_metrics_parquet or track_metrics_parquet_s3_bucket:
         config.pluginmanager.register(
             TrackMetricsReporter(
                 json_path=track_metrics_json,
                 parquet_local=track_metrics_parquet,
-                parquet_s3=_ParquetS3StorageSettings(
-                    bucket=track_metrics_parquet_s3_bucket,
-                    key=track_metrics_parquet_s3_key,
-                )
-                if track_metrics_parquet_s3_bucket
-                else None,
+                parquet_s3=(
+                    _ParquetS3StorageSettings(
+                        bucket=track_metrics_parquet_s3_bucket,
+                        key=track_metrics_parquet_s3_key,
+                    )
+                    if track_metrics_parquet_s3_bucket
+                    else None
+                ),
+                parquet_partitioning=track_metrics_parquet_partitioning,
             ),
             name=_TRACK_METRICS_PLUGIN_NAME,
         )
@@ -122,12 +142,14 @@ class TrackMetricsReporter:
         self,
         json_path: Union[None, str, Path] = None,
         parquet_local: Union[None, str, Path] = None,
-        parquet_s3: Optional[_ParquetS3StorageSettings] = None,
+        parquet_s3: _ParquetS3StorageSettings | None = None,
         user_properties_key: str = "track_metrics",
+        parquet_partitioning: str | None = None,
     ):
         self._json_path = Path(json_path) if json_path else None
         self._parquet_local = Path(parquet_local) if parquet_local else None
         self._parquet_s3 = parquet_s3
+        self._parquet_partitioning = parquet_partitioning
         self._suite_metrics: List[dict] = []
         self._user_properties_key = user_properties_key
 
@@ -136,6 +158,7 @@ class TrackMetricsReporter:
             self._suite_metrics.append(
                 {
                     "nodeid": report.nodeid,
+                    # TODO: also include some kind of benchmark id (nodeid is bit verbose and might not be stable enough)
                     "report": {
                         "outcome": report.outcome,
                         "duration": report.duration,
@@ -151,10 +174,26 @@ class TrackMetricsReporter:
             self._write_json_report(self._json_path)
 
         if self._parquet_local:
-            self._write_parquet_local(self._parquet_local)
+            self._write_parquet(
+                location=self._parquet_local,
+                # Use no partitioning by default for local parquet files
+                partitioning_mode=self._parquet_partitioning or "false",
+                filesystem=None,
+            )
 
         if self._parquet_s3:
-            self._write_parquet_s3(self._parquet_s3)
+            fs = pyarrow.fs.S3FileSystem(
+                access_key=os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID"),
+                secret_key=os.environ.get("APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY"),
+                endpoint_override=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL"),
+            )
+            root_path = f"{self._parquet_s3.bucket}/{self._parquet_s3.key}"
+            self._write_parquet(
+                location=root_path,
+                # Use simple partitioning by default for S3 parquet files
+                partitioning_mode=self._parquet_partitioning or "simple",
+                filesystem=fs,
+            )
 
     def _write_json_report(self, path: Union[str, Path]):
         with Path(path).open("w", encoding="utf8") as f:
@@ -171,6 +210,7 @@ class TrackMetricsReporter:
             )
             node_metrics = {
                 "test:nodeid": m["nodeid"],
+                # TODO: include benchmark id
                 "test:outcome": m["report"]["outcome"],
                 "test:duration": m["report"]["duration"],
                 "test:start": test_start,
@@ -193,24 +233,46 @@ class TrackMetricsReporter:
         )
         return table
 
-    def _write_parquet_local(self, parquet_local: Path):
+    def _write_parquet(
+        self,
+        location: str,
+        partitioning_mode: str | bool,
+        filesystem: pyarrow.fs.FileSystem | None = None,
+    ):
         table = self._to_pyarrow_table()
-        pyarrow.parquet.write_table(table=table, where=parquet_local)
 
-    def _write_parquet_s3(self, parquet_s3: _ParquetS3StorageSettings):
-        table = self._to_pyarrow_table()
-        fs = pyarrow.fs.S3FileSystem(
-            access_key=os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID"),
-            secret_key=os.environ.get("APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY"),
-            endpoint_override=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL"),
-        )
-        root_path = f"{parquet_s3.bucket}/{parquet_s3.key}"
-        pyarrow.parquet.write_to_dataset(
-            table=table,
-            root_path=root_path,
-            filesystem=fs,
-            # TODO: add support for partitioning (date and nodeid)
-        )
+        if partitioning_mode in {"false", False}:
+            pyarrow.parquet.write_table(
+                table=table, where=location, filesystem=filesystem
+            )
+        else:
+            if partitioning_mode == "simple":
+                # Simple partitioning: just one partition, but still support append mode
+                fields = []
+            elif partitioning_mode == "YYYYMM":
+                fields = [("test:start:YYYYMM", pyarrow.string())]
+            else:
+                # TODO: more partitioning options?
+                raise ValueError(
+                    f"Invalid parquet partitioning mode: {partitioning_mode}"
+                )
+
+            # Partitioning flavor `None`` means DirectoryPartitioning (unfortunately, there is currently
+            # no way to specify this more explicitly https://github.com/apache/arrow/issues/43863)
+            # TODO: support hive partitioning too, e.g. through prefix `hive:` in --track-metrics-parquet-partitioning
+            partitioning_flavor = None
+            write_partitioning = pyarrow.dataset.partitioning(
+                schema=pyarrow.schema(fields=fields), flavor=partitioning_flavor
+            )
+            pyarrow.parquet.write_to_dataset(
+                table=table,
+                root_path=location,
+                partitioning=write_partitioning,
+                filesystem=filesystem,
+                # "overwrite_or_ignore" enables append mode
+                existing_data_behavior="overwrite_or_ignore",
+                # TODO use run id in `basename_template` (instead as uuid)?
+            )
 
     def pytest_report_header(self):
         return f"Plugin `track_metrics` is active, reporting to json={self._json_path}, parquet_local={self._parquet_local}, parquet_s3={self._parquet_s3}"
