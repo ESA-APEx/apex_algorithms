@@ -15,10 +15,9 @@ pytest.register_assert_rewrite("apex_algorithm_qa_tools.scenarios")
 def moto_server() -> str:
     """Fixture to run a mocked AWS server for testing."""
     # Note: pass `port=0` to get a random free port.
-    # TODO avoid the private `_server` attribute https://github.com/getmoto/moto/issues/7894
     server = moto.server.ThreadedMotoServer(port=0)
     server.start()
-    host, port = server._server.server_address
+    host, port = server.get_host_and_port()
     yield f"http://{host}:{port}"
     server.stop()
 
