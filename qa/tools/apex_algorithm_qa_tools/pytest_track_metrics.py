@@ -38,6 +38,7 @@ Usage:
 """
 
 import dataclasses
+import datetime
 import json
 import os
 import warnings
@@ -164,14 +165,21 @@ class TrackMetricsReporter:
         columns = set()
         suite_metrics = []
         for m in self._suite_metrics:
+            test_start = m["report"]["start"]
+            test_start_datetime = datetime.datetime.fromtimestamp(
+                test_start, tz=datetime.timezone.utc
+            )
             node_metrics = {
-                "nodeid": m["nodeid"],
-                "outcome": m["report"]["outcome"],
-                # TODO: more explicit that this about timing of test, not just the job
-                "duration": m["report"]["duration"],
-                "start": m["report"]["start"],
-                "stop": m["report"]["stop"],
-                # TODO: add start date as iso date string
+                "test:nodeid": m["nodeid"],
+                "test:outcome": m["report"]["outcome"],
+                "test:duration": m["report"]["duration"],
+                "test:start": test_start,
+                "test:start:datetime": test_start_datetime.strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"
+                ),
+                # Note: this YYYYMM format is intended for partitioning reasons.
+                "test:start:YYYYMM": test_start_datetime.strftime("%Y-%m"),
+                "test:stop": m["report"]["stop"],
                 # TODO: also include runid (like in upload_assets)
             }
             for k, v in m["metrics"]:

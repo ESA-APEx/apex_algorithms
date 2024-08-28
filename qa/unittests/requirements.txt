@@ -1,3 +1,4 @@
 apex-algorithm-qa-tools
 pytest>=8.2.0
 moto[s3, server]
+dirty-equals>=0.8.0

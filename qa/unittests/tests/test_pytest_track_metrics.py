@@ -2,6 +2,7 @@ import json
 import re
 import time
 
+import dirty_equals
 import pyarrow.parquet
 import pytest
 
@@ -108,26 +109,36 @@ def test_track_metric_parquet_local(pytester: pytest.Pytester, tmp_path):
 
     df = table.to_pandas()
     assert set(df.columns) == {
-        "nodeid",
-        "outcome",
-        "duration",
-        "start",
-        "stop",
+        "test:nodeid",
+        "test:outcome",
+        "test:duration",
+        "test:start",
+        "test:start:YYYYMM",
+        "test:start:datetime",
+        "test:stop",
         "x squared",
     }
-    df = df.set_index("nodeid")
+    df = df.set_index("test:nodeid")
     assert df.loc["test_addition.py::test_3plus[5]"].to_dict() == {
-        "outcome": "passed",
-        "duration": pytest.approx(0, abs=1),
-        "start": pytest.approx(start_time, abs=1),
-        "stop": pytest.approx(start_time, abs=1),
+        "test:outcome": "passed",
+        "test:duration": pytest.approx(0, abs=1),
+        "test:start": pytest.approx(start_time, abs=1),
+        "test:start:YYYYMM": dirty_equals.IsStr(regex=r"\d{4}-\d{2}"),
+        "test:start:datetime": dirty_equals.IsStr(
+            regex=r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+        ),
+        "test:stop": pytest.approx(start_time, abs=1),
         "x squared": 25,
     }
     assert df.loc["test_addition.py::test_3plus[6]"].to_dict() == {
-        "outcome": "failed",
-        "duration": pytest.approx(0, abs=1),
-        "start": pytest.approx(start_time, abs=1),
-        "stop": pytest.approx(start_time, abs=1),
+        "test:outcome": "failed",
+        "test:duration": pytest.approx(0, abs=1),
+        "test:start": pytest.approx(start_time, abs=1),
+        "test:stop": pytest.approx(start_time, abs=1),
+        "test:start:YYYYMM": dirty_equals.IsStr(regex=r"\d{4}-\d{2}"),
+        "test:start:datetime": dirty_equals.IsStr(
+            regex=r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+        ),
         "x squared": 36,
     }
 
@@ -183,25 +194,35 @@ def test_track_metric_parquet_s3(
 
     df = table.to_pandas()
     assert set(df.columns) == {
-        "nodeid",
-        "outcome",
-        "duration",
-        "start",
-        "stop",
+        "test:nodeid",
+        "test:outcome",
+        "test:duration",
+        "test:start",
+        "test:start:YYYYMM",
+        "test:start:datetime",
+        "test:stop",
         "x squared",
     }
-    df = df.set_index("nodeid")
+    df = df.set_index("test:nodeid")
     assert df.loc["test_addition.py::test_3plus[5]"].to_dict() == {
-        "outcome": "passed",
-        "duration": pytest.approx(0, abs=1),
-        "start": pytest.approx(start_time, abs=1),
-        "stop": pytest.approx(start_time, abs=1),
+        "test:outcome": "passed",
+        "test:duration": pytest.approx(0, abs=1),
+        "test:start": pytest.approx(start_time, abs=1),
+        "test:start:YYYYMM": dirty_equals.IsStr(regex=r"\d{4}-\d{2}"),
+        "test:start:datetime": dirty_equals.IsStr(
+            regex=r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+        ),
+        "test:stop": pytest.approx(start_time, abs=1),
         "x squared": 25,
     }
     assert df.loc["test_addition.py::test_3plus[6]"].to_dict() == {
-        "outcome": "failed",
-        "duration": pytest.approx(0, abs=1),
-        "start": pytest.approx(start_time, abs=1),
-        "stop": pytest.approx(start_time, abs=1),
+        "test:outcome": "failed",
+        "test:duration": pytest.approx(0, abs=1),
+        "test:start": pytest.approx(start_time, abs=1),
+        "test:stop": pytest.approx(start_time, abs=1),
+        "test:start:YYYYMM": dirty_equals.IsStr(regex=r"\d{4}-\d{2}"),
+        "test:start:datetime": dirty_equals.IsStr(
+            regex=r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+        ),
         "x squared": 36,
     }
