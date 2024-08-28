@@ -58,15 +58,17 @@ def pytest_collection_modifyitems(session, config, items):
     """
     # Optionally, select a random subset of benchmarks to run.
     # based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
-    # Note that with current pytest versions the collection/summary stats might be messed up,
-    # see https://github.com/pytest-dev/pytest/issues/12663
     subset_size = config.getoption("--random-subset")
     if subset_size >= 0:
         _log.info(
             f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
         )
         if subset_size < len(items):
-            items[:] = random.sample(items, k=subset_size)
+            selected = random.sample(items, k=subset_size)
+            selected_ids = set(item.nodeid for item in selected)
+            deselected = [item for item in items if item.nodeid not in selected_ids]
+            config.hook.pytest_deselected(items=deselected)
+            items[:] = selected
 
 
 def _get_client_credentials_env_var(url: str) -> str:
