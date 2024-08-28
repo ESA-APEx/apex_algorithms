@@ -8,7 +8,7 @@ Usage:
 
     ```python
     pytest_plugins = [
-        "apex_algorithm_qa_tools.pytest_track_metrics",
+        "apex_algorithm_qa_tools.pytest.pytest_track_metrics",
     ]
     ```
 
@@ -52,6 +52,7 @@ import pyarrow.dataset
 import pyarrow.fs
 import pyarrow.parquet
 import pytest
+from apex_algorithm_qa_tools.pytest import get_run_id
 
 _TRACK_METRICS_PLUGIN_NAME = "track_metrics"
 
@@ -209,6 +210,7 @@ class TrackMetricsReporter:
                 test_start, tz=datetime.timezone.utc
             )
             node_metrics = {
+                "suite:run_id": get_run_id(),
                 "test:nodeid": m["nodeid"],
                 # TODO: include benchmark id
                 "test:outcome": m["report"]["outcome"],
@@ -220,7 +222,6 @@ class TrackMetricsReporter:
                 # Note: this YYYYMM format is intended for partitioning reasons.
                 "test:start:YYYYMM": test_start_datetime.strftime("%Y-%m"),
                 "test:stop": m["report"]["stop"],
-                # TODO: also include runid (like in upload_assets)
             }
             for k, v in m["metrics"]:
                 assert k not in node_metrics, f"Duplicate metric key: {k}"

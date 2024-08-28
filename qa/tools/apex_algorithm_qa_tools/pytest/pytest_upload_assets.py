@@ -8,7 +8,7 @@ Usage:
 
     ```python
     pytest_plugins = [
-        "apex_algorithm_qa_tools.pytest_upload_assets",
+        "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
     ]
 
 -  Use the `upload_assets_on_fail` fixture to register files for upload
@@ -29,20 +29,19 @@ Usage:
       are also supported as fallback)
     - S3 endpoint URL with env var `APEX_ALGORITHMS_S3_ENDPOINT_URL`
       (Note that the classic `AWS_ENDPOINT_URL` is also supported as fallback).
-    - CLI option `--upload-assets-run-id=RUNID` (optional, defaults to random UUID)
 """
 
 import collections
 import logging
 import os
 import re
-import uuid
 import warnings
 from pathlib import Path
 from typing import Callable, Dict
 
 import boto3
 import pytest
+from apex_algorithm_qa_tools.pytest import get_run_id
 
 _log = logging.getLogger(__name__)
 
@@ -51,12 +50,6 @@ _UPLOAD_ASSETS_PLUGIN_NAME = "upload_assets"
 
 def pytest_addoption(parser: pytest.Parser):
     # TODO #22: option to always upload (also on success).
-    # TODO: handle run id at other level, so that it can be used transparently in track_metrics plugin too
-    parser.addoption(
-        "--upload-assets-run-id",
-        metavar="RUNID",
-        help="The run ID to use for building the S3 key.",
-    )
     parser.addoption(
         "--upload-assets-s3-bucket",
         metavar="BUCKET",
@@ -65,7 +58,6 @@ def pytest_addoption(parser: pytest.Parser):
 
 
 def pytest_configure(config: pytest.Config):
-    run_id = config.getoption("--upload-assets-run-id")
     bucket = config.getoption("--upload-assets-s3-bucket")
     if bucket:
         s3_client = boto3.client(
@@ -77,14 +69,14 @@ def pytest_configure(config: pytest.Config):
             endpoint_url=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL"),
         )
         config.pluginmanager.register(
-            S3UploadPlugin(run_id=run_id, s3_client=s3_client, bucket=bucket),
+            S3UploadPlugin(s3_client=s3_client, bucket=bucket),
             name=_UPLOAD_ASSETS_PLUGIN_NAME,
         )
 
 
 class S3UploadPlugin:
     def __init__(self, *, run_id: str | None = None, s3_client, bucket: str) -> None:
-        self.run_id = run_id or uuid.uuid4().hex
+        self.run_id = run_id or get_run_id()
         self.collected_assets: Dict[str, Path] | None = None
         self.s3_client = s3_client
         self.bucket = bucket

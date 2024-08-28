@@ -10,7 +10,7 @@ import pytest
 
 CONTENT_CONFTEST = """
     pytest_plugins = [
-        "apex_algorithm_qa_tools.pytest_track_metrics",
+        "apex_algorithm_qa_tools.pytest.pytest_track_metrics",
     ]
 """
 
@@ -26,6 +26,11 @@ CONTENT_TEST_ADDITION_PY = """
 
 def roughly_now(abs=60):
     return pytest.approx(time.time(), abs=abs)
+
+
+@pytest.fixture(autouse=True)
+def _set_run_id(monkeypatch):
+    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
 
 
 def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
@@ -79,6 +84,7 @@ def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
 class TestTrackMetricsParquet:
     def _check_metrics_pandas(self, df: pandas.DataFrame):
         assert set(df.columns) == {
+            "suite:run_id",
             "test:nodeid",
             "test:outcome",
             "test:duration",
@@ -90,6 +96,7 @@ class TestTrackMetricsParquet:
         }
         df = df.set_index("test:nodeid")
         assert df.loc["test_addition.py::test_3plus[5]"].to_dict() == {
+            "suite:run_id": "test-run-123",
             "test:outcome": "passed",
             "test:duration": pytest.approx(0, abs=1),
             "test:start": roughly_now(),
@@ -101,6 +108,7 @@ class TestTrackMetricsParquet:
             "x squared": 25,
         }
         assert df.loc["test_addition.py::test_3plus[6]"].to_dict() == {
+            "suite:run_id": "test-run-123",
             "test:outcome": "failed",
             "test:duration": pytest.approx(0, abs=1),
             "test:start": roughly_now(),

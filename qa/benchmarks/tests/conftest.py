@@ -11,8 +11,8 @@ import requests
 _log = logging.getLogger(__name__)
 
 pytest_plugins = [
-    "apex_algorithm_qa_tools.pytest_track_metrics",
-    "apex_algorithm_qa_tools.pytest_upload_assets",
+    "apex_algorithm_qa_tools.pytest.pytest_track_metrics",
+    "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
 ]
 
 
