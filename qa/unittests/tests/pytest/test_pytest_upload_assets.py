@@ -1,48 +1,13 @@
-import uuid
-
-import boto3
-import moto.server
 import pytest
 
 
-@pytest.fixture(scope="module")
-def moto_server() -> str:
-    """Fixture to run a mocked AWS server for testing."""
-    # Note: pass `port=0` to get a random free port.
-    # TODO avoid the private `_server` attribute https://github.com/getmoto/moto/issues/7894
-    server = moto.server.ThreadedMotoServer(port=0)
-    server.start()
-    host, port = server._server.server_address
-    yield f"http://{host}:{port}"
-    server.stop()
-
-
-@pytest.fixture(autouse=True)
-def aws_credentials(monkeypatch):
-    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test123")
-    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test456")
-
-
-@pytest.fixture
-def s3_client(moto_server):
-    return boto3.client("s3", endpoint_url=moto_server)
-
-
-@pytest.fixture
-def s3_bucket(s3_client) -> str:
-    # Unique bucket name for test isolation
-    bucket = f"test-bucket-{uuid.uuid4().hex}"
-    s3_client.create_bucket(Bucket=bucket)
-    return bucket
-
-
 def test_basic_upload_on_fail(
-    pytester: pytest.Pytester, moto_server, s3_client, s3_bucket
+    pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
 ):
     pytester.makeconftest(
         """
         pytest_plugins = [
-            "apex_algorithm_qa_tools.pytest_upload_assets",
+            "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
         ]
         """
     )
@@ -56,10 +21,11 @@ def test_basic_upload_on_fail(
         """
     )
 
+    monkeypatch.setenv("APEX_ALGORITHMS_S3_ENDPOINT_URL", moto_server)
+    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
+
     run_result = pytester.runpytest_subprocess(
-        "--upload-assets-run-id=test-run-123",
-        f"--upload-assets-endpoint-url={moto_server}",
-        f"--upload-assets-bucket={s3_bucket}",
+        f"--upload-assets-s3-bucket={s3_bucket}",
     )
     run_result.stdout.re_match_lines(
         [r"Plugin `upload_assets` is active, with upload to 'test-bucket-"]
@@ -83,11 +49,13 @@ def test_basic_upload_on_fail(
     )
 
 
-def test_nop_on_success(pytester: pytest.Pytester, moto_server, s3_client, s3_bucket):
+def test_nop_on_success(
+    pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
+):
     pytester.makeconftest(
         """
         pytest_plugins = [
-            "apex_algorithm_qa_tools.pytest_upload_assets",
+            "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
         ]
         """
     )
@@ -101,10 +69,11 @@ def test_nop_on_success(pytester: pytest.Pytester, moto_server, s3_client, s3_bu
         """
     )
 
+    monkeypatch.setenv("APEX_ALGORITHMS_S3_ENDPOINT_URL", moto_server)
+    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
+
     run_result = pytester.runpytest_subprocess(
-        "--upload-assets-run-id=test-run-123",
-        f"--upload-assets-endpoint-url={moto_server}",
-        f"--upload-assets-bucket={s3_bucket}",
+        f"--upload-assets-s3-bucket={s3_bucket}",
     )
     run_result.stdout.re_match_lines(
         [r"Plugin `upload_assets` is active, with upload to 'test-bucket-"]

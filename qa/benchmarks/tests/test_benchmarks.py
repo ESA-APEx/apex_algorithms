@@ -39,7 +39,11 @@ def test_run_benchmark(
 
     job_metadata = job.describe()
     track_metric("costs", job_metadata.get("costs"))
-    track_metric("usage", job_metadata.get("usage"))
+    for usage_metric, usage_data in job_metadata.get("usage", {}).items():
+        if "unit" in usage_data and "value" in usage_data:
+            track_metric(
+                f"usage:{usage_metric}:{usage_data['unit']}", usage_data["value"]
+            )
 
     # Download actual results
     actual_dir = tmp_path / "actual"
