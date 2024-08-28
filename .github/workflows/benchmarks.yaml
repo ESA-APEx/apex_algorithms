@@ -30,7 +30,7 @@ jobs:
             --html report/report.html --self-contained-html \
             --track-metrics-json=report/metrics.json \
             --track-metrics-parquet-s3-bucket="APEx-benchmarks" \
-            --track-metrics-parquet-s3-key="tmp/metrics-v5.parquet" \
+            --track-metrics-parquet-s3-key="metrics/v1/metrics.parquet" \
             --track-metrics-parquet-partitioning="YYYYMM" \
             --basetemp=tmp_path_root \
             --upload-assets-s3-bucket="APEx-benchmarks"
