@@ -7,7 +7,7 @@ def test_basic_upload_on_fail(
     pytester.makeconftest(
         """
         pytest_plugins = [
-            "apex_algorithm_qa_tools.pytest_upload_assets",
+            "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
         ]
         """
     )
@@ -22,9 +22,9 @@ def test_basic_upload_on_fail(
     )
 
     monkeypatch.setenv("APEX_ALGORITHMS_S3_ENDPOINT_URL", moto_server)
+    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
 
     run_result = pytester.runpytest_subprocess(
-        "--upload-assets-run-id=test-run-123",
         f"--upload-assets-s3-bucket={s3_bucket}",
     )
     run_result.stdout.re_match_lines(
@@ -55,7 +55,7 @@ def test_nop_on_success(
     pytester.makeconftest(
         """
         pytest_plugins = [
-            "apex_algorithm_qa_tools.pytest_upload_assets",
+            "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
         ]
         """
     )
@@ -70,9 +70,9 @@ def test_nop_on_success(
     )
 
     monkeypatch.setenv("APEX_ALGORITHMS_S3_ENDPOINT_URL", moto_server)
+    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
 
     run_result = pytester.runpytest_subprocess(
-        "--upload-assets-run-id=test-run-123",
         f"--upload-assets-s3-bucket={s3_bucket}",
     )
     run_result.stdout.re_match_lines(
