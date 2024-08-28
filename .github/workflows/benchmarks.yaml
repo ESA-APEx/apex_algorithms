@@ -33,7 +33,7 @@ jobs:
             --track-metrics-parquet-s3-key="tmp/metrics-v3.parquet" \
             --basetemp=tmp_path_root \
             --upload-assets-run-id="gh-$GITHUB_RUN_ID" \
-            --upload-assets-bucket="APEx-benchmarks"
+            --upload-assets-s3-bucket="APEx-benchmarks"
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}

@@ -25,7 +25,7 @@ def test_basic_upload_on_fail(
 
     run_result = pytester.runpytest_subprocess(
         "--upload-assets-run-id=test-run-123",
-        f"--upload-assets-bucket={s3_bucket}",
+        f"--upload-assets-s3-bucket={s3_bucket}",
     )
     run_result.stdout.re_match_lines(
         [r"Plugin `upload_assets` is active, with upload to 'test-bucket-"]
@@ -73,7 +73,7 @@ def test_nop_on_success(
 
     run_result = pytester.runpytest_subprocess(
         "--upload-assets-run-id=test-run-123",
-        f"--upload-assets-bucket={s3_bucket}",
+        f"--upload-assets-s3-bucket={s3_bucket}",
     )
     run_result.stdout.re_match_lines(
         [r"Plugin `upload_assets` is active, with upload to 'test-bucket-"]
