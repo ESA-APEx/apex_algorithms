@@ -159,7 +159,6 @@ class TrackMetricsReporter:
             self._suite_metrics.append(
                 {
                     "nodeid": report.nodeid,
-                    # TODO: also include some kind of benchmark id (nodeid is bit verbose and might not be stable enough)
                     "report": {
                         "outcome": report.outcome,
                         "duration": report.duration,
@@ -212,7 +211,6 @@ class TrackMetricsReporter:
             node_metrics = {
                 "suite:run_id": get_run_id(),
                 "test:nodeid": m["nodeid"],
-                # TODO: include benchmark id
                 "test:outcome": m["report"]["outcome"],
                 "test:duration": m["report"]["duration"],
                 "test:start": test_start,

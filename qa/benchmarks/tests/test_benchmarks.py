@@ -25,6 +25,8 @@ def test_run_benchmark(
     track_metric,
     upload_assets_on_fail,
 ):
+    track_metric("scenario_id", scenario.id)
+
     connection: openeo.Connection = connection_factory(url=scenario.backend)
 
     # TODO #14 scenario option to use synchronous instead of batch job mode?
@@ -32,6 +34,7 @@ def test_run_benchmark(
         process_graph=scenario.process_graph,
         title=f"APEx benchmark {scenario.id}",
     )
+    track_metric("job_id", job.job_id)
 
     # TODO: monitor timing and progress
     # TODO: abort excessively long batch jobs? https://github.com/Open-EO/openeo-python-client/issues/589
