@@ -1,6 +1,8 @@
 import json
 import re
 import time
+from pathlib import Path
+from typing import Callable, List
 
 import dirty_equals
 import pandas
@@ -29,8 +31,37 @@ def roughly_now(abs=60):
 
 
 @pytest.fixture(autouse=True)
-def _set_run_id(monkeypatch):
-    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
+def new_run_id(monkeypatch) -> Callable:
+    """
+    Fixture to automatically initialise the run id
+    and allow bumping it too (e.g. to simulate successive runs).
+    """
+    i = 0
+
+    def set_run_id(run_id: int | None):
+        nonlocal i
+        if run_id is None:
+            i = i + 1
+            run_id = i
+        else:
+            i = run_id
+        monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", f"test-run-{run_id}")
+
+    # Automatically run it to initialize
+    set_run_id(123)
+
+    # Return the function to allow bumping
+    yield set_run_id
+
+
+def this_month() -> str:
+    """
+    Because of the setup of some of these tests (e.g. test suite in a subprocess)
+    it would be pretty cumbersome (if not impossible) to mock the time in the appropriate places.
+    Instead, we just here produce a string that represents the current month to be used in asserts.
+    While this is not perfect (makes the tests a bit flaky), it's practically highly unlikely to hit that flakiness.
+    """
+    return time.strftime("%Y-%m")
 
 
 def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
@@ -81,6 +112,11 @@ def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
     ]
 
 
+def recursive_dir_listing(path: Path) -> List[str]:
+    """Recursive and relative listing of files/dirs under a folder."""
+    return sorted(str(p.relative_to(path)) for p in path.rglob("*"))
+
+
 class TestTrackMetricsParquet:
     def _check_metrics_pandas(self, df: pandas.DataFrame):
         assert set(df.columns) == {
@@ -100,9 +136,9 @@ class TestTrackMetricsParquet:
             "test:outcome": "passed",
             "test:duration": pytest.approx(0, abs=1),
             "test:start": roughly_now(),
-            "test:start:YYYYMM": dirty_equals.IsStr(regex=r"\d{4}-\d{2}"),
+            "test:start:YYYYMM": this_month(),
             "test:start:datetime": dirty_equals.IsStr(
-                regex=r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+                regex=this_month() + r"-\d{2}T\d{2}:\d{2}:\d{2}Z"
             ),
             "test:stop": roughly_now(),
             "x squared": 25,
@@ -112,9 +148,9 @@ class TestTrackMetricsParquet:
             "test:outcome": "failed",
             "test:duration": pytest.approx(0, abs=1),
             "test:start": roughly_now(),
-            "test:start:YYYYMM": dirty_equals.IsStr(regex=r"\d{4}-\d{2}"),
+            "test:start:YYYYMM": this_month(),
             "test:start:datetime": dirty_equals.IsStr(
-                regex=r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+                regex=this_month() + r"-\d{2}T\d{2}:\d{2}:\d{2}Z"
             ),
             "test:stop": roughly_now(),
             "x squared": 36,
@@ -141,7 +177,9 @@ class TestTrackMetricsParquet:
         table = pyarrow.parquet.read_table(metrics_path)
         self._check_metrics_pandas(df=table.to_pandas())
 
-    def test_local_partitioning_simple(self, pytester: pytest.Pytester, tmp_path):
+    def test_local_partitioning_simple(
+        self, pytester: pytest.Pytester, tmp_path, new_run_id
+    ):
         pytester.makeconftest(CONTENT_CONFTEST)
         pytester.makepyfile(test_addition=CONTENT_TEST_ADDITION_PY)
 
@@ -156,21 +194,28 @@ class TestTrackMetricsParquet:
         )
 
         assert metrics_path.exists() and metrics_path.is_dir()
-        assert len(list(metrics_path.glob("*-0.parquet"))) == 1
+        assert recursive_dir_listing(metrics_path) == [
+            "test-run-123-0.parquet",
+        ]
 
         table = pyarrow.parquet.read_table(metrics_path)
         self._check_metrics_pandas(df=table.to_pandas())
 
         # Run second time to check for append mode
+        new_run_id(456)
         run_result = pytester.runpytest_subprocess(
             f"--track-metrics-parquet={metrics_path}",
             "--track-metrics-parquet-partitioning=simple",
         )
         run_result.assert_outcomes(passed=1, failed=1)
+        assert recursive_dir_listing(metrics_path) == [
+            "test-run-123-0.parquet",
+            "test-run-456-0.parquet",
+        ]
 
-        assert len(list(metrics_path.glob("*-0.parquet"))) == 2
-
-    def test_local_partitioning_yyyymm(self, pytester: pytest.Pytester, tmp_path):
+    def test_local_partitioning_yyyymm(
+        self, pytester: pytest.Pytester, tmp_path, new_run_id
+    ):
         pytester.makeconftest(CONTENT_CONFTEST)
         pytester.makepyfile(test_addition=CONTENT_TEST_ADDITION_PY)
 
@@ -185,12 +230,10 @@ class TestTrackMetricsParquet:
         )
 
         assert metrics_path.exists() and metrics_path.is_dir()
-
-        partitions = list(metrics_path.iterdir())
-        assert len(partitions) == 1
-        assert partitions[0].name == dirty_equals.IsStr(regex=r"\d{4}-\d{2}")
-        assert partitions[0].is_dir()
-        assert len(list(partitions[0].glob("*-0.parquet"))) == 1
+        assert recursive_dir_listing(metrics_path) == [
+            this_month(),
+            f"{this_month()}/test-run-123-0.parquet",
+        ]
 
         table = pyarrow.parquet.read_table(
             metrics_path,
@@ -201,17 +244,18 @@ class TestTrackMetricsParquet:
         self._check_metrics_pandas(df=table.to_pandas())
 
         # Run second time to check for append mode
+        new_run_id(456)
         run_result = pytester.runpytest_subprocess(
             f"--track-metrics-parquet={metrics_path}",
             "--track-metrics-parquet-partitioning=YYYYMM",
         )
         run_result.assert_outcomes(passed=1, failed=1)
 
-        partitions = list(metrics_path.iterdir())
-        assert len(partitions) == 1
-        assert partitions[0].name == dirty_equals.IsStr(regex=r"\d{4}-\d{2}")
-        assert partitions[0].is_dir()
-        assert len(list(partitions[0].glob("*-0.parquet"))) == 2
+        assert recursive_dir_listing(metrics_path) == [
+            this_month(),
+            f"{this_month()}/test-run-123-0.parquet",
+            f"{this_month()}/test-run-456-0.parquet",
+        ]
 
     def test_s3_basic(
         self, pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
@@ -237,10 +281,10 @@ class TestTrackMetricsParquet:
         # Check for written Parquet files on S3
         object_listing = s3_client.list_objects(Bucket=s3_bucket)
         assert len(object_listing["Contents"])
-        keys = [obj["Key"] for obj in object_listing["Contents"]]
+        keys = sorted(obj["Key"] for obj in object_listing["Contents"])
         assert keys == [
             f"{s3_key}/",
-            dirty_equals.IsStr(regex=rf"^{re.escape(s3_key)}/[0-9a-f]+-0.parquet$"),
+            f"{s3_key}/test-run-123-0.parquet",
         ]
 
         # Load the Parquet file from S3
@@ -249,7 +293,13 @@ class TestTrackMetricsParquet:
         self._check_metrics_pandas(df=table.to_pandas())
 
     def test_s3_partitioning_simple(
-        self, pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
+        self,
+        pytester: pytest.Pytester,
+        moto_server,
+        s3_client,
+        s3_bucket,
+        monkeypatch,
+        new_run_id,
     ):
         pytester.makeconftest(CONTENT_CONFTEST)
         pytester.makepyfile(test_addition=CONTENT_TEST_ADDITION_PY)
@@ -269,10 +319,10 @@ class TestTrackMetricsParquet:
         # Check for written Parquet files on S3
         object_listing = s3_client.list_objects(Bucket=s3_bucket)
         assert len(object_listing["Contents"])
-        keys = [obj["Key"] for obj in object_listing["Contents"]]
+        keys = sorted(obj["Key"] for obj in object_listing["Contents"])
         assert keys == [
             f"{s3_key}/",
-            dirty_equals.IsStr(regex=rf"^{re.escape(s3_key)}/[0-9a-f]+-0.parquet$"),
+            f"{s3_key}/test-run-123-0.parquet",
         ]
 
         # Load the Parquet file from S3
@@ -281,6 +331,7 @@ class TestTrackMetricsParquet:
         self._check_metrics_pandas(df=table.to_pandas())
 
         # Run second time to check for append mode
+        new_run_id(456)
         run_result = pytester.runpytest_subprocess(
             f"--track-metrics-parquet-s3-bucket={s3_bucket}",
             f"--track-metrics-parquet-s3-key={s3_key}",
@@ -291,15 +342,21 @@ class TestTrackMetricsParquet:
         # Check for written Parquet files on S3
         object_listing = s3_client.list_objects(Bucket=s3_bucket)
         assert len(object_listing["Contents"])
-        keys = [obj["Key"] for obj in object_listing["Contents"]]
+        keys = sorted(obj["Key"] for obj in object_listing["Contents"])
         assert keys == [
             f"{s3_key}/",
-            dirty_equals.IsStr(regex=rf"^{re.escape(s3_key)}/[0-9a-f]+-0.parquet$"),
-            dirty_equals.IsStr(regex=rf"^{re.escape(s3_key)}/[0-9a-f]+-0.parquet$"),
+            f"{s3_key}/test-run-123-0.parquet",
+            f"{s3_key}/test-run-456-0.parquet",
         ]
 
     def test_s3_partitioning_yyyymm(
-        self, pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
+        self,
+        pytester: pytest.Pytester,
+        moto_server,
+        s3_client,
+        s3_bucket,
+        monkeypatch,
+        new_run_id,
     ):
         pytester.makeconftest(CONTENT_CONFTEST)
         pytester.makepyfile(test_addition=CONTENT_TEST_ADDITION_PY)
@@ -322,10 +379,8 @@ class TestTrackMetricsParquet:
         keys = sorted(obj["Key"] for obj in object_listing["Contents"])
         assert keys == [
             f"{s3_key}/",
-            dirty_equals.IsStr(regex=rf"^{re.escape(s3_key)}/\d{{4}}-\d{{2}}/$"),
-            dirty_equals.IsStr(
-                regex=rf"^{re.escape(s3_key)}/\d{{4}}-\d{{2}}/[0-9a-f]+-0.parquet$"
-            ),
+            f"{s3_key}/{this_month()}/",
+            f"{s3_key}/{this_month()}/test-run-123-0.parquet",
         ]
 
         # Load the Parquet file from S3
@@ -340,6 +395,7 @@ class TestTrackMetricsParquet:
         self._check_metrics_pandas(df=table.to_pandas())
 
         # Run second time to check for append mode
+        new_run_id(456)
         run_result = pytester.runpytest_subprocess(
             f"--track-metrics-parquet-s3-bucket={s3_bucket}",
             f"--track-metrics-parquet-s3-key={s3_key}",
@@ -353,11 +409,7 @@ class TestTrackMetricsParquet:
         keys = sorted(obj["Key"] for obj in object_listing["Contents"])
         assert keys == [
             f"{s3_key}/",
-            dirty_equals.IsStr(regex=rf"^{re.escape(s3_key)}/\d{{4}}-\d{{2}}/$"),
-            dirty_equals.IsStr(
-                regex=rf"^{re.escape(s3_key)}/\d{{4}}-\d{{2}}/[0-9a-f]+-0.parquet$"
-            ),
-            dirty_equals.IsStr(
-                regex=rf"^{re.escape(s3_key)}/\d{{4}}-\d{{2}}/[0-9a-f]+-0.parquet$"
-            ),
+            f"{s3_key}/{this_month()}/",
+            f"{s3_key}/{this_month()}/test-run-123-0.parquet",
+            f"{s3_key}/{this_month()}/test-run-456-0.parquet",
         ]

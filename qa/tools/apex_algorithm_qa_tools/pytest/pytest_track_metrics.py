@@ -153,6 +153,7 @@ class TrackMetricsReporter:
         self._parquet_partitioning = parquet_partitioning
         self._suite_metrics: List[dict] = []
         self._user_properties_key = user_properties_key
+        self._run_id = get_run_id()
 
     def pytest_runtest_logreport(self, report: pytest.TestReport):
         if report.when == "call":
@@ -209,7 +210,7 @@ class TrackMetricsReporter:
                 test_start, tz=datetime.timezone.utc
             )
             node_metrics = {
-                "suite:run_id": get_run_id(),
+                "suite:run_id": self._run_id,
                 "test:nodeid": m["nodeid"],
                 "test:outcome": m["report"]["outcome"],
                 "test:duration": m["report"]["duration"],
@@ -270,7 +271,7 @@ class TrackMetricsReporter:
                 filesystem=filesystem,
                 # "overwrite_or_ignore" enables append mode
                 existing_data_behavior="overwrite_or_ignore",
-                # TODO use run id in `basename_template` (instead as uuid)?
+                basename_template=f"{self._run_id}-{{i}}.parquet",
             )
 
     def pytest_report_header(self):
