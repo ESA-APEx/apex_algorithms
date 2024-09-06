@@ -1,0 +1,447 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": {
+          "from_parameter": "bands"
+        },
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": null,
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B04",
+          "B08"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": null,
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "loadcollection3": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte3": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": null,
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "loadcollection3"
+        },
+        "method": "near",
+        "projection": "EPSG:25832",
+        "resolution": 10
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "process": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "x"
+                },
+                "index": 0
+              }
+            },
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 3
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 8
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 9
+              }
+            },
+            "eq4": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 10
+              }
+            },
+            "eq5": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 1
+              }
+            },
+            "eq6": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 0
+              }
+            },
+            "arraycreate1": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "eq1"
+                  },
+                  {
+                    "from_node": "eq2"
+                  },
+                  {
+                    "from_node": "eq3"
+                  },
+                  {
+                    "from_node": "eq4"
+                  },
+                  {
+                    "from_node": "eq5"
+                  },
+                  {
+                    "from_node": "eq6"
+                  }
+                ]
+              }
+            },
+            "any1": {
+              "process_id": "any",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate1"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        },
+        "mask": {
+          "from_node": "apply1"
+        }
+      }
+    },
+    "ndvi1": {
+      "process_id": "ndvi",
+      "arguments": {
+        "data": {
+          "from_node": "mask1"
+        },
+        "nir": "B08",
+        "red": "B04"
+      }
+    },
+    "adddimension1": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "ndvi1"
+        },
+        "label": "ndvi",
+        "name": "bands2",
+        "type": "bands"
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "adddimension1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "arrayapply1": {
+              "process_id": "array_apply",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "process": {
+                  "process_graph": {
+                    "max1": {
+                      "process_id": "max",
+                      "arguments": {
+                        "data": {
+                          "from_parameter": "data"
+                        }
+                      }
+                    },
+                    "neq1": {
+                      "process_id": "neq",
+                      "arguments": {
+                        "x": {
+                          "from_parameter": "x"
+                        },
+                        "y": {
+                          "from_node": "max1"
+                        }
+                      },
+                      "result": true
+                    }
+                  }
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "applydimension1"
+        },
+        "cube2": {
+          "from_node": "apply1"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "max2": {
+              "process_id": "max",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  {
+                    "from_parameter": "y"
+                  }
+                ]
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask2": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "mask": {
+          "from_node": "mergecubes1"
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mask2"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "max3": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "filterbbox1": {
+      "process_id": "filter_bbox",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "extent": {
+          "from_parameter": "bbox"
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "max_ndvi_composite",
+  "summary": "Max NDVI composite at 10m resolution.",
+  "description": "# Description\n\nThis algorithm generates a Sentinel-2 based composite for a selected area and temporal extent. By default, the resolution of the output is 10 meters.\n\nThe used compositing method is the \"max-NDVI\" method, which selects the pixel with the highest NDVI value for each pixel location and time window.\nThe method falls under the 'rank composite' category, and ensures that selected spectral band values for any pixel all come from the same observation.\n\nThe method generates good results for timeseries analytics, but spatially neighbouring pixels may be selected from different observations,\nwhich leads to visual discontinuities in the result.\n\n# Performance characteristics\n\nThe method is computationally efficient, as it only requires the B04, B08 and SCL bands to determine the rank score. Loading \nof other bands can be minimized to read only selected observations.\n\n\n# Examples\n\nThe image below shows a typical result over an agricultural area.\n\n![max_ndvi_example.png](max_ndvi_composite_files/max_ndvi_example.png)\n\nA complete example including STAC metadata is shown here:\n\nhttps://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json\n\nThe processing platform reported these usage statistics for the example:\n\n```\nCredits: 63 \nCPU usage: 47.743,722 cpu-seconds\nWall time: 1.948 seconds\nInput Pixel 10.997,635 mega-pixel\nMax Executor Memory: 3,239 gb\nMemory usage: 154.767.121,977 mb-seconds\nNetwork Received: 1.677.537.930.040 b\n```\n\nThe relative cost is 1 platform credits per km\u00b2 for a 3 month input window.\nThe cost per input pixel is 0.0057 credits per megapixel.\n\n# Literature references\n\nThe max-ndvi compositing method has been applied to multiple sensors, as described in literature:\n\nThis publication describes characteristics of the method when applied to AVHRR data:\nhttps://www.tandfonline.com/doi/abs/10.1080/01431168608948945\n\nThis publication applied it to Landsat data, for cropland estimation:\nhttps://www.nature.com/articles/s43016-021-00429-z\n\n# Known limitations\n\nThe method uses a vegetation index as scoring metric to determine the best pixel, making it only suitable for land applications. \nBare or urban areas may not be well represented in the composite. \n\nIt favours the observation which is least contaminated by atmospheric effects, but does not guarantee a fully uncontaminated composite.\n\nFor individual time windows, the method was efficient up to 100x100km areas. For larger areas of interest, we recommend splitting the area into smaller tiles.\n\n\n# Known artifacts\n\nArtifacts are expected over water and urban areas.\n\n![max_ndvi_water_artifacts.png](max_ndvi_composite_files/max_ndvi_water_artifacts.png)\n\nResidual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons.\nThe cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds.\n\n![max_ndvi_cloud_artifacts.png](max_ndvi_composite_files/max_ndvi_cloud_artifacts.png)",
+  "parameters": [
+    {
+      "name": "bbox",
+      "description": "Spatial extent specified as a bounding box with 'west', 'south', 'east' and 'north' fields.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      }
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
