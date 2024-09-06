@@ -17,7 +17,7 @@ def generate() -> dict:
     spatial_extent = Parameter.bounding_box(name="bbox")
     temporal_extent = Parameter.temporal_interval(name="temporal_extent")
     schema = {"type": "string", "enum":["B02","B03","B04","B05","B06","B07","B08","B8A","B11","B12"]}
-    bands_param = Parameter.array(name="bands",description="Sentinel-2 L2A bands to include in the composite.", item_schema=schema, default=["B04", "B03", "B02"])
+    bands_param = Parameter.array(name="bands",description="Sentinel-2 L2A bands to include in the composite.", item_schema=schema, default=["B04", "B03", "B02"], optional=True)
 
     scl = c.load_collection(
         "SENTINEL2_L2A",

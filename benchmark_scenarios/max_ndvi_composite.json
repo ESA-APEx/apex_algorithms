@@ -18,14 +18,15 @@
           "temporal_extent": [
             "2023-08-01",
             "2023-09-30"
-          ]
+          ],
+          "bands": ["B04"]
         },
         "result": true
       }
     },
     "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi.json:max_ndvi:reference:job-results.json",
-      "openEO.tif": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi.json:max_ndvi:reference:openEO.tif"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_composite_ndvi.json:max_ndvi_composite:reference:job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi_composite.json:max_ndvi_composite:reference:openEO.tif"
     }
   }
 ]

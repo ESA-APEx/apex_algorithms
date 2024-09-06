@@ -1,0 +1,86 @@
+{
+  "id": "max_ndvi_composite",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-09-06T00:00:00Z",
+    "updated": "2024-09-06T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "Max NDVI Composite based on Sentinel-2 data",
+    "description": "A compositing algorithm for Sentinel-2 L2A data.",
+    "cost_estimate": 1,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "vegetation"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Jeroen Dries",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/jdries",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [],
+    "formats": [
+      "GeoTiff", "netCDF"
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "openeo-process",
+      "type": "application/json",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO service",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    }
+  ]
+}
