@@ -7,7 +7,7 @@
     "process_graph": {
       "maxndvi1": {
         "process_id": "max_ndvi_composite",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f99f351d74d291d628e3aaa07fd078527a0cb631/openeo_udp/examples/max_ndvi/max_ndvi.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
         "arguments": {
           "bbox": {
             "west": 5.07,
