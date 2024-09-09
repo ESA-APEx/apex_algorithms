@@ -2,8 +2,8 @@
 
 This algorithm generates a Sentinel-2 based composite for a selected area and temporal extent. By default, the resolution of the output is 10 meters.
 
-The used compositing method is the "max-NDVI" method, which selects the pixel with the highest NDVI value for each pixel location and time window.
-The method falls under the 'rank composite' category, and ensures that selected spectral band values for any pixel all come from the same observation.
+The used compositing method is the "max-NDVI" method, which selects the pixel with the highest NDVI value for each pixel location and within the time window.
+The method falls under the 'rank composite' category, and ensures that selected spectral band values for any individual pixel all come from the same observation.
 
 The method generates good results for timeseries analytics, but spatially neighbouring pixels may be selected from different observations,
 which leads to visual discontinuities in the result.
