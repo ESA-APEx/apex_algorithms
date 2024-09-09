@@ -37,9 +37,8 @@ def generate() -> dict:
         max_cloud_cover=max_cloud_cover_param
     ).resample_spatial(projection="EPSG:25832", resolution=10)
 
-    def scl_to_masks(bands):
-        scl_layer = bands[0]
-        to_mask = any(array_create([
+    def scl_to_masks(scl_layer):
+        to_mask = openeo.processes.any(array_create([
             (scl_layer == SCL_LEGEND["cloud_shadows"]),
             (scl_layer == SCL_LEGEND["cloud_medium_probability"]),
             (scl_layer == SCL_LEGEND["cloud_high_probability"]),

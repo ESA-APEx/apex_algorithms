@@ -36,7 +36,7 @@ Memory usage: 154.767.121,977 mb-seconds
 Network Received: 1.677.537.930.040 b
 ```
 
-The relative cost is 1 platform credits per km² for a 3 month input window.
+The relative cost is 1 CDSE platform credits per km² for a 3 month input window.
 The cost per input pixel is 0.0057 credits per megapixel.
 
 # Literature references
@@ -56,7 +56,7 @@ Bare or urban areas may not be well represented in the composite.
 
 It favours the observation which is least contaminated by atmospheric effects, but does not guarantee a fully uncontaminated composite.
 
-For individual time windows, the method was efficient up to 100x100km areas. For larger areas of interest, we recommend splitting the area into smaller tiles.
+For individual time windows of up to 3 months, the method was efficient up to 100x100km areas. For larger areas of interest, we recommend splitting the area into smaller tiles.
 
 
 # Known artifacts
