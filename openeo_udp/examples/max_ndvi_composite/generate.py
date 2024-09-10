@@ -20,13 +20,11 @@ def generate() -> dict:
     schema = {"type": "string", "enum":["B02","B03","B04","B05","B06","B07","B08","B8A","B11","B12"]}
     bands_param = Parameter.array(name="bands",description="Sentinel-2 L2A bands to include in the composite.", item_schema=schema, default=["B04", "B03", "B02"], optional=True)
 
-    max_cloud_description = """
-    The maximum cloud cover percentage to filter Sentinel-2 inputs at full product level.
+    max_cloud_description = """The maximum cloud cover percentage to filter Sentinel-2 inputs at full product level.
     By reducing the percentage, fewer input products are considered, which also potentially increases the risk of missing valid data.  
     We do not recommend setting it higher than 95%, as this decreases performance by reading very cloudy areas with little chance of finding good pixels.
     
     For composites over large time ranges, a reduced value can help to consider only good quality input products, with few undetected clouds.
-    
     """
     max_cloud_cover_param = Parameter.number(name="max_cloud_cover", description=max_cloud_description, default=75.0, optional=True)
 
@@ -106,6 +104,8 @@ def generate() -> dict:
         parameters=[
             spatial_extent,
             temporal_extent,
+            max_cloud_cover_param,
+            bands_param
         ],
         returns=None,  # TODO
         categories=None,  # TODO
@@ -115,3 +115,11 @@ def generate() -> dict:
 if __name__ == "__main__":
     # TODO: how to enforce a useful order of top-level keys?
     json.dump(generate(), sys.stdout, indent=2)
+
+
+def est_run():
+    c = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+
+    bbox = dict(west=7.998047,south=55.804368,east=10.360107,north=56.641127)
+    composite = c.datacube_from_process("max_ndvi_composite", namespace="https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",temporal_extent=['2022-03-01', '2023-06-01'],spatial_extent=bbox)
+    composite.execute_batch()
