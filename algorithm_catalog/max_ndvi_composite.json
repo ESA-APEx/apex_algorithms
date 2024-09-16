@@ -9,7 +9,7 @@
     "updated": "2024-09-06T00:00:00Z",
     "type": "apex_algorithm",
     "title": "Max NDVI Composite based on Sentinel-2 data",
-    "description": "A compositing algorithm for Sentinel-2 L2A data.",
+    "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their maximum NDVI.",
     "cost_estimate": 1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
