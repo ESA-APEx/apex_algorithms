@@ -20,6 +20,12 @@ The image below shows a typical result over an agricultural area.
 
 ![max_ndvi_example.png](max_ndvi_composite_files/max_ndvi_example.png)
 
+The examples below show typical resource usage figures. They illustrate that the cost varies as a function of the parameters,
+and most importantly that it is not possible to linearly extrapolate the cost from one example to another.
+
+
+## 3-month composite over Denmark
+
 A complete example including STAC metadata is shown here:
 
 https://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json
@@ -38,6 +44,24 @@ Network Received: 1.677.537.930.040 b
 
 The relative cost is 1 CDSE platform credits per km² for a 3 month input window.
 The cost per input pixel is 0.0057 credits per megapixel.
+
+## 15-month composite over Denmark
+
+In a second example, a longer compositing window was tested, generating a 3-band result. Here we see a lower cost per km², but a similar cost per input
+pixel.
+
+```
+Credits: 189
+CPU usage: 77.621,979 cpu-seconds
+Wall time: 5.499 seconds
+Input Pixel: 31.494,448 mega-pixel
+Max Executor Memory: 4,332 gb
+Memory usage: 564.094.942,143 mb-seconds
+Network Received: 872.636.866.126 b
+```
+
+The relative cost is 0.03 CDSE platform credits per km² for a 15 month input window.
+The cost per input pixel is 0.006 credits per megapixel.
 
 # Literature references
 
