@@ -32,7 +32,7 @@ def generate() -> dict:
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
         bands=["SCL"],
-        max_cloud_cover=max_cloud_cover_param
+        max_cloud_cover=75
     ).resample_spatial(projection="EPSG:25832", resolution=10)
 
     def scl_to_masks(scl_layer):
@@ -72,7 +72,7 @@ def generate() -> dict:
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
         bands=["B04", "B08"],
-        max_cloud_cover=max_cloud_cover_param
+        max_cloud_cover=75
     )
 
     ndvi_bands = ndvi_bands.mask(cloud_mask)
@@ -90,7 +90,7 @@ def generate() -> dict:
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
         bands=bands_param,  # ,"B8A","B11","B12"
-        max_cloud_cover=max_cloud_cover_param
+        max_cloud_cover=75
     )
 
     composite = rgb_bands.mask(combined_mask).max_time().filter_bbox(spatial_extent)
@@ -100,7 +100,7 @@ def generate() -> dict:
         process_graph=composite,
         process_id="max_ndvi_composite",
         summary="Max NDVI composite at 10m resolution.",
-        description=(Path(__file__).parent.parent.parent.parent / "algorithm_catalog"/ "max_ndvi_composite_description.md").read_text(),
+        description=(Path(__file__).parent.parent.parent.parent / "algorithm_catalog"/ "max_ndvi_composite_files" / "max_ndvi_composite_description.md").read_text(),
         parameters=[
             spatial_extent,
             temporal_extent,
@@ -117,9 +117,9 @@ if __name__ == "__main__":
     json.dump(generate(), sys.stdout, indent=2)
 
 
-def est_run():
+def test_run():
     c = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 
-    bbox = dict(west=7.998047,south=55.804368,east=10.360107,north=56.641127)
+    bbox = dict(west=7.998047,south=55.804368,east=9.5,north=56.4)
     composite = c.datacube_from_process("max_ndvi_composite", namespace="https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",temporal_extent=['2022-03-01', '2023-06-01'],spatial_extent=bbox)
     composite.execute_batch()
