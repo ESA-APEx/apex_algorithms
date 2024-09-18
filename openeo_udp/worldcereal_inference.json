@@ -1412,5 +1412,11 @@
     }
   },
   "public": true,
-  "summary": "Global cereal detector"
+  "summary": "Global cereal detector",
+  "minimal_job_options": {
+    "driver-memory": "4g",
+    "executor-memory": "1500m",
+    "executor-memoryOverhead": "5g",
+    "udf-dependency-archives": ["https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"]
+  }
 }
