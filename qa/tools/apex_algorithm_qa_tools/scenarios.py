@@ -31,6 +31,7 @@ class BenchmarkScenario:
     backend: str
     process_graph: dict
     reference_data: dict | None
+    job_options: dict | None
 
     @classmethod
     def from_dict(cls, data: dict) -> BenchmarkScenario:
@@ -45,6 +46,7 @@ class BenchmarkScenario:
             backend=data["backend"],
             process_graph=data["process_graph"],
             reference_data=data.get("reference_data"),
+            job_options=data.get("job_options"),
         )
 
 

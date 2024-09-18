@@ -33,6 +33,7 @@ def test_run_benchmark(
     job = connection.create_job(
         process_graph=scenario.process_graph,
         title=f"APEx benchmark {scenario.id}",
+        additional=scenario.job_options,
     )
     track_metric("job_id", job.job_id)
 
