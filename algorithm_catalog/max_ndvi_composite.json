@@ -94,7 +94,7 @@
       "rel": "example",
       "type": "application/json",
       "title": "Example output",
-      "href": "https://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json"
+      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json"
     }
   ]
 }
