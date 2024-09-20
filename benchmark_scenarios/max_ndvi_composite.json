@@ -1,0 +1,32 @@
+[
+  {
+    "id": "max_ndvi_composite",
+    "type": "openeo",
+    "description": "max_ndvi example",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "maxndvi1": {
+        "process_id": "max_ndvi_composite",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
+        "arguments": {
+          "bbox": {
+            "west": 5.07,
+            "east": 5.09,
+            "south": 51.21,
+            "north": 51.23
+          },
+          "temporal_extent": [
+            "2023-08-01",
+            "2023-09-30"
+          ],
+          "bands": ["B04"]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_composite_ndvi.json:max_ndvi_composite:reference:job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/max_ndvi_composite.json:max_ndvi_composite:reference:openEO.tif"
+    }
+  }
+]
