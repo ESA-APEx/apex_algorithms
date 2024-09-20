@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 import itertools
 import json
@@ -65,7 +67,13 @@ class JobPreparer:
 
     def load_process_graph(self, path: str) -> Dict[str, Any]:
         """Load the process graph from a JSON file."""
-        with open(path) as f:
+        if(path.startswith("http")):
+            from upath import UPath
+            path = UPath(path)
+        else:
+            path = Path(path)
+
+        with path.open() as f:
             return json.load(f)
         
     @staticmethod    
