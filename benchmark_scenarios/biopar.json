@@ -1,49 +1,48 @@
 [
-  {
-    "id": "Biopar_fapar",
-    "type": "openeo",
-    "description": "Calculating FAPAR using Biopar service available in Copernicus Data Space Ecosystem",
-    "backend": "openeofed.dataspace.copernicus.eu",
-    "process_graph": {
-      "BIOPAR": {
-        "process_id": "BIOPAR",
-        "namespace": "https://openeo.dataspace.copernicus.eu/openeo/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR",
-        "arguments": {
-          "date": [
-            "2024-09-01T00:00:00Z",
-            "2024-09-30T00:00:00Z"
-          ],
-          "polygon": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [
-                  5.1418760297465,
-                  51.155318963982495
-                ],
-                [
-                  5.124132761325573,
-                  51.155318963982495
-                ],
-                [
-                  5.124132761325573,
-                  51.1619058170717
-                ],
-                [
-                  5.1418760297465,
-                  51.1619058170717
-                ],
-                [
-                  5.1418760297465,
-                  51.155318963982495
-                ]
-              ]
-            ]
-          }
-        },
-        "result": true
-      }
+    {
+        "id": "Biopar_fapar",
+        "type": "openeo",
+        "description": "Calculating FAPAR using Biopar service available in Copernicus Data Space Ecosystem",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "BIOPAR": {
+                "process_id": "BIOPAR",
+                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR",
+                "arguments": {
+                    "date": [
+                        "2024-09-01T00:00:00Z",
+                        "2024-09-30T00:00:00Z"
+                    ],
+                    "polygon": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    5.1418760297465,
+                                    51.155318963982495
+                                ],
+                                [
+                                    5.124132761325573,
+                                    51.155318963982495
+                                ],
+                                [
+                                    5.124132761325573,
+                                    51.1619058170717
+                                ],
+                                [
+                                    5.1418760297465,
+                                    51.1619058170717
+                                ],
+                                [
+                                    5.1418760297465,
+                                    51.155318963982495
+                                ]
+                            ]
+                        ]
+                    }
+                },
+                "result": true
+            }
+        }
     }
-  }
 ]
-
