@@ -6,6 +6,8 @@
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "s1stats1": {
+                "process_id": "s1_stats",
+                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/s1_stats",
                 "arguments": {
                     "spatial_extent": {
                         "east": 8.92,
