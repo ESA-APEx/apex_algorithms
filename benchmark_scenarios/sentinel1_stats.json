@@ -1,0 +1,26 @@
+[
+    {
+      "id": "sentinel1_stats",
+      "type": "openeo",
+      "description": "Sentinel 1 statistics example",
+      "backend": "openeofed.dataspace.copernicus.eu",
+      "process_graph": {
+        "s1stats1": {
+            "arguments": {
+                "spatial_extent": {
+                    "east": 8.92,
+                    "north": 44.45,
+                    "south": 44.4,
+                    "west": 8.82
+                },
+                "temporal_extent": [
+                    "2023-05-01",
+                    "2023-07-30"
+                ]
+            }
+        },
+        "result": true
+        }
+    }
+  ]
+  
