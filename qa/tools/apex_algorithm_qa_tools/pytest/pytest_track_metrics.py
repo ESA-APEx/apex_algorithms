@@ -306,10 +306,14 @@ class TrackMetricsReporter:
         return metrics
 
 
+# Reusable type annotation
+MetricsTracker = Callable[[str, Any], None]
+
+
 @pytest.fixture
 def track_metric(
     pytestconfig: pytest.Config, request: pytest.FixtureRequest
-) -> Callable[[str, Any], None]:
+) -> MetricsTracker:
     """
     Fixture to record a metric during tests/benchmarks,
     which will be stored in the pytest node's "user_properties".
