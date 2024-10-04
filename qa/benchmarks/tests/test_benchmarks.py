@@ -3,13 +3,15 @@ from pathlib import Path
 
 import openeo
 import pytest
-from apex_algorithm_qa_tools.pytest.pytest_track_metrics import MetricsTracker
+from apex_algorithm_qa_tools.benchmarks import (
+    collect_metrics_from_job_metadata,
+    collect_metrics_from_results_metadata,
+)
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
     download_reference_data,
     get_benchmark_scenarios,
 )
-from openeo.rest.job import JobResults
 from openeo.testing.results import assert_job_results_allclose
 
 _log = logging.getLogger(__name__)
@@ -46,10 +48,10 @@ def test_run_benchmark(
     # TODO: abort excessively long batch jobs? https://github.com/Open-EO/openeo-python-client/issues/589
     job.start_and_wait()
 
-    _collect_metrics_from_job_metadata(job=job, track_metric=track_metric)
+    collect_metrics_from_job_metadata(job, track_metric=track_metric)
 
     results = job.get_results()
-    _collect_metrics_from_results_metadata(results=results, track_metric=track_metric)
+    collect_metrics_from_results_metadata(results, track_metric=track_metric)
 
     # Download actual results
     actual_dir = tmp_path / "actual"
@@ -65,35 +67,3 @@ def test_run_benchmark(
     assert_job_results_allclose(
         actual=actual_dir, expected=reference_dir, tmp_path=tmp_path
     )
-
-
-def _collect_metrics_from_job_metadata(
-    job: openeo.BatchJob, track_metric: MetricsTracker
-):
-    # TODO move this to apex_algorithm_qa_tools for better reuse, and testability
-    job_metadata = job.describe()
-    track_metric("costs", job_metadata.get("costs"))
-    for usage_metric, usage_data in job_metadata.get("usage", {}).items():
-        if "unit" in usage_data and "value" in usage_data:
-            track_metric(
-                f"usage:{usage_metric}:{usage_data['unit']}", usage_data["value"]
-            )
-
-
-def _collect_metrics_from_results_metadata(
-    results: JobResults, track_metric: MetricsTracker
-):
-    # TODO move this to apex_algorithm_qa_tools for better reuse, and testability
-    results_metadata = results.get_metadata()
-    proj_shapes = []
-    for asset_name, asset_data in results_metadata.get("assets", {}).items():
-        if "proj:shape" in asset_data:
-            proj_shapes.append(asset_data["proj:shape"])
-
-    if proj_shapes:
-        track_metric("results:_proj_shapes", proj_shapes)
-        if len(proj_shapes) > 1:
-            _log.warning(f"Multiple proj:shape values: {proj_shapes}")
-        # Pick largest area for now
-        area_in_pixels = max(sx * sy for sy, sx in proj_shapes)
-        track_metric("results:proj_shape:area:megapixel", area_in_pixels / 1e6)
