@@ -18,3 +18,4 @@ which have the following properties:
 | description     | string       | Description of the benchmark scenario.   |
 | backend         | string       | **REQUIRED.** The openEO backend URL to be used. |
 | process_graph   | object       | **REQUIRED.** The openEO process graph to be executed. |
+| reference_data  | object       | Expected/reference data of the benchmark, as a mapping of output names to (e.g. object storage) URLs. |
