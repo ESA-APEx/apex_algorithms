@@ -306,8 +306,10 @@ class TrackMetricsReporter:
         return metrics
 
 
-# Reusable type annotation
-MetricsTracker = Callable[[str, Any], None]
+# Type annotation aliases, to make things self-documenting and reusable.
+MetricName = str
+MetricValue = Any
+MetricsTracker = Callable[[MetricName, MetricValue], None]
 
 
 @pytest.fixture
@@ -327,12 +329,12 @@ def track_metric(
 
     if reporter:
 
-        def append(name: str, value: Any):
+        def append(name: MetricName, value: MetricValue):
             reporter.get_metrics(request.node.user_properties).append((name, value))
     else:
         warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 
-        def append(name: str, value: Any):
+        def append(name: MetricName, value: MetricValue):
             pass
 
     return append

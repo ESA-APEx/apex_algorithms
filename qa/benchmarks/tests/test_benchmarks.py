@@ -94,7 +94,6 @@ def _collect_metrics_from_results_metadata(
         track_metric("results:_proj_shapes", proj_shapes)
         if len(proj_shapes) > 1:
             _log.warning(f"Multiple proj:shape values: {proj_shapes}")
-        # Pick first shape for now
-        sy, sx = proj_shapes[0]
-        area_in_pixels = sx * sy
-        track_metric("results:area_in_pixels", area_in_pixels)
+        # Pick largest area for now
+        area_in_pixels = max(sx * sy for sy, sx in proj_shapes)
+        track_metric("results:proj_shape:area:megapixel", area_in_pixels / 1e6)
