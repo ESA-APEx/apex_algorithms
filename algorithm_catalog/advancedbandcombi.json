@@ -72,12 +72,14 @@
   "links": [
     {
       "rel": "service",
-      "type": "text/html"
+      "type": "text/html",
       "title": "Geohazards Exploitation Platform Service",
       "href": "https://geohazards-tep.eu/#!web_store"
     },
     {
       "rel": "license",
+      "type": "application/pdf",
+      "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
     }
   ]
