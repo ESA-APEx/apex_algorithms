@@ -1,20 +1,22 @@
 {
-  "id": "worldcereal_inference",
+  "id": "advanced_band_combination",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "properties": {
-    "created": "2024-05-17T00:00:00Z",
-    "updated": "2024-05-17T00:00:00Z",
+    "created": "2024-10-09T00:00:00Z",
+    "updated": "2024-10-09T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "ESA worldcereal global maize detector",
-    "description": "A maize detection algorithm.",
-    "cost_estimate": 0.1,
+    "title": "Advanced Band Combination",
+    "description": "A service for advanced band combination to enhance specific features of interest in satellite imagery.",
+    "cost_estimate": 0.05,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "agriculture",
-      "crops"
+      "disaster management",
+      "remote sensing",
+      "band combination",
+      "satellite imagery"
     ],
     "language": {
       "code": "en-US",
@@ -28,36 +30,31 @@
     ],
     "contacts": [
       {
-        "name": "Kristof Van Tricht",
-        "position": "Researcher",
-        "organization": "VITO",
+        "name": "John Doe",
+        "position": "Lead Scientist",
+        "organization": "International Charter Space and Major Disasters",
         "links": [
           {
-            "href": "https://www.vito.be/",
-            "rel": "about",
-            "type": "text/html"
-          },
-          {
-            "href": "https://github.com/kvantricht",
+            "href": "https://disasterscharter.org",
             "rel": "about",
             "type": "text/html"
           }
         ],
-        "contactInstructions": "Contact via VITO",
+        "contactInstructions": "Contact via the Charter website",
         "roles": [
           "principal investigator"
         ]
       },
       {
-        "name": "VITO",
+        "name": "International Charter",
         "links": [
           {
-            "href": "https://www.vito.be/",
+            "href": "https://disasterscharter.org",
             "rel": "about",
             "type": "text/html"
           }
         ],
-        "contactInstructions": "SEE WEBSITE",
+        "contactInstructions": "Visit the website for more details",
         "roles": [
           "processor"
         ]
@@ -67,17 +64,19 @@
       {
         "concepts": [
           {
-            "id": "AGRICULTURE"
+            "id": "DISASTER MANAGEMENT"
           },
           {
-            "id": "FIELD CROP PRODUCTS"
+            "id": "REMOTE SENSING"
           }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
     ],
     "formats": [
-      "GeoTiff"
+      "GeoTiff",
+      "PNG",
+      "JPEG"
     ],
     "license": "other"
   },
@@ -87,23 +86,23 @@
       "rel": "openeo-process",
       "type": "application/json",
       "title": "openEO Process Definition",
-      "href": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_inference.json"
+      "href": "https://docs.disasterscharter.org/services/advanced-band-combination/openeo_process.json"
     },
     {
       "rel": "git",
       "type": "application/json",
       "title": "Git source repository",
-      "href": "https://github.com/WorldCereal/worldcereal-classification.git"
+      "href": "https://github.com/DisastersCharter/advanced-band-combination.git"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "CDSE openEO federation",
-      "href": "https://openeofed.dataspace.copernicus.eu"
+      "title": "International Charter Service",
+      "href": "https://disasterscharter.org/services"
     },
     {
       "rel": "license",
-      "href": "https://apex.esa.int/license"
+      "href": "https://disasterscharter.org/license"
     }
   ]
 }
