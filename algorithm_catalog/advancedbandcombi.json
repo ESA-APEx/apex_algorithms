@@ -1,0 +1,109 @@
+{
+  "id": "worldcereal_inference",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-05-17T00:00:00Z",
+    "updated": "2024-05-17T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "ESA worldcereal global maize detector",
+    "description": "A maize detection algorithm.",
+    "cost_estimate": 0.1,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "agriculture",
+      "crops"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Kristof Van Tricht",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/kvantricht",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "AGRICULTURE"
+          },
+          {
+            "id": "FIELD CROP PRODUCTS"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      "GeoTiff"
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "openeo-process",
+      "type": "application/json",
+      "title": "openEO Process Definition",
+      "href": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_inference.json"
+    },
+    {
+      "rel": "git",
+      "type": "application/json",
+      "title": "Git source repository",
+      "href": "https://github.com/WorldCereal/worldcereal-classification.git"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "license",
+      "href": "https://apex.esa.int/license"
+    }
+  ]
+}
