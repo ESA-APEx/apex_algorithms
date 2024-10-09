@@ -10,8 +10,8 @@
     "type": "apex_algorithm",
     "title": "Advanced Band Combination",
     "description": "A service for advanced band combination to enhance specific features of interest in satellite imagery.",
-    "cost_estimate": 0.05,
-    "cost_unit": "platform credits per km\u00b2",
+    "cost_estimate": 1.50,
+    "cost_unit": "€ per input product",
     "keywords": [
       "disaster management",
       "remote sensing",
@@ -30,33 +30,21 @@
     ],
     "contacts": [
       {
-        "name": "John Doe",
-        "position": "Lead Scientist",
-        "organization": "International Charter Space and Major Disasters",
+        "name": "GEP Support Team",
+        "position": "Support Team",
+        "organization": "Geohazards Exploitation Platform (GEP)",
         "links": [
           {
-            "href": "https://disasterscharter.org",
+            "href": "https://geohazards-tep.eu",
             "rel": "about",
             "type": "text/html"
           }
         ],
-        "contactInstructions": "Contact via the Charter website",
+        "contactInstructions": "For inquiries, please email the GEP support team.",
+        "email": "contact@geohazards-tep.eu",
         "roles": [
-          "principal investigator"
-        ]
-      },
-      {
-        "name": "International Charter",
-        "links": [
-          {
-            "href": "https://disasterscharter.org",
-            "rel": "about",
-            "type": "text/html"
-          }
-        ],
-        "contactInstructions": "Visit the website for more details",
-        "roles": [
-          "processor"
+          "processor",
+          "service provider"
         ]
       }
     ],
@@ -83,26 +71,14 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "openeo-process",
-      "type": "application/json",
-      "title": "openEO Process Definition",
-      "href": "https://docs.disasterscharter.org/services/advanced-band-combination/openeo_process.json"
-    },
-    {
-      "rel": "git",
-      "type": "application/json",
-      "title": "Git source repository",
-      "href": "https://github.com/DisastersCharter/advanced-band-combination.git"
-    },
-    {
       "rel": "service",
-      "type": "application/json",
-      "title": "International Charter Service",
-      "href": "https://disasterscharter.org/services"
+      "type": "text/html"
+      "title": "Geohazards Exploitation Platform Service",
+      "href": "https://geohazards-tep.eu/#!web_store"
     },
     {
       "rel": "license",
-      "href": "https://disasterscharter.org/license"
+      "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
     }
   ]
 }
