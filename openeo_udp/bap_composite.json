@@ -16,9 +16,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": {
-                    "from_parameter": "max_cloud_cover"
-                  }
+                  "y": 75
                 },
                 "result": true
               }
@@ -58,9 +56,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": {
-                    "from_parameter": "max_cloud_cover"
-                  }
+                  "y": 75
                 },
                 "result": true
               }
@@ -23975,15 +23971,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "max_cloud_cover",
-      "description": "The maximum cloud cover percentage to filter Sentinel-2 inputs at full product level.\n    By reducing the percentage, fewer input products are considered, which also potentially increases the risk of missing valid data.  \n    We do not recommend setting it higher than 95%, as this decreases performance by reading very cloudy areas with little chance of finding good pixels.\n    \n    For composites over large time ranges, a reduced value can help to consider only good quality input products, with few undetected clouds.\n    ",
-      "schema": {
-        "type": "number"
-      },
-      "optional": true,
-      "default": 75.0
     },
     {
       "name": "bands",
