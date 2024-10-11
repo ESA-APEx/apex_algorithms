@@ -53,6 +53,10 @@
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/bap_composite/openeo_udp/bap_composite.json",
                 "result": true
             }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/bap_composite/job-results.json",
+            "openEO_2022-05-01Z.tif": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/bap_composite/openEO_2022-05-01Z.tif"
         }
     }
 ]
