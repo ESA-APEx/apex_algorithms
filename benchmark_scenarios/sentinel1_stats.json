@@ -6,7 +6,7 @@
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "s1stats1": {
-                "process_id": "s1_stats",
+                "process_id": "sentinel1_stats",
                 "namespace":  "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/S1_stats/openeo_udp/sentinel1_stats/sentinel1_stats.json",
                 "arguments": {
                     "spatial_extent": {
