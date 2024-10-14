@@ -100,7 +100,7 @@
             "rel": "example",
             "type": "application/json",
             "title": "Example output",
-            "href": "https://openeo.dataspace.copernicus.eu/openeo/1.1/jobs/j-2410035111a348ef96f6778e4be39101/results/assets/M2UyNGUyNTEtMmU5YS00MzhmLTkwYTktZDQ1MDBlNTc2NTc0/195d6d8857a37478fb4b2036c9063340/openEO.nc?expires=1728548058"
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/sentinel_1/s1_stats.nc"
         }
     ]
 }

@@ -1,3 +1,4 @@
+
 import json
 from pathlib import Path
 
@@ -5,8 +6,6 @@ import openeo
 from openeo.api.process import Parameter
 from openeo.rest.udp import build_process_dict
 from openeo.processes import array_create, array_concat
-
-# TODO #15 where to put reusable helpers? e.g. load description from README.md, dummy openeo connection, properly write to JSON file, ...
 
 
 def generate() -> dict:
@@ -60,7 +59,7 @@ def generate() -> dict:
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[
             spatial_extent,
-            temporal_extent,
+            temporal_extent
         ],
         returns=None,  # TODO
         categories=None,  # TODO

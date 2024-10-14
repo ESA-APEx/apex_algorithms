@@ -7,7 +7,7 @@
         "process_graph": {
             "s1stats1": {
                 "process_id": "s1_stats",
-                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/s1_stats",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEX/apex_algorithms/main/openeo_udp/sentinel1_stats.json",
                 "arguments": {
                     "spatial_extent": {
                         "east": 8.92,
@@ -19,9 +19,9 @@
                         "2023-05-01",
                         "2023-07-30"
                     ]
-                }
-            },
-            "result": true
+                },
+                "result": true  
+            }
         }
     }
 ]
