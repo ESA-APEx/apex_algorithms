@@ -1,0 +1,245 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "VH",
+          "VV"
+        ],
+        "id": "SENTINEL1_GRD",
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "sarbackscatter1": {
+      "process_id": "sar_backscatter",
+      "arguments": {
+        "coefficient": "sigma0-ellipsoid",
+        "contributing_area": false,
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "elevation_model": null,
+        "ellipsoid_incidence_angle": false,
+        "local_incidence_angle": false,
+        "mask": false,
+        "noise_removal": true
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "sarbackscatter1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "min1": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "max1": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "sd1": {
+              "process_id": "sd",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "arraycreate1": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "min1"
+                  },
+                  {
+                    "from_node": "max1"
+                  },
+                  {
+                    "from_node": "mean1"
+                  },
+                  {
+                    "from_node": "sd1"
+                  }
+                ]
+              }
+            },
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.1,
+                  0.5,
+                  0.9
+                ]
+              }
+            },
+            "arrayconcat1": {
+              "process_id": "array_concat",
+              "arguments": {
+                "array1": {
+                  "from_node": "arraycreate1"
+                },
+                "array2": {
+                  "from_node": "quantiles1"
+                }
+              },
+              "result": true
+            }
+          }
+        },
+        "target_dimension": "bands"
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "bands",
+        "target": [
+          "VH_min",
+          "VH_max",
+          "VH_mean",
+          "VH_sd",
+          "VH_q10",
+          "VH_q50",
+          "VH_q90",
+          "VV_min",
+          "VV_max",
+          "VV_mean",
+          "VV_sd",
+          "VV_q10",
+          "VV_q50",
+          "VV_q90"
+        ]
+      },
+      "result": true
+    }
+  },
+  "id": "sentinel1_stats",
+  "summary": "Calculate Sentinel-1 SAR stats",
+  "description": "Calculate S1 SAR stats (min, max, mean, sd, q10, q50, q90). \n\nThis service can cost an approximate of 3-5 credits per sq km. \nThis cost is based on resource consumption only and added-value cost has not been included.\n",
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Spatial extent specified as a bounding box with 'west', 'south', 'east' and 'north' fields.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      },
+      "default": {
+        "west": 8.82,
+        "south": 44.4,
+        "east": 8.92,
+        "north": 44.45
+      },
+      "optional": true
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2023-05-01",
+        "2023-07-30"
+      ],
+      "optional": true
+    }
+  ]
+}
