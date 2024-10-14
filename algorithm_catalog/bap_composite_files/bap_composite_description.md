@@ -43,7 +43,7 @@ Memory usage: 25,839,702.134 mb-seconds
 Network Received: 71,733,702,645 b
 ```
 
-The relative cost is 0.2 CDSE platform credits per km² for a 1 month input window.
+The relative cost is 0.2 CDSE platform credits per km² for a 1 month input window for three bands.
 The cost per input pixel is 0.022 credits per megapixel.
 
 ## 12-month composite over Denmark
@@ -79,10 +79,13 @@ White, J.C.; Wulder, M.A.; Hobart, G.W.; Luther, J.E.; Hermosilla, T.; Griffiths
 # Known limitations
 
 - Due to the nature of the OpenEO implementation of this algorithm, the spatial extent has to be in inline GeoJSON format. 
-- The BAP score is fully dependent on the quality of the SCL band. Wrongly classified pixels may therefore a receive a higher score than expected.
+- The BAP score is fully dependent on the quality of the SCL band. Wrongly classified pixels may therefore receive a higher score than expected.
 - The method is efficient up to 50x50km areas. For larger areas of interest, we recommend splitting the area into smaller tiles.
 <!-- For different areas of interest, the user may need to tweak the relative weights of the three scores in BAP. This tweaking can be a lengthy procedure that is largely based on trial-and-error. Currently not applicable as the weights are not parametrized in the first version. -->
 
 # Known artifacts
 
-Residual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons. The cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds.
+Residual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons. The cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds. 
+The picture below shows a composite image with some cloud shadow pixels remaining. Because these pixels were not classified as cloud shadow in the SCL band, they are not masked out in the final composite.  
+
+![cloud-shadow-artifacts-bap.png](./cloud-shadow-artifacts-bap.png)
