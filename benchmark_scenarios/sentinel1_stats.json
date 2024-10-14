@@ -7,7 +7,7 @@
         "process_graph": {
             "s1stats1": {
                 "process_id": "s1_stats",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEX/apex_algorithms/main/openeo_udp/sentinel1_stats.json",
+                "namespace":  "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/S1_stats/openeo_udp/sentinel1_stats/sentinel1_stats.json",
                 "arguments": {
                     "spatial_extent": {
                         "east": 8.92,
