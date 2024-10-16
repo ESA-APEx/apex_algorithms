@@ -1,4 +1,4 @@
-#%%
+# TODO use UDF dependency archives as in world cereal example
 
 import openeo
 from openeo.api.process import Parameter
@@ -28,6 +28,8 @@ spatial_extent = Parameter.bounding_box(
 temporal_extent = Parameter.temporal_interval(
         name="temporal_extent", default=["2023-05-01", "2023-09-30"]
     )
+
+#TODO investigate setting max cloud cover and kernel size as parameters as well
 
 
 def generate() -> dict:

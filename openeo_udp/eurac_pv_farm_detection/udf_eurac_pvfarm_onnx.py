@@ -6,12 +6,6 @@ from typing import Dict
 import xarray as xr
 import numpy as np
 import functools
-import logging
-
-def _setup_logging():
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-    return logger
 
 dependencies_url = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip"
 model_url = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip"
