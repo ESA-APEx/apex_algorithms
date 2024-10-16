@@ -45,7 +45,7 @@
         ],
         "contactInstructions": "Contact via VITO",
         "roles": [
-          "integrator in openEO"
+          "principal investigator"
         ]
       },
       {
@@ -72,9 +72,9 @@
       }
     ],
     "formats": [
-      "GeoTiff"
+      "GeoTiff", "netCDF"
     ],
-    "license": "other"
+    "license": "CC-BY-4.0"
   },
   "linkTemplates": [],
   "links": [
