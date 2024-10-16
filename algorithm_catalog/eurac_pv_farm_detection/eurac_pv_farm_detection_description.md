@@ -55,9 +55,11 @@ Below we overlay a Sentinel2-RGB image with the ML classification, thereby highl
 
 # Known limitations
 
-No effort has been made to optimize the algorithm and its workflow for running it on areas larger than 20x20km**2. 
+The algoritm was validated up to an area equal to 20x20km. For larger spatial and/or temporal extents, dedicated openEO job settings might be required to ensure that the process runs in an optimal configuration. 
 
 
 # Known artifacts
 
-A dilatation and errosion mask is aplied to remove small patches in the classified output, which are unlikely PV solar farms. For computation efficiency the kernel size was kept to 3, thereby limiting its effectiveness.  
+A dilatation and errosion mask is aplied to remove small patches in the classified output, which are unlikely PV solar farms. For computation efficiency the kernel size was kept to 3, thereby limiting its effectiveness.  As a result, small misclassified areas might still appear as seen in: 
+
+![pv_ml_output](pv_ml_output.png)

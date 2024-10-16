@@ -10,10 +10,10 @@
     "type": "apex_algorithm",
     "title": "EURAC Photovoltaic Farms mapping",
     "description": "A photovoltaic farm algorithm.",
-    "cost_estimate": #TODO,
+    "cost_estimate": "0.001",
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "photovoltaic",
+      "photovoltaic farm",
       "detection"
     ],
     "language": {
@@ -66,6 +66,7 @@
     "themes": [
       {
         "concepts": [
+          { "id": "Sentinel-2 MSI" }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
