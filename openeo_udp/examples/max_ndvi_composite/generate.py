@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 
 import openeo
-from attr.validators import optional
 from openeo.api.process import Parameter
 from openeo.processes import array_create
 from openeo.rest.udp import build_process_dict
@@ -64,7 +63,6 @@ def generate() -> dict:
         "snow": 11,
     }
 
-    from openeo.processes import any
 
     cloud_mask = scl.apply(process=scl_to_masks)
 
