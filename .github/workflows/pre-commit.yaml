@@ -1,4 +1,4 @@
-name: Run pre-commit code quality checks
+name: Code quality checks using pre-commit
 
 on:
   pull_request:
