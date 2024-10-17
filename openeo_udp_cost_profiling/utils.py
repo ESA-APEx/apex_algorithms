@@ -113,7 +113,7 @@ def get_job_cost_info(connection, job_id):
     try:
         job = connection.job(job_id).describe_job()
         return float(job["costs"])
-    except:
+    except Exception:
         return None
 
 
@@ -155,7 +155,7 @@ def plot_spatio_temporal_cost_profile(df):
 
     # Plotting the heatmap using seaborn
     plt.figure(figsize=(12, 8))
-    ax = sns.heatmap(
+    sns.heatmap(
         job_cost_grid,
         cmap=cmap,
         norm=norm,
