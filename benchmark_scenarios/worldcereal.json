@@ -16,16 +16,21 @@
             "north": 51.18469636040683,
             "crs": "EPSG:4326"
           },
-          "temporal_extent": ["2020-11-01","2021-10-31"]
+          "temporal_extent": [
+            "2020-11-01",
+            "2021-10-31"
+          ]
         },
         "result": true
       }
     },
     "job_options": {
-        "driver-memory": "4g",
-        "executor-memory": "1500m",
-        "python-memory": "5g",
-        "udf-dependency-archives": ["https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"]
+      "driver-memory": "4g",
+      "executor-memory": "1500m",
+      "python-memory": "5g",
+      "udf-dependency-archives": [
+        "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
+      ]
     }
   }
 ]

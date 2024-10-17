@@ -65,14 +65,19 @@
     "themes": [
       {
         "concepts": [
-          { "id": "NORMALIZED DIFFERENCE VEGETATION INDEX (NDVI)" },
-          { "id": "Sentinel-2 MSI" }
+          {
+            "id": "NORMALIZED DIFFERENCE VEGETATION INDEX (NDVI)"
+          },
+          {
+            "id": "Sentinel-2 MSI"
+          }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
     ],
     "formats": [
-      "GeoTiff", "netCDF"
+      "GeoTiff",
+      "netCDF"
     ],
     "license": "CC-BY-4.0"
   },
