@@ -1,4 +1,4 @@
-name: pre-commit
+name: Run pre-commit code quality checks
 
 on:
   pull_request:
