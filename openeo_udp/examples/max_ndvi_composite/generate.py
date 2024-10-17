@@ -31,9 +31,9 @@ def generate() -> dict:
     )
 
     max_cloud_description = """The maximum cloud cover percentage to filter Sentinel-2 inputs at full product level.
-    By reducing the percentage, fewer input products are considered, which also potentially increases the risk of missing valid data.  
+    By reducing the percentage, fewer input products are considered, which also potentially increases the risk of missing valid data.
     We do not recommend setting it higher than 95%, as this decreases performance by reading very cloudy areas with little chance of finding good pixels.
-    
+
     For composites over large time ranges, a reduced value can help to consider only good quality input products, with few undetected clouds.
     """
     max_cloud_cover_param = Parameter.number(

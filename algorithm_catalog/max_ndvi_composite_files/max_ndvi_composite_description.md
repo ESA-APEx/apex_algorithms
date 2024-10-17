@@ -10,7 +10,7 @@ which leads to visual discontinuities in the result.
 
 # Performance characteristics
 
-The method is computationally efficient, as it only requires the B04, B08 and SCL bands to determine the rank score. Loading 
+The method is computationally efficient, as it only requires the B04, B08 and SCL bands to determine the rank score. Loading
 of other bands can be minimized to read only selected observations.
 
 
@@ -33,7 +33,7 @@ https://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/
 The processing platform reported these usage statistics for the example:
 
 ```
-Credits: 63 
+Credits: 63
 CPU usage: 47.743,722 cpu-seconds
 Wall time: 1.948 seconds
 Input Pixel 10.997,635 mega-pixel
@@ -75,8 +75,8 @@ https://www.nature.com/articles/s43016-021-00429-z
 
 # Known limitations
 
-The method uses a vegetation index as scoring metric to determine the best pixel, making it only suitable for land applications. 
-Bare or urban areas may not be well represented in the composite. 
+The method uses a vegetation index as scoring metric to determine the best pixel, making it only suitable for land applications.
+Bare or urban areas may not be well represented in the composite.
 
 It favours the observation which is least contaminated by atmospheric effects, but does not guarantee a fully uncontaminated composite.
 
