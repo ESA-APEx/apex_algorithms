@@ -1,9 +1,8 @@
 import json
 
-from esa_apex_toolbox.algorithms import Algorithm
-
 import pytest
 from apex_algorithm_qa_tools.common import get_project_root
+from esa_apex_toolbox.algorithms import Algorithm
 
 
 @pytest.mark.parametrize(
