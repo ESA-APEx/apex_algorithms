@@ -1,0 +1,88 @@
+{
+  "id": "sar_coin",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-10-09T00:00:00Z",
+    "updated": "2024-10-09T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "SAR-COIN: Coherence and Intensity Composite",
+    "description": "The SAR-COIN service computes the coherence and backscatter from a pair of Sentinel-1 SLC datasets. It produces geocoded composites and red-cyan visual products to highlight changes in coherence and backscatter.",
+    "cost_estimate": 2.50,
+    "cost_unit": "€ per input product",
+    "keywords": [
+      "SAR",
+      "coherence",
+      "backscatter",
+      "Sentinel-1",
+      "disaster management",
+      "remote sensing"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "GEP Support Team",
+        "position": "Support Team",
+        "organization": "Geohazards Exploitation Platform (GEP)",
+        "links": [
+          {
+            "href": "https://geohazards-tep.eu",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries, please email the GEP support team.",
+        "email": "contact@geohazards-tep.eu",
+        "roles": [
+          "processor",
+          "service provider"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "DISASTER MANAGEMENT"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      "GeoTiff",
+      "PNG",
+      "JPEG"
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "title": "Geohazards Exploitation Platform Service",
+      "href": "https://geohazards-tep.eu/#!web_store"
+    },
+    {
+      "rel": "license",
+      "type": "application/pdf",
+      "title": "End-User License Agreement",
+      "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    }
+  ]
+}
