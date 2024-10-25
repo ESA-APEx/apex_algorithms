@@ -1,48 +1,15 @@
-import sys
-import os
-import requests
-import zipfile
-from typing import Dict
-import xarray as xr
-import numpy as np
 import functools
+from typing import Dict
 
-dependencies_url = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip"
-model_url = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip"
+import numpy as np
+import xarray as xr
+from MLconfig import setup_model_and_dependencies
 
-# Function to download and extract zip files
-def download_and_extract(url, extract_to):
-    """
-    Downloads a zip file from the given URL and extracts it to the specified directory.
-    """
-    response = requests.get(url, stream=True)
-    zip_path = os.path.join(extract_to, "temp.zip")
-    
-    with open(zip_path, 'wb') as file:
-        file.write(response.content)
-    
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_to)
-    
-    os.remove(zip_path)  # Clean up the zip file
+DEPENDENCIES_URL = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip"
+MODEL_URL = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip"
 
-# Prepare paths for dependencies and model
-dependencies_dir = "onnx_deps"
-model_dir = "onnx_models"
-
-# Ensure directories exist
-os.makedirs(dependencies_dir, exist_ok=True)
-os.makedirs(model_dir, exist_ok=True)
-
-# Download and extract dependencies and model if not already present
-if not os.listdir(dependencies_dir):
-    download_and_extract(dependencies_url, dependencies_dir)
-    
-if not os.listdir(model_dir):
-    download_and_extract(model_url, model_dir)
-
+setup_model_and_dependencies(model_url = MODEL_URL, dependencies_url=DEPENDENCIES_URL)
 # Add dependencies to the Python path
-sys.path.insert(0, dependencies_dir)
 import onnxruntime as ort  # Import after downloading dependencies
 
 
@@ -58,14 +25,14 @@ def load_onnx_model(model_name: str) -> ort.InferenceSession:
     Should you have to download the model from a remote location, you can add the download code here, and cache the model.
 
     Make sure that the arguments of the method you add the @functools.lru_cache decorator to are hashable.
-    Be careful with using this decorator for class methods, as the self argument is not hashable. 
+    Be careful with using this decorator for class methods, as the self argument is not hashable.
     In that case you can use a static method or make sure your class is hashable (more difficult): https://docs.python.org/3/faq/programming.html#faq-cache-method-calls.
 
-    More information on this functool can be found here: 
+    More information on this functool can be found here:
     https://docs.python.org/3/library/functools.html#functools.lru_cache
     """
     # The onnx_models folder contains the content of the model archive provided in the job options
-    return ort.InferenceSession(f"onnx_models/{model_name}", providers= ["CPUExecutionProvider"])
+    return ort.InferenceSession(f"model_files/{model_name}", providers= ["CPUExecutionProvider"])
 
 
 def preprocess_input(input_xr: xr.DataArray, ort_session: ort.InferenceSession) -> tuple:
@@ -96,7 +63,7 @@ def postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tupl
 
     return predicted_labels
 
-def create_output_xarray(predicted_labels: np.ndarray, 
+def create_output_xarray(predicted_labels: np.ndarray,
                          input_xr: xr.DataArray) -> xr.DataArray:
     """
     Create an xarray DataArray with predicted labels and probabilities stacked along the bands dimension.
@@ -135,17 +102,17 @@ def apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:
     """
     Function that is called for each chunk of data that is processed.
     The function name and arguments are defined by the UDF API.
-    
-    More information can be found here: 
+
+    More information can be found here:
     https://open-eo.github.io/openeo-python-client/udf.html#udf-function-names-and-signatures
 
     CAVEAT: Some users tend to extract the underlying numpy array and preprocess it for the model using Numpy functions.
-        The order of the dimensions in the numpy array might not be the same for each back-end or when running a udf locally, 
-        which can lead to unexpected results. 
+        The order of the dimensions in the numpy array might not be the same for each back-end or when running a udf locally,
+        which can lead to unexpected results.
 
         It is recommended to use the named dimensions of the xarray DataArray to avoid this issue.
         The order of the dimensions can be changed using the transpose method.
-        While it is a better practice to do preprocessing using openeo processes, most operations are also available in Xarray. 
+        While it is a better practice to do preprocessing using openeo processes, most operations are also available in Xarray.
     """
     # Define how you want to handle nan values
     cube = cube.fillna(-999999)
