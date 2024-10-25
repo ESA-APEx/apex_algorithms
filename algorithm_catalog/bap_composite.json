@@ -1,19 +1,19 @@
 {
-  "id": "max_ndvi_composite",
+  "id": "bap_composite",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "properties": {
-    "created": "2024-09-06T00:00:00Z",
-    "updated": "2024-09-06T00:00:00Z",
+    "created": "2024-10-09T00:00:00Z",
+    "updated": "2024-10-09T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "Max NDVI Composite based on Sentinel-2 data",
-    "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their maximum NDVI.",
-    "cost_estimate": 1,
+    "title": "Best-Available-Pixel Composite based on Sentinel-2 data",
+    "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their highest BAP score.",
+    "cost_estimate": 0.2,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "vegetation"
+      "composite"
     ],
     "language": {
       "code": "en-US",
@@ -65,19 +65,13 @@
     "themes": [
       {
         "concepts": [
-          {
-            "id": "NORMALIZED DIFFERENCE VEGETATION INDEX (NDVI)"
-          },
-          {
-            "id": "Sentinel-2 MSI"
-          }
+          { "id": "Sentinel-2 MSI" }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
     ],
     "formats": [
-      "GeoTiff",
-      "netCDF"
+      "GeoTiff", "netCDF"
     ],
     "license": "CC-BY-4.0"
   },
@@ -87,7 +81,7 @@
       "rel": "openeo-process",
       "type": "application/json",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/bap_composite/openeo_udp/bap_composite.json"
     },
     {
       "rel": "service",
@@ -99,7 +93,7 @@
       "rel": "example",
       "type": "application/json",
       "title": "Example output",
-      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json"
+      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/bap_composite_denmark/collection.json"
     }
   ]
 }
