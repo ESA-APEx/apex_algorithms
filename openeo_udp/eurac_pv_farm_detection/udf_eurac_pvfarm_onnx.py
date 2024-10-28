@@ -1,4 +1,5 @@
 import functools
+import logging
 import os
 import sys
 import zipfile
@@ -7,7 +8,7 @@ from typing import Dict
 import numpy as np
 import requests
 import xarray as xr
-import logging
+
 
 def _setup_logging():
     logging.basicConfig(level=logging.INFO)
@@ -21,6 +22,7 @@ def _setup_logging():
 DEPENDENCIES_DIR = "onnx_dependencies"
 MODEL_DIR = "model_files"
 
+
 def download_file(url, path):
     """
     Downloads a file from the given URL to the specified path.
@@ -28,6 +30,7 @@ def download_file(url, path):
     response = requests.get(url, stream=True)
     with open(path, "wb") as file:
         file.write(response.content)
+
 
 def extract_zip(zip_path, extract_to):
     """
@@ -37,12 +40,14 @@ def extract_zip(zip_path, extract_to):
         zip_ref.extractall(extract_to)
     os.remove(zip_path)  # Clean up the zip file after extraction
 
+
 def add_directory_to_sys_path(directory):
     """
     Adds a directory to the Python sys.path if it's not already present.
     """
     if directory not in sys.path:
         sys.path.append(directory)
+
 
 def setup_model_and_dependencies(model_url, dependencies_url):
     """
@@ -73,11 +78,15 @@ def setup_model_and_dependencies(model_url, dependencies_url):
         download_file(model_url, zip_path)
         extract_zip(zip_path, MODEL_DIR)
 
-setup_model_and_dependencies(model_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip",
-                            dependencies_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip")
+
+setup_model_and_dependencies(
+    model_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip",
+    dependencies_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip",
+)
 
 # Add dependencies to the Python path
 import onnxruntime as ort  # Import after downloading dependencies
+
 
 @functools.lru_cache(maxsize=5)
 def load_onnx_model(model_name: str) -> ort.InferenceSession:
@@ -89,6 +98,7 @@ def load_onnx_model(model_name: str) -> ort.InferenceSession:
     return ort.InferenceSession(
         f"{MODEL_DIR}/{model_name}", providers=["CPUExecutionProvider"]
     )
+
 
 def preprocess_input(
     input_xr: xr.DataArray, ort_session: ort.InferenceSession
@@ -103,6 +113,7 @@ def preprocess_input(
     input_np = input_np.astype(np.float32)
     return input_np, input_shape
 
+
 def run_inference(input_np: np.ndarray, ort_session: ort.InferenceSession) -> tuple:
     """
     Run inference using the ONNX runtime session and return predicted labels and probabilities.
@@ -112,6 +123,7 @@ def run_inference(input_np: np.ndarray, ort_session: ort.InferenceSession) -> tu
     predicted_labels = ort_outputs[0]
     return predicted_labels
 
+
 def postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tuple:
     """
     Postprocess the output by reshaping the predicted labels and probabilities into the original spatial structure.
@@ -119,6 +131,7 @@ def postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tupl
     predicted_labels = predicted_labels.reshape(input_shape[0], input_shape[1])
 
     return predicted_labels
+
 
 def create_output_xarray(
     predicted_labels: np.ndarray, input_xr: xr.DataArray
@@ -133,6 +146,7 @@ def create_output_xarray(
         coords={"y": input_xr.coords["y"], "x": input_xr.coords["x"]},
     )
 
+
 def apply_model(input_xr: xr.DataArray) -> xr.DataArray:
     """
     Run inference on the given input data using the provided ONNX runtime session.
@@ -143,7 +157,7 @@ def apply_model(input_xr: xr.DataArray) -> xr.DataArray:
     # Step 1: Load the ONNX model
     logger.info("load onnx model")
     ort_session = load_onnx_model("EURAC_pvfarm_rf_1_median_depth_15.onnx")
-    
+
     # Step 2: Preprocess the input
     logger.info("preprocess input")
     input_np, input_shape = preprocess_input(input_xr, ort_session)
