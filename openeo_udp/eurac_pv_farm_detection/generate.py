@@ -1,12 +1,12 @@
-
-
-#%%
+# %%
 import json
 from pathlib import Path
+
 import numpy as np
 import openeo
 from openeo.api.process import Parameter
 from openeo.rest.udp import build_process_dict
+
 
 # TODO investigate setting max cloud cover and kernel size as parameters as well
 def generate() -> dict:

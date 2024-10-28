@@ -1,11 +1,10 @@
-
 import json
 from pathlib import Path
 
 import openeo
 from openeo.api.process import Parameter
+from openeo.processes import array_concat, array_create
 from openeo.rest.udp import build_process_dict
-from openeo.processes import array_create, array_concat
 
 
 def generate() -> dict:
@@ -57,10 +56,7 @@ def generate() -> dict:
         process_id="sentinel1_stats",
         summary="Calculate Sentinel-1 SAR stats",
         description=(Path(__file__).parent / "README.md").read_text(),
-        parameters=[
-            spatial_extent,
-            temporal_extent
-        ],
+        parameters=[spatial_extent, temporal_extent],
         returns=None,  # TODO
         categories=None,  # TODO
     )

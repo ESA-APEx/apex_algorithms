@@ -169,6 +169,7 @@ def upload_assets_on_fail(pytestconfig: pytest.Config, tmp_path) -> Callable:
                 assert path.is_relative_to(tmp_path)
                 name = str(path.relative_to(tmp_path))
                 uploader.collect(path=path, name=name)
+
     else:
         warnings.warn("Fixture `upload_assets` is a no-op (incomplete set up).")
 

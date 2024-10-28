@@ -331,6 +331,7 @@ def track_metric(
 
         def append(name: MetricName, value: MetricValue):
             reporter.get_metrics(request.node.user_properties).append((name, value))
+
     else:
         warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 

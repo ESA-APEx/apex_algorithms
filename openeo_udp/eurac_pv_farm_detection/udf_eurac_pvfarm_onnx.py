@@ -1,19 +1,19 @@
 import functools
-from typing import Dict
-
-import numpy as np
-import xarray as xr
 import os
 import sys
 import zipfile
+from typing import Dict
 
+import numpy as np
 import requests
+import xarray as xr
 
-#TODO move standard code to UDF repo
+# TODO move standard code to UDF repo
 
 # Fixed directories for dependencies and model files
 DEPENDENCIES_DIR = "onnx_dependencies"
 MODEL_DIR = "model_files"
+
 
 def download_file(url, path):
     """
@@ -74,9 +74,10 @@ DEPENDENCIES_URL = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependenci
 MODEL_URL = "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip"
 
 
-setup_model_and_dependencies(model_url = MODEL_URL, dependencies_url=DEPENDENCIES_URL)
+setup_model_and_dependencies(model_url=MODEL_URL, dependencies_url=DEPENDENCIES_URL)
 # Add dependencies to the Python path
 import onnxruntime as ort  # Import after downloading dependencies
+
 
 @functools.lru_cache(maxsize=5)
 def load_onnx_model(model_name: str) -> ort.InferenceSession:
@@ -97,10 +98,14 @@ def load_onnx_model(model_name: str) -> ort.InferenceSession:
     https://docs.python.org/3/library/functools.html#functools.lru_cache
     """
     # The onnx_models folder contains the content of the model archive provided in the job options
-    return ort.InferenceSession(f"model_files/{model_name}", providers= ["CPUExecutionProvider"])
+    return ort.InferenceSession(
+        f"model_files/{model_name}", providers=["CPUExecutionProvider"]
+    )
 
 
-def preprocess_input(input_xr: xr.DataArray, ort_session: ort.InferenceSession) -> tuple:
+def preprocess_input(
+    input_xr: xr.DataArray, ort_session: ort.InferenceSession
+) -> tuple:
     """
     Preprocess the input DataArray by ensuring the dimensions are in the correct order,
     reshaping it, and returning the reshaped numpy array and the original shape.
@@ -111,6 +116,7 @@ def preprocess_input(input_xr: xr.DataArray, ort_session: ort.InferenceSession) 
     input_np = input_np.astype(np.float32)
     return input_np, input_shape
 
+
 def run_inference(input_np: np.ndarray, ort_session: ort.InferenceSession) -> tuple:
     """
     Run inference using the ONNX runtime session and return predicted labels and probabilities.
@@ -120,6 +126,7 @@ def run_inference(input_np: np.ndarray, ort_session: ort.InferenceSession) -> tu
     predicted_labels = ort_outputs[0]
     return predicted_labels
 
+
 def postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tuple:
     """
     Postprocess the output by reshaping the predicted labels and probabilities into the original spatial structure.
@@ -128,8 +135,10 @@ def postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tupl
 
     return predicted_labels
 
-def create_output_xarray(predicted_labels: np.ndarray,
-                         input_xr: xr.DataArray) -> xr.DataArray:
+
+def create_output_xarray(
+    predicted_labels: np.ndarray, input_xr: xr.DataArray
+) -> xr.DataArray:
     """
     Create an xarray DataArray with predicted labels and probabilities stacked along the bands dimension.
     """
@@ -137,11 +146,9 @@ def create_output_xarray(predicted_labels: np.ndarray,
     return xr.DataArray(
         predicted_labels,
         dims=["y", "x"],
-        coords={
-            'y': input_xr.coords['y'],
-            'x': input_xr.coords['x']
-        }
+        coords={"y": input_xr.coords["y"], "x": input_xr.coords["x"]},
     )
+
 
 def apply_model(input_xr: xr.DataArray) -> xr.DataArray:
     """
@@ -162,6 +169,7 @@ def apply_model(input_xr: xr.DataArray) -> xr.DataArray:
 
     # Step 5: Create the output xarray
     return create_output_xarray(predicted_labels, input_xr)
+
 
 def apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:
     """
