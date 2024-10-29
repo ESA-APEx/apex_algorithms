@@ -9,11 +9,8 @@ import numpy as np
 import requests
 import xarray as xr
 
+from openeo.udf import inspect
 
-def _setup_logging():
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-    return logger
 
 
 # TODO move standard code to UDF repo
@@ -48,22 +45,22 @@ def add_directory_to_sys_path(directory):
     if directory not in sys.path:
         sys.path.append(directory)
 
-
+@functools.lru_cache(maxsize=5)
 def setup_model_and_dependencies(model_url, dependencies_url):
     """
     Main function to set up the model and dependencies by downloading, extracting,
     and adding necessary directories to sys.path.
     """
 
-    logger = _setup_logging()
-    logger.info("Create directories")
+    inspect(message="Create directories")
     # Ensure base directories exist
     os.makedirs(DEPENDENCIES_DIR, exist_ok=True)
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     # Download and extract dependencies if not already present
     if not os.listdir(DEPENDENCIES_DIR):
-        logger.info("Extract dependencies")
+
+        inspect(message="Extract dependencies")
         zip_path = os.path.join(DEPENDENCIES_DIR, "temp.zip")
         download_file(dependencies_url, zip_path)
         extract_zip(zip_path, DEPENDENCIES_DIR)
@@ -73,7 +70,8 @@ def setup_model_and_dependencies(model_url, dependencies_url):
 
     # Download and extract model if not already present
     if not os.listdir(MODEL_DIR):
-        logger.info("Extract the model")
+
+        inspect(message="Extract model")
         zip_path = os.path.join(MODEL_DIR, "temp.zip")
         download_file(model_url, zip_path)
         extract_zip(zip_path, MODEL_DIR)
@@ -152,26 +150,25 @@ def apply_model(input_xr: xr.DataArray) -> xr.DataArray:
     Run inference on the given input data using the provided ONNX runtime session.
     This method is called for each timestep in the chunk received by apply_datacube.
     """
-    logger = _setup_logging()
 
     # Step 1: Load the ONNX model
-    logger.info("load onnx model")
+    inspect(message="load onnx model")
     ort_session = load_onnx_model("EURAC_pvfarm_rf_1_median_depth_15.onnx")
 
     # Step 2: Preprocess the input
-    logger.info("preprocess input")
+    inspect(message="preprocess input")
     input_np, input_shape = preprocess_input(input_xr, ort_session)
 
     # Step 3: Perform inference
-    logger.info("run model inference")
+    inspect(message="run model inference")
     predicted_labels = run_inference(input_np, ort_session)
 
     # Step 4: Postprocess the output
-    logger.info("post process output")
+    inspect(message="post process output")
     predicted_labels = postprocess_output(predicted_labels, input_shape)
 
     # Step 5: Create the output xarray
-    logger.info("create output xarray")
+    inspect(message="create output xarray")
     return create_output_xarray(predicted_labels, input_xr)
 
 
