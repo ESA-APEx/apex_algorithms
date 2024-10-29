@@ -18,7 +18,7 @@ of other bands can be minimized to read only selected observations.
 
 The image below shows a typical result over an agricultural area.
 
-![max_ndvi_example.png](max_ndvi_composite_files/max_ndvi_example.png)
+![max_ndvi_example.png](https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/max_ndvi_composite_files/max_ndvi_example.png)
 
 The examples below show typical resource usage figures. They illustrate that the cost varies as a function of the parameters,
 and most importantly that it is not possible to linearly extrapolate the cost from one example to another.
@@ -87,9 +87,9 @@ For individual time windows of up to 3 months, the method was efficient up to 10
 
 Artifacts are expected over water and urban areas.
 
-![max_ndvi_water_artifacts.png](max_ndvi_composite_files/max_ndvi_water_artifacts.png)
+![max_ndvi_water_artifacts.png](https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/max_ndvi_composite_files/max_ndvi_water_artifacts.png)
 
 Residual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons.
 The cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds.
 
-![max_ndvi_cloud_artifacts.png](max_ndvi_composite_files/max_ndvi_cloud_artifacts.png)
+![max_ndvi_cloud_artifacts.png](https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/max_ndvi_composite_files/max_ndvi_cloud_artifacts.png)
