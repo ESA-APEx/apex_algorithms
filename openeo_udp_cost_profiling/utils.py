@@ -163,7 +163,7 @@ def plot_spatio_temporal_cost_profile(df):
         fmt=".1f",
         xticklabels=temporal_range,
         yticklabels=spatial_range,
-        cbar_kws={"label": f'Average {'job_cost'}'},
+        cbar_kws={"label": f"Average {'job_cost'}"},
     )
 
     plt.xlabel("Temporal Range (square km)")
@@ -188,7 +188,7 @@ def scatter_cost_vs_input_pixel(df):
     )
 
     plt.xlabel("Input Pixel (Mega-Pixel)")
-    plt.ylabel(f'{'job_cost'}')
+    plt.ylabel(f"{'job_cost'}")
     plt.title("Scatter Plot with Regression Line: Input Pixel vs Job Cost")
 
     plt.grid(True)
