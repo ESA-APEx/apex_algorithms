@@ -7,7 +7,7 @@
       "process_graph": {
         "maxndvi1": {
           "process_id": "eurac_pv_farm_detection",
-          "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4003046e3b79ec3ab8dace888a231655db389d66/openeo_udp/eurac_pv_farm_detection/udf_eurac_pvfarm_onnx.py",
+          "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4003046e3b79ec3ab8dace888a231655db389d66/openeo_udp/eurac_pv_farm_detection/eurac_pv_farm_detection.json",
           "arguments": {
             "bbox": {
                 "east": 16.414,
