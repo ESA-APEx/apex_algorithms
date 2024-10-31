@@ -29,11 +29,11 @@ jobs:
             --random-subset=1 \
             --html report/report.html --self-contained-html \
             --track-metrics-json=report/metrics.json \
-            --track-metrics-parquet-s3-bucket="APEx-benchmarks" \
+            --track-metrics-parquet-s3-bucket="apex-benchmarks" \
             --track-metrics-parquet-s3-key="metrics/v1/metrics.parquet" \
             --track-metrics-parquet-partitioning="YYYYMM" \
             --basetemp=tmp_path_root \
-            --upload-assets-s3-bucket="APEx-benchmarks"
+            --upload-assets-s3-bucket="apex-benchmarks"
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
