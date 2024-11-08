@@ -65,5 +65,9 @@ def test_run_benchmark(
     )
     # TODO: allow to override rtol/atol options of assert_job_results_allclose
     assert_job_results_allclose(
-        actual=actual_dir, expected=reference_dir, tmp_path=tmp_path
+        actual=actual_dir,
+        expected=reference_dir,
+        tmp_path=tmp_path,
+        rtol=scenario.reference_options.get("rtol", 1e-6),
+        atol=scenario.reference_options.get("atol", 1e-6),
     )
