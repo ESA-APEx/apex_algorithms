@@ -9,7 +9,7 @@
         "process_id": "max_ndvi_composite",
         "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
         "arguments": {
-          "bbox": {
+          "spatial_extent": {
             "west": 5.07,
             "east": 5.09,
             "south": 51.21,
