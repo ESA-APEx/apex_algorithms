@@ -19,3 +19,4 @@ which have the following properties:
 | backend         | string       | **REQUIRED.** The openEO backend URL to be used. |
 | process_graph   | object       | **REQUIRED.** The openEO process graph to be executed. |
 | reference_data  | object       | Expected/reference data of the benchmark, as a mapping of output names to (e.g. object storage) URLs. |
+| reference_options | object     | Optional settings for reference comparisong, e.g. "rtol" for relative tolerance and "atol" for absolute tolerance. |
