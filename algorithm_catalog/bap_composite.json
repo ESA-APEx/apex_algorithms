@@ -81,11 +81,7 @@
       "rel": "openeo-process",
       "type": "application/json",
       "title": "openEO Process Definition",
-<<<<<<< HEAD
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/openeo_udp/bap_composite.json"
-=======
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/openeo_udp/bap_composite.json"
->>>>>>> 083defa (fix: update UDPs description and replace broken image links with raw github links)
     },
     {
       "rel": "service",
