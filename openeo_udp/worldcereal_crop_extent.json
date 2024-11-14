@@ -258,7 +258,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": {"from_parameter": "orbit_state"}
+                  "y": "DESCENDING"
                 },
                 "result": true
               }
