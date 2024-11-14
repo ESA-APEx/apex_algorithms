@@ -27,7 +27,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 95.0
+                  "y": 95
                 },
                 "result": true
               }
@@ -58,7 +58,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 95.0
+                  "y": 95
                 },
                 "result": true
               }
@@ -258,7 +258,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": "DESCENDING"
+                  "y": {"from_parameter": "orbit_state"}
                 },
                 "result": true
               }
@@ -311,7 +311,7 @@
         },
         "method": "near",
         "projection": null,
-        "resolution": 20.0
+        "resolution": 20
       }
     },
     "renamelabels3": {
@@ -384,7 +384,7 @@
             "multiply1": {
               "process_id": "multiply",
               "arguments": {
-                "x": 10.0,
+                "x": 10,
                 "y": {
                   "from_node": "log1"
                 }
@@ -396,7 +396,7 @@
                 "x": {
                   "from_node": "multiply1"
                 },
-                "y": 83.0
+                "y": 83
               }
             },
             "divide1": {
@@ -405,7 +405,7 @@
                 "x": {
                   "from_node": "add1"
                 },
-                "y": 20.0
+                "y": 20
               }
             },
             "power1": {
@@ -467,7 +467,7 @@
             "multiply2": {
               "process_id": "multiply",
               "arguments": {
-                "x": 10.0,
+                "x": 10,
                 "y": {
                   "from_node": "log2"
                 }
@@ -479,7 +479,7 @@
                 "x": {
                   "from_node": "multiply2"
                 },
-                "y": 83.0
+                "y": 83
               }
             },
             "divide2": {
@@ -488,7 +488,7 @@
                 "x": {
                   "from_node": "add2"
                 },
-                "y": 20.0
+                "y": 20
               }
             },
             "power2": {
@@ -1290,6 +1290,19 @@
           ]
         }
       }
+    },
+    {
+      "name": "orbit_state",
+      "description": "The orbit state of the Sentinel-1 data",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "ASCENDING",
+          "DESCENDING"
+        ]
+      },
+      "default": "DESCENDING",
+      "optional": true
     }
   ],
   "minimal_job_options": {
