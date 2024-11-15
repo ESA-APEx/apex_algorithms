@@ -1213,6 +1213,8 @@
     }
   },
   "id": "worldcereal_crop_extent",
+  "summary": "Crop extent mapping using Sentinel-1, Sentinel-2, METEO and Copernicus-30 data",
+  "description": "Load in Sentinel-1, Sentinel-2, METEO and Copernicus-30 data and apply a CatBoost model to map the extent of crops.",
   "parameters": [
     {
       "name": "spatial_extent",
