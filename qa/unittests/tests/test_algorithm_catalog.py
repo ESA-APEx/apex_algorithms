@@ -18,6 +18,8 @@ def test_lint_algorithm_catalog_json_file(path):
         in data["conformsTo"]
     )
 
+    assert "geometry" in data
+
     assert data["properties"]["type"] == "apex_algorithm"
 
     assert "openeo-process" in {k["rel"] for k in data["links"]}
