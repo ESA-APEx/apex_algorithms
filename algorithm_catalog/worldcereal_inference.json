@@ -78,7 +78,9 @@
       }
     ],
     "formats": [
-      "GeoTiff"
+      {
+        "name": "GeoTIFF"
+      }
     ],
     "license": "other"
   },

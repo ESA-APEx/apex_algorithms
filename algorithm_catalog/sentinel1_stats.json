@@ -78,8 +78,12 @@
       }
     ],
     "formats": [
-      "GeoTiff",
-      "netCDF"
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
     ],
     "license": "CC-BY-4.0"
   },
