@@ -7,7 +7,7 @@
     "process_graph": {
       "worldcerealcropextent1": {
         "process_id": "worldcereal_crop_extent",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldcereal_crop_extent_udp/openeo_udp/worldcereal_crop_extent.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/openeo_udp/worldcereal_crop_extent.json",
         "arguments": {
           "spatial_extent": {
             "west": 622694.5968575787,
