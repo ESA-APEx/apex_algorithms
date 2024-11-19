@@ -73,9 +73,9 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "service",
+      "rel": "order",
       "type": "text/html",
-      "title": "Geohazards Exploitation Platform Service",
+      "title": "Request Access",
       "href": "https://geohazards-tep.eu/#!web_store"
     },
     {
@@ -83,6 +83,24 @@
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },    
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-coherence-intensity-0_7_8"
+    },   
+    {
+      "rel": "documentation",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://docs.terradue.com/geohazards-tep/tutorials/rss_snap_s1_coin.html"
+    },  
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/s1-coherence-intensity.0.7.8.cwl"
     }
   ]
 }
