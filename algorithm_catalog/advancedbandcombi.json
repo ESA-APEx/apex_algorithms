@@ -8,8 +8,8 @@
     "created": "2024-10-09T00:00:00Z",
     "updated": "2024-10-09T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "Advanced Band Combination",
-    "description": "A service for advanced band combination to enhance specific features of interest in satellite imagery.",
+    "title": "Advanced Multi-Sensor Band Composite",
+    "description": "This service provides an advanced environment to create a full resolution RGB composite from a fully customizable combination of multiple single band assets from Optical or Radar Calibrated Datasets. The output has the finest resolution as of the input data (only if all selected bands are coming from the same sensor). It also provides co-located single band assets (reflectance or Sigma0 in dB) after reprojection and resampling on the same grid",
     "cost_estimate": 1.50,
     "cost_unit": "€ per input product",
     "keywords": [
@@ -71,9 +71,9 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "service",
+      "rel": "offer",
       "type": "text/html",
-      "title": "Geohazards Exploitation Platform Service",
+      "title": "Request Access",
       "href": "https://geohazards-tep.eu/#!web_store"
     },
     {
@@ -81,6 +81,24 @@
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },    
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/multi-sensor-composite-0_8_15"
+    },   
+    {
+      "rel": "documentation",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://docs.terradue.com/geohazards-tep/tutorials/rss_combi.html"
+    },  
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/multi-sensor-composite-0_8_15.cwl"
     }
   ]
 }
