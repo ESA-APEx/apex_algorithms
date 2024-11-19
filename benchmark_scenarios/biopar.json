@@ -9,7 +9,7 @@
                 "process_id": "BIOPAR",
                 "namespace": "https://openeo.dataspace.copernicus.eu/openeo/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR",
                 "arguments": {
-                    "date": [
+                    "temporal_extent": [
                         "2024-09-01T00:00:00Z",
                         "2024-09-30T00:00:00Z"
                     ],
