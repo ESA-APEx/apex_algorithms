@@ -7,7 +7,7 @@
         "process_graph": {
             "BIOPAR": {
                 "process_id": "BIOPAR",
-                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/biopar_vito/openeo_udp/biopar/biopar.json",
                 "arguments": {
                     "temporal_extent": [
                         "2024-09-01T00:00:00Z",
