@@ -4,6 +4,7 @@
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
+  "geometry": null,
   "properties": {
     "created": "2024-09-06T00:00:00Z",
     "updated": "2024-09-06T00:00:00Z",
@@ -76,8 +77,12 @@
       }
     ],
     "formats": [
-      "GeoTiff",
-      "netCDF"
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
     ],
     "license": "CC-BY-4.0"
   },
