@@ -1,6 +1,6 @@
 # Biophysical Parameters 
 
-Calculate various biophysical parameters for an area defined by a polygon. The result is a GeoTiff file
+Calculate various biophysical parameters for an area defined by a polygon. The result is a raster file
 containing the parameter values. A strict cloudmask is applied, to avoid cloud contamination.
                     
 The **Leaf Area Index (LAI)** is defined as half the total area of a canopy's green elements 
