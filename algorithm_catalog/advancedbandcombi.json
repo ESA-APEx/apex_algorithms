@@ -71,7 +71,7 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "offer",
+      "rel": "order",
       "type": "text/html",
       "title": "Request Access",
       "href": "https://geohazards-tep.eu/#!web_store"
