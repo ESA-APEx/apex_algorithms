@@ -99,7 +99,7 @@
             "rel": "openeo-process",
             "type": "application/json",
             "title": "openEO Process Definition",
-            "href": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/biopar_vito/openeo_udp/biopar/biopar.jsonBIOPAR"
         },
         {
             "rel": "service",

@@ -1,12 +1,12 @@
 [
     {
-        "id": "Biopar_fapar",
+        "id": "biopar",
         "type": "openeo",
         "description": "Calculating FAPAR using Biopar service available in Copernicus Data Space Ecosystem",
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
-            "BIOPAR": {
-                "process_id": "BIOPAR",
+            "biopar1": {
+                "process_id": "biopar",
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/biopar_vito/openeo_udp/biopar/biopar.json",
                 "arguments": {
                     "temporal_extent": [
