@@ -3,9 +3,9 @@
     "id": "biopar",
     "links": [
         {
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/biopar_vito/openeo_udp/biopar/biopar.json",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b5a011a90f4a3050ff8fdf69ca5bc2fd1535881/openeo_udp/biopar/biopar.json",
             "rel": "canonical",
-            "title": "Public URL for user-defined process 'BIOPAR'"
+            "title": "Public URL for user-defined process 'biopar'"
         },
         {
             "href": "https://marketplace-portal.dataspace.copernicus.eu/catalogue/app-details/21",
@@ -72,7 +72,8 @@
             "name": "biopar_type",
             "optional": true,
             "schema": {
-                "type": "string"
+                "type": "string",
+                "enum": ["FAPAR", "LAI", "FCOVER", "CCC", "CWC"]
             }
         }
     ],
