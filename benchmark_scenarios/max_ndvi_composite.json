@@ -7,7 +7,7 @@
     "process_graph": {
       "maxndvi1": {
         "process_id": "max_ndvi_composite",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
         "arguments": {
           "spatial_extent": {
             "west": 5.07,

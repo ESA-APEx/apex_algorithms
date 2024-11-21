@@ -9,7 +9,10 @@ from typing import List
 
 import jsonschema
 import requests
-from apex_algorithm_qa_tools.common import get_project_root
+from apex_algorithm_qa_tools.common import (
+    assert_no_github_feature_branch_refs,
+    get_project_root,
+)
 from openeo.util import TimingLogger
 
 _log = logging.getLogger(__name__)
@@ -93,6 +96,7 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
                     raise ValueError(
                         f"Invalid github.com based namespace {namespace!r}: should be a raw URL"
                     )
+                assert_no_github_feature_branch_refs(namespace)
                 # Inspect openEO process definition URL
                 resp = requests.get(namespace)
                 resp.raise_for_status()

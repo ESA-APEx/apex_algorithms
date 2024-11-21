@@ -257,6 +257,7 @@ class TestTrackMetricsParquet:
             f"{this_month()}/test-run-456-0.parquet",
         ]
 
+    @pytest.mark.slow
     def test_s3_basic(
         self, pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
     ):
@@ -292,6 +293,7 @@ class TestTrackMetricsParquet:
         table = pyarrow.parquet.read_table(f"{s3_bucket}/{s3_key}", filesystem=fs)
         self._check_metrics_pandas(df=table.to_pandas())
 
+    @pytest.mark.slow
     def test_s3_partitioning_simple(
         self,
         pytester: pytest.Pytester,
@@ -349,6 +351,7 @@ class TestTrackMetricsParquet:
             f"{s3_key}/test-run-456-0.parquet",
         ]
 
+    @pytest.mark.slow
     def test_s3_partitioning_yyyymm(
         self,
         pytester: pytest.Pytester,

@@ -1,7 +1,10 @@
 import json
 
 import pytest
-from apex_algorithm_qa_tools.common import get_project_root
+from apex_algorithm_qa_tools.common import (
+    assert_no_github_feature_branch_refs,
+    get_project_root,
+)
 
 
 @pytest.mark.parametrize(
@@ -19,5 +22,9 @@ def test_lint_openeo_udp_json_file(path):
     assert "description" in data
     assert "parameters" in data
     assert "process_graph" in data
+
+    for link in data.get("links", []):
+        assert_no_github_feature_branch_refs(link.get("href"))
+
     # TODO #17 more checks
     # TODO require a standardized openEO "type"? https://github.com/Open-EO/openeo-api/issues/539

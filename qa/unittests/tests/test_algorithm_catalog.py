@@ -1,7 +1,10 @@
 import json
 
 import pytest
-from apex_algorithm_qa_tools.common import get_project_root
+from apex_algorithm_qa_tools.common import (
+    assert_no_github_feature_branch_refs,
+    get_project_root,
+)
 from esa_apex_toolbox.algorithms import Algorithm
 
 
@@ -23,6 +26,10 @@ def test_lint_algorithm_catalog_json_file(path):
     assert data["properties"]["type"] == "apex_algorithm"
 
     assert "openeo-process" in {k["rel"] for k in data["links"]}
+
+    for link in data["links"]:
+        assert_no_github_feature_branch_refs(link.get("href"))
+
     # TODO #17 more checks
 
     algo = Algorithm.from_ogc_api_record(path)
