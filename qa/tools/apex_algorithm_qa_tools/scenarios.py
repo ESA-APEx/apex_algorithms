@@ -30,8 +30,9 @@ class BenchmarkScenario:
     description: str | None = None
     backend: str
     process_graph: dict
-    reference_data: dict | None
-    job_options: dict | None
+    job_options: dict | None = None
+    reference_data: dict = dataclasses.field(default_factory=dict)
+    reference_options: dict = dataclasses.field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, data: dict) -> BenchmarkScenario:
@@ -45,8 +46,9 @@ class BenchmarkScenario:
             description=data.get("description"),
             backend=data["backend"],
             process_graph=data["process_graph"],
-            reference_data=data.get("reference_data"),
+            reference_data=data.get("reference_data", {}),
             job_options=data.get("job_options"),
+            reference_options=data.get("reference_options", {}),
         )
 
 

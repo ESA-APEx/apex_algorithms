@@ -25,6 +25,18 @@
     "process_graph": {
       "type": "object",
       "description": "The openEO process graph to execute."
+    },
+    "job_options": {
+      "type": "object",
+      "description": "Batch job options to use when creating an openEO batch job."
+    },
+    "reference_data": {
+      "type": "object",
+      "description": "Reference data of the benchmark, to compare actual results with."
+    },
+    "reference_options": {
+      "type": "object",
+      "description": "Options to fine-tune how actual and reference results should be compared."
     }
   },
   "required": [

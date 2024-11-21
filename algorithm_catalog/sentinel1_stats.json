@@ -1,20 +1,21 @@
 {
-  "id": "worldcereal_inference",
+  "id": "sentinel1_stats",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
+  "geometry": null,
   "properties": {
-    "created": "2024-05-17T00:00:00Z",
-    "updated": "2024-05-17T00:00:00Z",
+    "created": "2024-10-03T00:00:00Z",
+    "updated": "2024-10-03T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "ESA worldcereal global maize detector",
-    "description": "A maize detection algorithm.",
+    "title": "Sentinel-1 statistics",
+    "description": "A statistics algorithm for Sentinel-1 data, calculating the mean, median, minimum, and maximum values of the data.",
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "agriculture",
-      "crops"
+      "sentinel-1",
+      "statistics"
     ],
     "language": {
       "code": "en-US",
@@ -28,7 +29,7 @@
     ],
     "contacts": [
       {
-        "name": "Kristof Van Tricht",
+        "name": "Pratichhya Sharma",
         "position": "Researcher",
         "organization": "VITO",
         "links": [
@@ -38,7 +39,7 @@
             "type": "text/html"
           },
           {
-            "href": "https://github.com/kvantricht",
+            "href": "https://github.com/pratichhya",
             "rel": "about",
             "type": "text/html"
           }
@@ -67,19 +68,24 @@
       {
         "concepts": [
           {
-            "id": "AGRICULTURE"
+            "id": "Active Remote Sensing"
           },
           {
-            "id": "FIELD CROP PRODUCTS"
+            "id": "Sentinel-1 GRD"
           }
         ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
       }
     ],
     "formats": [
-      "GeoTiff"
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
     ],
-    "license": "other"
+    "license": "CC-BY-4.0"
   },
   "linkTemplates": [],
   "links": [
@@ -87,13 +93,7 @@
       "rel": "openeo-process",
       "type": "application/json",
       "title": "openEO Process Definition",
-      "href": "https://github.com/ESA-APEX/apex_algorithms/blob/main/openeo_udp/worldcereal_inference.json"
-    },
-    {
-      "rel": "git",
-      "type": "application/json",
-      "title": "Git source repository",
-      "href": "https://github.com/WorldCereal/worldcereal-classification.git"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/openeo_udp/sentinel1_stats/sentinel1_stats.json"
     },
     {
       "rel": "service",
@@ -102,8 +102,10 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
-      "rel": "license",
-      "href": "https://apex.esa.int/license"
+      "rel": "example",
+      "type": "application/json",
+      "title": "Example output",
+      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/sentinel_1/s1_stats.nc"
     }
   ]
 }

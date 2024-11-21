@@ -1,0 +1,397 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B02",
+          "B03",
+          "B04",
+          "B05",
+          "B06",
+          "B07",
+          "B08",
+          "B8A",
+          "B11",
+          "B12"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "toscldilationmask1": {
+      "process_id": "to_scl_dilation_mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "mask": {
+          "from_node": "toscldilationmask1"
+        }
+      }
+    },
+    "aggregatetemporalperiod1": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "mask1"
+        },
+        "period": "week",
+        "reducer": {
+          "process_graph": {
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "arrayinterpolatelinear1": {
+              "process_id": "array_interpolate_linear",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "median1": {
+              "process_id": "median",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "import functools\nimport logging\nimport os\nimport sys\nimport zipfile\nfrom typing import Dict\n\nimport numpy as np\nimport requests\nimport xarray as xr\n\nfrom openeo.udf import inspect\n\n\n\n# TODO move standard code to UDF repo\n\n# Fixed directories for dependencies and model files\nDEPENDENCIES_DIR = \"onnx_dependencies\"\nMODEL_DIR = \"model_files\"\n\n\ndef download_file(url, path):\n    \"\"\"\n    Downloads a file from the given URL to the specified path.\n    \"\"\"\n    response = requests.get(url, stream=True)\n    with open(path, \"wb\") as file:\n        file.write(response.content)\n\n\ndef extract_zip(zip_path, extract_to):\n    \"\"\"\n    Extracts a zip file from zip_path to the specified extract_to directory.\n    \"\"\"\n    with zipfile.ZipFile(zip_path, \"r\") as zip_ref:\n        zip_ref.extractall(extract_to)\n    os.remove(zip_path)  # Clean up the zip file after extraction\n\n\ndef add_directory_to_sys_path(directory):\n    \"\"\"\n    Adds a directory to the Python sys.path if it's not already present.\n    \"\"\"\n    if directory not in sys.path:\n        sys.path.append(directory)\n\n@functools.lru_cache(maxsize=5)\ndef setup_model_and_dependencies(model_url, dependencies_url):\n    \"\"\"\n    Main function to set up the model and dependencies by downloading, extracting,\n    and adding necessary directories to sys.path.\n    \"\"\"\n\n    inspect(message=\"Create directories\")\n    # Ensure base directories exist\n    os.makedirs(DEPENDENCIES_DIR, exist_ok=True)\n    os.makedirs(MODEL_DIR, exist_ok=True)\n\n    # Download and extract dependencies if not already present\n    if not os.listdir(DEPENDENCIES_DIR):\n\n        inspect(message=\"Extract dependencies\")\n        zip_path = os.path.join(DEPENDENCIES_DIR, \"temp.zip\")\n        download_file(dependencies_url, zip_path)\n        extract_zip(zip_path, DEPENDENCIES_DIR)\n\n        # Add the extracted dependencies directory to sys.path\n        add_directory_to_sys_path(DEPENDENCIES_DIR)\n\n    # Download and extract model if not already present\n    if not os.listdir(MODEL_DIR):\n\n        inspect(message=\"Extract model\")\n        zip_path = os.path.join(MODEL_DIR, \"temp.zip\")\n        download_file(model_url, zip_path)\n        extract_zip(zip_path, MODEL_DIR)\n\n\nsetup_model_and_dependencies(\n    model_url=\"https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip\",\n    dependencies_url=\"https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip\",\n)\n\n# Add dependencies to the Python path\nimport onnxruntime as ort  # Import after downloading dependencies\n\n\n@functools.lru_cache(maxsize=5)\ndef load_onnx_model(model_name: str) -> ort.InferenceSession:\n    \"\"\"\n    Loads an ONNX model from the onnx_models folder and returns an ONNX runtime session.\n\n    \"\"\"\n    # The onnx_models folder contains the content of the model archive provided in the job options\n    return ort.InferenceSession(\n        f\"{MODEL_DIR}/{model_name}\", providers=[\"CPUExecutionProvider\"]\n    )\n\n\ndef preprocess_input(\n    input_xr: xr.DataArray, ort_session: ort.InferenceSession\n) -> tuple:\n    \"\"\"\n    Preprocess the input DataArray by ensuring the dimensions are in the correct order,\n    reshaping it, and returning the reshaped numpy array and the original shape.\n    \"\"\"\n    input_xr = input_xr.transpose(\"y\", \"x\", \"bands\")\n    input_shape = input_xr.shape\n    input_np = input_xr.values.reshape(-1, ort_session.get_inputs()[0].shape[1])\n    input_np = input_np.astype(np.float32)\n    return input_np, input_shape\n\n\ndef run_inference(input_np: np.ndarray, ort_session: ort.InferenceSession) -> tuple:\n    \"\"\"\n    Run inference using the ONNX runtime session and return predicted labels and probabilities.\n    \"\"\"\n    ort_inputs = {ort_session.get_inputs()[0].name: input_np}\n    ort_outputs = ort_session.run(None, ort_inputs)\n    predicted_labels = ort_outputs[0]\n    return predicted_labels\n\n\ndef postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tuple:\n    \"\"\"\n    Postprocess the output by reshaping the predicted labels and probabilities into the original spatial structure.\n    \"\"\"\n    predicted_labels = predicted_labels.reshape(input_shape[0], input_shape[1])\n\n    return predicted_labels\n\n\ndef create_output_xarray(\n    predicted_labels: np.ndarray, input_xr: xr.DataArray\n) -> xr.DataArray:\n    \"\"\"\n    Create an xarray DataArray with predicted labels and probabilities stacked along the bands dimension.\n    \"\"\"\n\n    return xr.DataArray(\n        predicted_labels,\n        dims=[\"y\", \"x\"],\n        coords={\"y\": input_xr.coords[\"y\"], \"x\": input_xr.coords[\"x\"]},\n    )\n\n\ndef apply_model(input_xr: xr.DataArray) -> xr.DataArray:\n    \"\"\"\n    Run inference on the given input data using the provided ONNX runtime session.\n    This method is called for each timestep in the chunk received by apply_datacube.\n    \"\"\"\n\n    # Step 1: Load the ONNX model\n    inspect(message=\"load onnx model\")\n    ort_session = load_onnx_model(\"EURAC_pvfarm_rf_1_median_depth_15.onnx\")\n\n    # Step 2: Preprocess the input\n    inspect(message=\"preprocess input\")\n    input_np, input_shape = preprocess_input(input_xr, ort_session)\n\n    # Step 3: Perform inference\n    inspect(message=\"run model inference\")\n    predicted_labels = run_inference(input_np, ort_session)\n\n    # Step 4: Postprocess the output\n    inspect(message=\"post process output\")\n    predicted_labels = postprocess_output(predicted_labels, input_shape)\n\n    # Step 5: Create the output xarray\n    inspect(message=\"create output xarray\")\n    return create_output_xarray(predicted_labels, input_xr)\n\n\ndef apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:\n    \"\"\"\n    Function that is called for each chunk of data that is processed.\n    The function name and arguments are defined by the UDF API.\n    \"\"\"\n    # Define how you want to handle nan values\n    cube = cube.fillna(-999999)\n\n    # Apply the model for each timestep in the chunk\n    output_data = apply_model(cube)\n\n    return output_data\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applykernel1": {
+      "process_id": "apply_kernel",
+      "arguments": {
+        "border": 0,
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "factor": 0.1111111111111111,
+        "kernel": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "replace_invalid": 0
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applykernel1"
+        },
+        "process": {
+          "process_graph": {
+            "gte1": {
+              "process_id": "gte",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 1
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "gte1"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applykernel2": {
+      "process_id": "apply_kernel",
+      "arguments": {
+        "border": 0,
+        "data": {
+          "from_node": "apply1"
+        },
+        "factor": 0.1111111111111111,
+        "kernel": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "replace_invalid": 0
+      }
+    },
+    "apply2": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applykernel2"
+        },
+        "process": {
+          "process_graph": {
+            "gt1": {
+              "process_id": "gt",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 0
+              }
+            },
+            "multiply2": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "gt1"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "eurac_pv_farm_detection",
+  "summary": "An openEO process developed by EURAC to detect photovoltaic farms, based on sentinel2 data.",
+  "description": "Photovoltaic farms (PV farms) mapping is essential for establishing valid policies regarding natural resources management and clean energy. An openEO process was developped which uses the predtrained random forest network to efficiently detect the PV farms.\n\nSources:\n\n[1] Kruitwagen, L., et al. A global inventory of photovoltaic solar energy generating units. Nature 598, 604\u2013610 (2021). https://doi.org/10.1038/s41586-021-03957-7\n\n[2] Schramm, M, et al. The openEO API\u2013Harmonising the Use of Earth Observation Cloud Services Using Virtual Data Cube Functionalities. Remote Sens. 2021, 13, 1125. https://doi.org/10.3390/rs13061125\n\n[3] https://github.com/clausmichele/openEO_photovoltaic/tree/main",
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Spatial extent specified as a bounding box with 'west', 'south', 'east' and 'north' fields.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      },
+      "default": {
+        "west": 16.342,
+        "south": 47.962,
+        "east": 16.414,
+        "north": 48.008
+      },
+      "optional": true
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2023-05-01",
+        "2023-09-30"
+      ],
+      "optional": true
+    }
+  ]
+}

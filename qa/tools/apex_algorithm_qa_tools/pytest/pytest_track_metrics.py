@@ -306,10 +306,16 @@ class TrackMetricsReporter:
         return metrics
 
 
+# Type annotation aliases, to make things self-documenting and reusable.
+MetricName = str
+MetricValue = Any
+MetricsTracker = Callable[[MetricName, MetricValue], None]
+
+
 @pytest.fixture
 def track_metric(
     pytestconfig: pytest.Config, request: pytest.FixtureRequest
-) -> Callable[[str, Any], None]:
+) -> MetricsTracker:
     """
     Fixture to record a metric during tests/benchmarks,
     which will be stored in the pytest node's "user_properties".
@@ -323,12 +329,13 @@ def track_metric(
 
     if reporter:
 
-        def append(name: str, value: Any):
+        def append(name: MetricName, value: MetricValue):
             reporter.get_metrics(request.node.user_properties).append((name, value))
+
     else:
         warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 
-        def append(name: str, value: Any):
+        def append(name: MetricName, value: MetricValue):
             pass
 
     return append

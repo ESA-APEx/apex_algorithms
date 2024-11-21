@@ -1,9 +1,8 @@
 import json
 
-from esa_apex_toolbox.algorithms import Algorithm
-
 import pytest
 from apex_algorithm_qa_tools.common import get_project_root
+from esa_apex_toolbox.algorithms import Algorithm
 
 
 @pytest.mark.parametrize(
@@ -18,6 +17,8 @@ def test_lint_algorithm_catalog_json_file(path):
         "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
         in data["conformsTo"]
     )
+
+    assert "geometry" in data
 
     assert data["properties"]["type"] == "apex_algorithm"
 

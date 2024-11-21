@@ -28,6 +28,20 @@ def test_lint_scenario(scenario: BenchmarkScenario):
 
 
 class TestBenchmarkScenario:
+    def test_init_minimal(self):
+        bs = BenchmarkScenario(
+            id="foo",
+            backend="openeo.test",
+            process_graph={},
+        )
+        assert bs.id == "foo"
+        assert bs.description is None
+        assert bs.backend == "openeo.test"
+        assert bs.process_graph == {}
+        assert bs.job_options is None
+        assert bs.reference_data == {}
+        assert bs.reference_options == {}
+
     def test_validation_minimal(self):
         bs = BenchmarkScenario.from_dict(
             {
@@ -38,8 +52,12 @@ class TestBenchmarkScenario:
             }
         )
         assert bs.id == "foo"
+        assert bs.description is None
         assert bs.backend == "openeo.test"
         assert bs.process_graph == {}
+        assert bs.job_options is None
+        assert bs.reference_data == {}
+        assert bs.reference_options == {}
 
     def test_validation_missing_essentials(self):
         with pytest.raises(jsonschema.ValidationError):

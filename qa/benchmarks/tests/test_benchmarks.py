@@ -1,13 +1,20 @@
+import logging
 from pathlib import Path
 
 import openeo
 import pytest
+from apex_algorithm_qa_tools.benchmarks import (
+    collect_metrics_from_job_metadata,
+    collect_metrics_from_results_metadata,
+)
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
     download_reference_data,
     get_benchmark_scenarios,
 )
 from openeo.testing.results import assert_job_results_allclose
+
+_log = logging.getLogger(__name__)
 
 
 @pytest.mark.parametrize(
@@ -41,20 +48,14 @@ def test_run_benchmark(
     # TODO: abort excessively long batch jobs? https://github.com/Open-EO/openeo-python-client/issues/589
     job.start_and_wait()
 
-    job_metadata = job.describe()
-    track_metric("costs", job_metadata.get("costs"))
-    for usage_metric, usage_data in job_metadata.get("usage", {}).items():
-        if "unit" in usage_data and "value" in usage_data:
-            track_metric(
-                f"usage:{usage_metric}:{usage_data['unit']}", usage_data["value"]
-            )
+    collect_metrics_from_job_metadata(job, track_metric=track_metric)
+
+    results = job.get_results()
+    collect_metrics_from_results_metadata(results, track_metric=track_metric)
 
     # Download actual results
     actual_dir = tmp_path / "actual"
-    paths = job.get_results().download_files(
-        target=actual_dir, include_stac_metadata=True
-    )
-
+    paths = results.download_files(target=actual_dir, include_stac_metadata=True)
     # Upload assets on failure
     upload_assets_on_fail(*paths)
 
@@ -64,5 +65,9 @@ def test_run_benchmark(
     )
     # TODO: allow to override rtol/atol options of assert_job_results_allclose
     assert_job_results_allclose(
-        actual=actual_dir, expected=reference_dir, tmp_path=tmp_path
+        actual=actual_dir,
+        expected=reference_dir,
+        tmp_path=tmp_path,
+        rtol=scenario.reference_options.get("rtol", 1e-6),
+        atol=scenario.reference_options.get("atol", 1e-6),
     )

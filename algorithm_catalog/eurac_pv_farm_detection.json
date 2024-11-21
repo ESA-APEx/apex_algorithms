@@ -1,20 +1,21 @@
 {
-  "id": "max_ndvi_composite",
+  "id": "eurac_pv_farm_detection",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "geometry": null,
   "properties": {
-    "created": "2024-09-06T00:00:00Z",
-    "updated": "2024-09-06T00:00:00Z",
+    "created": "2024-10-16T00:00:00Z",
+    "updated": "2024-10-16T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "Max NDVI Composite based on Sentinel-2 data",
-    "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their maximum NDVI.",
-    "cost_estimate": 1,
+    "title": "EURAC Photovoltaic Farms mapping",
+    "description": "A photovoltaic farm algorithm.",
+    "cost_estimate": "0.001",
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "vegetation"
+      "photovoltaic farm",
+      "detection"
     ],
     "language": {
       "code": "en-US",
@@ -28,7 +29,7 @@
     ],
     "contacts": [
       {
-        "name": "Jeroen Dries",
+        "name": "Hans Vanrompay",
         "position": "Researcher",
         "organization": "VITO",
         "links": [
@@ -38,7 +39,7 @@
             "type": "text/html"
           },
           {
-            "href": "https://github.com/jdries",
+            "href": "https://github.com/HansVRP",
             "rel": "about",
             "type": "text/html"
           }
@@ -67,9 +68,6 @@
       {
         "concepts": [
           {
-            "id": "NORMALIZED DIFFERENCE VEGETATION INDEX (NDVI)"
-          },
-          {
             "id": "Sentinel-2 MSI"
           }
         ],
@@ -92,7 +90,13 @@
       "rel": "openeo-process",
       "type": "application/json",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4003046e3b79ec3ab8dace888a231655db389d66/openeo_udp/eurac_pv_farm_detection/eurac_pv_farm_detection.json"
+    },
+    {
+      "rel": "git",
+      "type": "application/json",
+      "title": "Git source repository",
+      "href": "https://github.com/clausmichele/openEO_photovoltaic"
     },
     {
       "rel": "service",
@@ -101,10 +105,8 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
-      "rel": "example",
-      "type": "application/json",
-      "title": "Example output",
-      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json"
+      "rel": "license",
+      "href": "https://apex.esa.int/license"
     }
   ]
 }

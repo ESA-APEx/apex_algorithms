@@ -117,6 +117,7 @@ def connection_factory(request, capfd) -> Callable[[], openeo.Connection]:
         if auth_env_var in os.environ:
             client_credentials = os.environ[auth_env_var]
             provider_id, client_id, client_secret = client_credentials.split("/", 2)
+            _log.info(f"Extracted {provider_id=} {client_id=} from {auth_env_var=}")
             connection.authenticate_oidc_client_credentials(
                 provider_id=provider_id,
                 client_id=client_id,
