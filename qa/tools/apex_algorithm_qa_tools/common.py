@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from pathlib import Path
 from typing import Iterator
 
@@ -33,3 +34,34 @@ def get_project_root() -> Path:
             return candidate
 
     raise RuntimeError("Could not determine project root directory.")
+
+
+def assert_no_github_feature_branch_refs(href: str) -> None:
+    """
+    Check that GitHub links do not point to (ephemeral) feature branches.
+    """
+    # TODO: automatically suggest commit hash based fix?
+    allowed_branches = {"main", "master"}
+
+    # Check for feature branches with explicit "refs/heads" prefix in the URL
+    if match := re.search("//raw.githubusercontent.com/.*/refs/heads/(.*?)/", href):
+        if match.group(1) not in allowed_branches:
+            # TODO: automatically suggest commit hash based fix?
+            raise ValueError(
+                f"Links should not point to ephemeral feature branches: found {match.group(1)!r} in {href!r}"
+            )
+
+    # Also check shorthand URLs without "refs/heads"
+    if match := re.search(
+        "//raw.githubusercontent.com/ESA-APEx/apex_algorithms/(.*?)/", href
+    ):
+        ref = match.group(1)
+        # Only, allow main/master and commit hashes
+        if (
+            not re.fullmatch("[0-9a-f]+", ref)
+            and ref != "refs"
+            and ref not in allowed_branches
+        ):
+            raise ValueError(
+                f"Links should not point to ephemeral feature branches: found {match.group(1)!r} in {href!r}"
+            )
