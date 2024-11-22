@@ -1,0 +1,104 @@
+{
+  "id": "advanced_band_combination",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-10-09T00:00:00Z",
+    "updated": "2024-10-09T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "Advanced Multi-Sensor Band Composite",
+    "description": "This service provides an advanced environment to create a full resolution RGB composite from a fully customizable combination of multiple single band assets from Optical or Radar Calibrated Datasets. The output has the finest resolution as of the input data (only if all selected bands are coming from the same sensor). It also provides co-located single band assets (reflectance or Sigma0 in dB) after reprojection and resampling on the same grid",
+    "cost_estimate": 1.50,
+    "cost_unit": "€ per input product",
+    "keywords": [
+      "disaster management",
+      "remote sensing",
+      "band combination",
+      "satellite imagery"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "GEP Support Team",
+        "position": "Support Team",
+        "organization": "Geohazards Exploitation Platform (GEP)",
+        "links": [
+          {
+            "href": "https://geohazards-tep.eu",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries, please email the GEP support team.",
+        "email": "contact@geohazards-tep.eu",
+        "roles": [
+          "processor",
+          "service provider"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "DISASTER MANAGEMENT"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      "GeoTiff",
+      "PNG",
+      "JPEG"
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "order",
+      "type": "text/html",
+      "title": "Request Access",
+      "href": "https://geohazards-tep.eu/#!web_store"
+    },
+    {
+      "rel": "license",
+      "type": "application/pdf",
+      "title": "End-User License Agreement",
+      "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },    
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/multi-sensor-composite-0_8_15"
+    },   
+    {
+      "rel": "documentation",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://docs.terradue.com/geohazards-tep/tutorials/rss_combi.html"
+    },  
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/multi-sensor-composite-0_8_15.cwl"
+    }
+  ]
+}
