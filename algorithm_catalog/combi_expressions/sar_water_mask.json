@@ -1,0 +1,9 @@
+{
+   "input_reference": [
+       ""
+          ],
+   "red_expression": "(interp 1.s0_db_c_hh (asarray -23 5) (asarray 0 0))",
+   "green_expression": "(interp 1.s0_db_c_hh (asarray -23 5) (asarray 0 0))",
+   "blue_expression": "(where (<= 1.s0_db_c_hh -23) 1 0)",
+   "alpha_expression": "(where (<= 1.s0_db_c_hh -23) 1 0)"
+}
