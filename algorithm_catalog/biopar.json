@@ -90,7 +90,9 @@
             }
         ],
         "formats": [
-            "GeoTiff"
+            {
+               "name": "GeoTiff"
+            }
         ],
         "license": "other"
     },
