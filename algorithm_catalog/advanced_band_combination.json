@@ -62,9 +62,15 @@
       }
     ],
     "formats": [
-      "GeoTiff",
-      "PNG",
-      "JPEG"
+      {
+        "name": "GeoTiff"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JPEG"
+      }
     ],
     "license": "other"
   },
