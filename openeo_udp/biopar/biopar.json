@@ -78,43 +78,8 @@
         }
     ],
     "process_graph": {
-        "adddimension1": {
-            "arguments": {
-                "data": {
-                    "from_node": "reducedimension1"
-                },
-                "label": {
-                    "from_parameter": "biopar_type"
-                },
-                "name": "bands",
-                "type": "bands"
-            },
-            "process_id": "add_dimension",
-            "result": true
-        },
-        "filterspatial1": {
-            "arguments": {
-                "data": {
-                    "from_node": "filtertemporal1"
-                },
-                "geometries": {
-                    "from_parameter": "geometries"
-                }
-            },
-            "process_id": "filter_spatial"
-        },
-        "filtertemporal1": {
-            "arguments": {
-                "data": {
-                    "from_node": "loadcollection1"
-                },
-                "extent": {
-                    "from_parameter": "temporal_extent"
-                }
-            },
-            "process_id": "filter_temporal"
-        },
         "loadcollection1": {
+            "process_id": "load_collection",
             "arguments": {
                 "bands": [
                     "B03",
@@ -129,27 +94,50 @@
                 "id": "SENTINEL2_L2A",
                 "spatial_extent": null,
                 "temporal_extent": null
-            },
-            "process_id": "load_collection"
+            }
         },
-        "maskscldilation1": {
+        "filtertemporal1": {
+            "process_id": "filter_temporal",
+            "arguments": {
+                "data": {
+                    "from_node": "loadcollection1"
+                },
+                "extent": {
+                    "from_parameter": "date"
+                }
+            }
+        },
+        "filterspatial1": {
+            "process_id": "filter_spatial",
+            "arguments": {
+                "data": {
+                    "from_node": "filtertemporal1"
+                },
+                "geometries": {
+                    "from_parameter": "polygon"
+                }
+            }
+        },
+        "toscldilationmask1": {
+            "process_id": "to_scl_dilation_mask",
             "arguments": {
                 "data": {
                     "from_node": "filterspatial1"
                 },
                 "scl_band_name": "SCL"
-            },
-            "process_id": "mask_scl_dilation"
+            }
         },
         "reducedimension1": {
+            "process_id": "reduce_dimension",
             "arguments": {
                 "data": {
-                    "from_node": "maskscldilation1"
+                    "from_node": "toscldilationmask1"
                 },
                 "dimension": "bands",
                 "reducer": {
                     "process_graph": {
                         "runudf1": {
+                            "process_id": "run_udf",
                             "arguments": {
                                 "context": {
                                     "biopar_type": {
@@ -162,13 +150,25 @@
                                 "runtime": "Python",
                                 "udf": "from functools import lru_cache\nfrom pathlib import Path\nimport numpy as np\nfrom typing import Dict\nimport xarray as xr \nfrom openeo.udf.xarraydatacube import XarrayDataCube\nfrom openeo.udf.debug import inspect\nfrom biopar.bioparnp import BioParNp\n\n@lru_cache(maxsize=6)\ndef get_bioparrun(biopar) -> BioParNp:\n    return BioParNp(version='3band', parameter=biopar, singleConfig = True)\n    \ndef apply_datacube(cube: XarrayDataCube, context: Dict) -> XarrayDataCube:\n    valid_biopars= ['FAPAR','LAI','FCOVER','CWC','CCC']\n    biopar = context.get('biopar_type', 'FAPAR') \n    if biopar not in valid_biopars:\n        biopar = 'FAPAR'\n        inspect(biopar, \"is not in valid Biopar list, defaulting to FAPAR\") \n    \n    inarr = cube.get_array()\n    ds_date = inarr\n    \n    from numpy import cos, radians\n    scaling_bands = 0.0001\n\n    saa = ds_date.sel(bands='sunAzimuthAngles')\n    sza = ds_date.sel(bands='sunZenithAngles')\n    vaa = ds_date.sel(bands='viewAzimuthMean')\n    vza = ds_date.sel(bands='viewZenithMean')\n    \n    B03 = ds_date.sel(bands='B03') * scaling_bands\n    B04 = ds_date.sel(bands='B04') * scaling_bands\n    B8 = ds_date.sel(bands='B08') * scaling_bands\n    g1 = cos(radians(vza))\n    g2 = cos(radians(sza))\n    g3 = cos(radians(saa - vaa))\n    #### FLATTEN THE ARRAY ####\n    flat = list(map(lambda arr: arr.flatten(), [B03.values, B04.values,B8.values, g1.values, g2.values, g3.values]))\n    bands = np.array(flat)\n\n    # inspect the parameter passed\n    inspect(biopar, \"biopar parameter passed to the UDF\") \n\n    #### CALCULATE THE BIOPAR BASED ON THE BANDS #####\n    image = get_bioparrun(biopar).run(bands, output_scale=1,output_dtype=np.float32,minmax_flagging=False)  # netcdf algorithm\n    as_image = image.reshape((g1.shape))\n    ## set nodata to nan\n    as_image[np.where(np.isnan(B03))] = np.nan\n    xr_biopar = vza.copy()\n    xr_biopar.values = as_image\n    \n    return XarrayDataCube(xr_biopar)  # xarray.DataArray(as_image,vza.dims,vza.coords)'''"
                             },
-                            "process_id": "run_udf",
                             "result": true
                         }
                     }
                 }
+            }
+        },
+        "adddimension1": {
+            "process_id": "add_dimension",
+            "arguments": {
+                "data": {
+                    "from_node": "reducedimension1"
+                },
+                "label": {
+                    "from_parameter": "biopar_type"
+                },
+                "name": "bands",
+                "type": "bands"
             },
-            "process_id": "reduce_dimension"
+            "result": true
         }
     },
     "public": true
