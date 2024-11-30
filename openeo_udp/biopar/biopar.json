@@ -73,11 +73,16 @@
             "optional": true,
             "schema": {
                 "type": "string",
-                "enum": ["FAPAR", "LAI", "FCOVER", "CCC", "CWC"]
+                "enum": [
+                    "FAPAR",
+                    "LAI",
+                    "FCOVER",
+                    "CCC",
+                    "CWC"
+                ]
             }
         }
     ],
-    
     "process_graph": {
         "loadcollection1": {
             "process_id": "load_collection",
@@ -114,7 +119,7 @@
                     "from_node": "filtertemporal1"
                 },
                 "geometries": {
-                    "from_parameter": "polygon"
+                    "from_parameter": "geometries"
                 }
             }
         },
@@ -147,7 +152,7 @@
                     "from_node": "filtertemporal2"
                 },
                 "geometries": {
-                    "from_parameter": "polygon"
+                    "from_parameter": "geometries"
                 }
             }
         },
