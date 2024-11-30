@@ -77,6 +77,7 @@
             }
         }
     ],
+    
     "process_graph": {
         "loadcollection1": {
             "process_id": "load_collection",
@@ -88,8 +89,7 @@
                     "sunAzimuthAngles",
                     "sunZenithAngles",
                     "viewAzimuthMean",
-                    "viewZenithMean",
-                    "SCL"
+                    "viewZenithMean"
                 ],
                 "id": "SENTINEL2_L2A",
                 "spatial_extent": null,
@@ -118,20 +118,63 @@
                 }
             }
         },
+        "loadcollection2": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "SCL"
+                ],
+                "id": "SENTINEL2_L2A",
+                "spatial_extent": null,
+                "temporal_extent": null
+            }
+        },
+        "filtertemporal2": {
+            "process_id": "filter_temporal",
+            "arguments": {
+                "data": {
+                    "from_node": "loadcollection2"
+                },
+                "extent": {
+                    "from_parameter": "date"
+                }
+            }
+        },
+        "filterspatial2": {
+            "process_id": "filter_spatial",
+            "arguments": {
+                "data": {
+                    "from_node": "filtertemporal2"
+                },
+                "geometries": {
+                    "from_parameter": "polygon"
+                }
+            }
+        },
         "toscldilationmask1": {
             "process_id": "to_scl_dilation_mask",
             "arguments": {
                 "data": {
+                    "from_node": "filterspatial2"
+                }
+            }
+        },
+        "mask1": {
+            "process_id": "mask",
+            "arguments": {
+                "data": {
                     "from_node": "filterspatial1"
                 },
-                "scl_band_name": "SCL"
+                "mask": {
+                    "from_node": "toscldilationmask1"
+                }
             }
         },
         "reducedimension1": {
             "process_id": "reduce_dimension",
             "arguments": {
                 "data": {
-                    "from_node": "toscldilationmask1"
+                    "from_node": "mask1"
                 },
                 "dimension": "bands",
                 "reducer": {
