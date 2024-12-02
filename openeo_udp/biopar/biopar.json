@@ -59,8 +59,8 @@
             }
         },
         {
-            "description": "This geometries defines the bounds of the resulting image. Pixels outside the polygon are set to nodata.",
-            "name": "geometries",
+            "description": "This spatial_extent defines the bounds of the resulting image. Pixels outside the polygon are set to nodata.",
+            "name": "spatial_extent",
             "schema": {
                 "subtype": "geojson",
                 "type": "object"
@@ -108,7 +108,7 @@
                     "from_node": "loadcollection1"
                 },
                 "extent": {
-                    "from_parameter": "date"
+                    "from_parameter": "temporal_extent"
                 }
             }
         },
@@ -118,8 +118,8 @@
                 "data": {
                     "from_node": "filtertemporal1"
                 },
-                "geometries": {
-                    "from_parameter": "geometries"
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
                 }
             }
         },
@@ -141,7 +141,7 @@
                     "from_node": "loadcollection2"
                 },
                 "extent": {
-                    "from_parameter": "date"
+                    "from_parameter": "temporal_extent"
                 }
             }
         },
@@ -151,8 +151,8 @@
                 "data": {
                     "from_node": "filtertemporal2"
                 },
-                "geometries": {
-                    "from_parameter": "geometries"
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
                 }
             }
         },
