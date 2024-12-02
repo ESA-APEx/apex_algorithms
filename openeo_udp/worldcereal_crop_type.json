@@ -1107,7 +1107,7 @@
         },
         "format": "GTiff",
         "options": {
-          "filename_prefix": "worldcereal-cropland-extent"
+          "filename_prefix": "worldcereal-cropland-type"
         }
       }
     },
