@@ -1,0 +1,120 @@
+{
+  "id": "gep_DinSAR",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2024-12-18T00:00:00Z",
+    "updated": "2024-12-18T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "DinSar Sentinel-1 IW SLC Interferogram and Displacements",
+    "description": "The InSAR service processes Sentinel-1 TOPSAR IW SLC data to produce interferometric products for monitoring and analysis of ground displacement. Outputs include interferometric coherence maps, unwrapped phase images, and displacement maps. These products support geohazard assessments such as earthquake deformation, landslide monitoring, and infrastructure stability analysis. The service is designed to deliver high-precision measurements and geocoded outputs for seamless integration into geospatial workflows.",
+    "cost_estimate": 6.0,
+    "cost_unit": "\u20ac per input product",
+    "keywords": [
+      "InSAR",
+      "interferometry",
+      "Sentinel-1",
+      "displacement",
+      "coherence",
+      "phase",
+      "remote sensing"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "GEP Support Team",
+        "position": "Support Team",
+        "organization": "Geohazards Exploitation Platform (GEP)",
+        "links": [
+          {
+            "href": "https://geohazards-tep.eu",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries, please email the GEP support team.",
+        "email": "contact@geohazards-tep.eu",
+        "roles": [
+          "processor",
+          "service provider"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "DISASTER MANAGEMENT"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTiff"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JPEG"
+      }
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "order",
+      "type": "text/html",
+      "title": "Request Access",
+      "href": "https://geohazards-tep.eu/#!web_store"
+    },
+    {
+      "rel": "license",
+      "type": "application/pdf",
+      "title": "End-User License Agreement",
+      "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },
+    {
+      "rel": "api",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/<add service id>"
+    },
+    {
+      "rel": "documentation",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://docs.terradue.com/geohazards-tep/tutorials/rss_snap_s1_insar.html"
+    },
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/<add service id>.cwl"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "Web App",
+      "href": "https://geohazards-tep.eu/geobrowser/?id=dinsar-app"
+    }
+  ]
+}
