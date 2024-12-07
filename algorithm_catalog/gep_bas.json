@@ -1,5 +1,5 @@
 {
-  "id": "gep_BAS",
+  "id": "gep_bas",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
@@ -10,7 +10,7 @@
     "updated": "2024-12-18T00:00:00Z",
     "type": "apex_algorithm",
     "title": "Burned Area Severity Analysis (BAS)",
-    "description": "The Burned Area Severity Analysis (BAS) service takes calibrated optical data as inputs and estimates the severity of burnt areas by using swir22 and nir radiation from a pair of calibrated optical images. The burn severity describes how the fire intensity affects the functioning of the ecosystem in the area that has been burnt. The observed effects often vary within the area and between different ecosystems (Keeley, 2009)1. The burn severity can also be described as the degree to which an area has been altered or disrupted by the fire2.",
+    "description": "The Burned Area Severity Analysis (BAS) service takes calibrated optical data as inputs and estimates the severity of burnt areas by using swir22 and nir radiation from a pair of calibrated optical images. The burn severity describes how the fire intensity affects the functioning of the ecosystem in the area that has been burnt. The observed effects often vary within the area and between different ecosystems (Keeley, 2009). The burn severity can also be described as the degree to which an area has been altered or disrupted by the fire.",
     "cost_estimate": 1.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
@@ -114,7 +114,13 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "Web App",
-      "href": "https://geohazards-tep.eu/geobrowser/?id=s2-bas-app"
+      "href": "https://geohazards-tep.eu/geobrowser/?id=gep-bas-app"
+    },
+    {
+      "rel": "preview",
+      "type": "image/png",
+      "title": "Preview of the Burned Area Severity service result on the Disaster Charter Platform",
+      "href": "https://docs.disasterscharter.org/services/burned-area-severity/media/tutorial-bas-011.png"
     }
   ]
 }
