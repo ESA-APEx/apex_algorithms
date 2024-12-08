@@ -9,8 +9,8 @@
     "created": "2024-12-18T00:00:00Z",
     "updated": "2024-12-18T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "Burned Area Severity Analysis (BAS)",
-    "description": "The Burned Area Severity Analysis (BAS) service takes calibrated optical data as inputs and estimates the severity of burnt areas by using swir22 and nir radiation from a pair of calibrated optical images. The burn severity describes how the fire intensity affects the functioning of the ecosystem in the area that has been burnt. The observed effects often vary within the area and between different ecosystems (Keeley, 2009). The burn severity can also be described as the degree to which an area has been altered or disrupted by the fire.",
+    "title": "Burned Area Severity (BAS) analysis",
+    "description": "The Burned Area Severity (BAS) service takes as input a pair of optical datasets in their native format, and estimates the severity of burnt areas by using swir22 and nir radiation. The burn severity describes how the fire intensity affects the functioning of the ecosystem in the area that has been burnt. The observed effects often vary within the area and between different ecosystems (Keeley, 2009). The burn severity can also be described as the degree to which an area has been altered or disrupted by the fire.",
     "cost_estimate": 1.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
@@ -34,9 +34,9 @@
     ],
     "contacts": [
       {
-        "name": "GEP Support Team",
-        "position": "Support Team",
-        "organization": "Geohazards Exploitation Platform (GEP)",
+        "name": "Platform team",
+        "position": "Platform Operations",
+        "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
         "links": [
           {
             "href": "https://geohazards-tep.eu",
@@ -44,7 +44,7 @@
             "type": "text/html"
           }
         ],
-        "contactInstructions": "For inquiries, please email the GEP support team.",
+        "contactInstructions": "For inquiries, please email the Platform team",
         "email": "contact@geohazards-tep.eu",
         "roles": [
           "processor",
@@ -96,13 +96,13 @@
       "rel": "api",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/<add service id>"
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/a0d682be-d2bc-46fe-ba14-0b07ae1a4167"
     },
     {
       "rel": "documentation",
       "type": "text/html",
       "title": "Service Documentation",
-      "href": "https://docs.mcube.terradue.com/services/burned-area-severity/service-specs/"
+      "href": "https://gep-docs-geohazards-tep-1ad046540261b0fd7cefb21987a262fe0f287d8.gitlab.io/services/burned-area-severity/service-specs/"
     },
     {
       "rel": "application",
@@ -114,7 +114,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "Web App",
-      "href": "https://geohazards-tep.eu/geobrowser/?id=gep-bas-app"
+      "href": "https://geohazards-tep.eu/geobrowser/?id=opt-bas-app"
     },
     {
       "rel": "preview",
