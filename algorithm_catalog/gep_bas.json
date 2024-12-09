@@ -76,7 +76,7 @@
         "name": "JPEG"
       }
     ],
-    "license": "other"
+    "license": "CC-BY-4.0"
   },
   "linkTemplates": [],
   "links": [
@@ -87,7 +87,7 @@
       "href": "https://geohazards-tep.eu/#!web_store"
     },
     {
-      "rel": "license",
+      "rel": "eula",
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
@@ -96,19 +96,19 @@
       "rel": "api",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/a0d682be-d2bc-46fe-ba14-0b07ae1a4167"
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/burned-area-severity-one-shot-0_1_1"
     },
     {
       "rel": "documentation",
       "type": "text/html",
       "title": "Service Documentation",
-      "href": "https://gep-docs-geohazards-tep-1ad046540261b0fd7cefb21987a262fe0f287d8.gitlab.io/services/burned-area-severity/service-specs/"
+      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/burned-area-severity/service-specs/"
     },
     {
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/<add service id>.cwl"
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/burned-area-severity-one-shot.0.1.1.cwl"
     },
     {
       "rel": "webapp",
