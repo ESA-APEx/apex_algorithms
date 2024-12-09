@@ -96,19 +96,19 @@
       "rel": "api",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/<add service id>"
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-insar-0_4_11"
     },
     {
       "rel": "documentation",
       "type": "text/html",
       "title": "Service Documentation",
-      "href": "https://docs.terradue.com/geohazards-tep/tutorials/rss_snap_s1_insar.html"
+      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/dinsar/service-specs/"
     },
     {
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/<add service id>.cwl"
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/s1-insar.0.4.11.cwl"
     },
     {
       "rel": "webapp",
