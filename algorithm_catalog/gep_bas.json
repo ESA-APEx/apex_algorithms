@@ -1,25 +1,26 @@
 {
-  "id": "sar_coin",
+  "id": "gep_bas",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "geometry": null,
   "properties": {
-    "created": "2024-10-09T00:00:00Z",
-    "updated": "2024-10-09T00:00:00Z",
+    "created": "2024-12-18T00:00:00Z",
+    "updated": "2024-12-18T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "SAR-COIN - Coherence and Intensity Composite",
-    "description": "The SAR-COIN service computes the coherence and backscatter from a pair of Sentinel-1 SLC datasets. It produces geocoded composites and red-cyan visual products to highlight changes in coherence and backscatter.",
-    "cost_estimate": 2.5,
+    "title": "Burned Area Severity (BAS) analysis",
+    "description": "The Burned Area Severity (BAS) service takes as input a pair of optical datasets in their native format, and estimates the severity of burnt areas by using swir22 and nir radiation. The burn severity describes how the fire intensity affects the functioning of the ecosystem in the area that has been burnt. The observed effects often vary within the area and between different ecosystems (Keeley, 2009). The burn severity can also be described as the degree to which an area has been altered or disrupted by the fire.",
+    "cost_estimate": 1.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "SAR",
-      "coherence",
-      "backscatter",
-      "Sentinel-1",
-      "disaster management",
-      "remote sensing"
+      "burn severity",
+      "fire impact",
+      "remote sensing",
+      "optical imagery",
+      "NBR",
+      "dNBR",
+      "RBR"
     ],
     "language": {
       "code": "en-US",
@@ -92,34 +93,34 @@
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
     },
     {
-      "rel": "service",
+      "rel": "api",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-coherence-intensity-0_7_8"
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/burned-area-severity-one-shot-0_1_1"
     },
     {
       "rel": "documentation",
       "type": "text/html",
       "title": "Service Documentation",
-      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/service-specs/"
+      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/burned-area-severity/service-specs/"
     },
     {
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/s1-coherence-intensity.0.7.8.cwl"
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/burned-area-severity-one-shot.0.1.1.cwl"
     },
     {
       "rel": "webapp",
       "type": "text/html",
       "title": "Web App",
-      "href": "https://geohazards-tep.eu/geobrowser/?id=sar-coin-app"
+      "href": "https://geohazards-tep.eu/geobrowser/?id=opt-bas-app"
     },
     {
       "rel": "preview",
       "type": "image/png",
-      "title": "Preview of the Coherence and Intensity RBG of the SAR-COIN service service result on the Geohazards Exploitation Platform",
-      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/media/cover.png"
+      "title": "Preview of the Burned Area Severity service result on the Disaster Charter Platform",
+      "href": "https://docs.disasterscharter.org/services/burned-area-severity/media/tutorial-bas-011.png"
     }
   ]
 }
