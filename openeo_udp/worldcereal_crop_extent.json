@@ -1100,11 +1100,23 @@
         }
       }
     },
+    "saveresult1": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "format": "GTiff",
+        "options": {
+          "filename_prefix": "worldcereal-cropland-extent"
+        }
+      }
+    },
     "applyneighborhood3": {
       "process_id": "apply_neighborhood",
       "arguments": {
         "data": {
-          "from_node": "reducedimension3"
+          "from_node": "saveresult1"
         },
         "overlap": [
           {
