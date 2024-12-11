@@ -809,11 +809,7 @@
           "from_node": "mergecubes4"
         },
         "extent": {
-          "west": 573378.4293441307,
-          "east": 581483.4754192655,
-          "north": 5670490.632979923,
-          "south": 5667592.259351823,
-          "crs": "EPSG:32631"
+          "from_parameter": "spatial_extent"
         }
       }
     },
@@ -1104,23 +1100,11 @@
         }
       }
     },
-    "saveresult1": {
-      "process_id": "save_result",
-      "arguments": {
-        "data": {
-          "from_node": "reducedimension3"
-        },
-        "format": "GTiff",
-        "options": {
-          "filename_prefix": "cropland-raw_2018-12-01_2019-11-30"
-        }
-      }
-    },
     "applyneighborhood3": {
       "process_id": "apply_neighborhood",
       "arguments": {
         "data": {
-          "from_node": "saveresult1"
+          "from_node": "reducedimension3"
         },
         "overlap": [
           {
