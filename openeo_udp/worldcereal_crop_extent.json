@@ -14,6 +14,9 @@
           "B11",
           "B12"
         ],
+        "featureflags": {
+          "tilesize": 128
+        },
         "id": "SENTINEL2_L2A",
         "properties": {
           "eo:cloud_cover": {
@@ -24,7 +27,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 95
+                  "y": 95.0
                 },
                 "result": true
               }
@@ -55,7 +58,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 95
+                  "y": 95.0
                 },
                 "result": true
               }
@@ -308,7 +311,7 @@
         },
         "method": "near",
         "projection": null,
-        "resolution": 20
+        "resolution": 20.0
       }
     },
     "renamelabels3": {
@@ -381,7 +384,7 @@
             "multiply1": {
               "process_id": "multiply",
               "arguments": {
-                "x": 10,
+                "x": 10.0,
                 "y": {
                   "from_node": "log1"
                 }
@@ -393,7 +396,7 @@
                 "x": {
                   "from_node": "multiply1"
                 },
-                "y": 83
+                "y": 83.0
               }
             },
             "divide1": {
@@ -402,7 +405,7 @@
                 "x": {
                   "from_node": "add1"
                 },
-                "y": 20
+                "y": 20.0
               }
             },
             "power1": {
@@ -464,7 +467,7 @@
             "multiply2": {
               "process_id": "multiply",
               "arguments": {
-                "x": 10,
+                "x": 10.0,
                 "y": {
                   "from_node": "log2"
                 }
@@ -476,7 +479,7 @@
                 "x": {
                   "from_node": "multiply2"
                 },
-                "y": 83
+                "y": 83.0
               }
             },
             "divide2": {
@@ -485,7 +488,7 @@
                 "x": {
                   "from_node": "add2"
                 },
-                "y": 20
+                "y": 20.0
               }
             },
             "power2": {
@@ -806,7 +809,11 @@
           "from_node": "mergecubes4"
         },
         "extent": {
-          "from_parameter": "spatial_extent"
+          "west": 573378.4293441307,
+          "east": 581483.4754192655,
+          "north": 5670490.632979923,
+          "south": 5667592.259351823,
+          "crs": "EPSG:32631"
         }
       }
     },
@@ -1105,7 +1112,7 @@
         },
         "format": "GTiff",
         "options": {
-          "filename_prefix": "worldcereal-cropland-extent"
+          "filename_prefix": "cropland-raw_2018-12-01_2019-11-30"
         }
       }
     },
@@ -1205,13 +1212,25 @@
             }
           }
         }
+      }
+    },
+    "resamplespatial3": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "apply5"
+        },
+        "method": "near",
+        "projection": {
+          "from_parameter": "projection"
+        },
+        "resolution": 0
       },
       "result": true
     }
   },
   "id": "worldcereal_crop_extent",
-  "summary": "Crop extent mapping using Sentinel-1, Sentinel-2, METEO and Copernicus-30 data",
-  "description": "Load in Sentinel-1, Sentinel-2, METEO and Copernicus-30 data and apply a CatBoost model to map the extent of crops.",
   "parameters": [
     {
       "name": "spatial_extent",
@@ -1291,27 +1310,13 @@
       }
     },
     {
-      "name": "orbit_state",
-      "description": "The orbit state of the Sentinel-1 data",
+      "name": "projection",
+      "description": "The EPSG code of the output projection",
       "schema": {
-        "type": "string",
-        "enum": [
-          "ASCENDING",
-          "DESCENDING"
-        ]
+        "type": "string"
       },
-      "default": "DESCENDING",
+      "default": null,
       "optional": true
     }
-  ],
-  "minimal_job_options": {
-    "driver-memory": "4g",
-    "executor-memory": "2g",
-    "executor-memoryOverhead": "1g",
-    "python-memory": "3g",
-    "soft-errors": "true",
-    "udf-dependency-archives": [
-      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
-    ]
-  }
+  ]
 }
