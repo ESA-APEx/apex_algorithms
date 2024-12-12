@@ -36,9 +36,9 @@
       ]
     },
     "reference_data": {
-      "cropland-raw_2018-05-01_2019-04-30.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/worldcereal_crop_extent/cropland-raw_2018-05-01_2019-04-30.tif",
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/worldcereal_crop_extent/job-results.json",
-      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/worldcereal_crop_extent/openEO.tif"
+      "worldcereal-cropland-extent.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent.tif",
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/openEO.tif"
     },
     "reference_options": {
       "atol": 1
