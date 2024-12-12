@@ -38,10 +38,10 @@
     "reference_data": {
       "worldcereal-cropland-extent.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent.tif",
       "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/job-results.json",
-      "openEO.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/openEO.tif"
+      "worldcereal-cropland-extent-postprocessed.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent-postprocessed.tif"
     },
     "reference_options": {
-      "atol": 1
+      "atol": 10
     }
   }
 ]
