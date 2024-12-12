@@ -1100,11 +1100,26 @@
         }
       }
     },
+    "resamplespatial3": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "method": "near",
+        "projection": {
+          "from_parameter": "projection"
+        },
+        "resolution": 0
+      },
+      "result": true
+    },
     "saveresult1": {
       "process_id": "save_result",
       "arguments": {
         "data": {
-          "from_node": "reducedimension3"
+          "from_node": "resamplespatial3"
         },
         "format": "GTiff",
         "options": {
@@ -1209,21 +1224,6 @@
           }
         }
       }
-    },
-    "resamplespatial3": {
-      "process_id": "resample_spatial",
-      "arguments": {
-        "align": "upper-left",
-        "data": {
-          "from_node": "apply5"
-        },
-        "method": "near",
-        "projection": {
-          "from_parameter": "projection"
-        },
-        "resolution": 0
-      },
-      "result": true
     }
   },
   "id": "worldcereal_crop_extent",
