@@ -1321,7 +1321,7 @@
     },
     {
       "name": "projection",
-      "description": "The EPSG code of the output projection",
+      "description": "The EPSG code of the output projection. If not set, the default UTM projection is used.",
       "schema": {
         "type": "string"
       },
