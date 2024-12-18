@@ -1,0 +1,57 @@
+[
+    {
+        "id": "cropsar_px",
+        "type": "openeo",
+        "description": "Calculating FAPAR using Cropsar service available in Copernicus Data Space Ecosystem",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "CropSARpx1": {
+            "arguments": {
+                "enddate": "2018-01-31",
+                "geometry": {
+                "coordinates": [
+                    [
+                    [
+                        3.65421475,
+                        51.01520667
+                    ],
+                    [
+                        3.64884546,
+                        51.00954382
+                    ],
+                    [
+                        3.66784577,
+                        51.00846472
+                    ],
+                    [
+                        3.66670381,
+                        51.01523202
+                    ],
+                    [
+                        3.65421475,
+                        51.01520667
+                    ]
+                    ]
+                ],
+                "type": "Polygon"
+                },
+                "output": "FAPAR",
+                "startdate": "2018-01-01"
+            },
+            "namespace": "https://openeo.dataspace.copernicus.eu/openeo/processes/u:b16a4432-e22a-45db-9941-5e5e7ccff5b1/CropSAR_px",
+            "process_id": "CropSAR_px"
+            },
+            "saveresult1": {
+            "arguments": {
+                "data": {
+                "from_node": "CropSARpx1"
+                },
+                "format": "netcdf",
+                "options": {}
+            },
+            "process_id": "save_result",
+            "result": true
+            }
+        }
+    }
+]
