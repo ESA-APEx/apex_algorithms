@@ -14,6 +14,9 @@
           "B11",
           "B12"
         ],
+        "featureflags": {
+          "tilesize": 128
+        },
         "id": "SENTINEL2_L2A",
         "properties": {
           "eo:cloud_cover": {
@@ -24,7 +27,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 95
+                  "y": 95.0
                 },
                 "result": true
               }
@@ -55,7 +58,7 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 95
+                  "y": 95.0
                 },
                 "result": true
               }
@@ -308,7 +311,7 @@
         },
         "method": "near",
         "projection": null,
-        "resolution": 20
+        "resolution": 20.0
       }
     },
     "renamelabels3": {
@@ -381,7 +384,7 @@
             "multiply1": {
               "process_id": "multiply",
               "arguments": {
-                "x": 10,
+                "x": 10.0,
                 "y": {
                   "from_node": "log1"
                 }
@@ -393,7 +396,7 @@
                 "x": {
                   "from_node": "multiply1"
                 },
-                "y": 83
+                "y": 83.0
               }
             },
             "divide1": {
@@ -402,7 +405,7 @@
                 "x": {
                   "from_node": "add1"
                 },
-                "y": 20
+                "y": 20.0
               }
             },
             "power1": {
@@ -464,7 +467,7 @@
             "multiply2": {
               "process_id": "multiply",
               "arguments": {
-                "x": 10,
+                "x": 10.0,
                 "y": {
                   "from_node": "log2"
                 }
@@ -476,7 +479,7 @@
                 "x": {
                   "from_node": "multiply2"
                 },
-                "y": 83
+                "y": 83.0
               }
             },
             "divide2": {
@@ -485,7 +488,7 @@
                 "x": {
                   "from_node": "add2"
                 },
-                "y": 20
+                "y": 20.0
               }
             },
             "power2": {
@@ -1097,11 +1100,26 @@
         }
       }
     },
+    "resamplespatial3": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "method": "near",
+        "projection": {
+          "from_parameter": "projection"
+        },
+        "resolution": 0
+      },
+      "result": true
+    },
     "saveresult1": {
       "process_id": "save_result",
       "arguments": {
         "data": {
-          "from_node": "reducedimension3"
+          "from_node": "resamplespatial3"
         },
         "format": "GTiff",
         "options": {
@@ -1205,8 +1223,19 @@
             }
           }
         }
-      },
-      "result": true
+      }
+    },
+    "saveresult2": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "apply5"
+        },
+        "format": "GTiff",
+        "options": {
+          "filename_prefix": "worldcereal-cropland-extent-postprocessed"
+        }
+      }
     }
   },
   "id": "worldcereal_crop_extent",
@@ -1291,16 +1320,12 @@
       }
     },
     {
-      "name": "orbit_state",
-      "description": "The orbit state of the Sentinel-1 data",
+      "name": "projection",
+      "description": "The EPSG code of the output projection. If not set, the default UTM projection is used.",
       "schema": {
-        "type": "string",
-        "enum": [
-          "ASCENDING",
-          "DESCENDING"
-        ]
+        "type": "string"
       },
-      "default": "DESCENDING",
+      "default": null,
       "optional": true
     }
   ],
