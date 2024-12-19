@@ -91,7 +91,7 @@
         ],
         "formats": [
             {
-               "name": "GeoTiff"
+                "name": "GeoTiff"
             }
         ],
         "license": "other"
@@ -115,10 +115,10 @@
             "href": "https://apex.esa.int/license"
         },
         {
-          "rel": "example",
-          "type": "application/json",
-          "title": "Example output",
-          "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/biopar/biopar-example.tif"
+            "rel": "example",
+            "type": "application/json",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/biopar/biopar-example.tif"
         }
     ]
 }
