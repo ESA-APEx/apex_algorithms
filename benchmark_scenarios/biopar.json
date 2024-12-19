@@ -7,7 +7,7 @@
         "process_graph": {
             "biopar1": {
                 "process_id": "biopar",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b5a011a90f4a3050ff8fdf69ca5bc2fd1535881/openeo_udp/biopar/biopar.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/openeo_udp/biopar/biopar.json",
                 "arguments": {
                     "temporal_extent": [
                         "2024-09-01T00:00:00Z",
