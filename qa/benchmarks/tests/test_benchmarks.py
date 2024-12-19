@@ -31,10 +31,17 @@ def test_run_benchmark(
     tmp_path: Path,
     track_metric,
     upload_assets_on_fail,
+    request
 ):
     track_metric("scenario_id", scenario.id)
+    # Check if a backend override has been provided via cli options.
+    override_backend = request.config.getoption("--override-backend")
+    backend = scenario.backend
+    if override_backend:
+        _log.info(f"Overriding backend URL with {override_backend!r}")
+        backend = override_backend
 
-    connection: openeo.Connection = connection_factory(url=scenario.backend)
+    connection: openeo.Connection = connection_factory(url=backend)
 
     # TODO #14 scenario option to use synchronous instead of batch job mode?
     job = connection.create_job(

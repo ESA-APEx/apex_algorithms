@@ -30,7 +30,12 @@ def pytest_addoption(parser):
         action="store_true",
         help="Toggle to only run dummy benchmarks/tests (instead of skipping them)",
     )
-
+    parser.addoption(
+        "--override-backend",
+        action="store",
+        type=str,
+        help="When provided this url will be used instead of the backend listed in the benchmark json files.",
+    )
 
 def pytest_ignore_collect(collection_path, config):
     """
@@ -78,6 +83,8 @@ def _get_client_credentials_env_var(url: str) -> str:
     # TODO: parse url to more reliably extract hostname
     if url == "openeofed.dataspace.copernicus.eu":
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
+    elif "openeo-staging.dataspace.copernicus.eu" in url:
+        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     else:
         raise ValueError(f"Unsupported backend: {url}")
 
