@@ -9,9 +9,9 @@
         "created": "2024-10-03T00:00:00Z",
         "updated": "2024-10-03T00:00:00Z",
         "type": "apex_algorithm",
-        "title": "Calculate various biophysical parameters",
-        "description": "The algorithm offers a solution to calculate vegetation-related parameters like leaf area index, fraction of absorbed photosynthetically active radiation, and more.",
-        "cost_estimate": 4,
+        "title": "Cloud-free monitoring using Sentinel satellites",
+        "description": "The `CropSAR_px` process produces Sentinel-2 data cloud-free with a regularity of five-day intervals. \nIn the current version of the service, the output types supported include:\n\n- NDVI\n- FAPAR\n- FCOVER\n\n> The 'startdate' parameter corresponds to the date of the first image in the result. \n> From this start date, a new image will be generated every five days up to, or beyond, the specified end date.\n\n## Usage\n\nThe following example demonstrates how the 'CropSAR_px' process can be executed using an OpenEO batch job. \nThis batch job produces a netCDF file containing the results. \nAdditionally, the `GeoTIFF` format can be specified to yield separate files for each date. \n\n> Note that generating multiple GeoTIFF files as output is a unique feature available only in a batch job.\n\nBy default, the output variable is set to NDVI.\nHowever, by supplying one of the supported values listed above to the output parameter, a different result can be obtained.",
+        "cost_estimate": 50,
         "cost_unit": "platform credits per km²",
         "keywords": [
             "agriculture",
@@ -29,7 +29,7 @@
         ],
         "contacts": [
             {
-                "name": "Jeroen Dries",
+                "name": "Stijn Caerts",
                 "position": "Researcher",
                 "organization": "VITO",
                 "links": [
@@ -37,9 +37,20 @@
                         "href": "https://www.vito.be/",
                         "rel": "about",
                         "type": "text/html"
-                    },
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
                     {
-                        "href": "https://github.com/jdries",
+                        "href": "https://www.vito.be/",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -102,7 +113,7 @@
             "rel": "openeo-process",
             "type": "application/json",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b5a011a90f4a3050ff8fdf69ca5bc2fd1535881/openeo_udp/biopar/biopar.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3aec52ddf5ec0f5dbfd4f6df28799e2950a3f624/openeo_udp/cropsar_px/cropsar_px.json"
         },
         {
             "rel": "service",
@@ -118,7 +129,7 @@
             "rel": "example",
             "type": "application/json",
             "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/biopar/biopar-example.tif"
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar_px/CropSAR_px.nc"
         }
     ]
 }
