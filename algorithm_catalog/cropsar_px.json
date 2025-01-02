@@ -45,6 +45,22 @@
                 ]
             },
             {
+                "name": "Bram Janssen",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
                 "name": "Pratichhya Sharma",
                 "position": "Researcher",
                 "organization": "VITO",
