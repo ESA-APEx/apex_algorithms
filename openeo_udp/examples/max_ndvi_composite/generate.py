@@ -117,7 +117,7 @@ def generate() -> dict:
     return build_process_dict(
         process_graph=composite,
         process_id="max_ndvi_composite",
-        summary="Max NDVI composite at 10m resolution.",
+        summary="Max NDVI composite for Sentinel-2 L2A at 10m resolution.",
         description=(
             Path(__file__).parent.parent.parent.parent
             / "algorithm_catalog"
@@ -132,6 +132,7 @@ def generate() -> dict:
         ],
         returns=None,  # TODO
         categories=None,  # TODO
+        links=[{"rel": "about", "title":"virtual STAC collection", "type":"application/json", "href":"https://link_to_stac.json" }]
     )
 
 
