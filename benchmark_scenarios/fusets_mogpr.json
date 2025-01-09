@@ -151,7 +151,7 @@
             "from_node": "ndvi1"
           }
         },
-        "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.2/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/mogpr",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
         "process_id": "mogpr"
       },
       "ndvi1": {
