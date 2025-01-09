@@ -3,7 +3,6 @@ import sys
 import zipfile
 import requests
 import functools
-from typing import Union
 from pathlib import Path
 
 from openeo.udf import inspect

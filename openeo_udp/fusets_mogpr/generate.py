@@ -3,7 +3,6 @@ from pathlib import Path
 from set_path import load_set_path
 from typing import Union
 
-import openeo
 from openeo import DataCube
 from openeo.api.process import Parameter
 from openeo.processes import ProcessBuilder, apply_neighborhood
@@ -24,8 +23,6 @@ def get_mogpr(
 
 
 def generate() -> dict:
-    connection = openeo.connect("openeofed.dataspace.copernicus.eu")
-
     # define parameters
     input_cube = Parameter.datacube(
         name="input_raster_cube",
