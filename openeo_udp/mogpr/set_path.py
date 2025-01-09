@@ -1,0 +1,79 @@
+import os
+import sys
+import zipfile
+import requests
+import functools
+from typing import Union
+from pathlib import Path
+
+from openeo.udf import inspect
+
+
+# Example constants for demonstration
+DEPENDENCIES_DIR1 = 'venv'
+DEPENDENCIES_DIR2 = 'venv_static'
+
+DEPENDENCIES_URL1 = "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets_venv.zip"
+DEPENDENCIES_URL2 = "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets.zip"
+
+
+def download_file(url, path):
+    """
+    Downloads a file from the given URL to the specified path.
+    """
+    response = requests.get(url, stream=True)
+    with open(path, "wb") as file:
+        file.write(response.content)
+
+
+def extract_zip(zip_path, extract_to):
+    """
+    Extracts a zip file from zip_path to the specified extract_to directory.
+    """
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        zip_ref.extractall(extract_to)
+    os.remove(zip_path)  # Clean up the zip file after extraction
+
+
+def add_directory_to_sys_path(directory):
+    """
+    Adds a directory to the Python sys.path if it's not already present.
+    """
+    if directory not in sys.path:
+        sys.path.insert(0, directory)
+
+@functools.lru_cache(maxsize=5)
+def setup_dependencies(dependencies_url,DEPENDENCIES_DIR):
+    """
+    Main function to set up the dependencies by downloading, extracting,
+    and adding necessary directories to sys.path.
+    """
+
+    inspect(message="Create directories")
+    # Ensure base directories exist
+    os.makedirs(DEPENDENCIES_DIR, exist_ok=True)
+
+    # Download and extract dependencies if not already present
+    if not os.listdir(DEPENDENCIES_DIR):
+
+        inspect(message="Extract dependencies")
+        zip_path = os.path.join(DEPENDENCIES_DIR, "temp.zip")
+        download_file(dependencies_url, zip_path)
+        extract_zip(zip_path, DEPENDENCIES_DIR)
+
+        # Add the extracted dependencies directory to sys.path
+        add_directory_to_sys_path(DEPENDENCIES_DIR)
+        inspect(message="Added to the sys path")
+
+setup_dependencies(DEPENDENCIES_URL1, DEPENDENCIES_DIR1)
+setup_dependencies(DEPENDENCIES_URL2, DEPENDENCIES_DIR2)
+
+
+def load_set_path() -> str:
+    """
+    loads path setup functions 
+    @return:
+    """
+    import os
+
+    return Path(os.path.realpath(__file__)).read_text()
