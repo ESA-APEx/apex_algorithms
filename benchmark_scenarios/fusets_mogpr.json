@@ -1,182 +1,181 @@
 [
     {
-      "id": "fusets_mogpr",
-      "type": "openeo",
-      "description": "Multi output gaussian process regression example on NDVI timeseries",
-      "backend": "openeofed.dataspace.copernicus.eu",
-      "process_graph": {
-      "aggregatespatial1": {
-        "arguments": {
-          "data": {
-            "from_node": "mogpr1"
-          },
-          "geometries": {
-            "coordinates": [
-              [
-                [
-                  5.170012098271149,
-                  51.25062964728295
-                ],
-                [
-                  5.17085904378298,
-                  51.24882567194015
-                ],
-                [
-                  5.17857421368097,
-                  51.2468515482926
-                ],
-                [
-                  5.178972704726344,
-                  51.24982704376254
-                ],
-                [
-                  5.170012098271149,
-                  51.25062964728295
-                ]
-              ]
-            ],
-            "type": "Polygon"
-          },
-          "reducer": {
-            "process_graph": {
-              "mean1": {
+        "id": "fusets_mogpr",
+        "type": "openeo",
+        "description": "Multi output gaussian process regression example on NDVI timeseries",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "aggregatespatial1": {
                 "arguments": {
-                  "data": {
-                    "from_parameter": "data"
-                  }
+                    "data": {
+                        "from_node": "mogpr1"
+                    },
+                    "geometries": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ],
+                                [
+                                    5.17085904378298,
+                                    51.24882567194015
+                                ],
+                                [
+                                    5.17857421368097,
+                                    51.2468515482926
+                                ],
+                                [
+                                    5.178972704726344,
+                                    51.24982704376254
+                                ],
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "reducer": {
+                        "process_graph": {
+                            "mean1": {
+                                "arguments": {
+                                    "data": {
+                                        "from_parameter": "data"
+                                    }
+                                },
+                                "process_id": "mean",
+                                "result": true
+                            }
+                        }
+                    }
                 },
-                "process_id": "mean",
-                "result": true
-              }
+                "process_id": "aggregate_spatial"
+            },
+            "loadcollection1": {
+                "arguments": {
+                    "bands": [
+                        "B04",
+                        "B08"
+                    ],
+                    "id": "SENTINEL2_L2A",
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ],
+                                [
+                                    5.17085904378298,
+                                    51.24882567194015
+                                ],
+                                [
+                                    5.17857421368097,
+                                    51.2468515482926
+                                ],
+                                [
+                                    5.178972704726344,
+                                    51.24982704376254
+                                ],
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "temporal_extent": [
+                        "2022-05-01",
+                        "2023-07-31"
+                    ]
+                },
+                "process_id": "load_collection"
+            },
+            "loadcollection2": {
+                "arguments": {
+                    "bands": [
+                        "SCL"
+                    ],
+                    "id": "SENTINEL2_L2A",
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ],
+                                [
+                                    5.17085904378298,
+                                    51.24882567194015
+                                ],
+                                [
+                                    5.17857421368097,
+                                    51.2468515482926
+                                ],
+                                [
+                                    5.178972704726344,
+                                    51.24982704376254
+                                ],
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "temporal_extent": [
+                        "2022-05-01",
+                        "2023-07-31"
+                    ]
+                },
+                "process_id": "load_collection"
+            },
+            "mask1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "loadcollection1"
+                    },
+                    "mask": {
+                        "from_node": "toscldilationmask1"
+                    }
+                },
+                "process_id": "mask"
+            },
+            "mogpr1": {
+                "arguments": {
+                    "input_raster_cube": {
+                        "from_node": "ndvi1"
+                    }
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
+                "process_id": "mogpr"
+            },
+            "ndvi1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "mask1"
+                    },
+                    "nir": "B08",
+                    "red": "B04"
+                },
+                "process_id": "ndvi"
+            },
+            "toscldilationmask1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "loadcollection2"
+                    }
+                },
+                "process_id": "to_scl_dilation_mask"
             }
-          }
         },
-        "process_id": "aggregate_spatial"
-      },
-      "loadcollection1": {
-        "arguments": {
-          "bands": [
-            "B04",
-            "B08"
-          ],
-          "id": "SENTINEL2_L2A",
-          "spatial_extent": {
-            "coordinates": [
-              [
-                [
-                  5.170012098271149,
-                  51.25062964728295
-                ],
-                [
-                  5.17085904378298,
-                  51.24882567194015
-                ],
-                [
-                  5.17857421368097,
-                  51.2468515482926
-                ],
-                [
-                  5.178972704726344,
-                  51.24982704376254
-                ],
-                [
-                  5.170012098271149,
-                  51.25062964728295
-                ]
-              ]
-            ],
-            "type": "Polygon"
-          },
-          "temporal_extent": [
-            "2022-05-01",
-            "2023-07-31"
-          ]
-        },
-        "process_id": "load_collection"
-      },
-      "loadcollection2": {
-        "arguments": {
-          "bands": [
-            "SCL"
-          ],
-          "id": "SENTINEL2_L2A",
-          "spatial_extent": {
-            "coordinates": [
-              [
-                [
-                  5.170012098271149,
-                  51.25062964728295
-                ],
-                [
-                  5.17085904378298,
-                  51.24882567194015
-                ],
-                [
-                  5.17857421368097,
-                  51.2468515482926
-                ],
-                [
-                  5.178972704726344,
-                  51.24982704376254
-                ],
-                [
-                  5.170012098271149,
-                  51.25062964728295
-                ]
-              ]
-            ],
-            "type": "Polygon"
-          },
-          "temporal_extent": [
-            "2022-05-01",
-            "2023-07-31"
-          ]
-        },
-        "process_id": "load_collection"
-      },
-      "mask1": {
-        "arguments": {
-          "data": {
-            "from_node": "loadcollection1"
-          },
-          "mask": {
-            "from_node": "toscldilationmask1"
-          }
-        },
-        "process_id": "mask"
-      },
-      "mogpr1": {
-        "arguments": {
-          "input_raster_cube": {
-            "from_node": "ndvi1"
-          }
-        },
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
-        "process_id": "mogpr"
-      },
-      "ndvi1": {
-        "arguments": {
-          "data": {
-            "from_node": "mask1"
-          },
-          "nir": "B08",
-          "red": "B04"
-        },
-        "process_id": "ndvi"
-      },
-      "toscldilationmask1": {
-        "arguments": {
-          "data": {
-            "from_node": "loadcollection2"
-          }
-        },
-        "process_id": "to_scl_dilation_mask"
-      }
-    },
-      "reference_data": {
-        "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/job-results.json",
-        "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/timeseries.json"
-      }
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/job-results.json",
+            "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/timeseries.json"
+        }
     }
-  ]
-  
+]
