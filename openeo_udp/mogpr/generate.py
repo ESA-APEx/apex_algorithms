@@ -38,7 +38,7 @@ def generate() -> dict:
 
     return build_process_dict(
         process_graph=mogpr,
-        process_id="mogpr",
+        process_id="fusets_mogpr",
         summary="Integrates timeseries in data cube using multi-output gaussian process regression",
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[input_cube],
