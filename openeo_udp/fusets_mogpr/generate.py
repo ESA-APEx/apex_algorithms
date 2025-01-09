@@ -49,5 +49,5 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # save the generated process to a file
-    with open(Path(__file__).parent / "mogpr.json", "w") as f:
+    with open(Path(__file__).parent / "fusets_mogpr.json", "w") as f:
         json.dump(generate(), f, indent=2)
