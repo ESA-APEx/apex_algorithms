@@ -102,7 +102,7 @@
             "rel": "openeo-process",
             "type": "application/json",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b5a011a90f4a3050ff8fdf69ca5bc2fd1535881/openeo_udp/biopar/biopar.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/openeo_udp/biopar/biopar.json"
         },
         {
             "rel": "service",
