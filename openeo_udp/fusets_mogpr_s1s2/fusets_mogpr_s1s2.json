@@ -1,0 +1,902 @@
+{
+    "process_graph": {
+        "loadcollection1": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "VV",
+                    "VH"
+                ],
+                "id": "SENTINEL1_GRD",
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                },
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            }
+        },
+        "sarbackscatter1": {
+            "process_id": "sar_backscatter",
+            "arguments": {
+                "coefficient": "sigma0-ellipsoid",
+                "contributing_area": false,
+                "data": {
+                    "from_node": "loadcollection1"
+                },
+                "elevation_model": null,
+                "ellipsoid_incidence_angle": false,
+                "local_incidence_angle": false,
+                "mask": false,
+                "noise_removal": true
+            }
+        },
+        "renamelabels1": {
+            "process_id": "rename_labels",
+            "arguments": {
+                "data": {
+                    "from_node": "sarbackscatter1"
+                },
+                "dimension": "bands",
+                "target": [
+                    "VV",
+                    "VH"
+                ]
+            }
+        },
+        "reducedimension1": {
+            "process_id": "reduce_dimension",
+            "arguments": {
+                "data": {
+                    "from_node": "renamelabels1"
+                },
+                "dimension": "bands",
+                "reducer": {
+                    "process_graph": {
+                        "arrayelement1": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "index": 1
+                            }
+                        },
+                        "add1": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement1"
+                                },
+                                "y": {
+                                    "from_node": "arrayelement1"
+                                }
+                            }
+                        },
+                        "arrayelement2": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "index": 0
+                            }
+                        },
+                        "add2": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement2"
+                                },
+                                "y": {
+                                    "from_node": "arrayelement1"
+                                }
+                            }
+                        },
+                        "divide1": {
+                            "process_id": "divide",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "add1"
+                                },
+                                "y": {
+                                    "from_node": "add2"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "adddimension1": {
+            "process_id": "add_dimension",
+            "arguments": {
+                "data": {
+                    "from_node": "reducedimension1"
+                },
+                "label": "RVI",
+                "name": "bands",
+                "type": "bands"
+            }
+        },
+        "loadcollection2": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "VV",
+                    "VH"
+                ],
+                "id": "SENTINEL1_GRD",
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                },
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            }
+        },
+        "sarbackscatter2": {
+            "process_id": "sar_backscatter",
+            "arguments": {
+                "coefficient": "sigma0-ellipsoid",
+                "contributing_area": false,
+                "data": {
+                    "from_node": "loadcollection2"
+                },
+                "elevation_model": null,
+                "ellipsoid_incidence_angle": false,
+                "local_incidence_angle": false,
+                "mask": false,
+                "noise_removal": true
+            }
+        },
+        "renamelabels2": {
+            "process_id": "rename_labels",
+            "arguments": {
+                "data": {
+                    "from_node": "sarbackscatter2"
+                },
+                "dimension": "bands",
+                "target": [
+                    "VV",
+                    "VH"
+                ]
+            }
+        },
+        "eq1": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s1_collection"
+                },
+                "y": "grd"
+            }
+        },
+        "if1": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "renamelabels2"
+                },
+                "reject": null,
+                "value": {
+                    "from_node": "eq1"
+                }
+            }
+        },
+        "eq2": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s1_collection"
+                },
+                "y": "rvi"
+            }
+        },
+        "if2": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "adddimension1"
+                },
+                "reject": {
+                    "from_node": "if1"
+                },
+                "value": {
+                    "from_node": "eq2"
+                }
+            }
+        },
+        "BIOPAR1": {
+            "process_id": "BIOPAR",
+            "arguments": {
+                "biopar_type": "CWC",
+                "date": {
+                    "from_parameter": "temporal_extent"
+                },
+                "polygon": {
+                    "from_parameter": "spatial_extent"
+                }
+            },
+            "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR"
+        },
+        "BIOPAR2": {
+            "process_id": "BIOPAR",
+            "arguments": {
+                "biopar_type": "CCC",
+                "date": {
+                    "from_parameter": "temporal_extent"
+                },
+                "polygon": {
+                    "from_parameter": "spatial_extent"
+                }
+            },
+            "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR"
+        },
+        "loadcollection3": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "B02",
+                    "B04",
+                    "B08"
+                ],
+                "id": "SENTINEL2_L2A",
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                },
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            }
+        },
+        "loadcollection4": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "SCL"
+                ],
+                "id": "SENTINEL2_L2A",
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                },
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            }
+        },
+        "maskscldilation1": {
+            "process_id": "mask_scl_dilation",
+            "arguments": {
+                "data": {
+                    "from_node": "loadcollection4"
+                },
+                "scl_band_name": "SCL"
+            }
+        },
+        "mask1": {
+            "process_id": "mask",
+            "arguments": {
+                "data": {
+                    "from_node": "loadcollection3"
+                },
+                "mask": {
+                    "from_node": "maskscldilation1"
+                }
+            }
+        },
+        "reducedimension2": {
+            "process_id": "reduce_dimension",
+            "arguments": {
+                "data": {
+                    "from_node": "mask1"
+                },
+                "dimension": "bands",
+                "reducer": {
+                    "process_graph": {
+                        "arrayelement3": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "index": 2
+                            }
+                        },
+                        "arrayelement4": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "index": 1
+                            }
+                        },
+                        "subtract1": {
+                            "process_id": "subtract",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement3"
+                                },
+                                "y": {
+                                    "from_node": "arrayelement4"
+                                }
+                            }
+                        },
+                        "multiply1": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 2.5,
+                                "y": {
+                                    "from_node": "subtract1"
+                                }
+                            }
+                        },
+                        "multiply2": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 6,
+                                "y": {
+                                    "from_node": "arrayelement4"
+                                }
+                            }
+                        },
+                        "add3": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement3"
+                                },
+                                "y": {
+                                    "from_node": "multiply2"
+                                }
+                            }
+                        },
+                        "arrayelement5": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "index": 1
+                            }
+                        },
+                        "multiply3": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 7.5,
+                                "y": {
+                                    "from_node": "arrayelement5"
+                                }
+                            }
+                        },
+                        "subtract2": {
+                            "process_id": "subtract",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "add3"
+                                },
+                                "y": {
+                                    "from_node": "multiply3"
+                                }
+                            }
+                        },
+                        "add4": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "subtract2"
+                                },
+                                "y": 1
+                            }
+                        },
+                        "divide2": {
+                            "process_id": "divide",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "multiply1"
+                                },
+                                "y": {
+                                    "from_node": "add4"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "adddimension2": {
+            "process_id": "add_dimension",
+            "arguments": {
+                "data": {
+                    "from_node": "reducedimension2"
+                },
+                "label": "EVI",
+                "name": "bands",
+                "type": "bands"
+            }
+        },
+        "BIOPAR3": {
+            "process_id": "BIOPAR",
+            "arguments": {
+                "biopar_type": "FCOVER",
+                "date": {
+                    "from_parameter": "temporal_extent"
+                },
+                "polygon": {
+                    "from_parameter": "spatial_extent"
+                }
+            },
+            "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR"
+        },
+        "BIOPAR4": {
+            "process_id": "BIOPAR",
+            "arguments": {
+                "biopar_type": "LAI",
+                "date": {
+                    "from_parameter": "temporal_extent"
+                },
+                "polygon": {
+                    "from_parameter": "spatial_extent"
+                }
+            },
+            "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR"
+        },
+        "BIOPAR5": {
+            "process_id": "BIOPAR",
+            "arguments": {
+                "biopar_type": "FAPAR",
+                "date": {
+                    "from_parameter": "temporal_extent"
+                },
+                "polygon": {
+                    "from_parameter": "spatial_extent"
+                }
+            },
+            "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/BIOPAR"
+        },
+        "loadcollection5": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "B04",
+                    "B08"
+                ],
+                "id": "SENTINEL2_L2A",
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                },
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            }
+        },
+        "loadcollection6": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "SCL"
+                ],
+                "id": "SENTINEL2_L2A",
+                "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                },
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            }
+        },
+        "maskscldilation2": {
+            "process_id": "mask_scl_dilation",
+            "arguments": {
+                "data": {
+                    "from_node": "loadcollection6"
+                },
+                "scl_band_name": "SCL"
+            }
+        },
+        "mask2": {
+            "process_id": "mask",
+            "arguments": {
+                "data": {
+                    "from_node": "loadcollection5"
+                },
+                "mask": {
+                    "from_node": "maskscldilation2"
+                }
+            }
+        },
+        "ndvi1": {
+            "process_id": "ndvi",
+            "arguments": {
+                "data": {
+                    "from_node": "mask2"
+                },
+                "nir": "B08",
+                "red": "B04",
+                "target_band": "NDVI"
+            }
+        },
+        "filterbands1": {
+            "process_id": "filter_bands",
+            "arguments": {
+                "bands": [
+                    "NDVI"
+                ],
+                "data": {
+                    "from_node": "ndvi1"
+                }
+            }
+        },
+        "eq3": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "ndvi"
+            }
+        },
+        "if3": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "filterbands1"
+                },
+                "reject": null,
+                "value": {
+                    "from_node": "eq3"
+                }
+            }
+        },
+        "eq4": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "fapar"
+            }
+        },
+        "if4": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "BIOPAR5"
+                },
+                "reject": {
+                    "from_node": "if3"
+                },
+                "value": {
+                    "from_node": "eq4"
+                }
+            }
+        },
+        "eq5": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "lai"
+            }
+        },
+        "if5": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "BIOPAR4"
+                },
+                "reject": {
+                    "from_node": "if4"
+                },
+                "value": {
+                    "from_node": "eq5"
+                }
+            }
+        },
+        "eq6": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "fcover"
+            }
+        },
+        "if6": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "BIOPAR3"
+                },
+                "reject": {
+                    "from_node": "if5"
+                },
+                "value": {
+                    "from_node": "eq6"
+                }
+            }
+        },
+        "eq7": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "evi"
+            }
+        },
+        "if7": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "adddimension2"
+                },
+                "reject": {
+                    "from_node": "if6"
+                },
+                "value": {
+                    "from_node": "eq7"
+                }
+            }
+        },
+        "eq8": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "ccc"
+            }
+        },
+        "if8": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "BIOPAR2"
+                },
+                "reject": {
+                    "from_node": "if7"
+                },
+                "value": {
+                    "from_node": "eq8"
+                }
+            }
+        },
+        "eq9": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "s2_collection"
+                },
+                "y": "cwc"
+            }
+        },
+        "if9": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "BIOPAR1"
+                },
+                "reject": {
+                    "from_node": "if8"
+                },
+                "value": {
+                    "from_node": "eq9"
+                }
+            }
+        },
+        "mergecubes1": {
+            "process_id": "merge_cubes",
+            "arguments": {
+                "cube1": {
+                    "from_node": "if2"
+                },
+                "cube2": {
+                    "from_node": "if9"
+                }
+            }
+        },
+        "applyneighborhood1": {
+            "process_id": "apply_neighborhood",
+            "arguments": {
+                "data": {
+                    "from_node": "mergecubes1"
+                },
+                "overlap": [],
+                "process": {
+                    "process_graph": {
+                        "runudf1": {
+                            "process_id": "run_udf",
+                            "arguments": {
+                                "context": {},
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "runtime": "Python",
+                                "udf": "import os\nimport sys\nimport zipfile\nimport requests\nimport functools\nfrom pathlib import Path\n\nfrom openeo.udf import inspect\n\n\n# Example constants for demonstration\nDEPENDENCIES_DIR1 = 'venv'\nDEPENDENCIES_DIR2 = 'venv_static'\n\nDEPENDENCIES_URL1 = \"https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets_venv.zip\"\nDEPENDENCIES_URL2 = \"https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets.zip\"\n\n\ndef download_file(url, path):\n    \"\"\"\n    Downloads a file from the given URL to the specified path.\n    \"\"\"\n    response = requests.get(url, stream=True)\n    with open(path, \"wb\") as file:\n        file.write(response.content)\n\n\ndef extract_zip(zip_path, extract_to):\n    \"\"\"\n    Extracts a zip file from zip_path to the specified extract_to directory.\n    \"\"\"\n    with zipfile.ZipFile(zip_path, \"r\") as zip_ref:\n        zip_ref.extractall(extract_to)\n    os.remove(zip_path)  # Clean up the zip file after extraction\n\n\ndef add_directory_to_sys_path(directory):\n    \"\"\"\n    Adds a directory to the Python sys.path if it's not already present.\n    \"\"\"\n    if directory not in sys.path:\n        sys.path.insert(0, directory)\n\n@functools.lru_cache(maxsize=5)\ndef setup_dependencies(dependencies_url,DEPENDENCIES_DIR):\n    \"\"\"\n    Main function to set up the dependencies by downloading, extracting,\n    and adding necessary directories to sys.path.\n    \"\"\"\n\n    inspect(message=\"Create directories\")\n    # Ensure base directories exist\n    os.makedirs(DEPENDENCIES_DIR, exist_ok=True)\n\n    # Download and extract dependencies if not already present\n    if not os.listdir(DEPENDENCIES_DIR):\n\n        inspect(message=\"Extract dependencies\")\n        zip_path = os.path.join(DEPENDENCIES_DIR, \"temp.zip\")\n        download_file(dependencies_url, zip_path)\n        extract_zip(zip_path, DEPENDENCIES_DIR)\n\n        # Add the extracted dependencies directory to sys.path\n        add_directory_to_sys_path(DEPENDENCIES_DIR)\n        inspect(message=\"Added to the sys path\")\n\nsetup_dependencies(DEPENDENCIES_URL1, DEPENDENCIES_DIR1)\nsetup_dependencies(DEPENDENCIES_URL2, DEPENDENCIES_DIR2)\n\n\n\ndef load_set_path() -> str:\n    \"\"\"\n    loads path setup functions \n    @return:\n    \"\"\"\n    import os\n\n    return Path(os.path.realpath(__file__)).read_text()\nimport os\nimport sys\nfrom configparser import ConfigParser\nfrom pathlib import Path\nfrom typing import Dict\n\nfrom openeo.udf import XarrayDataCube\n\n\ndef load_venv():\n    \"\"\"\n    Add the virtual environment to the system path if the folder `/tmp/venv_static` exists\n    :return:\n    \"\"\"\n    for venv_path in ['tmp/venv_static', 'tmp/venv']:\n        if Path(venv_path).exists():\n            sys.path.insert(0, venv_path)\n\n\ndef set_home(home):\n    os.environ['HOME'] = home\n\n\ndef create_gpy_cfg():\n    home = os.getenv('HOME')\n    set_home('/tmp')\n    user_file = Path.home() / '.config' / 'GPy' / 'user.cfg'\n    if not user_file.exists():\n        user_file.parent.mkdir(parents=True, exist_ok=True)\n    return user_file, home\n\n\ndef write_gpy_cfg():\n    user_file, home = create_gpy_cfg()\n    config = ConfigParser()\n    config['plotting'] = {\n        'library': 'none'\n    }\n    with open(user_file, 'w') as cfg:\n        config.write(cfg)\n        cfg.close()\n    return home\n\n\ndef apply_datacube(cube: XarrayDataCube, context: Dict) -> XarrayDataCube:\n    \"\"\"\n    Apply mogpr integration to a datacube.\n    MOGPR requires a full timeseries for multiple bands, so it needs to be invoked in the context of an apply_neighborhood process.\n    @param cube:\n    @param context:\n    @return:\n    \"\"\"\n    load_venv()\n    home = write_gpy_cfg()\n\n    from fusets.mogpr import mogpr\n    dims = cube.get_array().dims\n    result = mogpr(cube.get_array().to_dataset(dim=\"bands\"))\n    result_dc = XarrayDataCube(result.to_array(dim=\"bands\").transpose(*dims))\n    set_home(home)\n    return result_dc\n\n\ndef load_mogpr_udf() -> str:\n    \"\"\"\n    Loads an openEO udf that applies mogpr.\n    @return:\n    \"\"\"\n    import os\n    return Path(os.path.realpath(__file__)).read_text()\n"
+                            },
+                            "result": true
+                        }
+                    }
+                },
+                "size": [
+                    {
+                        "dimension": "x",
+                        "value": 32,
+                        "unit": "px"
+                    },
+                    {
+                        "dimension": "y",
+                        "value": 32,
+                        "unit": "px"
+                    }
+                ]
+            },
+            "result": true
+        }
+    },
+    "id": "mogpr_s1_s2_130125",
+    "summary": "Integrate S1 and S2 timeseries using multi-output gaussian process regression",
+    "description": "# Sentinel-1 and Sentinel-2 data fusion through multi output gaussian process regression\n\n## Description\n\nCompute a temporal dense timeseries based on the fusion of Sentinel-1 (S1) and Sentinel-2 (S2) using MOGPR.\n\n## Parameters\n| Name | Description | Type | Default |\n|---|---|---|---------|\n| polygon | Polygon representing the AOI on which to apply the data fusion | GeoJSON |         | \n| temporal_extent | Date range for which to apply the data fusion | Array |         |\n| s1_collection | S1 data collection to use for the fusion | Text | RVI     |\n| s2_collection | S2 data collection to use for fusing the data | Text | NDVI       | \n\n### Supported collections\n\n#### Sentinel-1\n\n* RVI\n* GRD\n\n#### Sentinel-2\n\n* NDVI\n* FAPAR\n* LAI\n* FCOVER\n* EVI\n* CCC\n* CWC\n\n\n## Limitations\n\nThe spatial extent is limited to a maximum size equal to a Sentinel-2 MGRS tile (100 km x 100 km).\n",
+    "parameters": [
+        {
+            "name": "spatial_extent",
+            "description": "Limits the data to process to the specified bounding box or polygons.\\n\\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\\n\\nEmpty geometries are ignored.\\nSet this parameter to null to set no limit for the spatial extent.",
+            "schema": [
+                {
+                    "title": "Bounding Box",
+                    "type": "object",
+                    "subtype": "bounding-box",
+                    "required": [
+                        "west",
+                        "south",
+                        "east",
+                        "north"
+                    ],
+                    "properties": {
+                        "west": {
+                            "description": "West (lower left corner, coordinate axis 1).",
+                            "type": "number"
+                        },
+                        "south": {
+                            "description": "South (lower left corner, coordinate axis 2).",
+                            "type": "number"
+                        },
+                        "east": {
+                            "description": "East (upper right corner, coordinate axis 1).",
+                            "type": "number"
+                        },
+                        "north": {
+                            "description": "North (upper right corner, coordinate axis 2).",
+                            "type": "number"
+                        },
+                        "base": {
+                            "description": "Base (optional, lower left corner, coordinate axis 3).",
+                            "type": [
+                                "number",
+                                "null"
+                            ],
+                            "default": null
+                        },
+                        "height": {
+                            "description": "Height (optional, upper right corner, coordinate axis 3).",
+                            "type": [
+                                "number",
+                                "null"
+                            ],
+                            "default": null
+                        },
+                        "crs": {
+                            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+                            "anyOf": [
+                                {
+                                    "title": "EPSG Code",
+                                    "type": "integer",
+                                    "subtype": "epsg-code",
+                                    "minimum": 1000,
+                                    "examples": [
+                                        3857
+                                    ]
+                                },
+                                {
+                                    "title": "WKT2",
+                                    "type": "string",
+                                    "subtype": "wkt2-definition"
+                                }
+                            ],
+                            "default": 4326
+                        }
+                    }
+                },
+                {
+                    "title": "Vector data cube",
+                    "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+                    "type": "object",
+                    "subtype": "datacube",
+                    "dimensions": [
+                        {
+                            "type": "geometry"
+                        }
+                    ]
+                },
+                {
+                    "title": "No filter",
+                    "description": "Don't filter spatially. All data is included in the data cube.",
+                    "type": "null"
+                }
+            ]
+        },
+        {
+            "name": "temporal_extent",
+            "description": "Temporal extent specified as two-element array with start and end date/date-time. \nThis is date range for which to apply the data fusion",
+            "schema": {
+                "type": "array",
+                "subtype": "temporal-interval",
+                "uniqueItems": true,
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "subtype": "date-time",
+                            "format": "date-time"
+                        },
+                        {
+                            "type": "string",
+                            "subtype": "date",
+                            "format": "date"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "s1_collection",
+            "description": "S1 data collection to use for fusing the data",
+            "schema": {
+                "type": "string",
+                "enum": [
+                    "RVI",
+                    "GRD"
+                ]
+            },
+            "default": "RVI",
+            "optional": true
+        },
+        {
+            "name": "s2_collection",
+            "description": "S2 data collection to use for fusing the data",
+            "schema": {
+                "type": "string",
+                "enum": [
+                    "NDVI",
+                    "FAPAR",
+                    "LAI",
+                    "FCOVER",
+                    "EVI",
+                    "CCC",
+                    "CWC"
+                ]
+            },
+            "default": "NDVI",
+            "optional": true
+        }
+    ]
+}
