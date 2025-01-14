@@ -72,7 +72,7 @@ def generate() -> dict:
 
     return build_process_dict(
         process_graph=mogpr_s1_s2,
-        process_id="mogpr_s1_s2_130125",
+        process_id="fusets_mogpr_s1s2",
         summary="Integrate S1 and S2 timeseries using multi-output gaussian process regression",
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[
