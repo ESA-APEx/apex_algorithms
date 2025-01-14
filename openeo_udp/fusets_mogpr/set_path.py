@@ -29,7 +29,7 @@ def add_directory_to_sys_path(directory):
     Adds a directory to the Python sys.path if it's not already present.
     """
     if directory not in sys.path:
-        sys.path.append(directory)
+        sys.path.insert(0, directory)
 
 @functools.lru_cache(maxsize=5)
 def setup_dependencies(dependencies_url,DEPENDENCIES_DIR):
