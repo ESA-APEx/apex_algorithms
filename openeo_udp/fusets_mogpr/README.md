@@ -1,51 +1,83 @@
-# Multi output gaussian process regression
+# Multi-output Gaussian process regression (MOGPR)
 
-## Description
+The MOGPR service is designed to enable multi-output regression analysis using Gaussian Process Regression (GPR) on geospatial data. It provides a powerful tool for understanding and predicting spatiotemporal phenomena by filling gaps based on other correlated indicators.
 
-Compute an integrated timeseries based on multiple inputs.
-For instance, combine Sentinel-2 NDVI with Sentinel-1 RVI into one integrated NDVI.
+## Parameters
 
-## Limitations
+The MOGPR service requires the following parameters:
 
-The spatial extent is limited to a maximum size equal to a Sentinel-2 MGRS tile (100 km x 100 km).
+- `datacube`: The input datacube that contains the data to be gap-filled.
 
-## Configuration & Resource Usage
+## Usage
 
-Run configurations for different ROI/TOI with memory requirements and estimated run durations.
+The MOGPR service can be used as follows:
 
-### Synchronous calls
+```python
 
-TODO: Replace with actual measurements!!!
+import openeo
 
-| Spatial extent | Run duration |
-|----------------|--------------|
-| 100 m x 100 m  | 1 minute     |
-| 500m x 500 m   | 1 minute     |
-| 1 km x 1 km    | 1 minute     |
-| 5 km x 5 km    | 2 minutes    |
-| 10 km x 10 km  | 3 minutes    |
-| 50 km x 50 km  | 9 minutes    |
+## Setup of parameters
+spat_ext = {
+    "type": "Polygon",
+    "coordinates": [
+ [
+ [
+                5.170012098271149,
+                51.25062964728295
+ ],
+ [
+                5.17085904378298,
+                51.24882567194015
+ ],
+ [
+                5.17857421368097,
+                51.2468515482926
+ ],
+ [
+                5.178972704726344,
+                51.24982704376254
+ ],
+ [
+                5.170012098271149,
+                51.25062964728295
+ ]
+ ]
+ ]
+}
+temp_ext = ["2022-05-01", "2023-07-31"]
 
-The maximum duration of a synchronous run is 15 minutes.
-For long running computations, you can use batch jobs.
+## Setup connection to openEO
+eoconn = openeo.connect(
+        "openeo.dataspace.copernicus.eu"
+ ).authenticate_oidc("CDSE")
 
-### Batch jobs
+## Create a base NDVI datacube that can be used as input for the service
+base = eoconn.load_collection('SENTINEL2_L2A',
+                                  spatial_extent=spat_ext,
+                                  temporal_extent=temp_ext,
+                                  bands=["B04", "B08", "SCL"])
+mask = scl.process("to_scl_dilation_mask", data=scl)
+base_cloudmasked = base.mask(mask)
+base_ndvi = base_cloudmasked.ndvi(red="B04", nir="B08")
 
-TODO: Replace with actual measurements!!!
+process_id = "fusets_mogpr"
+namespace_url = "public_url"    # publised URL of the process
+## Create a processing graph from the MOGPR process using an active openEO connection
+mogpr = eoconn.datacube_from_process(
+       process_id=process_id,
+       namespace= namespace_url,
+       input_raster_cube=base_ndvi, 
+ )
 
-| Spatial extent  | Temporal extent | Executor memory | Run duration |
-|-----------------|-----------------|-----------------|--------------|
-| 100 m x 100 m   | 1 month         | default         | 7 minutes    |
-| 500 m x 100 m   | 1 month         | default         | 7 minutes    |
-| 1 km x 1 km     | 1 month         | default         | 7 minutes    |
-| 5 km x 5 km     | 1 month         | default         | 10 minutes   |
-| 10 km x 10 km   | 1 month         | default         | 11 minutes   |
-| 50 km x 50 km   | 1 month         | 6 GB            | 20 minutes   |
-| 100 km x 100 km | 1 month         | 7 GB            | 34 minutes   |
-| 100m x 100 m    | 7 months        | default         | 10 minutes   |
-| 500 m x 500 m   | 7 months        | default         | 10 minutes   |
-| 1 km x 1 km     | 7 months        | default         | 14 minutes   |
-| 5 km x 5 km     | 7 months        | default         | 14 minutes   |
-| 10 km x 10 km   | 7 months        | default         | 19 minutes   |
-| 50 km x 50 km   | 7 months        | 6 GB            | 45 minutes   |
-| 100 km x 100 km | 7 months        | 8 GB            | 65 minutes   |
+
+## Calculate the average time series value for the given area of interest
+mogpr = mogpr.aggregate_spatial(spat_ext, reducer='mean')
+
+# Execute the service as a batch process
+mogpr_job = mogpr.execute_batch('./mogpr.json', out_format="json", title=f'FuseTS - MOGPR') 
+
+```
+
+## Output
+
+The User-Defined-Process (UDP) produces a datacube that contains a gap-filled time series for all pixels within the specified temporal and spatial range. This datacube can be seamlessly integrated with other openEO processes.
