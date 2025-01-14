@@ -1,0 +1,136 @@
+{
+    "id": "fusets_mogpr_s1s2",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2025-01-143T00:00:00Z",
+        "updated": "2025-01-14T00:00:00Z",
+        "type": "apex_algorithm",
+        "title": "Data fusion of S1 and S2 data using Multi-Output Gaussian Process Regression",
+        "description": "This MOGPR service is designed to enable multi-output regression analysis using Gaussian Process Regression (GPR) on geospatial data. It provides a powerful tool for understanding and predicting spatiotemporal phenomena by filling gaps based on other indicators that are correlated with each other. This service focusses on the fusion of Sentinel-1 and Sentinel-2 data, allowing the user to select one of the predefined data sources.",
+        "cost_estimate": 12,
+        "cost_unit": "platform credits per km²",
+        "keywords": [
+            "timeseries",
+            "Gaussian Process Regression (GPR)"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Bram Janssen",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/JanssenBrm",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/Pratichhya",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "service provider"
+                ]
+            },
+            {
+                "name": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "SEE WEBSITE",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "Normalised vegetation difference index (NDVI)"
+                    },
+                    {
+                        "id": "Radar Vegetation Index (RVI)"
+                    },
+                    {
+                        "id": "Multi-output Gaussian Process Regression (MOGPR)"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "JSON"
+            }
+        ],
+        "license": "other"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "openeo-process",
+            "type": "application/json",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "license",
+            "href": "https://apex.esa.int/license"
+        },
+        {
+            "rel": "example",
+            "type": "application/json",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/timeseries.json"
+        }
+    ]
+}
