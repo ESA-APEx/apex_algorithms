@@ -3,3 +3,4 @@ git+https://github.com/ESA-APEx/esa-apex-toolbox-python.git@main
 pytest>=8.2.0
 moto[s3, server]>=5.0.13
 dirty-equals>=0.8.0
+fusets

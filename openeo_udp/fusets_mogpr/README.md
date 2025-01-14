@@ -66,7 +66,7 @@ namespace_url = "public_url"    # publised URL of the process
 mogpr = eoconn.datacube_from_process(
        process_id=process_id,
        namespace= namespace_url,
-       input_raster_cube=base_ndvi, 
+      data=base_ndvi, 
  )
 
 
