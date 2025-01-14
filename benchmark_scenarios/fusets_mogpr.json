@@ -8,7 +8,7 @@
             "aggregatespatial1": {
                 "arguments": {
                     "data": {
-                        "from_node": "mogpr1"
+                        "from_node": "fusetsmogpr1"
                     },
                     "geometries": {
                         "coordinates": [
@@ -53,6 +53,15 @@
                 },
                 "process_id": "aggregate_spatial"
             },
+            "fusetsmogpr1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "ndvi1"
+                    }
+                },
+                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.2/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/fusets_mogpr",
+                "process_id": "fusets_mogpr"
+            },
             "loadcollection1": {
                 "arguments": {
                     "bands": [
@@ -89,7 +98,7 @@
                     },
                     "temporal_extent": [
                         "2022-05-01",
-                        "2023-07-31"
+                        "2022-06-01"
                     ]
                 },
                 "process_id": "load_collection"
@@ -129,7 +138,7 @@
                     },
                     "temporal_extent": [
                         "2022-05-01",
-                        "2023-07-31"
+                        "2022-06-01"
                     ]
                 },
                 "process_id": "load_collection"
@@ -145,15 +154,6 @@
                 },
                 "process_id": "mask"
             },
-            "mogpr1": {
-                "arguments": {
-                    "input_raster_cube": {
-                        "from_node": "ndvi1"
-                    }
-                },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
-                "process_id": "mogpr"
-            },
             "ndvi1": {
                 "arguments": {
                     "data": {
@@ -163,6 +163,17 @@
                     "red": "B04"
                 },
                 "process_id": "ndvi"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "aggregatespatial1"
+                    },
+                    "format": "JSON",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
             },
             "toscldilationmask1": {
                 "arguments": {
