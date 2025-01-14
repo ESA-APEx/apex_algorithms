@@ -1,0 +1,13 @@
+[
+    {
+        "id": "fusets_mogpr_s1s2",
+        "type": "openeo",
+        "description": "Data fusion of S1 and S2 data using Multi-Output Gaussian Process Regression",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+
+        },
+        "reference_data": {
+            }
+    }
+]
