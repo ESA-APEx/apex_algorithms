@@ -8,14 +8,6 @@ from pathlib import Path
 from openeo.udf import inspect
 
 
-# Example constants for demonstration
-DEPENDENCIES_DIR1 = 'venv'
-DEPENDENCIES_DIR2 = 'venv_static'
-
-DEPENDENCIES_URL1 = "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets_venv.zip"
-DEPENDENCIES_URL2 = "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets.zip"
-
-
 def download_file(url, path):
     """
     Downloads a file from the given URL to the specified path.
@@ -31,7 +23,6 @@ def extract_zip(zip_path, extract_to):
     """
     with zipfile.ZipFile(zip_path, "r") as zip_ref:
         zip_ref.extractall(extract_to)
-    os.remove(zip_path)  # Clean up the zip file after extraction
 
 
 def add_directory_to_sys_path(directory):
@@ -39,7 +30,7 @@ def add_directory_to_sys_path(directory):
     Adds a directory to the Python sys.path if it's not already present.
     """
     if directory not in sys.path:
-        sys.path.insert(0, directory)
+        sys.path.append(directory)
 
 @functools.lru_cache(maxsize=5)
 def setup_dependencies(dependencies_url,DEPENDENCIES_DIR):
@@ -59,20 +50,11 @@ def setup_dependencies(dependencies_url,DEPENDENCIES_DIR):
         zip_path = os.path.join(DEPENDENCIES_DIR, "temp.zip")
         download_file(dependencies_url, zip_path)
         extract_zip(zip_path, DEPENDENCIES_DIR)
+        os.remove(zip_path)
 
         # Add the extracted dependencies directory to sys.path
         add_directory_to_sys_path(DEPENDENCIES_DIR)
         inspect(message="Added to the sys path")
 
-setup_dependencies(DEPENDENCIES_URL1, DEPENDENCIES_DIR1)
-setup_dependencies(DEPENDENCIES_URL2, DEPENDENCIES_DIR2)
-
-
-def load_set_path() -> str:
-    """
-    loads path setup functions 
-    @return:
-    """
-    import os
-
-    return Path(os.path.realpath(__file__)).read_text()
+setup_dependencies("https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets_venv.zip", 'venv')
+setup_dependencies("https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets.zip", 'venv_static')
