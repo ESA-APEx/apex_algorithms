@@ -47,9 +47,7 @@ def get_variabilitymap(
     S2_bands_mask = s2_cube.mask(mask)
 
     # fetch udf to reduce bands
-    reduce_bands_udf = openeo.UDF.from_file(
-        Path(__file__).parent / "shub_fapar_udf.py")
-    
+    reduce_bands_udf = openeo.UDF(load_udf("shub_fapar_udf.py"))
     S2_bands_mask_reduced = S2_bands_mask.reduce_bands(reduce_bands_udf)
 
     input_data = S2_bands_mask_reduced.add_dimension(label=biopar_type, name=biopar_type, type='bands')
@@ -58,6 +56,7 @@ def get_variabilitymap(
 
     mask_value = 999.0
     variabilitymap_udf = load_udf("variabilitymap_udf.py")
+
     udf_process = lambda data: data.run_udf(udf=variabilitymap_udf,
                                             runtime='Python', context={
             'mask_value': mask_value, 'raw': {"from_parameter": "raw"}, 'band': biopar_type
@@ -106,5 +105,5 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # save the generated process to a file
-    with open(Path(__file__).parent / "variabilitymap.json", "w") as f:
+    with open(Path(__file__).parent / "variabilitymap_1901.json", "w") as f:
         json.dump(generate(), f, indent=2)
