@@ -11,7 +11,6 @@ from typing import Sequence, Union
 
 import openeo
 from openeo.api.process import Parameter
-from openeo.processes import eq
 from openeo.rest.udp import build_process_dict
 from openeo.internal.graph_building import PGNode
 
@@ -105,5 +104,5 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # save the generated process to a file
-    with open(Path(__file__).parent / "variabilitymap_1901.json", "w") as f:
+    with open(Path(__file__).parent / "variabilitymap.json", "w") as f:
         json.dump(generate(), f, indent=2)
