@@ -106,7 +106,7 @@
             "rel": "openeo-process",
             "type": "application/json",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/openeo_udp/sentinel1_stats/sentinel1_stats.jso"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/variabilitymap/openeo_udp/variabilitymap/variabilitymap.json"
         },
         {
             "rel": "service",

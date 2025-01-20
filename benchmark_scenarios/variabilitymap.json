@@ -59,7 +59,7 @@
                         "2022-12-13"
                     ]
                 },
-                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.1/processes/u:29ac8c0d-e6b4-4e50-9a9b-deeeb2f3684a/variabilitymap",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/variabilitymap/openeo_udp/variabilitymap/variabilitymap.json",
                 "result": true
             }
         },
