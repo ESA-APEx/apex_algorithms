@@ -81,10 +81,10 @@
             {
                 "concepts": [
                     {
-                        "id": "Active Remote Sensing"
+                        "id": "Remote Sensing"
                     },
                     {
-                        "id": "Sentinel-1 GRD"
+                        "id": "Agriculture"
                     }
                 ],
                 "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
