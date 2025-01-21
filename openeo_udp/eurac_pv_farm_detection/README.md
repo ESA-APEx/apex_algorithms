@@ -2,8 +2,6 @@ Photovoltaic farms (PV farms) mapping is essential for establishing valid polici
 
 Sources:
 
-[1] Kruitwagen, L., et al. A global inventory of photovoltaic solar energy generating units. Nature 598, 604–610 (2021). https://doi.org/10.1038/s41586-021-03957-7
+[1]  Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841, https://doi.org/10.5194/egusphere-egu24-16841, 2024.
 
-[2] Schramm, M, et al. The openEO API–Harmonising the Use of Earth Observation Cloud Services Using Virtual Data Cube Functionalities. Remote Sens. 2021, 13, 1125. https://doi.org/10.3390/rs13061125
-
-[3] https://github.com/clausmichele/openEO_photovoltaic/tree/main
+[2] https://github.com/clausmichele/openEO_photovoltaic/tree/main
