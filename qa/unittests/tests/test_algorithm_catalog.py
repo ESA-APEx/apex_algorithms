@@ -14,6 +14,9 @@ from esa_apex_toolbox.algorithms import Algorithm
 def test_lint_algorithm_catalog_json_file(path):
     data = json.loads(path.read_text())
 
+    if not ("links" in data and "openeo-process" in {k["rel"] for k in data["links"]}):
+        pytest.skip("Unknown algorithm type")
+
     assert data["id"] == path.stem
     assert data["type"] == "Feature"
     assert (
@@ -30,10 +33,10 @@ def test_lint_algorithm_catalog_json_file(path):
     for link in data["links"]:
         assert_no_github_feature_branch_refs(link.get("href"))
 
-    # TODO #17 more checks
-
     algo = Algorithm.from_ogc_api_record(path)
 
     assert len(algo.service_links) > 0
     assert algo.udp_link is not None
     assert algo.organization is not None
+
+    # TODO #17 more checks, smarter checks, or just go all in on a JSON-schema based approach instead
