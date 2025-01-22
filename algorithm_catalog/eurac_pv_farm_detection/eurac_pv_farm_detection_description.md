@@ -2,7 +2,7 @@
 
 Photovoltaic farms (PV farms) mapping is essential for establishing valid policies regarding natural resources management and clean energy. As evidenced by the recent COP28 summit, where almost 120 global leaders pledged to triple the world’s renewable energy capacity before 2030, it is crucial to make these mapping efforts scalable and reproducible. Recently, there were efforts towards the global mapping of PV farms [1], but these were limited to fixed time periods of the analyzed satellite imagery and not openly reproducible. 
 
-To resolve this limitation we implemented the detection workflow   for mapping solar farms using Sentinel-2 imagery in an openEO process [2].
+To resolve this limitation we implemented the detection workflow for mapping solar farms using Sentinel-2 imagery in an openEO process [2].
 
 Open-source data is used to construct the training dataset, leveraging OpenStreetMap (OSM) to gather PV farms polygons across different countries. Different filtering techniques are involved in the creation of the training set, in particular land cover and terrain. To ensure model robustness, we leveraged the temporal resolution of Sentinel-2 L2A data and utilized openEO to create a reusable workflow that simplifies the data access in the cloud, allowing the collection of training samples over Europe efficiently.
 
@@ -10,9 +10,6 @@ This workflow includes preprocessing steps such as cloud masking, gap filling, o
 
 An openEO process graph was constructed for the execution of the inference phase, encapsulating all necessary processes from the preprocessing to the prediction stage.  The UDP process for the PV farms mapping is integrated with the ESA Green Transition Information Factory (GTIF, https://gtif.esa.int/), providing the ability for streamlined and FAIR compliant updates of related energy infrastructure mapping efforts.
 
-[1] Kruitwagen, L., et al. A global inventory of photovoltaic solar energy generating units. Nature 598, 604–610 (2021). https://doi.org/10.1038/s41586-021-03957-7
-
-[2] Schramm, M, et al. The openEO API–Harmonising the Use of Earth Observation Cloud Services Using Virtual Data Cube Functionalities. Remote Sens. 2021, 13, 1125. https://doi.org/10.3390/rs13061125
 
 How to cite: Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841, https://doi.org/10.5194/egusphere-egu24-16841, 2024.
 
@@ -46,17 +43,11 @@ Below we overlay a Sentinel2-RGB image with the ML classification, thereby highl
 
 # Literature references
 
-[1] Kruitwagen, L., et al. A global inventory of photovoltaic solar energy generating units. Nature 598, 604–610 (2021). https://doi.org/10.1038/s41586-021-03957-7
-
-[2] Schramm, M, et al. The openEO API–Harmonising the Use of Earth Observation Cloud Services Using Virtual Data Cube Functionalities. Remote Sens. 2021, 13, 1125. https://doi.org/10.3390/rs13061125
-
-[3]: Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841, https://doi.org/10.5194/egusphere-egu24-16841, 2024.
-
+[1] M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841, https://doi.org/10.5194/egusphere-egu24-16841, 2024.
 
 # Known limitations
 
-The algoritm was validated up to an area equal to 20x20km. For larger spatial and/or temporal extents, dedicated openEO job settings might be required to ensure that the process runs in an optimal configuration. 
-
+The algoritm was validated up to an area equal to 20x20km. For larger spatial and/or temporal extents, dedicated openEO job settings might be required to ensure that the process runs in an optimal configuration. The  integrated ML network, is a prove-of-concept which may not be applicable for all areas of interest. 
 
 # Known artifacts
 

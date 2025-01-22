@@ -10,7 +10,7 @@
     "updated": "2024-10-16T00:00:00Z",
     "type": "apex_algorithm",
     "title": "EURAC Photovoltaic Farms mapping",
-    "description": "A photovoltaic farm algorithm.",
+    "description": "A workflow to detect photovoltaic farms, using a ML networknework.",
     "cost_estimate": "0.001",
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
