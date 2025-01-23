@@ -2,7 +2,7 @@
 
 Photovoltaic farms (PV farms) mapping is essential for establishing valid policies regarding natural resources management and clean energy. As evidenced by the recent COP28 summit, where almost 120 global leaders pledged to triple the world’s renewable energy capacity before 2030, it is crucial to make these mapping efforts scalable and reproducible. Recently, there were efforts towards the global mapping of PV farms [1], but these were limited to fixed time periods of the analyzed satellite imagery and not openly reproducible. 
 
-To resolve this limitation we implemented the detection workflow for mapping solar farms using Sentinel-2 imagery in an openEO process [2].
+To resolve this limitation we implemented the detection workflow for mapping solar farms using Sentinel-2 imagery in an openEO process [1].
 
 Open-source data is used to construct the training dataset, leveraging OpenStreetMap (OSM) to gather PV farms polygons across different countries. Different filtering techniques are involved in the creation of the training set, in particular land cover and terrain. To ensure model robustness, we leveraged the temporal resolution of Sentinel-2 L2A data and utilized openEO to create a reusable workflow that simplifies the data access in the cloud, allowing the collection of training samples over Europe efficiently.
 
