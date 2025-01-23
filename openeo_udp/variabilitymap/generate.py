@@ -7,7 +7,7 @@ A map will be generated for each of the available S2 observation between the spe
 import json
 import sys
 from pathlib import Path
-from typing import Sequence, Union
+from typing import Type, Union
 
 import openeo
 from openeo.api.process import Parameter
@@ -21,7 +21,7 @@ def load_udf(filename: str) -> PGNode:
 
 def get_variabilitymap(
     connection: openeo.Connection,
-    temporal_extent: Union[Sequence[str], Parameter, None] = None,
+    temporal_extent: Union[Type[str], Parameter, None] = None,
     spatial_extent: Union[Parameter, dict, None] = None,
     raw: Union[bool, Parameter] = False,
 ) -> openeo.DataCube:
@@ -46,7 +46,7 @@ def get_variabilitymap(
     S2_bands_mask = s2_cube.mask(mask)
 
     # fetch udf to reduce bands
-    reduce_bands_udf = openeo.UDF(load_udf("shub_fapar_udf.py"))
+    reduce_bands_udf = openeo.UDF.from_file("shub_fapar_udf.py")
     S2_bands_mask_reduced = S2_bands_mask.reduce_bands(reduce_bands_udf)
 
     input_data = S2_bands_mask_reduced.add_dimension(label=biopar_type, name=biopar_type, type='bands')
@@ -54,7 +54,8 @@ def get_variabilitymap(
     ################ get and apply variability map udf #################
 
     mask_value = 999.0
-    variabilitymap_udf = load_udf("variabilitymap_udf.py")
+
+    variabilitymap_udf = Path("variabilitymap_udf.py").read_text()
 
     udf_process = lambda data: data.run_udf(udf=variabilitymap_udf,
                                             runtime='Python', context={
@@ -93,7 +94,7 @@ def generate() -> dict:
         process_graph=variabilitymap,
         process_id="variabilitymap",
         summary="Daily crop performance calculation",
-        description=(Path(__file__).parent / "README.md").read_text(encoding="utf-8"),
+        description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[
             temporal_extent,
             spatial_extent,
