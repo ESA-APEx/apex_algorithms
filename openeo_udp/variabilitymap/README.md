@@ -10,13 +10,15 @@ The base index for calculating the variability maps is fAPAR, the fraction of ab
 
 Finally, the deviations are classified into five categories according to their relevance, and color maps are generated.
 
-| Range    | Class | Color           |
+| Range    | Class | Color           |
 |----------|-------|-----------------|
-| <85%     | 1     | red             |
-| 85-95%   | 2     | oranje          |
-| 95-105%  | 3     | light green     |
-| 105-115% | 4     | dark green      |
-| >115%   | 5     | darkest green |
+| <85%     | 1     | red             |
+| 85-95%   | 2     | oranje          |
+| 95-105%  | 3     | light green     |
+| 105-115% | 4     | dark green      |
+| >115%    | 5     | darkest green   |
+
+
 
 In the red and orange zones, lower fAPAR values are found, while in the green and dark green zones, the fAPAR values are (much) higher than the median value. It is assumed that the crop performs better in the dark green zones than in the orange and red zones.
 

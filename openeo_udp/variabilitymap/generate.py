@@ -93,7 +93,7 @@ def generate() -> dict:
         process_graph=variabilitymap,
         process_id="variabilitymap",
         summary="Daily crop performance calculation",
-        description=(Path(__file__).parent / "README.md").read_text(),
+        description=(Path(__file__).parent / "README.md").read_text(encoding="utf-8"),
         parameters=[
             temporal_extent,
             spatial_extent,
