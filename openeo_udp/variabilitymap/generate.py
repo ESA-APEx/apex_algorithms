@@ -7,7 +7,7 @@ A map will be generated for each of the available S2 observation between the spe
 import json
 import sys
 from pathlib import Path
-from typing import Type, Union
+from typing import List, Union
 
 import openeo
 from openeo.api.process import Parameter
@@ -21,7 +21,7 @@ def load_udf(filename: str) -> PGNode:
 
 def get_variabilitymap(
     connection: openeo.Connection,
-    temporal_extent: Union[Type[str], Parameter, None] = None,
+    temporal_extent: Union[List[str], Parameter, None] = None,
     spatial_extent: Union[Parameter, dict, None] = None,
     raw: Union[bool, Parameter] = False,
 ) -> openeo.DataCube:
