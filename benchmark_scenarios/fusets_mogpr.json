@@ -5,188 +5,61 @@
         "description": "Multi output gaussian process regression example on NDVI timeseries",
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
-            "aggregatespatial1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "fusetsmogpr1"
-                    },
-                    "geometries": {
-                        "coordinates": [
-                            [
-                                [
-                                    5.170012098271149,
-                                    51.25062964728295
-                                ],
-                                [
-                                    5.17085904378298,
-                                    51.24882567194015
-                                ],
-                                [
-                                    5.17857421368097,
-                                    51.2468515482926
-                                ],
-                                [
-                                    5.178972704726344,
-                                    51.24982704376254
-                                ],
-                                [
-                                    5.170012098271149,
-                                    51.25062964728295
-                                ]
-                            ]
-                        ],
-                        "type": "Polygon"
-                    },
-                    "reducer": {
-                        "process_graph": {
-                            "mean1": {
-                                "arguments": {
-                                    "data": {
-                                        "from_parameter": "data"
-                                    }
-                                },
-                                "process_id": "mean",
-                                "result": true
-                            }
-                        }
-                    }
-                },
-                "process_id": "aggregate_spatial"
-            },
-            "fusetsmogpr1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "ndvi1"
-                    }
-                },
-                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.2/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/fusets_mogpr",
-                "process_id": "fusets_mogpr"
-            },
-            "loadcollection1": {
-                "arguments": {
-                    "bands": [
-                        "B04",
-                        "B08"
-                    ],
-                    "id": "SENTINEL2_L2A",
-                    "spatial_extent": {
-                        "coordinates": [
-                            [
-                                [
-                                    5.170012098271149,
-                                    51.25062964728295
-                                ],
-                                [
-                                    5.17085904378298,
-                                    51.24882567194015
-                                ],
-                                [
-                                    5.17857421368097,
-                                    51.2468515482926
-                                ],
-                                [
-                                    5.178972704726344,
-                                    51.24982704376254
-                                ],
-                                [
-                                    5.170012098271149,
-                                    51.25062964728295
-                                ]
-                            ]
-                        ],
-                        "type": "Polygon"
-                    },
-                    "temporal_extent": [
-                        "2022-05-01",
-                        "2022-06-01"
+            "mogprs1s21601251": {
+              "arguments": {
+                "include_raw_inputs": true,
+                "include_uncertainties": true,
+                "s1_collection": "RVI",
+                "s2_collection": "NDVI",
+                "spatial_extent": {
+                  "coordinates": [
+                    [
+                      [
+                        5.170012098271149,
+                        51.25062964728295
+                      ],
+                      [
+                        5.17085904378298,
+                        51.24882567194015
+                      ],
+                      [
+                        5.17857421368097,
+                        51.2468515482926
+                      ],
+                      [
+                        5.178972704726344,
+                        51.24982704376254
+                      ],
+                      [
+                        5.170012098271149,
+                        51.25062964728295
+                      ]
                     ]
+                  ],
+                  "type": "Polygon"
                 },
-                "process_id": "load_collection"
-            },
-            "loadcollection2": {
-                "arguments": {
-                    "bands": [
-                        "SCL"
-                    ],
-                    "id": "SENTINEL2_L2A",
-                    "spatial_extent": {
-                        "coordinates": [
-                            [
-                                [
-                                    5.170012098271149,
-                                    51.25062964728295
-                                ],
-                                [
-                                    5.17085904378298,
-                                    51.24882567194015
-                                ],
-                                [
-                                    5.17857421368097,
-                                    51.2468515482926
-                                ],
-                                [
-                                    5.178972704726344,
-                                    51.24982704376254
-                                ],
-                                [
-                                    5.170012098271149,
-                                    51.25062964728295
-                                ]
-                            ]
-                        ],
-                        "type": "Polygon"
-                    },
-                    "temporal_extent": [
-                        "2022-05-01",
-                        "2022-06-01"
-                    ]
-                },
-                "process_id": "load_collection"
-            },
-            "mask1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "loadcollection1"
-                    },
-                    "mask": {
-                        "from_node": "toscldilationmask1"
-                    }
-                },
-                "process_id": "mask"
-            },
-            "ndvi1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "mask1"
-                    },
-                    "nir": "B08",
-                    "red": "B04"
-                },
-                "process_id": "ndvi"
+                "temporal_extent": [
+                  "2023-01-01",
+                  "2023-12-31"
+                ]
+              },
+              "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
+              "process_id": "fusets_mogpr"
             },
             "saveresult1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "aggregatespatial1"
-                    },
-                    "format": "JSON",
-                    "options": {}
+              "arguments": {
+                "data": {
+                  "from_node": "mogprs1s21601251"
                 },
-                "process_id": "save_result",
-                "result": true
-            },
-            "toscldilationmask1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "loadcollection2"
-                    }
-                },
-                "process_id": "to_scl_dilation_mask"
+                "format": "netCDF",
+                "options": {}
+              },
+              "process_id": "save_result",
+              "result": true
             }
-        },
+          },
         "reference_data": {
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/job-results.json",
-            "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/timeseries.json"
+            "timeseries.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/timeseries.nc"
         }
     }
 ]
