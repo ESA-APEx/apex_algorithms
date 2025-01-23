@@ -6,58 +6,58 @@
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "mogprs1s21601251": {
-              "arguments": {
-                "include_raw_inputs": true,
-                "include_uncertainties": true,
-                "s1_collection": "RVI",
-                "s2_collection": "NDVI",
-                "spatial_extent": {
-                  "coordinates": [
-                    [
-                      [
-                        5.170012098271149,
-                        51.25062964728295
-                      ],
-                      [
-                        5.17085904378298,
-                        51.24882567194015
-                      ],
-                      [
-                        5.17857421368097,
-                        51.2468515482926
-                      ],
-                      [
-                        5.178972704726344,
-                        51.24982704376254
-                      ],
-                      [
-                        5.170012098271149,
-                        51.25062964728295
-                      ]
+                "arguments": {
+                    "include_raw_inputs": true,
+                    "include_uncertainties": true,
+                    "s1_collection": "RVI",
+                    "s2_collection": "NDVI",
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ],
+                                [
+                                    5.17085904378298,
+                                    51.24882567194015
+                                ],
+                                [
+                                    5.17857421368097,
+                                    51.2468515482926
+                                ],
+                                [
+                                    5.178972704726344,
+                                    51.24982704376254
+                                ],
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "temporal_extent": [
+                        "2023-01-01",
+                        "2023-12-31"
                     ]
-                  ],
-                  "type": "Polygon"
                 },
-                "temporal_extent": [
-                  "2023-01-01",
-                  "2023-12-31"
-                ]
-              },
-              "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
-              "process_id": "fusets_mogpr"
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json",
+                "process_id": "fusets_mogpr"
             },
             "saveresult1": {
-              "arguments": {
-                "data": {
-                  "from_node": "mogprs1s21601251"
+                "arguments": {
+                    "data": {
+                        "from_node": "mogprs1s21601251"
+                    },
+                    "format": "netCDF",
+                    "options": {}
                 },
-                "format": "netCDF",
-                "options": {}
-              },
-              "process_id": "save_result",
-              "result": true
+                "process_id": "save_result",
+                "result": true
             }
-          },
+        },
         "reference_data": {
             "timeseries.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/timeseries.nc"
         }
