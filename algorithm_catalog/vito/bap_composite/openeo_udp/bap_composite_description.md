@@ -88,4 +88,4 @@ White, J.C.; Wulder, M.A.; Hobart, G.W.; Luther, J.E.; Hermosilla, T.; Griffiths
 Residual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons. The cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds. 
 The picture below shows a composite image with some cloud shadow pixels remaining. Because these pixels were not classified as cloud shadow in the SCL band, they are not masked out in the final composite.  
 
-![cloud-shadow-artifacts-bap.png](./cloud-shadow-artifacts-bap.png)
+![cloud-shadow-artifacts-bap.png](cloud-shadow-artifacts-bap.png)
