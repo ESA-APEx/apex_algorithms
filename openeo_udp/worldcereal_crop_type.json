@@ -1651,14 +1651,29 @@
       },
       "process_id": "sar_backscatter"
     },
-    "saveresult1": {
+    "resamplespatial3": {
+      "process_id": "resample_spatial",
       "arguments": {
+        "align": "upper-left",
         "data": {
           "from_node": "apply5"
         },
+        "method": "near",
+        "projection": {
+          "from_parameter": "projection"
+        },
+        "resolution": 0
+      },
+      "result": true
+    },
+    "saveresult1": {
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial3"
+        },
         "format": "GTiff",
         "options": {
-          "filename_prefix": "cropland_2018-12-01_2019-11-30"
+          "filename_prefix": "worldcereal-cropland-type"
         }
       },
       "process_id": "save_result"
@@ -1670,7 +1685,7 @@
         },
         "format": "GTiff",
         "options": {
-          "filename_prefix": "croptype_2018-12-01_2019-11-30"
+          "filename_prefix": "worldcereal-cropland-type-postprocessed"
         }
       },
       "process_id": "save_result",
@@ -1704,6 +1719,8 @@
     }
   },
   "id": "worldcereal_crop_type",
+  "summary": "Crop type mapping using Sentinel-1, Sentinel-2, METEO and Copernicus-30 data",
+  "description": "Load in Sentinel-1, Sentinel-2, METEO and Copernicus-30 data and apply a CatBoost model to map the type of crops.",
   "parameters": [
     {
       "name": "spatial_extent",
@@ -1790,13 +1807,23 @@
       }
     },
     {
-      "name": "epsg",
-      "description": "The EPSG code of the output projection",
+      "name": "projection",
+      "description": "The EPSG code of the output projection. If not set, the default UTM projection is used.",
       "schema": {
         "type": "string"
       },
       "default": null,
       "optional": true
     }
-  ]
+  ],
+  "minimal_job_options": {
+    "driver-memory": "4g",
+    "executor-memory": "2g",
+    "executor-memoryOverhead": "1g",
+    "python-memory": "3g",
+    "soft-errors": "true",
+    "udf-dependency-archives": [
+      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
+    ]
+  }
 }
