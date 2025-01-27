@@ -1663,8 +1663,7 @@
           "from_parameter": "projection"
         },
         "resolution": 0
-      },
-      "result": true
+      }
     },
     "saveresult1": {
       "arguments": {
