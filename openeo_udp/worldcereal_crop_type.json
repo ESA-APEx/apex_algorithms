@@ -1677,10 +1677,24 @@
       },
       "process_id": "save_result"
     },
+    "resamplespatial4": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "apply7"
+        },
+        "method": "near",
+        "projection": {
+          "from_parameter": "projection"
+        },
+        "resolution": 0
+      }
+    },
     "saveresult2": {
       "arguments": {
         "data": {
-          "from_node": "apply7"
+          "from_node": "resamplespatial4"
         },
         "format": "GTiff",
         "options": {
