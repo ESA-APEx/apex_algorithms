@@ -13,7 +13,7 @@ Finally, the deviations are classified into five categories according to their r
 | Range    | Class | Color           |
 |----------|-------|-----------------|
 | <85%     | 1     | red             |
-| 85-95%   | 2     | oranje          |
+| 85-95%   | 2     | orange          |
 | 95-105%  | 3     | light green     |
 | 105-115% | 4     | dark green      |
 | >115%    | 5     | darkest green   |
@@ -27,3 +27,7 @@ In the red and orange zones, lower fAPAR values are found, while in the green an
 ![Variability Map - Legend](https://artifactory.vgt.vito.be:443/auxdata-public/Nextland/services/descriptions/yieldpotentialmap/yieldmap_legend.png)
 
 *Example of a variability color map (deviations classified into five categories)*
+
+Also, the UDP uses the Bio-Physical Parameter (biopar) package to calculate the fAPAR values. The biopar package is a Python package that calculates biophysical parameters from Sentinel-2 satellite images as described [here](http://step.esa.int/docs/extra/ATBD_S2ToolBox_L2B_V1.1.pdf). 
+
+A detailed document on the Quality Assessment of the generated products can be found [here](https://docs.terrascope.be/DataProducts/Sentinel-2/ATBD/VITO_S2_QAR_S2_BIOPAR_inter-comparison_V200_V102.pdf).

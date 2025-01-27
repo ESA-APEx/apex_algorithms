@@ -1,9 +1,16 @@
+"""
+Import the biopar library and the BioParNp class to calculate the FAPAR index.
+It is the Python implementation of biophyscial parameter computation, 
+as described here: http://step.esa.int/docs/extra/ATBD_S2ToolBox_L2B_V1.1.pdf
+"""
 from functools import lru_cache
 import numpy as np
 from typing import Dict
+from numpy import cos, radians
+
 from openeo.udf.xarraydatacube import XarrayDataCube
 from biopar.bioparnp import BioParNp
-from numpy import cos, radians
+
 
 @lru_cache(maxsize=6)
 def get_bioparrun(biopar) -> BioParNp:
