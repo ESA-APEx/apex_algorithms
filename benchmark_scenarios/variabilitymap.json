@@ -59,7 +59,7 @@
                         "2022-12-13"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/variabilitymap/openeo_udp/variabilitymap/variabilitymap.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/32ea3c9a6fa24fe063cb59164cd318cceb7209b0/openeo_udp/variabilitymap/variabilitymap.json",
                 "result": true
             }
         },
