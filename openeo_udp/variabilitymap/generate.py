@@ -15,10 +15,6 @@ from openeo.rest.udp import build_process_dict
 from openeo.internal.graph_building import PGNode
 
 
-def load_udf(filename: str) -> PGNode:
-    with open(Path(__file__).parent / filename, 'r') as f:
-        return f.read()
-
 def get_variabilitymap(
     connection: openeo.Connection,
     temporal_extent: Union[List[str], Parameter, None] = None,
