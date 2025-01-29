@@ -114,7 +114,7 @@
             "rel": "openeo-process",
             "type": "application/json",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/mogpr_v1/openeo_udp/fusets_mogpr/fusets_mogpr.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/09413be3c27e0e695d426c9ffe5a0fe90beefe65/openeo_udp/fusets_mogpr/fusets_mogpr.json"
         },
         {
             "rel": "service",
