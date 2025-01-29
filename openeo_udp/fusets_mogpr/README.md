@@ -6,12 +6,13 @@ This service is designed to enable multi-output regression analysis using Gaussi
 
 The `fusets_mogpr_s1s2` service requires the following parameters:
 
-| Name | Description | Type | Default |
-|---|---|---|---------|
-| spatial_extent | Polygon representing the AOI on which to apply the data fusion | GeoJSON |         | 
-| temporal_extent | Date range for which to apply the data fusion | Array |         |
-| s1_collection | S1 data collection to use for the fusion | Text | RVI     |
-| s2_collection | S2 data collection to use for fusing the data | Text | NDVI       | 
+
+| Name            | Description                                                    | Type    | Default |
+| --------------- | -------------------------------------------------------------- | ------- | ------- |
+| spatial_extent  | Polygon representing the AOI on which to apply the data fusion | GeoJSON |         |
+| temporal_extent | Date range for which to apply the data fusion                  | Array   |         |
+| s1_collection   | S1 data collection to use for the fusion                       | Text    | RVI     |
+| s2_collection   | S2 data collection to use for fusing the data                  | Text    | NDVI    |
 
 ## Supported collections
 
