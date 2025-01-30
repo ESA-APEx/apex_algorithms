@@ -38,7 +38,7 @@
                     },
                     "startdate": "2021-01-01"
                 },
-                "namespace": "https://openeo.dataspace.copernicus.eu/openeo/processes/u:3e24e251-2e9a-438f-90a9-d4500e576574/cropsar_px",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3215de22eded7c87c46122f073d15c7258af26b4/openeo_udp/cropsar_px/cropsar_px.json",
                 "process_id": "cropsar_px"
             },
             "saveresult1": {
