@@ -145,7 +145,7 @@
             "rel": "example",
             "type": "application/json",
             "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar_px/CropSAR_px.nc"
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar_px/cropsar_px.nc"
         }
     ]
 }
