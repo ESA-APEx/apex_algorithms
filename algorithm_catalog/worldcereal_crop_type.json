@@ -9,8 +9,8 @@
     "created": "2025-01-28T00:00:00Z",
     "updated": "2025-01-28T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "ESA worldcereal global maize detector",
-    "description": "A maize detection algorithm.",
+    "title": "ESA worldcereal global crop type detector",
+    "description": "A crop type detection algorithm, maximum area for a single job is 20x20km.",
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
