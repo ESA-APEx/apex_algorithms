@@ -134,7 +134,7 @@ def _build_collection_graph(collection, label, callable, reject):
 
 def load_s1_collection(connection, collection, polygon, date):
     """
-    Create a S1 input data cube based on the collection selected by the user. This achieved by building an
+    Create an S1 input data cube based on the collection selected by the user. This achieved by building an
     if-else structure through the different openEO processes, making sure that the correct datacube is selected
     when executing the UDP.
 
@@ -164,7 +164,7 @@ def load_s1_collection(connection, collection, polygon, date):
 
 def load_s2_collection(connection, collection, polygon, date):
     """
-    Create a S2 input data cube based on the collection selected by the user. This achieved by building an
+    Create an S2 input data cube based on the collection selected by the user. This achieved by building an
     if-else structure through the different openEO processes, making sure that the correct datacube is selected
     when executing the UDP.
 

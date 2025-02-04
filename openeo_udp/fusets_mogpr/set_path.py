@@ -33,7 +33,7 @@ def extract_zip_to_temp(zip_path):
 
 def move_top_level_folder_to_destination(temp_dir, destination_dir):
     """
-    Moves the first top-level folder from the temporary directory to the destination directory.
+    Moves each top-level folder from the temporary directory to the destination directory.
     Throws an error if the folder already exists at the destination.
     """
     # Find the top-level folders inside the extracted zip
