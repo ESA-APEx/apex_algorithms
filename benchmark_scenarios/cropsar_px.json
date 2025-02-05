@@ -40,17 +40,6 @@
                 },
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3215de22eded7c87c46122f073d15c7258af26b4/openeo_udp/cropsar_px/cropsar_px.json",
                 "process_id": "cropsar_px"
-            },
-            "saveresult1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "cropsarpx1"
-                    },
-                    "format": "netCDF",
-                    "options": {}
-                },
-                "process_id": "save_result",
-                "result": true
             }
         },
         "reference_data": {
