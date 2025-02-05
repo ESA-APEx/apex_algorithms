@@ -18,17 +18,12 @@ def download_file(url, path):
     with open(path, "wb") as file:
         file.write(response.content)
 
-def extract_zip_to_temp(zip_path):
+def extract_zip_to_temp(zip_path, temp_dir):
     """
-    Extracts a zip file to a temporary directory.
+    Extracts a zip file into the given temporary directory.
     """
-    # Create a temporary directory
-    temp_dir = tempfile.mkdtemp()
-
-    # Extract the zip file to the temporary directory
     with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(temp_dir)
-
+        zip_ref.extractall(temp_dir)  # Use the existing temp_dir
     return temp_dir
 
 def move_top_level_folder_to_destination(temp_dir, destination_dir):
@@ -59,34 +54,29 @@ def add_to_sys_path(folder_path):
     if folder_path not in sys.path:
         sys.path.append(folder_path)
 
+
 @functools.lru_cache(maxsize=5)
 def setup_dependencies(dependencies_url):
     """
     Main function to download, unzip, move the top-level folder, and add it to sys.path.
     """
-    # Create a temporary directory for extracted files
-    temp_dir = tempfile.mkdtemp()
-    
-    # Step 1: Download the zip file
-    zip_path = os.path.join(temp_dir, "temp.zip")
-    download_file(dependencies_url, zip_path)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Step 1: Download the zip file
+        zip_path = os.path.join(temp_dir, "temp.zip")
+        download_file(dependencies_url, zip_path)
 
-    inspect(message="Extract dependencies to temp")
-    # Step 2: Extract the zip file to the temporary directory
-    extracted_dir = extract_zip_to_temp(zip_path)
+        inspect(message="Extract dependencies to temp")
+        # Step 2: Extract the zip file to the temporary directory
+        extracted_dir = extract_zip_to_temp(zip_path, temp_dir) 
 
-    # Step 3: Move the first top-level folder (dynamically) to the destination
-    destination_dir = os.getcwd()  # Current working directory
-    inspect(message="Move top-level folder to destination")
-    moved_folder = move_top_level_folder_to_destination(extracted_dir, destination_dir)
+        # Step 3: Move the first top-level folder (dynamically) to the destination
+        destination_dir = os.getcwd()  # Current working directory
+        inspect(message="Move top-level folder to destination")
+        moved_folder = move_top_level_folder_to_destination(extracted_dir, destination_dir)
 
-    # Step 4: Add the folder to sys.path
-    add_to_sys_path(moved_folder)
-    inspect(message="Added to the sys path")
-
-    # Clean up the temporary zip file
-    os.remove(zip_path)
-    shutil.rmtree(temp_dir)  # Remove the temporary extraction folder   
+        # Step 4: Add the folder to sys.path
+        add_to_sys_path(moved_folder)
+        inspect(message="Added to the sys path") 
 
 
 setup_dependencies("https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/ai4food/fusets_venv.zip")
