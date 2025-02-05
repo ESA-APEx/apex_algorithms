@@ -73,5 +73,16 @@ cropsarpx.execute_batch('results/cropsar_px_290125.nc', title=f'cropsar_px', job
 
 ```
 
+## Parameters
+
+The `CropSAR_px` process requires the following parameters:
+
+- `startdate` (string): The start date of the time series.
+- `enddate` (string): The end date of the time series.
+- `spatial_extent` (dict): The spatial extent of the area of interest.
+- `output` (string): The output type of the process. The supported output types are `NDVI`, `FAPAR`, and `FCOVER`.
+
+When compared with few others processes shared in this repository, the `CropSAR_px` process require temporal extent to be defined using `startdate` and `enddate` parameters. It is due to the nature of the CropSAR_px workflow, which performs the date-shift of 90 days preceeding the start date and postceeding the end date.
+
 
 Refer to this [blog post](https://blog.vito.be/remotesensing/cropsar2023) for more information on how to run batch jobs.
