@@ -43,17 +43,6 @@
                 },
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/09413be3c27e0e695d426c9ffe5a0fe90beefe65/openeo_udp/fusets_mogpr/fusets_mogpr.json",
                 "process_id": "fusets_mogpr"
-            },
-            "saveresult1": {
-                "arguments": {
-                    "data": {
-                        "from_node": "fusetsmogpr"
-                    },
-                    "format": "netCDF",
-                    "options": {}
-                },
-                "process_id": "save_result",
-                "result": true
             }
         },
         "reference_data": {
