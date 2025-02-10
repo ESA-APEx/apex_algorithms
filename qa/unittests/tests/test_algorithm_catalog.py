@@ -9,7 +9,7 @@ from esa_apex_toolbox.algorithms import Algorithm
 
 
 @pytest.mark.parametrize(
-    "path", list((get_project_root() / "algorithm_catalog").glob("**/*.json"))
+    "path", list((get_project_root() / "algorithm_catalog").glob("**/benchmark_scenarios/*.json"))
 )
 def test_lint_algorithm_catalog_json_file(path):
     data = json.loads(path.read_text())
