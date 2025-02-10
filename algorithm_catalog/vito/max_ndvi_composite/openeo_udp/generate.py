@@ -146,7 +146,7 @@ def test_run():
     bbox = dict(west=7.998047, south=55.804368, east=9.5, north=56.4)
     composite = c.datacube_from_process(
         "max_ndvi_composite",
-        namespace="https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
+        namespace="https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/vito/max_ndvi_composite/openeo_udp/max_ndvi_composite.json",
         temporal_extent=["2022-03-01", "2023-06-01"],
         spatial_extent=bbox,
     )
