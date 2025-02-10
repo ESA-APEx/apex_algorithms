@@ -121,7 +121,9 @@ def generate() -> dict:
         description=(
             Path(__file__).parent.parent.parent.parent
             / "algorithm_catalog"
-            / "max_ndvi_composite_files"
+            / "vito"
+            / "max_ndvi_composite"
+            / "openeo_udp"
             / "max_ndvi_composite_description.md"
         ).read_text(),
         parameters=[
