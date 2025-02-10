@@ -22,7 +22,7 @@ _log = logging.getLogger(__name__)
 
 
 def _get_benchmark_scenario_schema() -> dict:
-    with open(get_project_root() / "schema/benchmark_scenario.json") as f:
+    with open(get_project_root() / "schemas/benchmark_scenario.json") as f:
         return json.load(f)
 
 
@@ -59,7 +59,7 @@ def get_benchmark_scenarios() -> List[BenchmarkScenario]:
     # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
     # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
     scenarios = []
-    for path in (get_project_root() / "benchmark_scenarios").glob("**/*.json"):
+    for path in (get_project_root() / "algorithm_catalog").glob("**/benchmark_scenarios/*.json"):
         with open(path) as f:
             data = json.load(f)
         # TODO: support single scenario files in addition to listings?

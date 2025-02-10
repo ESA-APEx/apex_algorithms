@@ -28,7 +28,7 @@ def get_project_root() -> Path:
     for candidate in candidates():
         if candidate.is_dir() and all(
             (candidate / p).is_dir()
-            for p in ["algorithm_catalog", "benchmark_scenarios", "qa/tools"]
+            for p in ["algorithm_catalog", "qa/tools"]
         ):
             _log.info(f"Detected project root {candidate!r}")
             return candidate
