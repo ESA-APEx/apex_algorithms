@@ -1,6 +1,6 @@
 """
 Import the biopar library and the BioParNp class to calculate the FAPAR index.
-It is the Python implementation of biophyscial parameter computation, 
+It is the Python implementation of biophysical parameter computation, 
 as described here: http://step.esa.int/docs/extra/ATBD_S2ToolBox_L2B_V1.1.pdf
 """
 from functools import lru_cache
