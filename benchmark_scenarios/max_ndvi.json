@@ -7,7 +7,7 @@
     "process_graph": {
       "maxndvi1": {
         "process_id": "max_ndvi",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f99f351d74d291d628e3aaa07fd078527a0cb631/openeo_udp/examples/max_ndvi/max_ndvi.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/11c27fb1a90cfc8f2eb285b881d1db8a96c358f4/openeo_udp/examples/max_ndvi/max_ndvi.json",
         "arguments": {
           "bbox": {
             "west": 5.07,
@@ -36,7 +36,7 @@
     "process_graph": {
       "maxndvi1": {
         "process_id": "max_ndvi",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f99f351d74d291d628e3aaa07fd078527a0cb631/openeo_udp/examples/max_ndvi/max_ndvi.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/11c27fb1a90cfc8f2eb285b881d1db8a96c358f4/openeo_udp/examples/max_ndvi/max_ndvi.json",
         "arguments": {
           "bbox": {
             "west": 11.07,
@@ -65,7 +65,7 @@
     "process_graph": {
       "maxndvi1": {
         "process_id": "max_ndvi",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f99f351d74d291d628e3aaa07fd078527a0cb631/openeo_udp/examples/max_ndvi/max_ndvi.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/11c27fb1a90cfc8f2eb285b881d1db8a96c358f4/openeo_udp/examples/max_ndvi/max_ndvi.json",
         "arguments": {
           "bbox": {
             "west": 5.04,
