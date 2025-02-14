@@ -186,5 +186,11 @@
         }
       }
     }
-  ]
+  ],
+  "default_job_options": {
+    "logging-threshold": "info"
+  },
+  "default_synchronous_options": {
+    "logging-threshold": "warning"
+  }
 }
