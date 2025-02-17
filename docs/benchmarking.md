@@ -71,7 +71,7 @@ Python scripts to (re)generate the JSON files, etc.
 The benchmark scenarios are defined as JSON files
 in the [`benchmark_scenarios`](../benchmark_scenarios/) folder.
 The schema of these files is defined (as JSON Schema)
-in the [`schema/benchmark_scenario.json`](../schema/benchmark_scenario.json) file.
+in the [`schema/benchmark_scenario.json`](../schemas/benchmark_scenario.json) file.
 
 Example benchmark definition:
 

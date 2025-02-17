@@ -1,0 +1,111 @@
+{
+  "id": "sentinel1_stats",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2024-10-03T00:00:00Z",
+    "updated": "2024-10-03T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "Sentinel-1 statistics",
+    "description": "A statistics algorithm for Sentinel-1 data, calculating the mean, median, minimum, and maximum values of the data.",
+    "cost_estimate": 0.1,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "sentinel-1",
+      "statistics"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Pratichhya Sharma",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/pratichhya",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Active Remote Sensing"
+          },
+          {
+            "id": "Sentinel-1 GRD"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "openeo-process",
+      "type": "application/json",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/sentinel1_stats/openeo_udp/sentinel1_stats.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "example",
+      "type": "application/json",
+      "title": "Example output",
+      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/sentinel_1/s1_stats.nc"
+    }
+  ]
+}

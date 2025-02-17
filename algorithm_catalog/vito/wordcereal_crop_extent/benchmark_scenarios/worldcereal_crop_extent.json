@@ -1,0 +1,47 @@
+[
+  {
+    "id": "worldcereal_crop_extent",
+    "type": "openeo",
+    "description": "WorldCereal crop extent benchmark",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "worldcerealcropextent1": {
+        "process_id": "worldcereal_crop_extent",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcereal_crop_extent/openeo_udp/worldcereal_crop_extent.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": 622694.5968575787,
+            "east": 623079.000934101,
+            "south": 5672232.857114074,
+            "north": 5672519.995940826,
+            "crs": "EPSG:32631",
+            "srs": "EPSG:32631"
+          },
+          "temporal_extent": [
+            "2018-05-01",
+            "2019-04-30"
+          ]
+        },
+        "result": true
+      }
+    },
+    "job_options": {
+      "driver-memory": "4g",
+      "executor-memory": "2g",
+      "executor-memoryOverhead": "1g",
+      "python-memory": "3g",
+      "soft-errors": "true",
+      "udf-dependency-archives": [
+        "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
+      ]
+    },
+    "reference_data": {
+      "worldcereal-cropland-extent.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent.tif",
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/job-results.json",
+      "worldcereal-cropland-extent-postprocessed.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent-postprocessed.tif"
+    },
+    "reference_options": {
+      "atol": 10
+    }
+  }
+]

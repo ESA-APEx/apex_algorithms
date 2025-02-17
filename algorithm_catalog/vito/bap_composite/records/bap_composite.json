@@ -1,0 +1,107 @@
+{
+  "id": "bap_composite",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2024-10-09T00:00:00Z",
+    "updated": "2024-10-09T00:00:00Z",
+    "type": "apex_algorithm",
+    "title": "Best-Available-Pixel Composite based on Sentinel-2 data",
+    "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their highest BAP score.",
+    "cost_estimate": 0.2,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "composite"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Jeroen Dries",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/jdries",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "openeo-process",
+      "type": "application/json",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/bap-composite/openeo_udp/bap_composite.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "example",
+      "type": "application/json",
+      "title": "Example output",
+      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/bap_composite_denmark/collection.json"
+    }
+  ]
+}
