@@ -28,7 +28,7 @@ def generate() -> dict:
     ndvi = (b08 - b04) / (b08 + b04)
     max_ndvi = ndvi.reduce_dimension(dimension="t", reducer="max")
 
-    return build_process_dict(
+    process = build_process_dict(
         process_graph=max_ndvi,
         process_id="max_ndvi",
         summary="TODO",
@@ -40,6 +40,14 @@ def generate() -> dict:
         returns=None,  # TODO
         categories=None,  # TODO
     )
+    # TODO: cleaner way to inject these (https://github.com/Open-EO/openeo-python-client/issues/731)
+    process.update(
+        {
+            "default_job_options": {"logging-threshold": "info"},
+            "default_synchronous_options": {"logging-threshold": "warning"},
+        }
+    )
+    return process
 
 
 if __name__ == "__main__":

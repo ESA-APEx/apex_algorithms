@@ -1,5 +1,6 @@
-
-# APEx Algorithm Benchmarking
+---
+title: APEx Algorithm Benchmarking
+---
 
 The hosted APEx Algorithms are executed automatically and regularly
 following certain benchmark scenarios in order to:
@@ -18,15 +19,16 @@ in the form of JSON files in the [`openeo_udp`](../openeo_udp/) folder.
 These JSON files follow the standard openEO process definition schema,
 for example as used for the `GET /process_graphs/{process_graph_id}` endpoint of the openEO API.
 
-> [!NOTE]
-> These openEO process definitions are commonly referred to
-> as "UDPs" or "user-defined processes",
-> which stems from the original openEO API specification
-> with an isolated "user" concept.
-> The scope of algorithm publishing and hosting in APEx
-> goes well beyond isolated, individual users.
-> As such, it can get confusing to overthink the "user-defined" part,
-> and it might be better to just think of "openEO process definitions".
+::: {.callout-note}
+These openEO process definitions are commonly referred to
+as "UDPs" or "user-defined processes",
+which stems from the original openEO API specification
+with an isolated "user" concept.
+The scope of algorithm publishing and hosting in APEx
+goes well beyond isolated, individual users.
+As such, it can get confusing to overthink the "user-defined" part,
+and it might be better to just think of "openEO process definitions".
+:::
 
 
 Example process definition:

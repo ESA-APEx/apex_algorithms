@@ -1,0 +1,35 @@
+project:
+  type: website
+  preview:
+    port: 4200
+
+
+website:
+  repo-url: "https://github.com/ESA-APEx/apex_algorithms"
+  repo-branch: "main"
+  search:
+    location: sidebar
+    type: textbox
+    copy-button: true
+
+  navbar:
+    pinned: true
+
+  page-navigation: true
+
+  title: "APEx Algorithms - Documentation"
+
+  sidebar:
+    style: "floating"
+    collapse-level: 2
+    contents:
+      - href: index.md
+        text: Welcome
+      - href: benchmarking.md
+
+format:
+  html:
+    toc-depth: 4
+    page-layout: full
+    theme: zephyr
+bread-crumbs: true

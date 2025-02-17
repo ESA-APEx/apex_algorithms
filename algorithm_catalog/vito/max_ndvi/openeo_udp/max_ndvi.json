@@ -107,7 +107,7 @@
   },
   "id": "max_ndvi",
   "summary": "TODO",
-  "description": "Temporal maximum of NDVI (Normalized Difference Vegetation Index)\n\n\n",
+  "description": "Temporal maximum of NDVI (Normalized Difference Vegetation Index)\n",
   "parameters": [
     {
       "name": "bbox",
@@ -186,5 +186,11 @@
         }
       }
     }
-  ]
+  ],
+  "default_job_options": {
+    "logging-threshold": "info"
+  },
+  "default_synchronous_options": {
+    "logging-threshold": "warning"
+  }
 }
