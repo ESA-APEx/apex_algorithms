@@ -90,7 +90,7 @@
       "rel": "openeo-process",
       "type": "application/json",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcereal_crop_extent/openeo_udp/worldcereal_crop_extent.json"
+      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.1/src/worldcereal/udp/worldcereal_crop_extent.json"
     },
     {
       "rel": "git",
