@@ -40,6 +40,7 @@
         "links": [
           {
             "href": "https://geohazards-tep.eu",
+            "title": "Geohazards Exploitation Platform",
             "rel": "about",
             "type": "text/html"
           }
@@ -93,13 +94,13 @@
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
     },
     {
-      "rel": "api",
+      "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
       "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-insar-0_4_11"
     },
     {
-      "rel": "documentation",
+      "rel": "about",
       "type": "text/html",
       "title": "Service Documentation",
       "href": "https://geohazards-tep.gitlab.io/gep-docs/services/dinsar/service-specs/"

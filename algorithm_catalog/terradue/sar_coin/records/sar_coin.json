@@ -39,6 +39,7 @@
         "links": [
           {
             "href": "https://geohazards-tep.eu",
+            "title": "Geohazards Exploitation Platform",
             "rel": "about",
             "type": "text/html"
           }
@@ -86,7 +87,7 @@
       "href": "https://geohazards-tep.eu/#!web_store"
     },
     {
-      "rel": "eula",
+      "rel": "license",
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
@@ -98,7 +99,7 @@
       "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-coherence-intensity-0_7_8"
     },
     {
-      "rel": "documentation",
+      "rel": "about",
       "type": "text/html",
       "title": "Service Documentation",
       "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/service-specs/"
