@@ -1,7 +1,7 @@
 import jsonschema
 
 import pytest
-from qa.tools.apex_algorithm_qa_tools.records import get_ogc_records, _get_ogc_record_schema
+from apex_algorithm_qa_tools.records import get_ogc_records, _get_ogc_record_schema
 
 
 def test_get_ogc_records():
