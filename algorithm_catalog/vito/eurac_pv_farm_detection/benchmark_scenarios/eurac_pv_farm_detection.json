@@ -5,7 +5,7 @@
     "description": "ML photovoltaic farm detection, developed by EURAC",
     "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
-      "maxndvi1": {
+      "pvfarm": {
         "process_id": "eurac_pv_farm_detection",
         "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4003046e3b79ec3ab8dace888a231655db389d66/openeo_udp/eurac_pv_farm_detection/eurac_pv_farm_detection.json",
         "arguments": {
