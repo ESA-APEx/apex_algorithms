@@ -85,7 +85,7 @@ def create_temporal_extent(start_date_str: str, nb_months: int):
 
 # df management
 def prepare_jobs_df(
-    spatial_extents, temporal_extents, start_spatial, start_temporal, repetition
+    spatial_extents, temporal_extents, start_spatial, start_temporal
 ) -> pd.DataFrame:
     """Prepare a DataFrame containing job configurations for benchmarking."""
     jobs = []
@@ -93,35 +93,19 @@ def prepare_jobs_df(
     # Create combinations for the spatial grid
     for spatial in spatial_extents:
         for temporal in temporal_extents:
-            spatial_extent = create_bbox(create_spatial_extent(start_spatial, spatial))
+            bbox = create_bbox(create_spatial_extent(start_spatial, spatial))
             temporal_extent = create_temporal_extent(start_temporal, temporal)
 
-            for ii in range(repetition):
-                jobs.append(
-                    {
-                        "spatial_extent": spatial_extent,
-                        "square_km": (spatial / 1000) ** 2,
-                        "temporal_extent": temporal_extent,
-                        "months": temporal,
-                    }
-                )
+
+            jobs.append(
+                {
+                    "bbox": bbox,
+                    "temporal_extent": temporal_extent,
+                }
+            )
 
     return pd.DataFrame(jobs)
 
-
-def get_job_cost_info(connection, job_id):
-    try:
-        job = connection.job(job_id).describe_job()
-        return float(job["costs"])
-    except Exception:
-        return None
-
-
-def update_job_costs_dataframe(df, connection):
-    df["job_cost"] = df.apply(
-        lambda row: get_job_cost_info(connection, row["id"]), axis=1
-    )
-    return df
 
 
 # visualisation

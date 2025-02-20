@@ -1,5 +1,10 @@
+# /// script
+# dependencies = [
+# "onnxruntime",
+# ]
+# ///
+
 import functools
-import logging
 import os
 import sys
 import zipfile
@@ -8,15 +13,10 @@ from typing import Dict
 import numpy as np
 import requests
 import xarray as xr
-
+import onnxruntime as ort
 from openeo.udf import inspect
 
-
-
-# TODO move standard code to UDF repo
-
 # Fixed directories for dependencies and model files
-DEPENDENCIES_DIR = "onnx_dependencies"
 MODEL_DIR = "model_files"
 
 
@@ -45,8 +45,8 @@ def add_directory_to_sys_path(directory):
     if directory not in sys.path:
         sys.path.append(directory)
 
-@functools.lru_cache(maxsize=5)
-def setup_model_and_dependencies(model_url, dependencies_url):
+@functools.lru_cache(maxsize=1)
+def setup_model(model_url):
     """
     Main function to set up the model and dependencies by downloading, extracting,
     and adding necessary directories to sys.path.
@@ -54,19 +54,7 @@ def setup_model_and_dependencies(model_url, dependencies_url):
 
     inspect(message="Create directories")
     # Ensure base directories exist
-    os.makedirs(DEPENDENCIES_DIR, exist_ok=True)
     os.makedirs(MODEL_DIR, exist_ok=True)
-
-    # Download and extract dependencies if not already present
-    if not os.listdir(DEPENDENCIES_DIR):
-
-        inspect(message="Extract dependencies")
-        zip_path = os.path.join(DEPENDENCIES_DIR, "temp.zip")
-        download_file(dependencies_url, zip_path)
-        extract_zip(zip_path, DEPENDENCIES_DIR)
-
-        # Add the extracted dependencies directory to sys.path
-        add_directory_to_sys_path(DEPENDENCIES_DIR)
 
     # Download and extract model if not already present
     if not os.listdir(MODEL_DIR):
@@ -77,10 +65,7 @@ def setup_model_and_dependencies(model_url, dependencies_url):
         extract_zip(zip_path, MODEL_DIR)
 
 
-setup_model_and_dependencies(
-    model_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip",
-    dependencies_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip",
-)
+setup_model(model_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip")
 
 # Add dependencies to the Python path
 import onnxruntime as ort  # Import after downloading dependencies

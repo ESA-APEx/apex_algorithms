@@ -1,4 +1,7 @@
 # %%
+
+
+
 import json
 from pathlib import Path
 
@@ -57,6 +60,7 @@ def generate() -> dict:
     # Run ML inference to get the classification output
     udf = openeo.UDF.from_file(
         Path(__file__).parent / "udf_eurac_pvfarm_onnx.py",
+        
     )
 
     prediction = s2_cube.reduce_bands(reducer=udf)
