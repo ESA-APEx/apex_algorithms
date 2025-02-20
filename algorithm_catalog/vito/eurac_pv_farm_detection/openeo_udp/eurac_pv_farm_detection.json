@@ -393,5 +393,7 @@
       ],
       "optional": true
     }
-  ]
+  ],
+  "default_job_options":
+   {"python-memory": "3g"}
 }
