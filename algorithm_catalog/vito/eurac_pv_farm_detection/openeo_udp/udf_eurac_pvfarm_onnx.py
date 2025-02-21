@@ -1,16 +1,14 @@
-# /// script
-# dependencies = [
-# "onnxruntime",
-# ]
-# ///
 
 import functools
 from typing import Dict
-
+import sys
 import numpy as np
 import xarray as xr
-import onnxruntime as ort
 from openeo.udf import inspect
+
+sys.path.append("onnx_deps") 
+import onnxruntime as ort
+
 
 
 @functools.lru_cache(maxsize=1)
