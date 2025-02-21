@@ -106,12 +106,6 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
-    },
-    {
-      "rel": "license",
-      "type": "text/html",
-      "title": "Service License",
-      "href": "https://apex.esa.int/license"
     }
   ]
 }

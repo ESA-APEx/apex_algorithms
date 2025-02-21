@@ -108,12 +108,6 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
-      "rel": "license",
-      "type": "text/html",
-      "title": "Service License",
-      "href": "https://apex.esa.int/license"
-    },
-    {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
