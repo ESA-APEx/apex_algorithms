@@ -106,7 +106,7 @@
     },
     {
       "rel": "example-output",
-      "type": "application/json",
+      "type": "application/netcdf",
       "title": "Example output",
       "href": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/sentinel_1/s1_stats.nc"
     },
