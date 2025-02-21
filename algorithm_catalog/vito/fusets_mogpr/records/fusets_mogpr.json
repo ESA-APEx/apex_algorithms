@@ -128,6 +128,12 @@
             "href": "https://openeofed.dataspace.copernicus.eu"
         },
         {
+            "rel": "about",
+            "type": "text/html",
+            "title": "Documentation",
+            "href": "https://open-eo.github.io/FuseTS/"
+        },
+        {
             "rel": "code",
             "type": "text/html",
             "title": "Git source repository",
