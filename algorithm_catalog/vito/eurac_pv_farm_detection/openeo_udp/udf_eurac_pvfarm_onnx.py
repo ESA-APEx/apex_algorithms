@@ -5,82 +5,23 @@
 # ///
 
 import functools
-import os
-import sys
-import zipfile
 from typing import Dict
 
 import numpy as np
-import requests
 import xarray as xr
 import onnxruntime as ort
 from openeo.udf import inspect
 
-# Fixed directories for dependencies and model files
-MODEL_DIR = "model_files"
-
-
-def download_file(url, path):
-    """
-    Downloads a file from the given URL to the specified path.
-    """
-    response = requests.get(url, stream=True)
-    with open(path, "wb") as file:
-        file.write(response.content)
-
-
-def extract_zip(zip_path, extract_to):
-    """
-    Extracts a zip file from zip_path to the specified extract_to directory.
-    """
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(extract_to)
-    os.remove(zip_path)  # Clean up the zip file after extraction
-
-
-def add_directory_to_sys_path(directory):
-    """
-    Adds a directory to the Python sys.path if it's not already present.
-    """
-    if directory not in sys.path:
-        sys.path.append(directory)
 
 @functools.lru_cache(maxsize=1)
-def setup_model(model_url):
-    """
-    Main function to set up the model and dependencies by downloading, extracting,
-    and adding necessary directories to sys.path.
-    """
-
-    inspect(message="Create directories")
-    # Ensure base directories exist
-    os.makedirs(MODEL_DIR, exist_ok=True)
-
-    # Download and extract model if not already present
-    if not os.listdir(MODEL_DIR):
-
-        inspect(message="Extract model")
-        zip_path = os.path.join(MODEL_DIR, "temp.zip")
-        download_file(model_url, zip_path)
-        extract_zip(zip_path, MODEL_DIR)
-
-
-setup_model(model_url="https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip")
-
-# Add dependencies to the Python path
-import onnxruntime as ort  # Import after downloading dependencies
-
-
-@functools.lru_cache(maxsize=5)
 def load_onnx_model(model_name: str) -> ort.InferenceSession:
     """
     Loads an ONNX model from the onnx_models folder and returns an ONNX runtime session.
 
     """
     # The onnx_models folder contains the content of the model archive provided in the job options
-    return ort.InferenceSession(
-        f"{MODEL_DIR}/{model_name}", providers=["CPUExecutionProvider"]
-    )
+    return ort.InferenceSession(f"onnx_models/{model_name}")
+
 
 
 def preprocess_input(

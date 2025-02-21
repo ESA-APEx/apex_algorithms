@@ -26,7 +26,7 @@ def generate() -> dict:
 
     # load the input data
     conn = openeo.connect(
-        "https://openeofed.dataspace.copernicus.eu/"
+        "https://openeo.dataspace.copernicus.eu/"
     ).authenticate_oidc()
 
     s2_cube = conn.load_collection(
@@ -92,3 +92,11 @@ if __name__ == "__main__":
     # Save the generated process to a file
     with open(output_path / "eurac_pv_farm_detection.json", "w") as f:
         json.dump(generate(), f, indent=2)
+
+# %% TO add to json: memory options
+#"default_job_options": {
+#  "python-memory": "3g",
+#  "udf-dependency-archives": [
+#    "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip#onnx_models"
+#  ]
+#}
