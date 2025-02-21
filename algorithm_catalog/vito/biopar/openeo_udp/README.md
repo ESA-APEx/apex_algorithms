@@ -2,7 +2,7 @@
 
 Calculate various biophysical parameters for an area defined by a polygon. The result is a raster file
 containing the parameter values. A strict CloudMask is applied to avoid cloud contamination.
-                    
+
 The **Leaf Area Index (LAI)** is half the total area of a canopy's green elements 
 per unit of horizontal ground area. The satellite-derived value corresponds to the total green LAI 
 of all the canopy layers, including the understory, which may represent a very significant 

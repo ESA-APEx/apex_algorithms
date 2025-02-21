@@ -26,6 +26,10 @@ website:
       - href: index.md
         text: Welcome
       - href: benchmarking.md
+      - text: APEx Service Records
+        contents:
+          - href: records/create.md
+          - href: records/visualise.md
 
 format:
   html:
