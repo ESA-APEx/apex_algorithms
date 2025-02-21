@@ -20,8 +20,6 @@ def load_onnx_model(model_name: str) -> ort.InferenceSession:
     # The onnx_models folder contains the content of the model archive provided in the job options
     return ort.InferenceSession(f"onnx_models/{model_name}")
 
-
-
 def preprocess_input(
     input_xr: xr.DataArray, ort_session: ort.InferenceSession
 ) -> tuple:
