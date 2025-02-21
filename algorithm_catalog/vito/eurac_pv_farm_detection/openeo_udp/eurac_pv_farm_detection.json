@@ -395,7 +395,7 @@
     }
   ],
   "default_job_options": {
-      "python-memory": "3g",
+      "python-memory": "4g",
       "udf-dependency-archives": [
         "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/EURAC_pvfarm_rf_1_median_depth_15.zip#onnx_models"
       ]
