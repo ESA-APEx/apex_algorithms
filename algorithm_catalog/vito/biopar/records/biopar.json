@@ -9,7 +9,7 @@
         "created": "2024-10-03T00:00:00Z",
         "updated": "2024-10-03T00:00:00Z",
         "type": "apex_algorithm",
-        "title": "Calculate various biophysical parameters",
+        "title": "Biophysical parameters calculation",
         "description": "The algorithm offers a solution to calculate vegetation-related parameters like leaf area index, fraction of absorbed photosynthetically active radiation, and more.",
         "cost_estimate": 4,
         "cost_unit": "platform credits per km²",
@@ -115,7 +115,7 @@
         },
         {
           "rel": "example-output",
-          "type": "application/json",
+          "type": "image/tif",
           "title": "Example output",
           "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/biopar/biopar-example.tif"
         },
