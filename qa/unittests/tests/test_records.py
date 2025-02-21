@@ -9,7 +9,7 @@ def test_get_ogc_records():
     assert len(records) > 0
 
 
-# TODO: tests to check uniqueness of scenario ids?
+# TODO: tests to check uniqueness of records ids?
 
 
 @pytest.mark.parametrize(

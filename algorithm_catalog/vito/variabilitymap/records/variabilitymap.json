@@ -32,6 +32,13 @@
                 "links": [
                     {
                         "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/JanssenBrm",
+                        "title": "GitHub",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -48,11 +55,13 @@
                 "links": [
                     {
                         "href": "https://www.vito.be/",
+                        "title": "VITO Website",
                         "rel": "about",
                         "type": "text/html"
                     },
                     {
                         "href": "https://github.com/pratichhya",
+                        "title": "GitHub",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -67,6 +76,7 @@
                 "links": [
                     {
                         "href": "https://www.vito.be/",
+                        "title": "VITO Website",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -103,8 +113,8 @@
     "linkTemplates": [],
     "links": [
         {
-            "rel": "openeo-process",
-            "type": "application/json",
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
             "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/32ea3c9a6fa24fe063cb59164cd318cceb7209b0/openeo_udp/variabilitymap/variabilitymap.json"
         },
@@ -115,10 +125,16 @@
             "href": "https://openeofed.dataspace.copernicus.eu"
         },
         {
-            "rel": "example",
+            "rel": "example-output",
             "type": "application/json",
             "title": "Example output",
             "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=variabilitymap&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/openeo_udp/variabilitymap.json&server=https://openeofed.dataspace.copernicus.eu"
         }
     ]
 }

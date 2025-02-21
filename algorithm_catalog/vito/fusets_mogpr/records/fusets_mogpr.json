@@ -35,11 +35,13 @@
                 "links": [
                     {
                         "href": "https://www.vito.be/",
+                        "title": "VITO Website",
                         "rel": "about",
                         "type": "text/html"
                     },
                     {
                         "href": "https://github.com/JanssenBrm",
+                        "title": "GitHub",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -56,11 +58,13 @@
                 "links": [
                     {
                         "href": "https://www.vito.be/",
+                        "title": "VITO Website",
                         "rel": "about",
                         "type": "text/html"
                     },
                     {
                         "href": "https://github.com/Pratichhya",
+                        "title": "GitHub",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -75,6 +79,7 @@
                 "links": [
                     {
                         "href": "https://www.vito.be/",
+                        "title": "VITO Website",
                         "rel": "about",
                         "type": "text/html"
                     }
@@ -111,8 +116,8 @@
     "linkTemplates": [],
     "links": [
         {
-            "rel": "openeo-process",
-            "type": "application/json",
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
             "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/09413be3c27e0e695d426c9ffe5a0fe90beefe65/openeo_udp/fusets_mogpr/fusets_mogpr.json"
         },
@@ -124,13 +129,21 @@
         },
         {
             "rel": "license",
+            "type": "text/html",
+            "title": "Service License",
             "href": "https://apex.esa.int/license"
         },
         {
-            "rel": "example",
+            "rel": "example-output",
             "type": "application/json",
             "title": "Example output",
             "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/fusets_mogpr.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=fusets_mogpr&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/fusets_mogpr/openeo_udp/fusets_mogpr.json&server=https://openeofed.dataspace.copernicus.eu"
         }
     ]
 }
