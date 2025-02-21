@@ -26,6 +26,18 @@
     },
     "properties": {
       "type": "object",
+      "required": [
+        "created",
+        "updated",
+        "type",
+        "title",
+        "description",
+        "cost_estimate",
+        "cost_unit",
+        "contacts",
+        "themes",
+        "formats"
+      ],
       "properties": {
         "created": {
           "type": "string",

@@ -22,7 +22,7 @@
             "code": "en-US",
             "name": "English (United States)"
         },
-        "cost": 4,
+        "cost_estimate": 4,
         "cost_unit": "platform credits per km²",
         "contacts": [
             {
