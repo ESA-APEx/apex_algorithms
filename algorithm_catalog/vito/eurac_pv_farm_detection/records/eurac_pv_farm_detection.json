@@ -97,7 +97,7 @@
     },
     {
       "rel": "code",
-      "type": "application/json",
+      "type": "text/html",
       "title": "Git source repository",
       "href": "https://github.com/clausmichele/openEO_photovoltaic"
     },
