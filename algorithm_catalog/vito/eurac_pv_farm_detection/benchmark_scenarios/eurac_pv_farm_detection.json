@@ -7,7 +7,7 @@
     "process_graph": {
       "pvfarm": {
         "process_id": "eurac_pv_farm_detection",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/eurac_pv_farm_detection/openeo_udp/eurac_pv_farm.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/eurac_pv_farm_detection/openeo_udp/eurac_pv_farm_detection.json",
         "arguments": {
           "bbox": {
               "east": 16.414,
