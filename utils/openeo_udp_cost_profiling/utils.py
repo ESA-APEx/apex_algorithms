@@ -85,7 +85,7 @@ def create_temporal_extent(start_date_str: str, nb_months: int):
 
 # df management
 def prepare_jobs_df(
-    spatial_extents, temporal_extents, start_spatial, start_temporal, repetition
+    spatial_extents, temporal_extents, start_spatial, start_temporal
 ) -> pd.DataFrame:
     """Prepare a DataFrame containing job configurations for benchmarking."""
     jobs = []
@@ -93,22 +93,20 @@ def prepare_jobs_df(
     # Create combinations for the spatial grid
     for spatial in spatial_extents:
         for temporal in temporal_extents:
-            spatial_extent = create_bbox(create_spatial_extent(start_spatial, spatial))
+            bbox = create_bbox(create_spatial_extent(start_spatial, spatial))
             temporal_extent = create_temporal_extent(start_temporal, temporal)
 
-            for ii in range(repetition):
-                jobs.append(
-                    {
-                        "spatial_extent": spatial_extent,
-                        "square_km": (spatial / 1000) ** 2,
-                        "temporal_extent": temporal_extent,
-                        "months": temporal,
-                    }
-                )
+
+            jobs.append(
+                {
+                    "bbox": bbox,
+                    "temporal_extent": temporal_extent,
+                }
+            )
 
     return pd.DataFrame(jobs)
 
-
+#job cost info
 def get_job_cost_info(connection, job_id):
     try:
         job = connection.job(job_id).describe_job()
@@ -123,73 +121,3 @@ def update_job_costs_dataframe(df, connection):
     )
     return df
 
-
-# visualisation
-def plot_spatio_temporal_cost_profile(df):
-    df_filtered = df[df["job_cost"].notna() & (df["job_cost"] != "")]
-
-    average_modality = (
-        df_filtered.groupby(["square_km", "months"])["job_cost"].mean().reset_index()
-    )
-
-    spatial_range = sorted(average_modality["square_km"].unique())[::-1]
-    temporal_range = sorted(average_modality["months"].unique())
-
-    job_cost_grid = np.full((len(spatial_range), len(temporal_range)), np.nan)
-
-    for _, row in average_modality.iterrows():
-        i = spatial_range.index(row["square_km"])
-        j = temporal_range.index(row["months"])
-        job_cost_grid[i, j] = int(row["job_cost"])
-
-    # Define the colormap and normalization
-    cmap = plt.get_cmap("rainbow", len(np.unique(average_modality["job_cost"])))
-    norm = BoundaryNorm(
-        boundaries=np.arange(
-            int(average_modality["job_cost"].min()),
-            int(average_modality["job_cost"].max()) + 2,
-        ),
-        ncolors=cmap.N,
-        clip=True,
-    )
-
-    # Plotting the heatmap using seaborn
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(
-        job_cost_grid,
-        cmap=cmap,
-        norm=norm,
-        annot=True,
-        fmt=".1f",
-        xticklabels=temporal_range,
-        yticklabels=spatial_range,
-        cbar_kws={"label": f"Average {'job_cost'}"},
-    )
-
-    plt.xlabel("Temporal Range (square km)")
-    plt.ylabel("Spatial Range (months)")
-    plt.title("Credit Consumption as a function of the spatial-temporal extent")
-    plt.show()
-
-
-def scatter_cost_vs_input_pixel(df):
-    df_filtered = df[df["job_cost"].notna() & (df["job_cost"] != "")]
-    df_filtered["input_pixel"] = (
-        df["input_pixel"].str.replace(" mega-pixel", "").astype(float)
-    )
-
-    plt.figure(figsize=(10, 6))
-    sns.regplot(
-        x="input_pixel",
-        y="job_cost",
-        data=df_filtered,
-        scatter_kws={"s": 50},
-        line_kws={"color": "red"},
-    )
-
-    plt.xlabel("Input Pixel (Mega-Pixel)")
-    plt.ylabel(f"{'job_cost'}")
-    plt.title("Scatter Plot with Regression Line: Input Pixel vs Job Cost")
-
-    plt.grid(True)
-    plt.show()

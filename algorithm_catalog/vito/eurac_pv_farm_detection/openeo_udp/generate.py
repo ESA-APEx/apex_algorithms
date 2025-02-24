@@ -1,4 +1,7 @@
 # %%
+
+
+
 import json
 from pathlib import Path
 
@@ -23,7 +26,7 @@ def generate() -> dict:
 
     # load the input data
     conn = openeo.connect(
-        "https://openeofed.dataspace.copernicus.eu/"
+        "https://openeo.dataspace.copernicus.eu/"
     ).authenticate_oidc()
 
     s2_cube = conn.load_collection(
@@ -57,6 +60,7 @@ def generate() -> dict:
     # Run ML inference to get the classification output
     udf = openeo.UDF.from_file(
         Path(__file__).parent / "udf_eurac_pvfarm_onnx.py",
+        
     )
 
     prediction = s2_cube.reduce_bands(reducer=udf)
@@ -88,3 +92,6 @@ if __name__ == "__main__":
     # Save the generated process to a file
     with open(output_path / "eurac_pv_farm_detection.json", "w") as f:
         json.dump(generate(), f, indent=2)
+
+
+#%%
