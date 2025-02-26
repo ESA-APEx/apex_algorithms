@@ -62,7 +62,7 @@ def generate() -> dict:
     return build_process_dict(
         process_graph=sobel_felzenszwalb,
         process_id= "Parcel Delineation",
-        summary= "Parcel delineation using Sentinel-2 data retrived from the CDSE and processed on openEO.",
+        summary= "Parcel delineation using Sentinel-2 data retrieved from the CDSE and processed on openEO.",
         description= "Parcel delineation using Sentinel-2",
         parameters= [spatial_extent, temporal_extent],
         returns=None,  # TODO

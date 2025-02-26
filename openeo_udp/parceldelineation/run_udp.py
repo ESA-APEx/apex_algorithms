@@ -21,5 +21,5 @@ job_options = {
     "python-memory": "4000m"
 }
 
-# excute the job
+# execute the job
 job.execute_batch(job_options=job_options)

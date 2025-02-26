@@ -139,7 +139,7 @@
     }
   },
   "id": "Parcel Delineation",
-  "summary": " Parcel delineation using Sentinel-2 data retrived from the CDSE and processed on openEO.",
+  "summary": " Parcel delineation using Sentinel-2 data retrieved from the CDSE and processed on openEO.",
   "description": "# Parcel delineation\nThis is an [openEO](https://openeo.org/) example for delineating agricultural parcels based on a neural network, using Sentinel-2 input data.\n\nThe example focuses on the inference step, using a trained model. It demonstrates data loading and preprocessing, \ninference, and finally producing vector data as a result.\n\nThe example serves as a technology demonstration for openEO, and is not intended for use in another context. \nPlease contact the authors in case you're interested in a field detector!\n\n## Authors\n\n- Kristof Van Tricht\n- Jeroen Dries\n- Victor Verhaert\n\nTuning by:\n- Kasper Bonte\n- Bart Driessen\n\n[VITO Remote Sensing](https://remotesensing.vito.be)\n\n## Running the example\n\nMost openEO providers require an account to run the example. They offer various options for this, often providing you with some trial to test out the platform.\nYou can find all known openEO providers on the [openEO hub](https://hub.openeo.org/).\n\n",
   "parameters": [
     {
