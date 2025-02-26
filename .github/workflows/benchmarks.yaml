@@ -48,7 +48,7 @@ jobs:
           ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
-            python qa/benchmarks/test_failure_handler.py
+            python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
           else
             echo "No test failures detected"
           fi
