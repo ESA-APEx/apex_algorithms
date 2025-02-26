@@ -35,7 +35,7 @@ def create_issue(test_name, error_msg, file_name):
         print(f"Failed to create issue: {response.status_code}, {response.text}")
 
 def parse_failed_tests():
-    with open("pytest_output.txt", "r") as f:
+    with open("qa\benchmarks\pytest_output.txt", "r") as f:
         log_data = f.read()
 
     print("Pytest Output:\n", log_data)  # Debugging output
