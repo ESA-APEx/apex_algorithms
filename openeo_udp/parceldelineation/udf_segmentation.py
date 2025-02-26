@@ -123,7 +123,7 @@ def process_window_onnx(ndvi_stack: xr.DataArray, patch_size=128):
         # make 4 predictions per model
         for i in range(predictions_per_model):
             # initialize a predicter array
-            random.seed(i)   # without seed we will have random number leading to non-reproducable results.
+            random.seed(i)   # without seed we will have a random number leading to non-reproducible results.
             _idx = random.choices(_range, k=no_rand_images) # Random selection of 3 images for input
             # re-shape the input data for ML input 
             input_data = ndvi_stack.isel(t=_idx).data.reshape(1, patch_size * patch_size, no_rand_images)
