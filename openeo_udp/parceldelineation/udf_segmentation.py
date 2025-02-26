@@ -77,7 +77,7 @@ setup_model_and_dependencies(
     model_url="https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip")
 
 
-@functools.lru_cache(maxsize=25)
+@functools.lru_cache(maxsize=1)
 def load_ort_sessions(names):
     """
     Load the models and make the prediction functions.
@@ -93,7 +93,7 @@ def load_ort_sessions(names):
     ]
 
 
-def process_window_onnx(ndvi_stack: xr.DataArray, patch_size=128):
+def process_window_onnx(ndvi_stack: xr.DataArray, patch_size=128) -> xr.DataArray:
     """Compute predictions.
 
     Compute predictions using ML models. ML models takes three inputs images and predicts
@@ -106,6 +106,11 @@ def process_window_onnx(ndvi_stack: xr.DataArray, patch_size=128):
         ndvi data
     patch_size : Int
         Size of the sample
+
+    Returns
+    -------
+    xr.DataArray
+        Machine learning prediction.
 
     """
     # we'll do 12 predictions: use 3 networks, and for each random take 3 NDVI images and repeat 4 times
@@ -147,54 +152,82 @@ def process_window_onnx(ndvi_stack: xr.DataArray, patch_size=128):
     return all_predictions.median(dim="predict")
 
 
-def preprocess_datacube(cubearray: xr.DataArray, min_images: int):
+def preprocess_datacube(cubearray: xr.DataArray, min_images: int) -> tuple[bool, xr.DataArray]:
+    """Preprocess data for machine learning.
+
+    Preprocess data by clamping NVDI values and first check if the
+    data is valid for machine learning and then check if there is good
+    data to perform machine learning.
+
+    Parameters
+    ----------
+    cubearray : xr.DataArray
+        Input datacube
+    min_images : int
+        Minimum number of samples to consider for machine learning.
+
+    Returns
+    -------
+    bool
+        True refers to data is invalid for machine learning.
+    xr.DataArray
+        If above bool is False, return data for machine learning else returns a
+        sample containing nan (similar to machine learning output).
+    """
+    # Preprocessing data
     # check if bands is in the dims and select the first index
     if "bands" in cubearray.dims:
         nvdi_stack = cubearray.isel(bands=0)
     else:
         nvdi_stack = cubearray
-
     # Clamp out of range NDVI values
     nvdi_stack = nvdi_stack.where(lambda nvdi_stack: nvdi_stack < 0.92, 0.92)
-    nvdi_stack = nvdi_stack.where(lambda nvdi_stack: nvdi_stack > -0.08)       # No data exists id less than -0.08
+    nvdi_stack = nvdi_stack.where(lambda nvdi_stack: nvdi_stack > -0.08)
     nvdi_stack += 0.08
-
-    # Fill the no data with value 0
+    # Count the amount of invalid pixels in each time sample. 
+    sum_invalid = nvdi_stack.isnull().sum(dim=['x', 'y'])
+    # Check % of invalid pixels in each time sample by using mean
+    sum_invalid_mean = nvdi_stack.isnull().mean(dim=['x', 'y'])
+    # Fill the invalid pixels with value 0
     nvdi_stack_data = nvdi_stack.fillna(0)
 
-    # Count the amount of invalid data per acquisition
-    sum_invalid = nvdi_stack.isnull().sum(dim=['x', 'y'])
+    # Check if data is valid for machine learning. If invalid, return True and
+    # an DataArray of nan values (similar to the machine learning output)
+    if (sum_invalid_mean.data < 1).sum() <= min_images:   # number of invalid time sample less then min images
+        inspect(message="Input data is invalid for this window -> skipping!")
+        # create a nan dataset and return
+        nan_data = xr.zeros_like(nvdi_stack.sel(t = sum_invalid_mean.t[0], drop=True))
+        nan_data = nan_data.where(lambda nan_data: nan_data > 1)
+        return True, nan_data
 
-    # Select all clear images (without ANY missing values)
-    # or select the 3 best ones (contain nans)
-    if (sum_invalid.data == 0).sum() > min_images:
+    # Data selection: valid data for machine learning
+    # select time samples where there are no invalid pixels
+    if (sum_invalid.data == 0).sum() >= min_images:
         good_data = nvdi_stack_data.sel(t = sum_invalid[sum_invalid.data == 0].t)
-    else:
+    else:      # select the 4 best time samples with least amount of invalid pixels.
         good_data = nvdi_stack_data.sel(t = sum_invalid.sortby(sum_invalid).t[:min_images])
-    return good_data.transpose("x", "y", "t")
+    return False, good_data.transpose("x", "y", "t")
 
 
 def apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:
-    # select atleast best 3 temporal images of ndvi for ML
-    min_images = 3
-    inspect(message="START Preprocessing Done!")
-    # preprocess the datacube
-    ndvi_stack = preprocess_datacube(cube, min_images)
-    inspect(message="Preprocessing Done!")
-    # check number of images after preprocessing
-    # if the stack doesn't have at least 3 temporal images, we cannot process this window
-    nr_valid_images = ndvi_stack.t.shape[0]
-    if nr_valid_images < min_images:
-        inspect(message="Not enough input data for this window -> skipping!")
-        # TODO this needs to be changed to appropriate return type
-        return None
+    # select atleast best 4 temporal images of ndvi for ML
+    min_images = 4
     
-    inspect(message="START ML!")
-    # process the window
-    result = process_window_onnx(ndvi_stack)
+    inspect(message="START Preprocessing Done!")    
+    # preprocess the datacube
+    invalid_data, ndvi_stack = preprocess_datacube(cube, min_images)
+    inspect(message="Preprocessing Done!")
+    
+    # If data is invalid, there is no need to run prediction algorithm so
+    # return prediction as nan DataArray and reintroduce time and bands dimensions 
+    if invalid_data:
+        return ndvi_stack.expand_dims(dim={"t": [(cube.t.dt.year.values[0])], "bands": ["prediction"]})
 
+    inspect(message="START ML!")    
+    # Machine learning prediction: process the window
+    result = process_window_onnx(ndvi_stack)
+    inspect(message="End ML!")
     # Reintroduce time and bands dimensions
     result_xarray = result.expand_dims(dim={"t": [(cube.t.dt.year.values[0])], "bands": ["prediction"]})
-
     # Return the resulting xarray
     return result_xarray
