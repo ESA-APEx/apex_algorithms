@@ -17,7 +17,7 @@ def get_existing_issues():
         print(f"Failed to fetch issues: {response.status_code}")
         return {}
 
-def create_issue(test_name, error_msg, file_name):
+def create_issue(test_name, error_msg):
     url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
@@ -25,7 +25,7 @@ def create_issue(test_name, error_msg, file_name):
     }
     data = {
         "title": f"Test Failure: {test_name}",
-        "body": f"Error Message: {error_msg}\nFile: {file_name}",
+        "body": f"Error Message: {error_msg}",
         "labels": [ISSUE_LABEL],
     }
     response = requests.post(url, json=data, headers=headers)
@@ -40,19 +40,19 @@ def parse_failed_tests():
 
     print("Pytest Output:\n", log_data)  # Debugging output
 
-    failed_tests = re.findall(r"FAILED (\S+)::(\S+) ", log_data)  
+    failed_tests = re.findall(r"=+ FAILURES =+\n(?:_{10,} )?(\S+)", log_data)
 
     print(f"Parsed Failed Tests: {failed_tests}")  # Debugging output
 
-    return [(test_name, file_name) for file_name, test_name in failed_tests]
+    return failed_tests
 
 
 if __name__ == "__main__":
     existing_issues = get_existing_issues()
     failed_tests = parse_failed_tests()
 
-    for test_name, file_name in failed_tests:
+    for test_name, in failed_tests:
         if f"Test Failure: {test_name}" not in existing_issues:
-            create_issue(test_name, "Test failed", file_name)
+            create_issue(test_name, "Test failed")
         else:
             print(f"Issue already exists for: {test_name}")
