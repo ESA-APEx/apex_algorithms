@@ -47,7 +47,7 @@ jobs:
         env:
           ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}
         run: |
-          if grep -q "FAILED" pytest_output.txt; then
+          if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
             python .github/test_failure_handler.py
           else
             echo "No test failures detected"
