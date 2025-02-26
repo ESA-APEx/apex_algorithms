@@ -19,6 +19,7 @@ jobs:
           python -m pip install qa/tools
           python -m pip install -r qa/benchmarks/requirements.txt
       - name: Run benchmark pytest suite
+        continue-on-error: true
         run: |
           cd qa/benchmarks
           mkdir report
@@ -42,11 +43,15 @@ jobs:
           APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
 
-      - name: Capture pytest failures and create issues
-        if: failure()  # Only runs if pytest fails
-        run: python test_failure_handler.py
+      - name: Process test results and create issues
         env:
-          ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}  # GitHub token for issue creation
+          ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}
+        run: |
+          if grep -q "FAILED" pytest_output.txt; then
+            python .github/test_failure_handler.py
+          else
+            echo "No test failures detected"
+          fi
 
       - name: List local reports
         if: always()
