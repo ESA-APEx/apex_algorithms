@@ -33,7 +33,7 @@ jobs:
             --track-metrics-parquet-s3-key="metrics/v1/metrics.parquet" \
             --track-metrics-parquet-partitioning="YYYYMM" \
             --basetemp=tmp_path_root \
-            --upload-assets-s3-bucket="apex-benchmarks"
+            --upload-assets-s3-bucket="apex-benchmarks" | tee pytest_output.txt
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
@@ -41,6 +41,13 @@ jobs:
           APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}
           APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
+
+      - name: Capture pytest failures and create issues
+        if: failure()  # Only runs if pytest fails
+        run: python test_failure_handler.py
+        env:
+          ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}  # GitHub token for issue creation
+
       - name: List local reports
         if: always()
         run: ls -alR qa/benchmarks/report
