@@ -3,7 +3,7 @@ import re
 import requests
 
 GITHUB_REPO = "ESA-APEx/apex_algorithms"
-GITHUB_TOKEN = os.getenv("ISSUE_TOKEN")  # This will read the secret
+GITHUB_TOKEN = os.getenv("APEX_ISSUE_TOKEN")  # This will read the secret
 ISSUE_LABEL = "test-failure"
 
 def get_existing_issues():

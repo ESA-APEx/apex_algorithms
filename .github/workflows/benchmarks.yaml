@@ -45,7 +45,7 @@ jobs:
 
       - name: Process test results and create issues
         env:
-          ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}
+          APEX_ISSUE_TOKEN: ${{ secrets.APEX_ISSUE_TOKEN }}
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
             python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
