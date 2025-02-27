@@ -49,7 +49,7 @@ if __name__ == "__main__":
     existing_issues = get_existing_issues()
     failed_tests = parse_failed_tests()
 
-    for test_name, in failed_tests:
+    for test_name in failed_tests:
         if f"Test Failure: {test_name}" not in existing_issues:
             create_issue(test_name, "Test failed")
         else:
