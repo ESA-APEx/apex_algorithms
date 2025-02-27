@@ -38,8 +38,6 @@ def parse_failed_tests():
     with open("qa/benchmarks/pytest_output.txt", "r") as f:
         log_data = f.read()
 
-    print("Pytest Output:\n", log_data)  # Debugging output
-
     failed_tests = re.findall(r"=+ FAILURES =+\n(?:_{10,} )?(\S+)", log_data)
 
     print(f"Parsed Failed Tests: {failed_tests}")  # Debugging output
