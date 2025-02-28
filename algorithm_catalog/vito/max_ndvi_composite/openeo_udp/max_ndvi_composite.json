@@ -16,14 +16,18 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 75
+                  "y": {
+                    "from_parameter": "max_cloud_cover"
+                  }
                 },
                 "result": true
               }
             }
           }
         },
-        "spatial_extent": null,
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
         "temporal_extent": {
           "from_parameter": "temporal_extent"
         }
@@ -46,14 +50,18 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 75
+                  "y": {
+                    "from_parameter": "max_cloud_cover"
+                  }
                 },
                 "result": true
               }
             }
           }
         },
-        "spatial_extent": null,
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
         "temporal_extent": {
           "from_parameter": "temporal_extent"
         }
@@ -75,36 +83,28 @@
                   "x": {
                     "from_parameter": "value"
                   },
-                  "y": 75
+                  "y": {
+                    "from_parameter": "max_cloud_cover"
+                  }
                 },
                 "result": true
               }
             }
           }
         },
-        "spatial_extent": null,
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
         "temporal_extent": {
           "from_parameter": "temporal_extent"
         }
-      }
-    },
-    "resamplespatial1": {
-      "process_id": "resample_spatial",
-      "arguments": {
-        "align": "upper-left",
-        "data": {
-          "from_node": "loadcollection3"
-        },
-        "method": "near",
-        "projection": "EPSG:25832",
-        "resolution": 10
       }
     },
     "apply1": {
       "process_id": "apply",
       "arguments": {
         "data": {
-          "from_node": "resamplespatial1"
+          "from_node": "loadcollection3"
         },
         "process": {
           "process_graph": {
@@ -362,75 +362,112 @@
             }
           }
         }
-      }
-    },
-    "filterbbox1": {
-      "process_id": "filter_bbox",
-      "arguments": {
-        "data": {
-          "from_node": "reducedimension1"
-        },
-        "extent": {
-          "from_parameter": "spatial_extent"
-        }
       },
       "result": true
     }
   },
   "id": "max_ndvi_composite",
-  "summary": "Max NDVI composite at 10m resolution.",
-  "description": "# Description\n\nThis algorithm generates a Sentinel-2 based composite for a selected area and temporal extent. By default, the resolution of the output is 10 meters.\n\nThe used compositing method is the \"max-NDVI\" method, which selects the pixel with the highest NDVI value for each pixel location and within the time window.\nThe method falls under the 'rank composite' category, and ensures that selected spectral band values for any individual pixel all come from the same observation.\n\nThe method generates good results for timeseries analytics, but spatially neighbouring pixels may be selected from different observations,\nwhich leads to visual discontinuities in the result.\n\n# Performance characteristics\n\nThe method is computationally efficient, as it only requires the B04, B08 and SCL bands to determine the rank score. Loading\nof other bands can be minimized to read only selected observations.\n\n\n# Examples\n\nThe image below shows a typical result over an agricultural area.\n\n![max_ndvi_example.png](/max_ndvi_example.png)\n\nThe examples below show typical resource usage figures. They illustrate that the cost varies as a function of the parameters,\nand most importantly that it is not possible to linearly extrapolate the cost from one example to another.\n\n\n## 3-month composite over Denmark\n\nA complete example including STAC metadata is shown here:\n\nhttps://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json\n\nThe processing platform reported these usage statistics for the example:\n\n```\nCredits: 63\nCPU usage: 47.743,722 cpu-seconds\nWall time: 1.948 seconds\nInput Pixel 10.997,635 mega-pixel\nMax Executor Memory: 3,239 gb\nMemory usage: 154.767.121,977 mb-seconds\nNetwork Received: 1.677.537.930.040 b\n```\n\nThe relative cost is 1 CDSE platform credits per km² for a 3 month input window.\nThe cost per input pixel is 0.0057 credits per megapixel.\n\n## 15-month composite over Denmark\n\nIn a second example, a longer compositing window was tested, generating a 3-band result. Here we see a lower cost per km², but a similar cost per input\npixel.\n\n```\nCredits: 189\nCPU usage: 77.621,979 cpu-seconds\nWall time: 5.499 seconds\nInput Pixel: 31.494,448 mega-pixel\nMax Executor Memory: 4,332 gb\nMemory usage: 564.094.942,143 mb-seconds\nNetwork Received: 872.636.866.126 b\n```\n\nThe relative cost is 0.03 CDSE platform credits per km² for a 15 month input window.\nThe cost per input pixel is 0.006 credits per megapixel.\n\n# Literature references\n\nThe max-ndvi compositing method has been applied to multiple sensors, as described in literature:\n\nThis publication describes characteristics of the method when applied to AVHRR data:\nhttps://www.tandfonline.com/doi/abs/10.1080/01431168608948945\n\nThis publication applied it to Landsat data, for cropland estimation:\nhttps://www.nature.com/articles/s43016-021-00429-z\n\n# Known limitations\n\nThe method uses a vegetation index as scoring metric to determine the best pixel, making it only suitable for land applications.\nBare or urban areas may not be well represented in the composite.\n\nIt favours the observation which is least contaminated by atmospheric effects, but does not guarantee a fully uncontaminated composite.\n\nFor individual time windows of up to 3 months, the method was efficient up to 100x100km areas. For larger areas of interest, we recommend splitting the area into smaller tiles.\n\n\n# Known artifacts\n\nArtifacts are expected over water and urban areas.\n\n![max_ndvi_water_artifacts.png](./max_ndvi_water_artifacts.png)\n\nResidual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons.\nThe cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds.\n\n![max_ndvi_cloud_artifacts.png](./max_ndvi_cloud_artifacts.png)",
+  "summary": "Sentinel-2 max NDVI composite at 10m resolution.",
+  "description": "# Description\n\nThis algorithm generates a Sentinel-2 based composite for a selected area and temporal extent. By default, the resolution of the output is 10 meters.\n\nThe used compositing method is the \"max-NDVI\" method, which selects the pixel with the highest NDVI value for each pixel location and within the time window.\nThe method falls under the 'rank composite' category, and ensures that selected spectral band values for any individual pixel all come from the same observation.\n\nThe method generates good results for timeseries analytics, but spatially neighbouring pixels may be selected from different observations,\nwhich leads to visual discontinuities in the result.\n\n# Performance characteristics\n\nThe method is computationally efficient, as it only requires the B04, B08 and SCL bands to determine the rank score. Loading\nof other bands can be minimized to read only selected observations.\n\n\n# Examples\n\nThe image below shows a typical result over an agricultural area.\n\n![max_ndvi_example.png](max_ndvi_example.png)\n\nThe examples below show typical resource usage figures. They illustrate that the cost varies as a function of the parameters,\nand most importantly that it is not possible to linearly extrapolate the cost from one example to another.\n\n\n## 3-month composite over Denmark\n\nA complete example including STAC metadata is shown here:\n\nhttps://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json\n\nThe processing platform reported these usage statistics for the example:\n\n```\nCredits: 63\nCPU usage: 47.743,722 cpu-seconds\nWall time: 1.948 seconds\nInput Pixel 10.997,635 mega-pixel\nMax Executor Memory: 3,239 gb\nMemory usage: 154.767.121,977 mb-seconds\nNetwork Received: 1.677.537.930.040 b\n```\n\nThe relative cost is 1 CDSE platform credits per km\u00b2 for a 3 month input window.\nThe cost per input pixel is 0.0057 credits per megapixel.\n\n## 15-month composite over Denmark\n\nIn a second example, a longer compositing window was tested, generating a 3-band result. Here we see a lower cost per km\u00b2, but a similar cost per input\npixel.\n\n```\nCredits: 189\nCPU usage: 77.621,979 cpu-seconds\nWall time: 5.499 seconds\nInput Pixel: 31.494,448 mega-pixel\nMax Executor Memory: 4,332 gb\nMemory usage: 564.094.942,143 mb-seconds\nNetwork Received: 872.636.866.126 b\n```\n\nThe relative cost is 0.03 CDSE platform credits per km\u00b2 for a 15 month input window.\nThe cost per input pixel is 0.006 credits per megapixel.\n\n# Literature references\n\nThe max-ndvi compositing method has been applied to multiple sensors, as described in literature:\n\nThis publication describes characteristics of the method when applied to AVHRR data:\nhttps://www.tandfonline.com/doi/abs/10.1080/01431168608948945\n\nThis publication applied it to Landsat data, for cropland estimation:\nhttps://www.nature.com/articles/s43016-021-00429-z\n\n# Known limitations\n\nThe method uses a vegetation index as scoring metric to determine the best pixel, making it only suitable for land applications.\nBare or urban areas may not be well represented in the composite.\n\nIt favours the observation which is least contaminated by atmospheric effects, but does not guarantee a fully uncontaminated composite.\n\nFor individual time windows of up to 3 months, the method was efficient up to 100x100km areas. For larger areas of interest, we recommend splitting the area into smaller tiles.\n\n\n# Known artifacts\n\nArtifacts are expected over water and urban areas.\n\n![max_ndvi_water_artifacts.png](max_ndvi_water_artifacts.png)\n\nResidual cloud artifacts may be present in the composite, especially for smaller time windows or during cloudy seasons.\nThe cloud artifacts are caused by the limited capabilities of the default Sentinel-2 cloud detection mechanism to correctly identify all clouds.\n\n![max_ndvi_cloud_artifacts.png](max_ndvi_cloud_artifacts.png)\n",
+  "returns": {
+    "description": "A data cube with the newly computed values.\n\nAll dimensions stay the same, except for the dimensions specified in corresponding parameters. There are three cases how the dimensions can change:\n\n1. The source dimension is the target dimension:\n   - The (number of) dimensions remain unchanged as the source dimension is the target dimension.\n   - The source dimension properties name and type remain unchanged.\n   - The dimension labels, the reference system and the resolution are preserved only if the number of values in the source dimension is equal to the number of values computed by the process. Otherwise, all other dimension properties change as defined in the list below.\n2. The source dimension is not the target dimension. The target dimension exists with a single label only:\n   - The number of dimensions decreases by one as the source dimension is 'dropped' and the target dimension is filled with the processed data that originates from the source dimension.\n   - The target dimension properties name and type remain unchanged. All other dimension properties change as defined in the list below.\n3. The source dimension is not the target dimension and the latter does not exist:\n   - The number of dimensions remain unchanged, but the source dimension is replaced with the target dimension.\n   - The target dimension has the specified name and the type other. All other dimension properties are set as defined in the list below.\n\nUnless otherwise stated above, for the given (target) dimension the following applies:\n\n- the number of dimension labels is equal to the number of values computed by the process,\n- the dimension labels are incrementing integers starting from zero,\n- the resolution changes, and\n- the reference system is undefined.",
+    "schema": {
+      "type": "object",
+      "subtype": "datacube"
+    }
+  },
+  "categories": [
+    "sentinel-2",
+    "composites",
+    "vegetation"
+  ],
   "parameters": [
     {
       "name": "spatial_extent",
-      "description": "Spatial extent specified as a bounding box with 'west', 'south', 'east' and 'north' fields.",
-      "schema": {
-        "type": "object",
-        "subtype": "bounding-box",
-        "required": [
-          "west",
-          "south",
-          "east",
-          "north"
-        ],
-        "properties": {
-          "west": {
-            "type": "number",
-            "description": "West (lower left corner, coordinate axis 1)."
-          },
-          "south": {
-            "type": "number",
-            "description": "South (lower left corner, coordinate axis 2)."
-          },
-          "east": {
-            "type": "number",
-            "description": "East (upper right corner, coordinate axis 1)."
-          },
-          "north": {
-            "type": "number",
-            "description": "North (upper right corner, coordinate axis 2)."
-          },
-          "crs": {
-            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
-            "anyOf": [
-              {
-                "type": "integer",
-                "subtype": "epsg-code",
-                "title": "EPSG Code",
-                "minimum": 1000
-              },
-              {
-                "type": "string",
-                "subtype": "wkt2-definition",
-                "title": "WKT2 definition"
-              }
-            ],
-            "default": 4326
+      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
           }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
         }
-      },
-      "optional": true,
-      "default": null
+      ]
     },
     {
       "name": "temporal_extent",
@@ -462,7 +499,7 @@
     },
     {
       "name": "max_cloud_cover",
-      "description": "The maximum cloud cover percentage to filter Sentinel-2 inputs at full product level.\n    By reducing the percentage, fewer input products are considered, which also potentially increases the risk of missing valid data.  \n    We do not recommend setting it higher than 95%, as this decreases performance by reading very cloudy areas with little chance of finding good pixels.\n    \n    For composites over large time ranges, a reduced value can help to consider only good quality input products, with few undetected clouds.\n    ",
+      "description": "The maximum cloud cover percentage to filter Sentinel-2 inputs at full product level.\n    By reducing the percentage, fewer input products are considered, which also potentially increases the risk of missing valid data.\n    We do not recommend setting it higher than 95%, as this decreases performance by reading very cloudy areas with little chance of finding good pixels.\n\n    For composites over large time ranges, a reduced value can help to consider only good quality input products, with few undetected clouds.\n    ",
       "schema": {
         "type": "number"
       },
