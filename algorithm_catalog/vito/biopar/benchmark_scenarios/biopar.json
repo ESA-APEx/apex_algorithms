@@ -45,6 +45,10 @@
                         ],
                         "type": "Polygon"
                     },
+                    "temporal_extent": [
+                        "2020-06-27",
+                        "2020-07-27"
+                    ],
                     "result": true
                 }
             }
