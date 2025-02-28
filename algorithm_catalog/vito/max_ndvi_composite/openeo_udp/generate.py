@@ -14,9 +14,7 @@ def generate() -> dict:
     # TODO: use/inject dummy connection instead of concrete one? (See cdse_marketplace_services)
     c = openeo.connect("openeofed.dataspace.copernicus.eu")
 
-    spatial_extent = Parameter.bounding_box(
-        name="spatial_extent", default=None, optional=True
-    )
+    spatial_extent = Parameter.spatial_extent()
     temporal_extent = Parameter.temporal_interval(name="temporal_extent")
     schema = {
         "type": "string",
@@ -46,9 +44,10 @@ def generate() -> dict:
     scl = c.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
+        spatial_extent=spatial_extent,
         bands=["SCL"],
-        max_cloud_cover=75,
-    ).resample_spatial(projection="EPSG:25832", resolution=10)
+        max_cloud_cover=max_cloud_cover_param,
+    )
 
     def scl_to_masks(scl_layer):
         to_mask = openeo.processes.any(
@@ -88,8 +87,9 @@ def generate() -> dict:
     ndvi_bands = c.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
+        spatial_extent=spatial_extent,
         bands=["B04", "B08"],
-        max_cloud_cover=75,
+        max_cloud_cover=max_cloud_cover_param,
     )
 
     ndvi_bands = ndvi_bands.mask(cloud_mask)
@@ -108,23 +108,27 @@ def generate() -> dict:
     rgb_bands = c.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
+        spatial_extent=spatial_extent,
         bands=bands_param,  # ,"B8A","B11","B12"
-        max_cloud_cover=75,
+        max_cloud_cover=max_cloud_cover_param,
     )
 
-    composite = rgb_bands.mask(combined_mask).max_time().filter_bbox(spatial_extent)
+    composite = rgb_bands.mask(combined_mask).max_time()
+
+    returns = {
+        "description": "A data cube with the newly computed values.\n\nAll dimensions stay the same, except for the dimensions specified in corresponding parameters. There are three cases how the dimensions can change:\n\n1. The source dimension is the target dimension:\n   - The (number of) dimensions remain unchanged as the source dimension is the target dimension.\n   - The source dimension properties name and type remain unchanged.\n   - The dimension labels, the reference system and the resolution are preserved only if the number of values in the source dimension is equal to the number of values computed by the process. Otherwise, all other dimension properties change as defined in the list below.\n2. The source dimension is not the target dimension. The target dimension exists with a single label only:\n   - The number of dimensions decreases by one as the source dimension is 'dropped' and the target dimension is filled with the processed data that originates from the source dimension.\n   - The target dimension properties name and type remain unchanged. All other dimension properties change as defined in the list below.\n3. The source dimension is not the target dimension and the latter does not exist:\n   - The number of dimensions remain unchanged, but the source dimension is replaced with the target dimension.\n   - The target dimension has the specified name and the type other. All other dimension properties are set as defined in the list below.\n\nUnless otherwise stated above, for the given (target) dimension the following applies:\n\n- the number of dimension labels is equal to the number of values computed by the process,\n- the dimension labels are incrementing integers starting from zero,\n- the resolution changes, and\n- the reference system is undefined.",
+        "schema": {
+            "type": "object",
+            "subtype": "datacube"
+        }
+    }
 
     return build_process_dict(
         process_graph=composite,
         process_id="max_ndvi_composite",
-        summary="Max NDVI composite at 10m resolution.",
+        summary="Sentinel-2 max NDVI composite at 10m resolution.",
         description=(
-            Path(__file__).parent.parent.parent.parent
-            / "algorithm_catalog"
-            / "vito"
-            / "max_ndvi_composite"
-            / "openeo_udp"
-            / "max_ndvi_composite_description.md"
+            Path(__file__).parent / "max_ndvi_composite_description.md"
         ).read_text(),
         parameters=[
             spatial_extent,
@@ -132,8 +136,8 @@ def generate() -> dict:
             max_cloud_cover_param,
             bands_param,
         ],
-        returns=None,  # TODO
-        categories=None,  # TODO
+        returns=returns,
+        categories=["sentinel-2", "composites", "vegetation"]
     )
 
 

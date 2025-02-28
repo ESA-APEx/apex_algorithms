@@ -10,9 +10,9 @@
         "updated": "2024-10-03T00:00:00Z",
         "type": "apex_algorithm",
         "title": "Biophysical parameters calculation",
-        "description": "The algorithm offers a solution to calculate vegetation-related parameters like leaf area index, fraction of absorbed photosynthetically active radiation, and more.",
-        "cost_estimate": 4,
-        "cost_unit": "platform credits per km²",
+        "description": "Provides vegetation-related parameters at 10m resolution from 2015 onwards like leaf area index (LAI), fraction of absorbed photosynthetically active radiation (FAPAR), and cover fraction (FCOVER).",
+        "cost_estimate": 0.1,
+        "cost_unit": "platform credits per km² per observation",
         "keywords": [
             "agriculture",
             "crops"
