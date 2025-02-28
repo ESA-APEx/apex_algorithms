@@ -2,46 +2,51 @@
     {
         "id": "biopar",
         "type": "openeo",
-        "description": "Calculating FAPAR using Biopar service available in Copernicus Data Space Ecosystem",
+        "description": "Calculating LAI using Biopar service available in Copernicus Data Space Ecosystem",
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "biopar1": {
                 "process_id": "biopar",
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/biopar/openeo_udp/biopar.json",
                 "arguments": {
+                    "biopar_type": "LAI",
                     "temporal_extent": [
-                        "2024-09-01T00:00:00Z",
-                        "2024-09-30T00:00:00Z"
+                        "2020-06-27",
+                        "2020-07-27"
                     ],
                     "spatial_extent": {
-                        "type": "Polygon",
                         "coordinates": [
                             [
                                 [
-                                    5.1418760297465,
-                                    51.155318963982495
+                                    5.179324150085449,
+                                    51.2498689148547
                                 ],
                                 [
-                                    5.124132761325573,
-                                    51.155318963982495
+                                    5.178744792938232,
+                                    51.24672597710759
                                 ],
                                 [
-                                    5.124132761325573,
-                                    51.1619058170717
+                                    5.185289382934569,
+                                    51.24504696935156
                                 ],
                                 [
-                                    5.1418760297465,
-                                    51.1619058170717
+                                    5.18676996231079,
+                                    51.245342479161295
                                 ],
                                 [
-                                    5.1418760297465,
-                                    51.155318963982495
+                                    5.187370777130127,
+                                    51.24918393390799
+                                ],
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
                                 ]
                             ]
-                        ]
-                    }
-                },
-                "result": true
+                        ],
+                        "type": "Polygon"
+                    },
+                    "result": true
+                }
             }
         }
     }
