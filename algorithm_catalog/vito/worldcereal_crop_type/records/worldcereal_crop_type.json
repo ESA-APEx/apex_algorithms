@@ -10,7 +10,7 @@
     "updated": "2025-01-28T00:00:00Z",
     "type": "apex_algorithm",
     "title": "ESA worldcereal global crop type detector",
-    "description": "A crop type detection algorithm, maximum area for a single job is 20x20km.",
+    "description": "A crop type detection algorithm for global use on a limited number of crop types. Detects crops at 10m resolution. The maximum area for a single job is 20x20km.",
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
@@ -52,11 +52,11 @@
         ]
       },
       {
-        "name": "VITO",
+        "name": "Copernicus Dataspace Ecosystem",
         "links": [
           {
-            "href": "https://www.vito.be/",
-            "title": "VITO Website",
+            "href": "https://dataspace.copernicus.eu/",
+            "title": "CDSE Platform Website",
             "rel": "about",
             "type": "text/html"
           }
@@ -106,6 +106,19 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "ESA Project website",
+      "href": "https://esa-worldcereal.org"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Scientific publication",
+      "href": "https://doi.org/10.1038/s43016-023-00841-7"
     }
+
   ]
 }

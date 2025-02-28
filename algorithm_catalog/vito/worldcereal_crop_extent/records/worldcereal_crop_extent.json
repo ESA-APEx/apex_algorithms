@@ -7,10 +7,10 @@
   "geometry": null,
   "properties": {
     "created": "2024-05-17T00:00:00Z",
-    "updated": "2024-05-17T00:00:00Z",
+    "updated": "2025-02-17T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "ESA worldcereal global maize detector",
-    "description": "A maize detection algorithm.",
+    "title": "ESA worldcereal global crop extent detector",
+    "description": "Detects crop land at 10m resolution, trained for global use. Based on Sentinel-1 and 2 data, this algorithm can be used from 2016 onwards. The maximum area for a single job is 20x20km.",
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
@@ -51,12 +51,12 @@
           "principal investigator"
         ]
       },
-      {
-        "name": "VITO",
+     {
+        "name": "Copernicus Dataspace Ecosystem",
         "links": [
           {
-            "href": "https://www.vito.be/",
-            "title": "VITO Website",
+            "href": "https://dataspace.copernicus.eu/",
+            "title": "CDSE Platform Website",
             "rel": "about",
             "type": "text/html"
           }
@@ -106,6 +106,18 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "ESA Project website",
+      "href": "https://esa-worldcereal.org"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Scientific publication",
+      "href": "https://doi.org/10.1038/s43016-023-00841-7"
     }
   ]
 }
