@@ -109,7 +109,9 @@ class S3UploadPlugin:
                 upload_report[name] = {"url": url}
                 self.upload_stats["uploaded"] += 1
             except Exception as e:
-                _log.error(f"Failed to upload asset {name=} from {path=}: {e}")
+                _log.error(
+                    f"Failed to upload asset {name=} from {path=}: {e=}", exc_info=True
+                )
                 upload_report[name] = {"error": str(e)}
                 self.upload_stats["failed"] += 1
         self.upload_reports[nodeid] = upload_report
