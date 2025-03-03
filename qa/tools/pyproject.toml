@@ -22,6 +22,6 @@ dependencies = [
     "jsonschema>=4.0.0",
     "openeo>=0.30.0",
     # TODO: make some of these dependencies optional
-    "boto3>=1.34.0",
+    "boto3>=1.36.5",
     "pyarrow>=17.0.0",
 ]

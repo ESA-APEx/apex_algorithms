@@ -40,6 +40,7 @@ from pathlib import Path
 from typing import Callable, Dict
 
 import boto3
+import botocore.config
 import pytest
 from apex_algorithm_qa_tools.pytest import get_run_id
 
@@ -67,6 +68,12 @@ def pytest_configure(config: pytest.Config):
                 "APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY"
             ),
             endpoint_url=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL"),
+            config=botocore.config.Config(
+                # Disable new checksum validation feature
+                # (not supported yet by third-party S3 implementations)
+                request_checksum_calculation="when_required",
+                response_checksum_validation="when_required",
+            ),
         )
         config.pluginmanager.register(
             S3UploadPlugin(s3_client=s3_client, bucket=bucket),
