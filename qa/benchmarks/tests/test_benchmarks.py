@@ -77,3 +77,7 @@ def test_run_benchmark(
         rtol=scenario.reference_options.get("rtol", 1e-6),
         atol=scenario.reference_options.get("atol", 1e-6),
     )
+
+def test_fail():
+    """A dummy test that always fails"""
+    assert False
