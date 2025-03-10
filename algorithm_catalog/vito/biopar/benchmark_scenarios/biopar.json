@@ -44,9 +44,9 @@
                             ]
                         ],
                         "type": "Polygon"
-                    },
-                    "result": true
-                }
+                    }
+                },
+                "result": true
             }
         }
     }
