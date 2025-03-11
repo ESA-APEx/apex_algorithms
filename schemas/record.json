@@ -403,7 +403,8 @@
               "license",
               "about",
               "webapp",
-              "code"
+              "code",
+              "thumbnail"
             ]
           },
           "type": {
