@@ -29,24 +29,24 @@
     ],
     "contacts": [
       {
-        "name": "Hans Vanrompay",
+        "name": "Michele Claus",
         "position": "Researcher",
-        "organization": "VITO",
+        "organization": "EURAC",
         "links": [
           {
-            "href": "https://www.vito.be/",
-            "title": "VITO Website",
+            "href": "https://www.eurac.edu/",
+            "title": "EURAC Website",
             "rel": "about",
             "type": "text/html"
           },
           {
-            "href": "https://github.com/HansVRP",
+            "href": "https://github.com/clausmichele",
             "title": "GitHub",
             "rel": "about",
             "type": "text/html"
           }
         ],
-        "contactInstructions": "Contact via VITO",
+        "contactInstructions": "Contact via EURAC",
         "roles": [
           "principal investigator"
         ]
