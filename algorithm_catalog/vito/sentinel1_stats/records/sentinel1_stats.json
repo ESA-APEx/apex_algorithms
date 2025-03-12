@@ -2,13 +2,14 @@
   "id": "sentinel1_stats",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-10-03T00:00:00Z",
     "updated": "2024-10-03T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "Sentinel-1 statistics",
     "description": "A statistics algorithm for Sentinel-1 data, calculating the mean, median, minimum, and maximum values of the data.",
     "cost_estimate": 0.1,

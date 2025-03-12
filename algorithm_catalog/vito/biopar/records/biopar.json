@@ -2,13 +2,14 @@
     "id": "biopar",
     "type": "Feature",
     "conformsTo": [
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
     ],
     "geometry": null,
     "properties": {
         "created": "2024-10-03T00:00:00Z",
         "updated": "2024-10-03T00:00:00Z",
-        "type": "apex_algorithm",
+        "type": "service",
         "title": "Biophysical parameters calculation",
         "description": "Provides vegetation-related parameters at 10m resolution from 2015 onwards like leaf area index (LAI), fraction of absorbed photosynthetically active radiation (FAPAR), and cover fraction (FCOVER).",
         "cost_estimate": 0.1,

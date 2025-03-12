@@ -2,13 +2,14 @@
   "id": "gep_DinSAR",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-12-18T00:00:00Z",
     "updated": "2024-12-18T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "DinSar Sentinel-1 IW SLC Interferogram and Displacements",
     "description": "The InSAR service processes Sentinel-1 TOPSAR IW SLC data to produce interferometric products for monitoring and analysis of ground displacement. Outputs include interferometric coherence maps, unwrapped phase images, and displacement maps. These products support geohazard assessments such as earthquake deformation, landslide monitoring, and infrastructure stability analysis. The service is designed to deliver high-precision measurements and geocoded outputs for seamless integration into geospatial workflows.",
     "cost_estimate": 6.0,
