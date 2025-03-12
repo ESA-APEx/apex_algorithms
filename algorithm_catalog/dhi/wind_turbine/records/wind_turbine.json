@@ -1,0 +1,100 @@
+{
+  "id": "dhi_wind_turbine_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "Wind turbine detection",
+    "description": "Detects wind turbines from 2016 onwards, based on Sentinel-2 data.",
+    "cost_estimate": 0.1,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "wind turbine",
+      "detection"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Alkiviadis Koukos",
+        "position": "Researcher",
+        "organization": "DHI",
+        "links": [
+          {
+            "href": "https://eo.dhigroup.com/",
+            "title": "DHI Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/alkiskk",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via DHI",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          },
+          {
+            "id": "WIND ENERGY PRODUCTION/USE"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/..."
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.cloud"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org"
+    }
+  ]
+}
