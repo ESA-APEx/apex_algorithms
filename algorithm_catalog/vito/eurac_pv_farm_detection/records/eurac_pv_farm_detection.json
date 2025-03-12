@@ -2,13 +2,14 @@
   "id": "eurac_pv_farm_detection",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-10-16T00:00:00Z",
     "updated": "2024-10-16T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "EURAC Photovoltaic Farms mapping",
     "description": "An openEO process developed by EURAC to detect photovoltaic farms, based on sentinel2 data.",
     "cost_estimate": 0.001,

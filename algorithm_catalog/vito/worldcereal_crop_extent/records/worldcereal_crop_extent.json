@@ -2,13 +2,14 @@
   "id": "worldcereal_crop_extent",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-05-17T00:00:00Z",
     "updated": "2025-02-17T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "ESA worldcereal global crop extent detector",
     "description": "Detects crop land at 10m resolution, trained for global use. Based on Sentinel-1 and 2 data, this algorithm can be used from 2016 onwards. The maximum area for a single job is 20x20km.",
     "cost_estimate": 0.1,

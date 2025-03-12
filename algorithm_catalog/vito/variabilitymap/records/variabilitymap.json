@@ -1,14 +1,15 @@
 {
     "type": "Feature",
     "conformsTo": [
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
     ],
     "geometry": null,
     "id": "variabilitymap",
     "properties": {
         "created": "2025-01-17T16:32:27Z",
         "updated": "2025-01-17T16:32:27Z",
-        "type": "apex_algorithm",
+        "type": "service",
         "title": "Variability maps",
         "description": "Daily crop performance calculation",
         "keywords": [

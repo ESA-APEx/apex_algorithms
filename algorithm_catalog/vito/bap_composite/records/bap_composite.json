@@ -2,13 +2,14 @@
   "id": "bap_composite",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-10-09T00:00:00Z",
     "updated": "2024-10-09T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "Best-Available-Pixel Composite based on Sentinel-2 data",
     "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their highest BAP score.",
     "cost_estimate": 0.2,
