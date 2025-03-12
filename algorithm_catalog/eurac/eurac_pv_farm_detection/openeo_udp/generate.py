@@ -14,19 +14,16 @@ from openeo.rest.udp import build_process_dict
 # TODO investigate setting max cloud cover and kernel size as parameters as well
 def generate() -> dict:
     # define spatial_extent
-    spatial_extent = Parameter.bounding_box(
-        name="spatial_extent",
-        default={"west": 16.342, "south": 47.962, "east": 16.414, "north": 48.008},
+    spatial_extent = Parameter.spatial_extent(
+        default={"west": 16.342, "south": 47.962, "east": 16.414, "north": 48.008}
     )
 
     # define temporal_extent
-    temporal_extent = Parameter.temporal_interval(
-        name="temporal_extent", default=["2023-05-01", "2023-09-30"]
-    )
+    temporal_extent = Parameter.temporal_interval(default=["2023-05-01", "2023-09-30"])
 
     # load the input data
     conn = openeo.connect(
-        "https://openeo.dataspace.copernicus.eu/"
+        "openeofed.dataspace.copernicus.eu"
     ).authenticate_oidc()
 
     s2_cube = conn.load_collection(
@@ -72,14 +69,22 @@ def generate() -> dict:
     eroded_cube = (prediction.apply_kernel(kernel=kernel, factor=factor) >= 1) * 1.0
     dilated_cube = (eroded_cube.apply_kernel(kernel=kernel, factor=factor) > 0) * 1.0
 
+    returns = {
+        "description": "A data cube with the newly computed values.\n\nAll dimensions stay the same, except for the dimensions specified in corresponding parameters. There are three cases how the dimensions can change:\n\n1. The source dimension is the target dimension:\n   - The (number of) dimensions remain unchanged as the source dimension is the target dimension.\n   - The source dimension properties name and type remain unchanged.\n   - The dimension labels, the reference system and the resolution are preserved only if the number of values in the source dimension is equal to the number of values computed by the process. Otherwise, all other dimension properties change as defined in the list below.\n2. The source dimension is not the target dimension. The target dimension exists with a single label only:\n   - The number of dimensions decreases by one as the source dimension is 'dropped' and the target dimension is filled with the processed data that originates from the source dimension.\n   - The target dimension properties name and type remain unchanged. All other dimension properties change as defined in the list below.\n3. The source dimension is not the target dimension and the latter does not exist:\n   - The number of dimensions remain unchanged, but the source dimension is replaced with the target dimension.\n   - The target dimension has the specified name and the type other. All other dimension properties are set as defined in the list below.\n\nUnless otherwise stated above, for the given (target) dimension the following applies:\n\n- the number of dimension labels is equal to the number of values computed by the process,\n- the dimension labels are incrementing integers starting from zero,\n- the resolution changes, and\n- the reference system is undefined.",
+        "schema": {
+            "type": "object",
+            "subtype": "datacube"
+        }
+    }
+
     return build_process_dict(
         process_graph=dilated_cube,
         process_id="eurac_pv_farm_detection",
-        summary="An openEO process developed by EURAC to detect photovoltaic farms, based on sentinel2 data.",
-        description=(Path(__file__).parent / "README.md").read_text(),
+        summary="An openEO process developed by Eurac Research to detect photovoltaic farms, based on sentinel2 data.",
+        description=(Path(__file__).parent / "eurac_pv_farm_detection_description.md").read_text(),
         parameters=[spatial_extent, temporal_extent],
-        returns=None,  # TODO
-        categories=None,  # TODO
+        returns=returns,
+        categories=["sentinel-2", "energy"]
     )
 
 
