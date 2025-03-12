@@ -9,8 +9,8 @@
     "created": "2024-10-16T00:00:00Z",
     "updated": "2024-10-16T00:00:00Z",
     "type": "apex_algorithm",
-    "title": "EURAC Photovoltaic Farms mapping",
-    "description": "An openEO process developed by EURAC to detect photovoltaic farms, based on sentinel2 data.",
+    "title": "Photovoltaic Farms mapping",
+    "description": "Photovoltaic farms (PV farms) mapping is essential for establishing valid policies regarding natural resources management and clean energy. An openEO process was developped which uses the predtrained random forest network to efficiently detect the PV farms.\n\nSources:\n\n[1] Kruitwagen, L., et al. A global inventory of photovoltaic solar energy generating units. Nature 598, 604\u2013610 (2021). https://doi.org/10.1038/s41586-021-03957-7\n\n[2] Schramm, M, et al. The openEO API\u2013Harmonising the Use of Earth Observation Cloud Services Using Virtual Data Cube Functionalities. Remote Sens. 2021, 13, 1125. https://doi.org/10.3390/rs13061125\n\n[3] https://github.com/clausmichele/openEO_photovoltaic/tree/main",
     "cost_estimate": 0.001,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
@@ -31,7 +31,7 @@
       {
         "name": "Michele Claus",
         "position": "Researcher",
-        "organization": "EURAC",
+        "organization": "Eurac Research",
         "links": [
           {
             "href": "https://www.eurac.edu/",
@@ -112,6 +112,12 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=eurac_pv_farm_detection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4003046e3b79ec3ab8dace888a231655db389d66/openeo_udp/eurac_pv_farm_detection/eurac_pv_farm_detection.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841",
+      "href": "https://doi.org/10.5194/egusphere-egu24-16841"
     }
   ]
 }
