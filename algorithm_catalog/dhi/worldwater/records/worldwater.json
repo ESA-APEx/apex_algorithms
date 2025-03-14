@@ -1,0 +1,128 @@
+{
+  "id": "dhi_wind_turbine_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "ESA World Water extent",
+    "description": "Monitoring of water bodies at any region globally from 2016 onwards, based on Sentinel-1 and Sentinel-2 data.",
+    "cost_estimate": 0.1,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "surface water extent",
+      "detection"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Alkiviadis Koukos",
+        "position": "Researcher",
+        "organization": "DHI",
+        "links": [
+          {
+            "href": "https://eo.dhigroup.com/",
+            "title": "DHI Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/alkiskk",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via DHI",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
+          },
+          {
+            "id": "Sentinel-1 C-SAR",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/1c53d85e-3792-4081-9748-192fd3140aa6?format=json"
+          },
+          {
+            "id": "WATER MANAGEMENT",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/14555831-70ae-4650-8983-956d65595575?format=json"
+          },
+          {
+            "id": "WATER RESOURCES",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/3dd9fd35-f1dd-4d25-b849-eeb7b64ab767?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "GPL-3.0-only"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://github.com/DHI-GRAS/worldwater-toolbox/blob/vito/world_water_toolbox/single_month_extent_udp.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.cloud"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "ESA World Water website",
+      "href": "https://worldwater.earth/"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/DHI-GRAS/worldwater-toolbox.git"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "Druce, D.; Tong, X.; Lei, X.; Guo, T.; Kittel, C.M.M.; Grogan, K.; Tottrup, C. An Optical and SAR Based Fusion Approach for Mapping Surface Water Dynamics over Mainland China. Remote Sens. 2021, 13, 1663",
+      "href": "https://doi.org/10.3390/rs13091663"
+    }
+  ]
+}
