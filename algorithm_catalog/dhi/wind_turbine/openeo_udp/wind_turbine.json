@@ -1,4 +1,4 @@
-w{
+{
   "process_graph": {
     "detection": {
       "process_id": "wind_turbine_detection",
