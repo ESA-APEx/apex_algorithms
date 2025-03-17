@@ -19,17 +19,15 @@ to Central Europe, with plans to expand further.
 
 # Performance characteristics
 
-...
+The costs of this service are based on the requested output area, making it independent of platform performance.
+An example run of 220km² takes up to 30 minutes to complete, while smaller test areas complete drastically faster. 
+
 
 # Examples
 
 Below we overlay a Sentinel2-RGB image with the ML classification, thereby highlighting the detected areas.
 
 ![wind_turbine_output](wind_turbine_example.png)
-
-# Literature references
-
-...
 
 # Known limitations
 
