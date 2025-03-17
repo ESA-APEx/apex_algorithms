@@ -11,8 +11,8 @@
     "updated": "2025-03-12T00:00:00Z",
     "type": "service",
     "title": "Wind turbine detection",
-    "description": "Detects wind turbines from 2016 onwards, based on Sentinel-2 data.",
-    "cost_estimate": 0.1,
+    "description": "# Description\n\nDetects wind turbines in open landscapes using Sentinel-2 imagery and a pre-trained computer vision object detection model.\nOpen landscapes can be considered all landscapes outside of built-up urban and peri-urban areas together with forested areas. \nIn general open landscapes is mainly comprised of open agricultural land and nature areas. \n\nThe user selects a region of interest and specifies a year to analyze. \nThe best available Sentinel-2 imagery for the selected region is ranked based on quality metrics and\nthe highest ranked image is chosen for wind turbine detection, based on several ranking parameters. \nThe Sentinel-2 imagery is then passed to the pre-trained neural network that returns the bounding boxes \nfor each detected turbine. Wind turbines are reported with a detection probability on the scale\nof 0 - 1. The higher the probability of the detection, the higher confidence that it is a TRUE detection.\n\nAdditional filtering is applied to account for multiple detections in close proximity. \nThe end result includes a .geojson file defining the bounding box of all wind turbine detections \nwith the detection date and probability as attributes. The service is so far applicable\nto Central Europe, with plans to expand further. \n\n\n# Performance characteristics\n\n...\n\n# Examples\n\nBelow we overlay a Sentinel2-RGB image with the ML classification, thereby highlighting the detected areas.\n\n![wind_turbine_output](wind_turbine_example.png)\n\n# Literature references\n\n...\n\n# Known limitations\n\nWorks in open landscapes only, see description.\n\n",
+    "cost_estimate": 7,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
       "wind turbine",
@@ -57,10 +57,12 @@
       {
         "concepts": [
           {
-            "id": "Sentinel-2 MSI"
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
           },
           {
-            "id": "WIND ENERGY PRODUCTION/USE"
+            "id": "WIND ENERGY PRODUCTION/USE",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/b3a95e10-1c1d-41cf-8802-8bb1d3a41353?format=json"
           }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
