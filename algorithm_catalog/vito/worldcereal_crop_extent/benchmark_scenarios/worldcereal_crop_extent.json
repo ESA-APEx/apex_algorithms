@@ -7,7 +7,7 @@
     "process_graph": {
       "worldcerealcropextent1": {
         "process_id": "worldcereal_crop_extent",
-        "namespace": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.1/src/worldcereal/udp/worldcereal_crop_extent.json",
+        "namespace": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.2/src/worldcereal/udp/worldcereal_crop_extent.json",
         "arguments": {
           "spatial_extent": {
             "west": 622694.5968575787,
