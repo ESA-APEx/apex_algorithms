@@ -1,0 +1,116 @@
+{
+  "id": "s14amazonas_deforestation",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "Deforestation detection in Amazon",
+    "description": "# Description\n\nDetects deforestation",
+    "cost_estimate": 2,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "deforestation",
+      "detection",
+      "Amazon"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Sivasankar Arul",
+        "position": "Researcher",
+        "organization": "GISAT",
+        "links": [
+          {
+            "href": "https://gisat.cz/",
+            "title": "GISAT Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/sivasanarul",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via GISAT",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-1 C-SAR",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/1c53d85e-3792-4081-9748-192fd3140aa6?format=json"
+          },
+          {
+            "id": "DEFORESTATION",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/9a4715a7-1847-4fef-8116-494b36420fb7?format=json"
+          },
+          {
+            "id": "AMAZONIA",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/bb293e12-6ffe-48e2-96e5-8f5ae9c137c2?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/Gisat/dev-S14amazonas"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "ESA Project website",
+      "href": "https://project.gisat.cz/s14scienceAmazonas/"
+    },
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/..."
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    }
+  ]
+}
