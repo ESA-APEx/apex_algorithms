@@ -109,14 +109,14 @@ def build_issue_body(scenario, logs, failure_count):
 ### Technical Details
 
 **PROCESS GRAPH:**
-f"```json\n"
-f"{scenario['process_graph']}\n"
-f"```\n\n"
+```json
+{json.dumps(scenario['process_graph'], indent=2)}
+```
 
 **ERROR LOGS:**
-f"```plaintext\n"
-f"{logs}\n"
-f"```"
+```plaintext
+{logs}
+```
 
 
 
