@@ -98,9 +98,6 @@ Backend System: {scenario['backend']}
 Failure Count: {failure_count}
 Timestamp: {timestamp}
 
-PARAMETERS:
-{json.dumps(scenario['parameters'], indent=2)}
-
 PROCESS GRAPH:
 {scenario['process_graph']}
 
