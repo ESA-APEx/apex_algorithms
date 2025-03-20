@@ -27,7 +27,7 @@ def get_existing_issues():
         response.raise_for_status()
         return {issue["title"]: issue for issue in response.json()}
     except Exception as e:
-        logger.error(f"Failed to fetch issues: {str(e)}")
+        logger.error(f"Failed to fetch issues: {str(e)} - Response: {response.text}")
         return {}
 
 def get_scenario_details(scenario_id):
@@ -64,7 +64,8 @@ def parse_failed_tests():
         failures = []
         
         # Match failed test entries with their logs
-        pattern = r"=+ FAILURES =+\n.*?_* (test_run_benchmark\[(.*?)\])(.*?)(?=\n=+|\Z)"
+        pattern = r"=+ FAILURES =+\n.*?_* (test_run_benchmark\[(.*?)\])(?:.*?)\n(.*?)(?=\n=+|\Z)"
+
         matches = re.finditer(pattern, content, re.DOTALL)
         
         for match in matches:
@@ -90,24 +91,34 @@ def build_issue_body(scenario, logs, failure_count):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     return f"""
-SCENARIO FAILURE REPORT
+## Benchmark Failure: {scenario['id']}
 
-Scenario ID: {scenario['id']}
-Description: {scenario.get('description', 'No description available')}
-Backend System: {scenario['backend']}
-Failure Count: {failure_count}
-Timestamp: {timestamp}
 
-PROCESS GRAPH:
-{scenario['process_graph']}
-
-ERROR LOGS:
-{logs}
-
-LINKS:
+**Scenario ID**: {scenario['id']}
+**Backend System**: {scenario['backend']}
+**Failure Count**: {failure_count}
+**Timestamp**: {timestamp}
+**LINKS**:
 - Workflow Run: {WORKFLOW_BASE_URL}
 - Scenario Definition: {get_scenario_link(scenario['id'])}
 - Artifacts: {WORKFLOW_BASE_URL}#artifacts
+
+---
+
+### Technical Details
+
+**PROCESS GRAPH:**
+f"```json\n"
+f"{scenario['process_graph']}\n"
+f"```\n\n"
+
+**ERROR LOGS:**
+f"```plaintext\n"
+f"{logs}\n"
+f"```"
+
+
+
 """
 
 def get_scenario_link(scenario_id):
@@ -153,10 +164,10 @@ def update_existing_issue(issue, scenario, new_logs):
     update_section = f"""
 NEW FAILURE OCCURRENCE
 
-Timestamp: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Workflow Run: {WORKFLOW_BASE_URL}
+**Timestamp**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Workflow Run**: {WORKFLOW_BASE_URL}
 
-Latest Logs:
+**Error Logs**:
 {new_logs}
 """
     
@@ -177,7 +188,6 @@ def main():
     
     for failure in failed_tests:
         scenario_id = failure["scenario_id"]
-        test_name = failure["test_name"]
         logs = failure["logs"]
         
         # Get scenario technical details
