@@ -94,7 +94,6 @@ def build_issue_body(scenario, logs, failure_count):
     return f"""
 ## Benchmark Failure: {scenario['id']}
 
-
 **Scenario ID**: {scenario['id']}
 **Backend System**: {scenario['backend']}
 **Failure Count**: {failure_count}
@@ -110,7 +109,7 @@ def build_issue_body(scenario, logs, failure_count):
 
 **PROCESS GRAPH:**
 ```json
-{json.dumps(scenario['process_graph'], indent=2)}
+{scenario['process_graph']}
 ```
 
 **ERROR LOGS:**
