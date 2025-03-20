@@ -25,7 +25,8 @@ def get_existing_issues():
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        return {issue["title"]: issue for issue in response.json()}
+        open_issues = [issue for issue in response.json() if issue.get("state") == "open"]
+        return {issue["title"]: issue for issue in open_issues}
     except Exception as e:
         logger.error(f"Failed to fetch issues: {str(e)} - Response: {response.text}")
         return {}
