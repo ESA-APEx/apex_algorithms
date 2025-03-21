@@ -114,7 +114,7 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=eurac_pv_farm_detection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4003046e3b79ec3ab8dace888a231655db389d66/openeo_udp/eurac_pv_farm_detection/eurac_pv_farm_detection.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
-      "rel": "cite-as",
+      "rel": "about",
       "type": "text/html",
       "title": "Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841",
       "href": "https://doi.org/10.5194/egusphere-egu24-16841"
