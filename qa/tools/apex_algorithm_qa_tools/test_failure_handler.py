@@ -129,18 +129,17 @@ def build_issue_body(scenario, logs, failure_count):
             contact_table = "\n\n**Responsible Contacts**:\n\n"
             contact_table += "| Name | Organization | Contact |\n"
             contact_table += "|------|--------------|---------|\n"
-            for contact in contacts:
-                # Extract links from contact instructions
-                contact_info = contact.get('contactInstructions', '')
-                if contact.get('links'):
-                    links = [f"[{link['title']}]({link['href']})" for link in contact['links']]
-                    contact_info += " (" + ", ".join(links) + ")"
-                
-                contact_table += (
-                    f"| {contact.get('name', '')} "
-                    f"| {contact.get('organization', '')} "
-                    f"| {contact_info} |\n"
-                )
+            # Extract links from contact instructions
+            contact_info = contacts[0].get('contactInstructions', '')
+            if contacts[0].get('links'):
+                links = [f"[{link['title']}]({link['href']})" for link in contacts[0]['links']]
+                contact_info += " (" + ", ".join(links) + ")"
+            
+            contact_table += (
+                f"| {contacts[0].get('name', '')} "
+                f"| {contacts[0].get('organization', '')} "
+                f"| {contact_info} |\n"
+            )
         except Exception as e:
             pass
     
@@ -153,7 +152,7 @@ def build_issue_body(scenario, logs, failure_count):
 **Failure Count**: {failure_count}
 **Timestamp**: {timestamp}
 
-**LINKS**:
+**Links**:
 - Workflow Run: {WORKFLOW_BASE_URL}
 - Scenario Definition: {get_scenario_link(scenario['id'])}
 - Artifacts: {WORKFLOW_BASE_URL}#artifacts
@@ -163,15 +162,13 @@ def build_issue_body(scenario, logs, failure_count):
 {contact_table}
 ---
 
-
-### Technical Details
-
-**PROCESS GRAPH:**
+### Process graph
 ```json
 {scenario['process_graph']}
 ```
 
-**ERROR LOGS:**
+---
+### Error Logs
 ```plaintext
 {logs}
 ```
