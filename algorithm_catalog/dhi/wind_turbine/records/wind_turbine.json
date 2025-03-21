@@ -81,7 +81,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/..."
+      "href": "https://github.com/ESA-APEx/apex_algorithms/raw/refs/heads/main/algorithm_catalog/dhi/wind_turbine/openeo_udp/wind_turbine.json"
     },
     {
       "rel": "service",
@@ -93,7 +93,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wind_turbine_detection&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Fmain%2Falgorithm_catalog%2Fdhi%2Fwind_turbine%2Fopeneo_udp%2Fwind_turbine.json&server=https://openeo.cloud"
     }
   ]
 }
