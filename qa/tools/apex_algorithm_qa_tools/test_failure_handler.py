@@ -126,7 +126,7 @@ def build_issue_body(scenario, logs, failure_count):
     contact_table = ""
     if contacts:
         try:
-            contact_table = "\n\n**Responsible Contacts**:\n\n"
+            contact_table = "\n\n**Point of Contact**:\n\n"
             contact_table += "| Name | Organization | Contact |\n"
             contact_table += "|------|--------------|---------|\n"
             # Extract links from contact instructions

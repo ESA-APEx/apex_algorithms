@@ -8,6 +8,9 @@ on:
 jobs:
   benchmarks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -43,9 +46,9 @@ jobs:
           APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
 
-      - name: Process test results and create issues
+      - name: Issue Generation
         env:
-          APEX_ISSUE_TOKEN: ${{ secrets.APEX_ISSUE_TOKEN }}
+          APEX_ISSUE_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
             python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
