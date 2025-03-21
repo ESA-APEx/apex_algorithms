@@ -201,6 +201,8 @@ def get_scenario_link(scenario_id: str) -> str:
         
         if scenario_path.exists():
             return f"{base_url}/{"algorithm_catalog"}/{scenario_path.as_posix()}"
+        
+    return ""
     
 
 def create_new_issue(scenario, logs):
@@ -226,39 +228,6 @@ def create_new_issue(scenario, logs):
     except Exception as e:
         logger.error(f"Failed to create issue: {str(e)}")
 
-def update_existing_issue(issue, scenario, new_logs):
-    """Update an existing issue with new failure information"""
-    url = issue["url"]
-    current_body = issue["body"]
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    
-    # Extract current failure count
-    count_match = re.search(r"Failure Count: (\d+)", current_body)
-    failure_count = int(count_match.group(1)) + 1 if count_match else 1
-    
-    update_section = f"""
-NEW FAILURE OCCURRENCE
-
-**Timestamp**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-**Workflow Run**: {WORKFLOW_BASE_URL}
-
-**Error Logs**:
-```plaintext
-{new_logs}
-```"""
-    
-    updated_body = f"{current_body}\n\n{update_section}"
-    updated_body = re.sub(r"Failure Count: \d+", f"Failure Count: {failure_count}", updated_body)
-    
-    try:
-        response = requests.patch(url, json={"body": updated_body}, headers=headers)
-        response.raise_for_status()
-        logger.info(f"Updated issue #{issue['number']}")
-    except Exception as e:
-        logger.error(f"Failed to update issue: {str(e)}")
 
 def main():
     """Main processing flow"""
@@ -277,9 +246,7 @@ def main():
         
         issue_title = f"Scenario Failure: {scenario_id}"
         
-        if issue_title in existing_issues:
-            update_existing_issue(existing_issues[issue_title], scenario, logs)
-        else:
+        if issue_title not in existing_issues:
             create_new_issue(scenario, logs)
 
 if __name__ == "__main__":
