@@ -122,6 +122,7 @@ def build_issue_body(scenario, logs, failure_count):
     """Construct the issue body with technical details"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     contacts = get_scenario_contacts(scenario['id'])
+    scenario_link = get_scenario_link(scenario['id'])
     
     contact_table = ""
     if contacts:
@@ -154,7 +155,7 @@ def build_issue_body(scenario, logs, failure_count):
 
 **Links**:
 - Workflow Run: {WORKFLOW_BASE_URL}
-- Scenario Definition: {get_scenario_link(scenario['id'])}
+- Scenario Definition: {scenario_link}
 - Artifacts: {WORKFLOW_BASE_URL}#artifacts
 
 ---
