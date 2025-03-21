@@ -1,3 +1,5 @@
+
+#%%
 import os
 import re
 import requests
@@ -5,6 +7,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 import logging
+from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -13,7 +16,7 @@ logger = logging.getLogger(__name__)
 # Configuration
 GITHUB_REPO = "ESA-APEx/apex_algorithms"
 GITHUB_TOKEN = os.getenv("APEX_ISSUE_TOKEN")
-ISSUE_LABEL = "test-failure"
+ISSUE_LABEL = "benchmark-failure"
 SCENARIO_BASE_PATH = "qa/benchmarks/scenarios/"
 WORKFLOW_BASE_URL = f"https://github.com/{os.getenv('GITHUB_REPOSITORY')}/actions/runs/{os.getenv('GITHUB_RUN_ID')}"
 
@@ -34,7 +37,6 @@ def get_existing_issues():
 def get_scenario_details(scenario_id):
     """Retrieve details for a given scenario ID"""
     try:
-        from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
         for scenario in get_benchmark_scenarios():
             if scenario.id == scenario_id:
                 return {
@@ -51,7 +53,36 @@ def get_scenario_details(scenario_id):
     except Exception as e:
         logger.error(f"Error loading scenarios: {str(e)}")
         return None
+    
+def get_scenario_contacts(scenario_id: str) -> list:
+    """Find contact info by searching through algorithm catalog structure"""
+    algorithm_catalog = get_project_root() / "algorithm_catalog"
+    
+    # Search through all provider directories
+    for provider_dir in algorithm_catalog.iterdir():
+        if not provider_dir.is_dir():
+            continue
+            
+        # Check for matching algorithm directory
+        algorithm_dir = provider_dir / scenario_id
+        if not algorithm_dir.exists():
+            continue
+            
+        # Look for records file
+        records_path = algorithm_dir / "records" / f"{scenario_id}.json"
+        if records_path.exists():
+            try:
+                with open(records_path) as f:
+                    record = json.load(f)
+                return record.get("properties", {}).get("contacts", [])
+            except Exception as e:
+                logger.error(f"Error loading contacts from {records_path}: {str(e)}")
+                return []
+    
+    logger.warning(f"No contacts found for scenario {scenario_id}")
+    return []
 
+    
 def parse_failed_tests():
     """Parse pytest output to find failed scenarios and their logs"""
     log_file = Path("qa/benchmarks/pytest_output.txt")
@@ -90,6 +121,29 @@ def parse_failed_tests():
 def build_issue_body(scenario, logs, failure_count):
     """Construct the issue body with technical details"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    contacts = get_scenario_contacts(scenario['id'])
+    
+    contact_table = ""
+    if contacts:
+        try:
+            contact_table = "\n\n**Responsible Contacts**:\n\n"
+            contact_table += "| Name | Organization | Contact |\n"
+            contact_table += "|------|--------------|---------|\n"
+            for contact in contacts:
+                # Extract links from contact instructions
+                contact_info = contact.get('contactInstructions', '')
+                if contact.get('links'):
+                    links = [f"[{link['title']}]({link['href']})" for link in contact['links']]
+                    contact_info += " (" + ", ".join(links) + ")"
+                
+                contact_table += (
+                    f"| {contact.get('name', '')} "
+                    f"| {contact.get('organization', '')} "
+                    f"| {contact_info} |\n"
+                )
+        except Exception as e:
+            pass
+    
     
     return f"""
 ## Benchmark Failure: {scenario['id']}
@@ -98,12 +152,17 @@ def build_issue_body(scenario, logs, failure_count):
 **Backend System**: {scenario['backend']}
 **Failure Count**: {failure_count}
 **Timestamp**: {timestamp}
+
 **LINKS**:
 - Workflow Run: {WORKFLOW_BASE_URL}
 - Scenario Definition: {get_scenario_link(scenario['id'])}
 - Artifacts: {WORKFLOW_BASE_URL}#artifacts
 
 ---
+### Contact information
+{contact_table}
+---
+
 
 ### Technical Details
 
@@ -116,9 +175,6 @@ def build_issue_body(scenario, logs, failure_count):
 ```plaintext
 {logs}
 ```
-
-
-
 """
 
 def get_scenario_link(scenario_id):
@@ -168,8 +224,9 @@ NEW FAILURE OCCURRENCE
 **Workflow Run**: {WORKFLOW_BASE_URL}
 
 **Error Logs**:
+```plaintext
 {new_logs}
-"""
+```"""
     
     updated_body = f"{current_body}\n\n{update_section}"
     updated_body = re.sub(r"Failure Count: \d+", f"Failure Count: {failure_count}", updated_body)
@@ -205,3 +262,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+#%%
