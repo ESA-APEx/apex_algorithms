@@ -51,6 +51,6 @@ The algoritm was validated up to an area equal to 20x20km. For larger spatial an
 
 # Known artifacts
 
-A dilatation and errosion mask is aplied to remove small patches in the classified output, which are unlikely PV solar farms. For computation efficiency the kernel size was kept to 3, thereby limiting its effectiveness.  As a result, small misclassified areas might still appear as seen in: 
+A dilatation and erosion mask is applied to remove small patches in the classified output, which are unlikely PV solar farms. For computation efficiency the kernel size was kept to 3, thereby limiting its effectiveness.  As a result, small misclassified areas might still appear as seen in: 
 
 ![pv_ml_output](pv_ml_output.png)
