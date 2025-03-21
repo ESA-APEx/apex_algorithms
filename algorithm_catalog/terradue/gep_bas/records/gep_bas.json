@@ -2,13 +2,14 @@
   "id": "gep_bas",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-12-18T00:00:00Z",
     "updated": "2024-12-18T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "Burned Area Severity (BAS) analysis",
     "description": "The Burned Area Severity (BAS) service takes as input a pair of optical datasets in their native format, and estimates the severity of burnt areas by using swir22 and nir radiation. The burn severity describes how the fire intensity affects the functioning of the ecosystem in the area that has been burnt. The observed effects often vary within the area and between different ecosystems (Keeley, 2009). The burn severity can also be described as the degree to which an area has been altered or disrupted by the fire.",
     "cost_estimate": 1.5,

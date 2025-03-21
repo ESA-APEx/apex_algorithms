@@ -2,13 +2,14 @@
   "id": "sar_coin",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-10-09T00:00:00Z",
     "updated": "2024-10-09T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "SAR-COIN - Coherence and Intensity Composite",
     "description": "The SAR-COIN service computes the coherence and backscatter from a pair of Sentinel-1 SLC datasets. It produces geocoded composites and red-cyan visual products to highlight changes in coherence and backscatter.",
     "cost_estimate": 2.5,

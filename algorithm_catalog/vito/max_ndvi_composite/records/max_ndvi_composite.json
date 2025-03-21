@@ -2,13 +2,14 @@
   "id": "max_ndvi_composite",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
     "created": "2024-09-06T00:00:00Z",
     "updated": "2024-09-06T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "Max NDVI Composite based on Sentinel-2 data",
     "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their maximum NDVI. The cost depends on both the area and number of input observations.",
     "cost_estimate": 0.1,

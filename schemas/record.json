@@ -19,7 +19,28 @@
       "description": "The extensions/conformance classes used in this record.",
       "items": {
         "type": "string"
-      }
+      },
+      "minItems": 2,
+      "uniqueItems": true,
+      "anyOf": [
+        {
+          "contains": {
+            "const": "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+          }
+        }
+      ],
+      "oneOf": [
+        {
+          "contains": {
+            "const": "https://apex.esa.int/core/openeo-udp"
+          }
+        },
+        {
+          "contains": {
+            "const": "https://apex.esa.int/core/ogc-api-processes"
+          }
+        }
+      ]
     },
     "geometry": {
       "type": "null"
@@ -51,7 +72,7 @@
           "type": "string",
           "description": "Type of the OGC API Record",
           "enum": [
-            "apex_algorithm"
+            "service"
           ]
         },
         "title": {
@@ -403,7 +424,8 @@
               "license",
               "about",
               "webapp",
-              "code"
+              "code",
+              "thumbnail"
             ]
           },
           "type": {
@@ -433,7 +455,9 @@
           "contains": {
             "type": "object",
             "properties": {
-              "rel": { "const": "service" }
+              "rel": {
+                "const": "service"
+              }
             }
           }
         },
@@ -441,7 +465,9 @@
           "contains": {
             "type": "object",
             "properties": {
-              "rel": { "const": "application" }
+              "rel": {
+                "const": "application"
+              }
             }
           }
         }
