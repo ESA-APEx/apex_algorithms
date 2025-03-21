@@ -15,7 +15,7 @@
           },
           "year": 2024
         },
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/dhi_wt/algorithm_catalog/dhi/wind_turbine/openeo_udp/wind_turbine.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/wind_turbine/openeo_udp/wind_turbine.json",
         "process_id": "wind_turbine_detection"
       },
       "save1": {
