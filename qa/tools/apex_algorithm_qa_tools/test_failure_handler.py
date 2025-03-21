@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 GITHUB_REPO = "ESA-APEx/apex_algorithms"
-GITHUB_TOKEN = os.getenv("APEX_ISSUE_TOKEN")
+GITHUB_TOKEN  = os.getenv("GITHUB_TOKEN")
 ISSUE_LABEL = "benchmark-failure"
 SCENARIO_BASE_PATH = "qa/benchmarks/scenarios/"
 WORKFLOW_BASE_URL = f"https://github.com/{os.getenv('GITHUB_REPOSITORY')}/actions/runs/{os.getenv('GITHUB_RUN_ID')}"
@@ -174,9 +174,33 @@ def build_issue_body(scenario, logs, failure_count):
 ```
 """
 
-def get_scenario_link(scenario_id):
-    """Generate link to scenario source code"""
-    return f"https://github.com/{GITHUB_REPO}/tree/main/{SCENARIO_BASE_PATH}{scenario_id}.py"
+def get_scenario_link(scenario_id: str) -> str:
+    """Generate link to process graph file at specific commit"""
+    # Get the current commit SHA from GitHub environment
+    commit_sha = os.getenv("GITHUB_SHA", "main")  # Fallback to 'main' if not in CI
+    
+    # Base repository URL
+    base_url = f"https://github.com/{GITHUB_REPO}/blob/{commit_sha}"
+    
+    # Search path pattern based on your repository structure
+    search_root = Path("algorithm_catalog")
+    
+    # Look for matching scenario in provider directories
+    for provider_dir in search_root.iterdir():
+        if not provider_dir.is_dir():
+            continue
+            
+        # Check for <provider>/<scenario_id>/openeo_udp/<scenario_id>.json
+        scenario_path = (
+            provider_dir / 
+            scenario_id / 
+            "benchmark_scenarios" / 
+            f"{scenario_id}.json"
+        )
+        
+        if scenario_path.exists():
+            return f"{base_url}/{"algorithm_catalog"}/{scenario_path.as_posix()}"
+    
 
 def create_new_issue(scenario, logs):
     """Create a new GitHub issue"""
