@@ -70,6 +70,8 @@ def test_run_benchmark(
     reference_dir = download_reference_data(
         scenario=scenario, reference_dir=tmp_path / "reference"
     )
+    assert 1 == 2
+
     assert_job_results_allclose(
         actual=actual_dir,
         expected=reference_dir,
