@@ -10,10 +10,6 @@ from typing import Dict, List, Optional, Any
 import requests
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
 
-# -----------------------------------------------------------------------------
-# Configuration
-# -----------------------------------------------------------------------------
-
 GITHUB_REPO = "ESA-APEx/apex_algorithms"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
@@ -25,16 +21,8 @@ GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID", "0")
 WORKFLOW_BASE_URL = f"https://github.com/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
 GITHUB_SHA = os.getenv("GITHUB_SHA", "main")
 
-# -----------------------------------------------------------------------------
-# Logging Configuration
-# -----------------------------------------------------------------------------
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
-# -----------------------------------------------------------------------------
-# GitHub Issue Manager Class
-# -----------------------------------------------------------------------------
 
 class GitHubIssueManager:
     """
@@ -138,10 +126,6 @@ class GitHubIssueManager:
         except requests.RequestException as e:
             logger.error("Failed to create issue for scenario '%s': %s", scenario['id'], e)
 
-# -----------------------------------------------------------------------------
-# Scenario Processor Class
-# -----------------------------------------------------------------------------
-
 class ScenarioProcessor:
     """
     Processes scenario details, including retrieving scenario data,
@@ -243,9 +227,6 @@ class ScenarioProcessor:
             logger.error("Error parsing log file: %s", e)
             return []
 
-# -----------------------------------------------------------------------------
-# Main Processing Flow
-# -----------------------------------------------------------------------------
 
 def main() -> None:
     """
