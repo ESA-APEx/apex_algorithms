@@ -38,6 +38,7 @@ def get_scenario_details(scenario_id):
     """Retrieve details for a given scenario ID"""
     try:
         for scenario in get_benchmark_scenarios():
+            print(scenario)
             if scenario.id == scenario_id:
                 return {
                     "id": scenario.id,
@@ -82,6 +83,35 @@ def get_scenario_contacts(scenario_id: str) -> list:
     logger.warning(f"No contacts found for scenario {scenario_id}")
     return []
 
+def get_scenario_link(scenario_id: str) -> str:
+    """Generate link to process graph file at specific commit"""
+    # Get the current commit SHA from GitHub environment
+    commit_sha = os.getenv("GITHUB_SHA", "main")  # Fallback to 'main' if not in CI
+    
+    # Base repository URL
+    base_url = f"https://github.com/{GITHUB_REPO}/blob/{commit_sha}"
+
+    algorithm_catalog = get_project_root() / "algorithm_catalog"
+    
+    # Search through all provider directories
+    for provider_dir in algorithm_catalog.iterdir():
+        if not provider_dir.is_dir():
+            continue
+            
+        # Check for matching algorithm directory
+        algorithm_dir = provider_dir / scenario_id
+        if not algorithm_dir.exists():
+            continue
+            
+        # Look for records file
+        scenario_path = algorithm_dir / "benchmark_scenarios" / f"{scenario_id}.json"
+        
+        if scenario_path.exists():
+            return f"{base_url}/{"algorithm_catalog"}/{scenario_path.as_posix()}"
+    
+    logger.warning(f"No benchmark found for scenario {scenario_id} on commit {base_url}") 
+    return []
+
     
 def parse_failed_tests():
     """Parse pytest output to find failed scenarios and their logs"""
@@ -117,6 +147,7 @@ def parse_failed_tests():
     except Exception as e:
         logger.error(f"Error parsing log file: {str(e)}")
         return []
+
 
 def build_issue_body(scenario, logs, failure_count):
     """Construct the issue body with technical details"""
@@ -175,34 +206,7 @@ def build_issue_body(scenario, logs, failure_count):
 ```
 """
 
-def get_scenario_link(scenario_id: str) -> str:
-    """Generate link to process graph file at specific commit"""
-    # Get the current commit SHA from GitHub environment
-    commit_sha = os.getenv("GITHUB_SHA", "main")  # Fallback to 'main' if not in CI
-    
-    # Base repository URL
-    base_url = f"https://github.com/{GITHUB_REPO}/blob/{commit_sha}"
-    
-    # Search path pattern based on your repository structure
-    search_root = Path("algorithm_catalog")
-    
-    # Look for matching scenario in provider directories
-    for provider_dir in search_root.iterdir():
-        if not provider_dir.is_dir():
-            continue
-            
-        # Check for <provider>/<scenario_id>/openeo_udp/<scenario_id>.json
-        scenario_path = (
-            provider_dir / 
-            scenario_id / 
-            "benchmark_scenarios" / 
-            f"{scenario_id}.json"
-        )
-        
-        if scenario_path.exists():
-            return f"{base_url}/{"algorithm_catalog"}/{scenario_path.as_posix()}"
-        
-    return ""
+
     
 
 def create_new_issue(scenario, logs):
