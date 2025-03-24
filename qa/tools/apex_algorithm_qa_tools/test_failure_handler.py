@@ -85,32 +85,24 @@ def get_scenario_contacts(scenario_id: str) -> list:
 
 def get_scenario_link(scenario_id: str) -> str:
     """Generate link to process graph file at specific commit"""
-    # Get the current commit SHA from GitHub environment
     commit_sha = os.getenv("GITHUB_SHA", "main")  # Fallback to 'main' if not in CI
-    
-    # Base repository URL
     base_url = f"https://github.com/{GITHUB_REPO}/blob/{commit_sha}"
-
     algorithm_catalog = get_project_root() / "algorithm_catalog"
     
-    # Search through all provider directories
     for provider_dir in algorithm_catalog.iterdir():
         if not provider_dir.is_dir():
             continue
-            
-        # Check for matching algorithm directory
         algorithm_dir = provider_dir / scenario_id
         if not algorithm_dir.exists():
             continue
-            
-        # Look for records file
         scenario_path = algorithm_dir / "benchmark_scenarios" / f"{scenario_id}.json"
-        
         if scenario_path.exists():
-            return f"{base_url}/{"algorithm_catalog"}/{scenario_path.as_posix()}"
+            # Calculate the relative path from the project root.
+            relative_path = scenario_path.relative_to(get_project_root())
+            return f"{base_url}/{relative_path.as_posix()}"
     
     logger.warning(f"No benchmark found for scenario {scenario_id} on commit {base_url}") 
-    return []
+    return ""
 
     
 def parse_failed_tests():
