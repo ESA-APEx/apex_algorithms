@@ -38,7 +38,6 @@ def get_scenario_details(scenario_id):
     """Retrieve details for a given scenario ID"""
     try:
         for scenario in get_benchmark_scenarios():
-            print(scenario)
             if scenario.id == scenario_id:
                 return {
                     "id": scenario.id,
