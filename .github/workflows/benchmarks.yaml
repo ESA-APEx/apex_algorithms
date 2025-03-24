@@ -8,6 +8,9 @@ on:
 jobs:
   benchmarks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -19,6 +22,7 @@ jobs:
           python -m pip install qa/tools
           python -m pip install -r qa/benchmarks/requirements.txt
       - name: Run benchmark pytest suite
+        continue-on-error: true
         run: |
           cd qa/benchmarks
           mkdir report
@@ -33,7 +37,7 @@ jobs:
             --track-metrics-parquet-s3-key="metrics/v1/metrics.parquet" \
             --track-metrics-parquet-partitioning="YYYYMM" \
             --basetemp=tmp_path_root \
-            --upload-assets-s3-bucket="apex-benchmarks"
+            --upload-assets-s3-bucket="apex-benchmarks" | tee pytest_output.txt
         env:
           OPENEO_AUTH_METHOD: client_credentials
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
@@ -41,6 +45,17 @@ jobs:
           APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}
           APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
+
+      - name: Issue Generation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        run: |
+          if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
+            python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
+          else
+            echo "No test failures detected"
+          fi
+
       - name: List local reports
         if: always()
         run: ls -alR qa/benchmarks/report
