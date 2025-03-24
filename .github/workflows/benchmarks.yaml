@@ -48,7 +48,7 @@ jobs:
 
       - name: Issue Generation
         env:
-          APEX_ISSUE_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
             python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
