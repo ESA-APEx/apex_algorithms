@@ -27,8 +27,8 @@
       }
     },
     "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14073987764!tests_test_benchmarks.py__test_run_benchmark_max_ndvi_composite_!actual/job-results.json",
-      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14073987764!tests_test_benchmarks.py__test_run_benchmark_max_ndvi_composite_!actual/openEO.tif"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14107293755!tests_test_benchmarks.py__test_run_benchmark_max_ndvi_composite_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14107293755!tests_test_benchmarks.py__test_run_benchmark_max_ndvi_composite_!actual/openEO.tif"
     }
   }
 ]
