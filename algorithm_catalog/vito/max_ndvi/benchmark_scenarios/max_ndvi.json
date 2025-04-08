@@ -29,35 +29,6 @@
     }
   },
   {
-    "id": "max_ndvi_fail_intentionally",
-    "type": "openeo",
-    "description": "max_ndvi example, intentionally failing for testing purposes",
-    "backend": "openeofed.dataspace.copernicus.eu",
-    "process_graph": {
-      "maxndvi1": {
-        "process_id": "max_ndvi",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/11c27fb1a90cfc8f2eb285b881d1db8a96c358f4/openeo_udp/examples/max_ndvi/max_ndvi.json",
-        "arguments": {
-          "bbox": {
-            "west": 11.07,
-            "east": 11.09,
-            "south": 51.21,
-            "north": 51.23
-          },
-          "temporal_extent": [
-            "2023-08-01",
-            "2023-09-30"
-          ]
-        },
-        "result": true
-      }
-    },
-    "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/max_ndvi.json:max_ndvi:reference:job-results.json",
-      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/max_ndvi.json:max_ndvi:reference:openEO.tif"
-    }
-  },
-  {
     "id": "max_ndvi_large",
     "type": "openeo",
     "description": "max_ndvi example with larger spatio-temporal extent",
