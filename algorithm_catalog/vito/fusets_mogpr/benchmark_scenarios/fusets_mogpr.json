@@ -56,7 +56,8 @@
             }
           },
         "reference_data": {
-            "timeseries.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/fusets_mogpr.nc"
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14156285361!tests_test_benchmarks.py__test_run_benchmark_fusets_mogpr_!actual/openEO.nc",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14156285361!tests_test_benchmarks.py__test_run_benchmark_fusets_mogpr_!actual/job-results.json"
         }
     }
 ]
