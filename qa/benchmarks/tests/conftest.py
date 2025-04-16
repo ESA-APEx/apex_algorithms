@@ -1,6 +1,8 @@
 import logging
 import os
 import random
+import re
+import urllib.parse
 from typing import Callable
 
 import openeo
@@ -36,6 +38,7 @@ def pytest_addoption(parser):
         type=str,
         help="When provided this url will be used instead of the backend listed in the benchmark json files.",
     )
+
 
 def pytest_ignore_collect(collection_path, config):
     """
@@ -80,13 +83,25 @@ def _get_client_credentials_env_var(url: str) -> str:
     """
     Get client credentials env var name for a given backend URL.
     """
-    # TODO: parse url to more reliably extract hostname
-    if url == "openeofed.dataspace.copernicus.eu":
+    if not re.match(r"https?://", url):
+        url = f"https://{url}"
+    parsed = urllib.parse.urlparse(url)
+    hostname = parsed.hostname
+    if hostname in {
+        "openeo.dataspace.copernicus.eu",
+        "openeofed.dataspace.copernicus.eu",
+    }:
+        # TODO: env var could just be OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE
+        #       (which should work on both classic CDSE and CDSEfed)
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
-    elif "openeo-staging.dataspace.copernicus.eu" in url:
+    elif hostname == "openeo-staging.dataspace.copernicus.eu":
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
+    elif hostname == "openeo.cloud":
+        return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
+    elif hostname in {"openeo.vito.be", "openeo.terrascope.be"}:
+        return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"
     else:
-        raise ValueError(f"Unsupported backend: {url}")
+        raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
 
 
 @pytest.fixture
