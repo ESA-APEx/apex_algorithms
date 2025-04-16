@@ -82,7 +82,7 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
         "openeo.dataspace.copernicus.eu",
         "openeofed.dataspace.copernicus.eu",
         "openeo.cloud",
-        "openeo.terrascope",
+        "openeo.vito.be",
     ]
     # TODO: more advanced process graph validation?
     assert isinstance(scenario.process_graph, dict)
