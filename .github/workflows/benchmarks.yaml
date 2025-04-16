@@ -23,7 +23,9 @@ jobs:
           python -m pip install -r qa/benchmarks/requirements.txt
       - name: Run benchmark pytest suite
         continue-on-error: true
+        shell: bash
         run: |
+          set -o pipefail
           cd qa/benchmarks
           mkdir report
           mkdir tmp_path_root
@@ -48,7 +50,7 @@ jobs:
 
       - name: Issue Generation
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
             python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
