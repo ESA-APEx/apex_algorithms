@@ -3,7 +3,7 @@
     "id": "wind_turbine",
     "type": "openeo",
     "description": "Wind turbine detection",
-    "backend": "openeo.cloud",
+    "backend": "openeo.vito.be",
     "process_graph": {
       "wind_turbine": {
         "arguments": {
