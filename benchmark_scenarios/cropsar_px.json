@@ -1,0 +1,49 @@
+[
+    {
+        "id": "cropsar_px",
+        "type": "openeo",
+        "description": "Calculating FAPAR using Cropsar service available in Copernicus Data Space Ecosystem",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "cropsarpx1": {
+                "arguments": {
+                    "enddate": "2021-01-20",
+                    "output": "NDVI",
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.178303838475193,
+                                    51.252856237848164
+                                ],
+                                [
+                                    5.178003609252369,
+                                    51.25109194151486
+                                ],
+                                [
+                                    5.179280940922463,
+                                    51.25103833409551
+                                ],
+                                [
+                                    5.179565949577788,
+                                    51.25278555186941
+                                ],
+                                [
+                                    5.178303838475193,
+                                    51.252856237848164
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "startdate": "2021-01-01"
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3215de22eded7c87c46122f073d15c7258af26b4/openeo_udp/cropsar_px/cropsar_px.json",
+                "process_id": "cropsar_px"
+            }
+        },
+        "reference_data": {
+            "cropsar_px.nx": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar_px/cropsar_px.nc"
+        }
+    }
+]
