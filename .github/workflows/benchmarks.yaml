@@ -22,7 +22,6 @@ jobs:
           python -m pip install qa/tools
           python -m pip install -r qa/benchmarks/requirements.txt
       - name: Run benchmark pytest suite
-        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
@@ -49,6 +48,7 @@ jobs:
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
 
       - name: Issue Generation
+        if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
