@@ -442,5 +442,13 @@
       ],
       "optional": true
     }
-  ]
+  ],
+  "default_job_options": {
+    "driver-memory": "1g",
+    "executor-memory": "1g",
+    "python-memory": "3g",
+    "udf-dependency-archives": [
+      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
+    ]
+  }
 }

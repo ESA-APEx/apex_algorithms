@@ -23,11 +23,6 @@
         "result": true
       }
     },
-    "job_options": {
-      "driver-memory": "1g",
-      "executor-memory": "1g",
-      "python-memory": "3g"}
-    ,
     "reference_data": {
     },
     "reference_options": {

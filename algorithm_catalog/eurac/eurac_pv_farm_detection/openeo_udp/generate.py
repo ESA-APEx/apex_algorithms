@@ -77,6 +77,15 @@ def generate() -> dict:
         }
     }
 
+    default_options = {
+        "driver-memory": "1g",
+        "executor-memory": "1g",
+        "python-memory": "3g",
+        "udf-dependency-archives": [
+            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
+        ]
+    }
+
     return build_process_dict(
         process_graph=dilated_cube,
         process_id="eurac_pv_farm_detection",
@@ -84,7 +93,8 @@ def generate() -> dict:
         description=(Path(__file__).parent / "eurac_pv_farm_detection_description.md").read_text(),
         parameters=[spatial_extent, temporal_extent],
         returns=returns,
-        categories=["sentinel-2", "energy"]
+        categories=["sentinel-2", "energy"],
+        default_job_options=default_options
     )
 
 
