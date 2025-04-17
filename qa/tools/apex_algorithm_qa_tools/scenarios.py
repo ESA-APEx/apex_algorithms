@@ -4,6 +4,7 @@ import dataclasses
 import json
 import logging
 import re
+import glob
 from pathlib import Path
 from typing import List
 
@@ -59,7 +60,8 @@ def get_benchmark_scenarios() -> List[BenchmarkScenario]:
     # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
     # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
     scenarios = []
-    for path in (get_project_root() / "algorithm_catalog").glob("**/benchmark_scenarios/*.json"):
+    # old style glob is used to support symlinks
+    for path in glob.glob(str(get_project_root() / "algorithm_catalog") + "/**/*benchmark_scenarios*/*.json", recursive=True):
         with open(path) as f:
             data = json.load(f)
         # TODO: support single scenario files in addition to listings?
