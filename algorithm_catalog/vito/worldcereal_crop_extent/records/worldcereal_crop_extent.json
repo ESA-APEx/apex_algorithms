@@ -119,6 +119,12 @@
       "type": "text/html",
       "title": "Scientific publication",
       "href": "https://doi.org/10.1038/s43016-023-00841-7"
-    }
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "WorldCereal Processing hub",
+      "href": "https://hub.esa-worldcereal.org/generate-custom-products"
+    }    
   ]
 }
