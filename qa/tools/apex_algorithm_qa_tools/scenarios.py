@@ -56,12 +56,12 @@ class BenchmarkScenario:
         )
 
 
-def get_benchmark_scenarios() -> List[BenchmarkScenario]:
+def get_benchmark_scenarios(root = None) -> List[BenchmarkScenario]:
     # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
     # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
     scenarios = []
     # old style glob is used to support symlinks
-    for path in glob.glob(str(get_project_root() / "algorithm_catalog") + "/**/*benchmark_scenarios*/*.json", recursive=True):
+    for path in glob.glob(str( (root or get_project_root()) / "algorithm_catalog") + "/**/*benchmark_scenarios*/*.json", recursive=True):
         with open(path) as f:
             data = json.load(f)
         # TODO: support single scenario files in addition to listings?
