@@ -1,0 +1,201 @@
+{
+  "process_graph": {
+    "load4": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "MAP"
+        ],
+        "id": "ESA_WORLDCOVER_10M_2021_V2"
+      }
+    },
+    "apply6": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "load4"
+        },
+        "dimension": "bands",
+        "process": {
+          "process_graph": {
+            "1": {
+              "arguments": {
+                "data": [
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 10
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 20
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 30
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 40
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 50
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 80
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 90
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  }
+                ]
+              },
+              "process_id": "array_create",
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "rename7": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "apply6"
+        },
+        "dimension": "bands",
+        "target": [
+          "treecover",
+          "shrubland",
+          "grassland",
+          "cropland",
+          "builtup",
+          "water",
+          "herbaceous wetland"
+        ]
+      }
+    },
+    "aggregate5": {
+      "process_id": "aggregate_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "rename7"
+        },
+        "geometries": {
+                  "from_parameter": "geometries"
+                },
+        "reducer": {
+          "process_graph": {
+            "count1": {
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "process_id": "sum",
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "save3": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "aggregate5"
+        },
+        "format": "CSV"
+      },
+      "result": true
+    }
+  },
+  "parameters": [
+          {
+      "name": "geometries",
+      "description": "Geometries for which the statistics will be computed. Feature properties are preserved for vector data cubes and all GeoJSON Features.\n\nOne value will be computed per label in the dimension of type `geometries`, GeoJSON `Feature` or `Geometry`. For a `FeatureCollection` multiple values will be computed, one value per contained `Feature`. No values will be computed for empty geometries. For example, a single value will be computed for a `MultiPolygon`, but two values will be computed for a `FeatureCollection` containing two polygons.\n\n- For **polygons**, the process considers all pixels for which the point at the pixel center intersects with the corresponding polygon (as defined in the Simple Features standard by the OGC).\n- For **points**, the process considers the closest pixel center.\n- For **lines** (line strings), the process considers all the pixels whose centers are closest to at least one point on the line.\n\nThus, pixels may be part of multiple geometries and be part of multiple aggregations. No operation is applied to geometries that are outside of the bounds of the data.",
+      "schema": 
+        {
+          "title": "Vector Data Cube",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        }
+    }
+  ]
+}
