@@ -6,8 +6,8 @@
     "load4": {
       "process_id": "load_collection",
       "arguments": {
-        "spatial-extent": null,
-        "temporal-extent": null,
+        "spatial_extent": null,
+        "temporal_extent": null,
         "bands": [
           "MAP"
         ],
