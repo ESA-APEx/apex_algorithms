@@ -1,4 +1,7 @@
 {
+  "id": "worldcover_statistics",
+  "summary": "Land cover statistics for one or more areas based on ESA WorldCover, provided by Terrascope.",
+  "description": "Land cover statistics",
   "process_graph": {
     "load4": {
       "process_id": "load_collection",
