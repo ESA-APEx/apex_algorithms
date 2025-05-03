@@ -71,7 +71,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/dhi/wind_turbine/openeo_udp/wind_turbine.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldcover_stats/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
     },
     {
       "rel": "service",
@@ -83,7 +83,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wind_turbine_detection&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Fmain%2Falgorithm_catalog%2Fdhi%2Fwind_turbine%2Fopeneo_udp%2Fwind_turbine.json&server=https://openeo.cloud"
+      "href": "https://openeofed.dataspace.copernicus.eu/?wizard=UDP&wizard~process=worldcover-statistics&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldcover_stats/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
     }
   ]
 }

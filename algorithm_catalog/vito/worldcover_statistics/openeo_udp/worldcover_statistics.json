@@ -6,6 +6,8 @@
     "load4": {
       "process_id": "load_collection",
       "arguments": {
+        "spatial-extent": null,
+        "temporal-extent": null,
         "bands": [
           "MAP"
         ],
@@ -94,6 +96,34 @@
                       }
                     }
                   },
+                   {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 60
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                   {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 70
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
                   {
                     "process_graph": {
                       "eq1": {
@@ -116,6 +146,34 @@
                             "from_parameter": "data"
                           },
                           "y": 90
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 95
+                        },
+                        "process_id": "eq",
+                        "result": true
+                      }
+                    }
+                  },
+                  {
+                    "process_graph": {
+                      "eq1": {
+                        "arguments": {
+                          "x": {
+                            "from_parameter": "data"
+                          },
+                          "y": 100
                         },
                         "process_id": "eq",
                         "result": true
@@ -144,8 +202,12 @@
           "grassland",
           "cropland",
           "builtup",
+          "bare/sparse vegetation",
+          "snow and ice",
           "water",
-          "herbaceous wetland"
+          "herbaceous wetland",
+          "mangroves",
+          "moss and lichen"
         ]
       }
     },
