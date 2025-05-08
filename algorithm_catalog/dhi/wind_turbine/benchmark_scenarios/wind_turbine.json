@@ -30,7 +30,8 @@
       }
     },
     "reference_data": {
-      "turbines.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/fusets_mogpr.nc"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14897213753!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/job-results.json",
+      "vectorcube.geojson": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14897213753!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/vectorcube.geojson"
     }
   },
   {
@@ -63,8 +64,6 @@
         "result": true
       }
     },
-    "reference_data": {
-      "turbines.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/fusets_mogpr.nc"
-    }
+    "reference_data": {}
   }
 ]
