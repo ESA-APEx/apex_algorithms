@@ -7,6 +7,7 @@ import xarray as xr
 from openeo.udf import inspect
 
 sys.path.append("onnx_deps") 
+sys.path.append("onnx_models") 
 import onnxruntime as ort
 
 
