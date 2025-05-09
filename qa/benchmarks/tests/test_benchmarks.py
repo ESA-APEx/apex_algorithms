@@ -1,4 +1,5 @@
 import logging
+import re
 from pathlib import Path
 
 import openeo
@@ -36,6 +37,10 @@ def test_run_benchmark(
     track_metric("scenario_id", scenario.id)
     # Check if a backend override has been provided via cli options.
     override_backend = request.config.getoption("--override-backend")
+    backend_filter = request.config.getoption("--backend_filter")
+    if backend_filter and not re.match(backend_filter, scenario.backend):
+        #TODO apply filter during scenario retrieval, but seems to be hard to retrieve cli param
+        pytest.skip(f"skipping scenario {scenario.id} because backend {scenario.backend} does not match filter {backend_filter!r}")
     backend = scenario.backend
     if override_backend:
         _log.info(f"Overriding backend URL with {override_backend!r}")
