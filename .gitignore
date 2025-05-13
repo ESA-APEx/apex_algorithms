@@ -171,3 +171,9 @@ pyrightconfig.json
 tmp*
 temp*
 .envrc
+
+
+# Quarto
+docs/*.html
+docs/.quarto
+docs/_site
