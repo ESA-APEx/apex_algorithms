@@ -3,7 +3,6 @@ project:
   preview:
     port: 4200
 
-
 website:
   repo-url: "https://github.com/ESA-APEx/apex_algorithms"
   repo-branch: "main"
@@ -26,6 +25,7 @@ website:
       - href: index.md
         text: Welcome
       - href: benchmarking.md
+      - href: catalogue.md
 
 format:
   html:
