@@ -21,8 +21,6 @@ jobs:
         run: |
           python -m pip install qa/tools
           python -m pip install -r qa/benchmarks/requirements.txt
-          # TODO: temporary trick to run benchmarks with experimental version of openeo-python-client for more advanced diff reporting
-          python -m pip install git+https://github.com/Open-EO/openeo-python-client@761-apex-reference-check-needs-better-representation-ascii-art-diff-diff-image-statistics
       - name: Run benchmark pytest suite
         shell: bash
         run: |
