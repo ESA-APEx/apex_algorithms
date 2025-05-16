@@ -32,6 +32,7 @@ jobs:
             -vv \
             --log-cli-level=INFO \
             --random-subset=1 \
+            --override-backend openeo.dataspace.copernicus.eu \
             --html report/report.html --self-contained-html \
             --track-metrics-json=report/metrics.json \
             --track-metrics-parquet-s3-bucket="apex-benchmarks" \
