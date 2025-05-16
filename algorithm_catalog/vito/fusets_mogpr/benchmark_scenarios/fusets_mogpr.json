@@ -3,7 +3,7 @@
     "id": "fusets_mogpr",
     "type": "openeo",
     "description": "Multi output gaussian process regression example on NDVI timeseries",
-    "backend": "openeofed.dataspace.copernicus.eu",
+    "backend": "openeo.dataspace.copernicus.eu",
     "process_graph": {
       "fusetsmogpr": {
         "process_id": "fusets_mogpr",
