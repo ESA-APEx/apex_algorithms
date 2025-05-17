@@ -3,7 +3,7 @@
     "id": "max_ndvi_composite",
     "type": "openeo",
     "description": "max_ndvi example",
-    "backend": "openeo.dataspace.copernicus.eu",
+    "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "maxndvi1": {
         "process_id": "max_ndvi_composite",

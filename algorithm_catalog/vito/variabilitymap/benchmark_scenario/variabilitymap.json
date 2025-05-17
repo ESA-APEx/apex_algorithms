@@ -3,7 +3,7 @@
         "id": "variabilitymap",
         "type": "openeo",
         "description": "Daily crop performance calculation",
-        "backend": "openeo.dataspace.copernicus.eu",
+        "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "variabilitymap1": {
                 "process_id": "variabilitymap",

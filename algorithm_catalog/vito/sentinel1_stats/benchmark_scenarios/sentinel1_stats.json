@@ -3,7 +3,7 @@
     "id": "sentinel1_stats",
     "type": "openeo",
     "description": "Sentinel 1 statistics example",
-    "backend": "openeo.dataspace.copernicus.eu",
+    "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "s1stats1": {
         "process_id": "sentinel1_stats",

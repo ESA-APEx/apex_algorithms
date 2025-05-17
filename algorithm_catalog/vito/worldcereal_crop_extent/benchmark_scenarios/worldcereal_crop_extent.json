@@ -3,7 +3,7 @@
     "id": "worldcereal_crop_extent",
     "type": "openeo",
     "description": "WorldCereal crop extent benchmark",
-    "backend": "openeo.dataspace.copernicus.eu",
+    "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "worldcerealcropextent1": {
         "process_id": "worldcereal_crop_extent",

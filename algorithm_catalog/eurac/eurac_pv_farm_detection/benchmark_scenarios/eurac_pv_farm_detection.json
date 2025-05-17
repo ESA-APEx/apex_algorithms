@@ -3,7 +3,7 @@
     "id": "eurac_pv_farm_detection",
     "type": "openeo",
     "description": "ML photovoltaic farm detection, developed by EURAC",
-    "backend": "openeo.dataspace.copernicus.eu",
+    "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "pvfarm": {
         "process_id": "eurac_pv_farm_detection",

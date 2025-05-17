@@ -3,7 +3,7 @@
     "id": "bap_composite",
     "type": "openeo",
     "description": "bap composite example",
-    "backend": "openeo.dataspace.copernicus.eu",
+    "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "bapcomposite1": {
         "process_id": "bap_composite",

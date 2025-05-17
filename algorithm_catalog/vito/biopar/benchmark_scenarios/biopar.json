@@ -3,7 +3,7 @@
         "id": "biopar",
         "type": "openeo",
         "description": "Calculating LAI using Biopar service available in Copernicus Data Space Ecosystem",
-        "backend": "openeo.dataspace.copernicus.eu",
+        "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "biopar1": {
                 "process_id": "biopar",
