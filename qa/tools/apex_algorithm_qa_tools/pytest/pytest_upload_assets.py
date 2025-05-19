@@ -147,7 +147,7 @@ class S3UploadPlugin:
         )
         for nodeid, upload_report in self.upload_reports.items():
             terminalreporter.write_line(f"- {nodeid}:")
-            for name, report in upload_report.items():
+            for name, report in sorted(upload_report.items()):
                 if "url" in report:
                     terminalreporter.write_line(
                         f"  - {name!r} uploaded to {report['url']!r}"
