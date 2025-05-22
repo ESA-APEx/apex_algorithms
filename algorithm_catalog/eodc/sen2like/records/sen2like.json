@@ -81,7 +81,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/.../eodc/sen2like/openeo_udp/sen2like.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/sen2like/algorithm_catalog/eodc/sen2like/openeo_udp/sen2like.json"
     },
     {
       "rel": "code",

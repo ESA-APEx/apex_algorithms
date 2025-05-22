@@ -7,7 +7,7 @@
     "process_graph": {
       "pvfarm": {
         "process_id": "sen2like",
-        "namespace": "...",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/sen2like/algorithm_catalog/eodc/sen2like/openeo_udp/sen2like.json",
         "arguments": {
           "bbox": {
               "east": 16.414,
