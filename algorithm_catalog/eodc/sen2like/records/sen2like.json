@@ -1,0 +1,105 @@
+{
+  "id": "sen2like",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-05-22T00:00:00Z",
+    "updated": "2025-05-22T00:00:00Z",
+    "type": "service",
+    "title": "Harmonized Landsat/Sentinel-2 ARD",
+    "description": "# Sen2like\n\nThe Sen2Like processor was developed by ESA as part of the EU Copernicus program. It creates Sentinel-2 like harmonized (Level-2H) or fused (Level-2F) surface reflectances by harmonizing Sentinel-2 and Landsat 8/Landsat 9 to increase the temporal revisits. Based on the resulting L2F product, multiple indices can be computed, such as the NDVI and LAI. The fusion also involves the upscaling of Landsat 8/Landsat 9 data to Sentinel-2 resolution. With the new L2F data higher time-series resolution vegetation indices (such as NDVI, LAI, FAPAR, FCOVER) can be calculated.\n\n### Methodology\n\n\n\n### Quality\n\n\n\n### Links\n\n- [RD1] openEO platform Sen2like documentation https://docs.openeo.cloud/usecases/ard/sen2like",
+    "cost_estimate": 0.01,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "sentinel-2",
+      "landsat-8",
+      "ard"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "...",
+        "position": "Researcher",
+        "organization": "EODC",
+        "links": [
+          {
+            "href": "https://www.eodc.eu/",
+            "title": "EODC Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/...",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via EODC",
+        "roles": [
+          "principal investigator",
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/.../eodc/sen2like/openeo_udp/sen2like.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Sen2like git source repository",
+      "href": "https://github.com/senbox-org/sen2like"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.cloud"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "S. Saunier, J. Louis, V. Debaecker et al., \"Sen2like, A Tool To Generate Sentinel-2 Harmonised Surface Reflectance Products - First Results with Landsat-8,\" IGARSS 2019 - 2019 IEEE International Geoscience and Remote Sensing Symposium, Yokohama, Japan, 2019, pp. 5650-5653",
+      "href": "https://doi.org/10.1109/IGARSS.2019.8899213"
+    }
+  ]
+}
