@@ -86,7 +86,7 @@
         "cost_estimate": {
           "type": "number",
           "description": "Estimate of the cost for executing the service"
-        },
+        },https://github.com/ESA-APEx/apex_algorithms/issues/128
         "cost_unit": {
           "type": "string",
           "description": "Unit for expressing the execution cost of the service"
@@ -425,7 +425,8 @@
               "about",
               "webapp",
               "code",
-              "thumbnail"
+              "thumbnail",
+              "cite-as"
             ]
           },
           "type": {
