@@ -1,7 +1,7 @@
 {
   "id": "worldcover_statistics",
   "summary": "Land cover statistics for one or more areas based on ESA WorldCover 2021, provided by Terrascope.",
-  "description": "# 2021 landcover statistics\n\nComputes landcover statistics over multiple areas, based on the ESA WorldCover product.\nThis service is maintained and provided by Terrascope.\n\n![statistics](statistics.png)\n\n## Methodology\n\nThe European Space Agency (ESA) WorldCover 10 m 2021 product provides a global land cover map for 2021 at 10 m resolution based on Sentinel-1 and Sentinel-2 data. The WorldCover product comes with 11 land cover classes, aligned with UN-FAO's Land Cover Classification System, and has been generated in the framework of the ESA WorldCover project.\n\n",
+  "description": "# 2021 landcover statistics\n\nComputes landcover statistics over multiple areas, based on the ESA WorldCover product.\n\nAs input, the service takes GeoJSON, which can also be a FeatureCollection defining multiple feature.\n\nThe output is a csv file containing the fraction of a specific landcover present in each area.\n\nThis service is maintained and provided by Terrascope.\n\n![statistics](statistics.png)\n\n## Methodology\n\nThe European Space Agency (ESA) WorldCover 10 m 2021 product provides a global land cover map for 2021 at 10 m resolution based on Sentinel-1 and Sentinel-2 data. The WorldCover product comes with 11 land cover classes, aligned with UN-FAO's Land Cover Classification System, and has been generated in the framework of the ESA WorldCover project.\n\n",
   "process_graph": {
     "load4": {
       "process_id": "load_collection",

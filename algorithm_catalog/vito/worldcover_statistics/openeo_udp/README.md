@@ -1,6 +1,11 @@
 # 2021 landcover statistics
 
-Computes landcover statistics over multiple areas, based on the ESA WorldCover product.
+Computes landcover statistics over multiple user provided areas, based on the ESA WorldCover product.
+
+As input, the service takes GeoJSON, which can also be a FeatureCollection defining multiple feature.
+
+The output is a csv file containing the fraction of a specific landcover present in each area.
+
 This service is maintained and provided by Terrascope.
 
 ![statistics](statistics.png)
