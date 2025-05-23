@@ -92,19 +92,19 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/vito/world_water_toolbox/single_month_extent_udp.json"
+      "href": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/0c6db89ab204bdf7b8bb041fc749a618c894629c/world_water_toolbox/single_month_extent_udp.json"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "openEO platform",
-      "href": "https://openeo.cloud"
+      "title": "Terrascope openEO",
+      "href": "https://openeo.vito.be"
     },
     {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=worldwater_water_extent&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FDHI-GRAS%2Fworldwater-toolbox%2Frefs%2Fheads%2Fvito%2Fworld_water_toolbox%2Fsingle_month_extent_udp.json&server=https%3A%2F%2Fopeneo.vito.be"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=worldwater_water_extent&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FDHI-GRAS%2Fworldwater-toolbox%2F0c6db89ab204bdf7b8bb041fc749a618c894629c%2Fworld_water_toolbox%2Fsingle_month_extent_udp.json&server=openeo.vito.be"
     },
     {
       "rel": "about",
