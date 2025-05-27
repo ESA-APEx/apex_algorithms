@@ -1,5 +1,6 @@
 import json
 import re
+import textwrap
 import time
 from pathlib import Path
 from typing import Callable, List
@@ -64,7 +65,7 @@ def this_month() -> str:
     return time.strftime("%Y-%m")
 
 
-def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
+def test_track_metric_basic_json(pytester: pytest.Pytester, tmp_path):
     pytester.makeconftest(CONTENT_CONFTEST)
     pytester.makepyfile(test_addition=CONTENT_TEST_ADDITION_PY)
 
@@ -110,6 +111,90 @@ def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
             ],
         },
     ]
+
+
+@pytest.mark.parametrize(
+    ["src", "expected", "expected_warnings"],
+    [
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 123, update=True)
+            """,
+            [["foo", 123]],
+            None,
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1)
+                track_metric("foo", 22)
+            """,
+            [["foo", 1], ["foo", 22]],
+            ["append with existing entries"],
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1, update=True)
+                track_metric("foo", 22, update=True)
+                track_metric("foo", 333, update=True)
+            """,
+            [["foo", 333]],
+            None,
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1, update=True)
+                track_metric("bar", 22, update=True)
+                track_metric("foo", 333, update=True)
+            """,
+            [["foo", 333], ["bar", 22]],
+            None,
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1)
+                track_metric("foo", 22)
+                track_metric("foo", 333, update=True)
+            """,
+            [["foo", 333], ["foo", 333]],
+            ["append with existing entries", "update with multiple entries"],
+        ),
+    ],
+)
+def test_track_metric_update_mode_json(
+    pytester: pytest.Pytester, tmp_path, src, expected, expected_warnings
+):
+    pytester.makeconftest(CONTENT_CONFTEST)
+    pytester.makepyfile(test_this=textwrap.dedent(src))
+
+    metrics_path = tmp_path / "metrics.json"
+    run_result = pytester.runpytest_subprocess(f"--track-metrics-json={metrics_path}")
+
+    with metrics_path.open("r", encoding="utf8") as f:
+        metrics = json.load(f)
+    assert metrics == [
+        {
+            "nodeid": "test_this.py::test_this",
+            "report": {
+                "outcome": "passed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": expected,
+        },
+    ]
+
+    if expected_warnings:
+        run_result.stdout.re_match_lines(
+            [f".*UserWarning:.*{re.escape(w)}.*" for w in expected_warnings],
+        )
+    else:
+        assert "UserWarning" not in run_result.stdout.str()
 
 
 def recursive_dir_listing(path: Path) -> List[str]:

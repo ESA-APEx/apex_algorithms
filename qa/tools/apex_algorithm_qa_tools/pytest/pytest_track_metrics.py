@@ -12,13 +12,22 @@ Usage:
     ]
     ```
 
--   Use the `track_metric` fixture to record metrics during tests:
+-   Use the `track_metric` fixture (a callable) to record metrics during tests:
 
     ```python
     def test_dummy(track_metric):
         x = 3
         track_metric("x squared", x*x)
-    ...
+    ```
+
+-   It's also possible to work in update mode to update a metric along the way
+    (instead of append mode which is the default):
+
+    ```python
+        track_metric("milestone", "phase2", update=True)
+        ...
+        track_metric("milestone", "phase3", update=True)
+    ```
 
 -   Run the tests with desired configuration through CLI options and env vars:
     - CLI option to store metrics to (local) JSON file:
@@ -320,7 +329,11 @@ def track_metric(
     Fixture to record a metric during tests/benchmarks,
     which will be stored in the pytest node's "user_properties".
 
-    Returns a callable that expects a metric name and value
+    Returns a callable that expects:
+    - a metric name (str)
+    - a value (str, int, float, etc.)
+    - an optional `update` flag (bool) to update existing metrics
+      instead of appending (the default).
     """
 
     reporter: TrackMetricsReporter | None = pytestconfig.pluginmanager.get_plugin(
@@ -329,13 +342,35 @@ def track_metric(
 
     if reporter:
 
-        def append(name: MetricName, value: MetricValue):
-            reporter.get_metrics(request.node.user_properties).append((name, value))
+        def track(name: MetricName, value: MetricValue, *, update: bool = False):
+            metrics: List[Tuple[str, Any]] = reporter.get_metrics(
+                request.node.user_properties
+            )
+
+            # Existing entries under same name?
+            indices = [i for i, (n, _) in enumerate(metrics) if n == name]
+
+            if update and indices:
+                # Update mode: update existing metric entry
+                if len(indices) > 1:
+                    warnings.warn(
+                        f"track_metric {name!r} update with multiple entries at {indices!r}"
+                    )
+                for i in indices:
+                    metrics[i] = (name, value)
+
+            else:
+                # Append mode
+                if indices:
+                    warnings.warn(
+                        f"track_metric {name!r} append with existing entries at {indices!r}"
+                    )
+                metrics.append((name, value))
 
     else:
         warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 
-        def append(name: MetricName, value: MetricValue):
+        def track(name: MetricName, value: MetricValue, update: bool = False):
             pass
 
-    return append
+    return track
