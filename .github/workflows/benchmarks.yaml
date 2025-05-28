@@ -49,16 +49,22 @@ jobs:
           APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
 
-      - name: Issue Generation
+
+      - name: Handle Failures
         if: ${{ failure() }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
-            python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
-          else
-            echo "No test failures detected"
+            python qa/tools/apex_algorithm_qa_tools/issue_handler.py --mode failure
           fi
+
+      - name: Handle Successes
+        if: ${{ success() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python qa/tools/apex_algorithm_qa_tools/issue_handler.py --mode success
 
       - name: List local reports
         if: ${{ !cancelled() }}
