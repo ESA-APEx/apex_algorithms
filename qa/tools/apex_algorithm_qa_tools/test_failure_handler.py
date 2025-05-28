@@ -102,6 +102,14 @@ class GitHubIssueManager:
             "```\n"
         )
         return body
+    
+    def build_comment_body(self, logs: str) -> str:
+        """
+        Build a comment header indicating an update, then append the raw log snippet.
+        """
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        header = f"**Updated status at {timestamp}, appended new error logs below:**"
+        return f"{header}\n\n```plaintext\n{logs}\n```"
 
     def create_issue(self, scenario: Dict[str, Any], logs: str) -> None:
         """
@@ -125,6 +133,25 @@ class GitHubIssueManager:
             logger.info("Created new issue: %s", issue_url)
         except requests.RequestException as e:
             logger.error("Failed to create issue for scenario '%s': %s", scenario['id'], e)
+
+    def comment_issue(self, issue_number: int, logs: str) -> None:
+        """
+        Post a comment to an existing issue with updated failure logs.
+        """
+        comment_body = self.build_comment_body(logs)
+        url = f"https://api.github.com/repos/{self.repo}/issues/{issue_number}/comments"
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        data = {"body": comment_body}
+        try:
+            response = requests.post(url, json=data, headers=headers)
+            response.raise_for_status()
+            logger.info("Commented on issue #%d", issue_number)
+        except requests.RequestException as e:
+            logger.error("Failed to comment on issue #%d: %s", issue_number, e)
+    
 
 class ScenarioProcessor:
     """
@@ -251,7 +278,12 @@ def main() -> None:
         if issue_title not in existing_issues:
             github_manager.create_issue(scenario, logs)
         else:
-            logger.info("Issue already exists for scenario '%s'. Skipping.", scenario_id)
+            issue = existing_issues[issue_title]
+            issue_number = issue.get("number")
+            if issue_number:
+                github_manager.comment_issue(issue_number, logs)
+            else:
+                logger.error("Existing issue does not have a number: %s", issue)
 
 if __name__ == "__main__":
     main()
