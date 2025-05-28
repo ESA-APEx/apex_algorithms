@@ -32,7 +32,6 @@ jobs:
             -vv \
             --log-cli-level=INFO \
             --random-subset=1 \
-            --log-cli-level=INFO \
             --html report/report.html --self-contained-html \
             --basetemp=tmp_path_root \
             --upload-assets-s3-bucket="apex-benchmarks" | tee pytest_output.txt
