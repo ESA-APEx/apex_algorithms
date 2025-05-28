@@ -30,9 +30,8 @@ jobs:
           mkdir tmp_path_root
           pytest \
             -vv \
-            -k max_ndvi \
+            -k max_ndvi
             --log-cli-level=INFO \
-
             --html report/report.html --self-contained-html \
             --basetemp=tmp_path_root | tee pytest_output.txt
         env:
@@ -51,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
+          if grep -q "FAILED" pytest_output.txt; then
             python qa/tools/apex_algorithm_qa_tools/issue_handler.py --mode failure
           fi
 
