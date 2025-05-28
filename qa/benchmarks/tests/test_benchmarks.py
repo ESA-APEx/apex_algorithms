@@ -24,7 +24,6 @@ _log = logging.getLogger(__name__)
         # Use scenario id as parameterization id to give nicer test names.
         pytest.param(uc, id=uc.id)
         for uc in get_benchmark_scenarios()
-        if uc.id == "max_ndvi_large" #TODO remove it, after verifying fix
     ],
 )
 def test_run_benchmark(
