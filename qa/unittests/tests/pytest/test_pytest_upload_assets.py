@@ -43,7 +43,8 @@ def test_basic_upload_on_fail(
 
     run_result.stdout.re_match_lines(
         [
-            r".*`upload_assets` stats: \{'uploaded': 1\}",
+            r".*upload_assets summary",
+            r"- stats: \{'uploaded': 1\}",
             r"\s+-\s+'hello.txt' uploaded to 'http://.*?/test-bucket-\w+/test-run-123!test_file_maker.py__test_fail_and_upload!hello.txt'",
         ]
     )
@@ -83,4 +84,9 @@ def test_nop_on_success(
     object_listing = s3_client.list_objects(Bucket=s3_bucket)
     assert object_listing.get("Contents", []) == []
 
-    run_result.stdout.re_match_lines([r".*`upload_assets` stats: \{'uploaded': 0\}"])
+    run_result.stdout.re_match_lines(
+        [
+            r".*upload_assets summary",
+            r"- stats: \{'uploaded': 0\}",
+        ]
+    )

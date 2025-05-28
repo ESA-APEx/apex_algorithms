@@ -64,6 +64,7 @@ import pyarrow.fs
 import pyarrow.parquet
 import pytest
 from apex_algorithm_qa_tools.pytest import get_run_id
+from openeo.util import repr_truncate
 
 _TRACK_METRICS_PLUGIN_NAME = "track_metrics"
 
@@ -296,10 +297,12 @@ class TrackMetricsReporter:
             reports.append(str(self._parquet_local))
         if self._parquet_s3:
             reports.append(str(self._parquet_s3))
-        if reports:
-            terminalreporter.write_sep(
-                "-", f"Generated track_metrics report: {', '.join(reports)}"
-            )
+        terminalreporter.write_sep("-", "track_metrics summary")
+        for report in reports:
+            terminalreporter.write_line(f"- Generated report {report}")
+        terminalreporter.write_line(
+            "- Data: " + repr_truncate(self._suite_metrics, width=512)
+        )
 
     def get_metrics(
         self, user_properties: List[Tuple[str, Any]]
