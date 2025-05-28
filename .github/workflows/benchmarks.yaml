@@ -30,7 +30,7 @@ jobs:
           mkdir tmp_path_root
           pytest \
             -vv \
-            -k max_ndvi
+            -k max_ndvi_composite
             --log-cli-level=INFO \
             --html report/report.html --self-contained-html \
             --basetemp=tmp_path_root | tee pytest_output.txt
