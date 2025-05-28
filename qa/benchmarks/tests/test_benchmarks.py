@@ -5,6 +5,7 @@ from pathlib import Path
 import openeo
 import pytest
 from apex_algorithm_qa_tools.benchmarks import (
+    analyse_results_comparison_exception,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
 )
@@ -87,7 +88,9 @@ def test_run_benchmark(
             scenario=scenario, reference_dir=tmp_path / "reference"
         )
 
-    with track_phase(phase="compare"):
+    with track_phase(
+        phase="compare", describe_exception=analyse_results_comparison_exception
+    ):
         # Compare actual results with reference data
         assert_job_results_allclose(
             actual=actual_dir,

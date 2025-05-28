@@ -384,18 +384,61 @@ def track_phase(track_metric: MetricsTracker):
     Fixture that acts as a context manager to mark
     different phases of a test/benchmark
     and tracks the start, end or failure of that phase.
+
+    Basic usage:
+
+    ```python
+    def test_example(track_phase):
+        with track_phase("setup"):
+            x = 0
+        with track_phase("math"):
+            y = 1 / x
+    ```
+
+    This will produce the following metrics/events:
+
+    - `("test:phase:start", "math")`: "math" was the last phase that started
+    - `("test:phase:end", "setup")`: "setup" was the last phase that ended without exception
+    - `("test:phase:exception", "math")`: there was an exception in the "math" phase
+
+
+    It's also possible to provide a custom function to describe exceptions
+    raised during the phase to produce a more detailed metric/event:
+
+    ```python
+    def describe_exception(exc: Exception) -> Union[str, None]:
+        if isinstance(exc, ZeroDivisionError):
+            return "division-by-zero"
+
+    def test_example(track_phase):
+        ...
+        with track_phase("math", describe_exception=describe_exception):
+            y = 1 / x
+    ```
+
+    Which will produce this exception metric/event:
+    - `("test:phase:exception", "math:division-by-zero")`
     """
 
     @contextlib.contextmanager
-    def track(phase: str):
+    def track(
+        phase: str,
+        *,
+        describe_exception: Callable[[Exception], Union[str, None]] = lambda e: None,
+    ):
         track_metric("test:phase:start", phase, update=True)
         try:
             yield
-        except Exception:
+        except Exception as exc:
             # TODO: support nesting of `track_phase` in the sense
             #       that only the inner-most phase is marked with the exception
             #       instead of the outer-most phase like it is now.
-            track_metric("test:phase:exception", phase, update=True)
+            desc = describe_exception(exc)
+            if desc:
+                value = f"{phase}:{desc}"
+            else:
+                value = phase
+            track_metric("test:phase:exception", value, update=True)
             raise
         track_metric("test:phase:end", phase, update=True)
 
