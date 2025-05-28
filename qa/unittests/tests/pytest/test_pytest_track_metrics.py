@@ -24,7 +24,7 @@ CONTENT_TEST_ADDITION_PY = """
     def test_3plus(track_metric, x):
         track_metric("x squared", x * x)
         assert 3 + x == 8
-    """
+"""
 
 
 def roughly_now(abs=60):
@@ -195,6 +195,64 @@ def test_track_metric_update_mode_json(
         )
     else:
         assert "UserWarning" not in run_result.stdout.str()
+
+
+@pytest.mark.parametrize(
+    ["src", "expected"],
+    [
+        (
+            """
+            def test_phases(track_phase):
+                with track_phase("setup"):
+                    x = 123
+                with track_phase("math"):
+                    y = x * 2
+                with track_phase("compare"):
+                    assert y == 5
+            """,
+            [
+                ["test:phase:start", "compare"],
+                ["test:phase:end", "math"],
+                ["test:phase:exception", "compare"],
+            ],
+        ),
+        (
+            """
+            def test_phases(track_phase):
+                with track_phase("setup"):
+                    x = 123
+                with track_phase("math"):
+                    y = x * 2
+                assert y == 5
+            """,
+            [
+                ["test:phase:start", "math"],
+                ["test:phase:end", "math"],
+            ],
+        ),
+    ],
+)
+def test_track_phase_basic_json(pytester: pytest.Pytester, tmp_path, src, expected):
+    pytester.makeconftest(CONTENT_CONFTEST)
+    pytester.makepyfile(test_addition=textwrap.dedent(src))
+    metrics_path = tmp_path / "metrics.json"
+
+    pytester.runpytest_subprocess(f"--track-metrics-json={metrics_path}")
+
+    with metrics_path.open("r", encoding="utf8") as f:
+        metrics = json.load(f)
+    assert metrics == [
+        {
+            "nodeid": "test_addition.py::test_phases",
+            "report": {
+                "outcome": "failed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": expected,
+        },
+    ]
 
 
 def recursive_dir_listing(path: Path) -> List[str]:

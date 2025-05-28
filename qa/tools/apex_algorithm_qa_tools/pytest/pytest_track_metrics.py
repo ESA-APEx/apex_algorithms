@@ -1,5 +1,6 @@
 """
-Pytest plugin to track test/benchmark metrics and report them with a JSON file.
+Pytest plugin to track test/benchmark metrics/events/status
+and report them through a JSON/Parquet file.
 
 
 Usage:
@@ -48,6 +49,7 @@ Usage:
       to define how to partition the Parquet files.
 """
 
+import contextlib
 import dataclasses
 import datetime
 import json
@@ -372,5 +374,29 @@ def track_metric(
 
         def track(name: MetricName, value: MetricValue, update: bool = False):
             pass
+
+    return track
+
+
+@pytest.fixture
+def track_phase(track_metric: MetricsTracker):
+    """
+    Fixture that acts as a context manager to mark
+    different phases of a test/benchmark
+    and tracks the start, end or failure of that phase.
+    """
+
+    @contextlib.contextmanager
+    def track(phase: str):
+        track_metric("test:phase:start", phase, update=True)
+        try:
+            yield
+        except Exception:
+            # TODO: support nesting of `track_phase` in the sense
+            #       that only the inner-most phase is marked with the exception
+            #       instead of the outer-most phase like it is now.
+            track_metric("test:phase:exception", phase, update=True)
+            raise
+        track_metric("test:phase:end", phase, update=True)
 
     return track
