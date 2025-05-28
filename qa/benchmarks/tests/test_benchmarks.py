@@ -93,5 +93,6 @@ def test_run_benchmark(
         tmp_path=tmp_path,
         rtol=scenario.reference_options.get("rtol", 1e-6),
         atol=scenario.reference_options.get("atol", 1e-6),
+        pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 0.0),
     )
     track_metric("milestone", "compared actuals with reference data", update=True)
