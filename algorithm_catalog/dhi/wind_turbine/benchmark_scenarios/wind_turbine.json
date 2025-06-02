@@ -33,37 +33,5 @@
       "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14897213753!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/job-results.json",
       "vectorcube.geojson": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14897213753!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/vectorcube.geojson"
     }
-  },
-  {
-    "id": "wind_turbine-openeo-platform",
-    "type": "openeo",
-    "description": "Wind turbine detection",
-    "backend": "openeo.cloud",
-    "process_graph": {
-      "wind_turbine": {
-        "arguments": {
-          "spatial_extent": {
-            "east": 8.888,
-            "north": 54.981,
-            "south": 53.951,
-            "west": 8.858
-          },
-          "year": 2024
-        },
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/wind_turbine/openeo_udp/wind_turbine.json",
-        "process_id": "wind_turbine_detection"
-      },
-      "save1": {
-        "process_id": "save_result",
-        "arguments": {
-          "data": {
-            "from_node": "wind_turbine"
-          },
-          "format": "GEOJSON"
-        },
-        "result": true
-      }
-    },
-    "reference_data": {}
   }
 ]
