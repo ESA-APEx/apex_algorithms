@@ -72,6 +72,18 @@ def generate() -> dict:
         size=[{"dimension": "x", "value": 2048, "unit": "px"}, {"dimension": "y", "value": 2048, "unit": "px"}],
         overlap=[{"dimension": "x", "value": 0, "unit": "px"}, {"dimension": "y", "value": 0, "unit": "px"}],
     )
+    job_options = {
+        "udf-dependency-archives": [
+	    "https://artifactory.vgt.vito.be:443/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",
+	    "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip#onnx_models"
+	],
+	"driver-memory": "500m",
+	"driver-memoryOverhead": "1000m",
+	"executor-memory": "1000m",
+	"executor-memoryOverhead": "500m",
+	"python-memory": "4000m"
+    }
+
     # Build the process dictionary
     return build_process_dict(
         process_graph=sobel_felzenszwalb,
@@ -79,7 +91,9 @@ def generate() -> dict:
         summary="Parcel delineation using Sentinel-2 data retrieved from the CDSE and processed on openEO.",
         description="Parcel delineation using Sentinel-2",
         parameters=[spatial_extent, temporal_extent],
+        default_job_options=job_options,
     )
+
 
 
 if __name__ == "__main__":

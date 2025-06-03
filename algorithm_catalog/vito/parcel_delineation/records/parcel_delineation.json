@@ -90,7 +90,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-	"href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
+	"href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/parceldelineation/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
     },
     {
       "rel": "code",
@@ -108,7 +108,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=parceldelination&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json&server=https://openeo.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=parceldelination&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/parceldelineation/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json&server=https://openeo.dataspace.copernicus.eu"
     }
   ]
 }
