@@ -53,9 +53,7 @@ def generate() -> dict:
 
     # Apply ML algorithm
     # apply a neural network, requires 128x128 pixel 'chunks' as input.
-    segment_udf = openeo.UDF.from_url(
-        "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/udf_segmentation.py"
-    )
+    segment_udf = openeo.UDF.from_file("udf_segmentation.py")
     segmentationband = ndviband.apply_neighborhood(
         process=segment_udf,
         size=[{"dimension": "x", "value": 64, "unit": "px"}, {"dimension": "y", "value": 64, "unit": "px"}],
@@ -64,9 +62,7 @@ def generate() -> dict:
 
     # Postprocess the output from the neural network using a sobel filter and
     # Felzenszwalb's algorithm, which are then merged.
-    segment_postprocess_udf = openeo.UDF.from_url(
-        "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/udf_sobel_felzenszwalb.py"
-    )
+    segment_postprocess_udf = openeo.UDF.from_file("udf_sobel_felzenszwalb.py")
     sobel_felzenszwalb = segmentationband.apply_neighborhood(
         process=segment_postprocess_udf,
         size=[{"dimension": "x", "value": 2048, "unit": "px"}, {"dimension": "y", "value": 2048, "unit": "px"}],
@@ -74,14 +70,14 @@ def generate() -> dict:
     )
     job_options = {
         "udf-dependency-archives": [
-	    "https://artifactory.vgt.vito.be:443/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",
-	    "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip#onnx_models"
-	],
-	"driver-memory": "500m",
-	"driver-memoryOverhead": "1000m",
-	"executor-memory": "1000m",
-	"executor-memoryOverhead": "500m",
-	"python-memory": "4000m"
+            "https://artifactory.vgt.vito.be/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",
+            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip#onnx_models",
+        ],
+        "driver-memory": "500m",
+        "driver-memoryOverhead": "1000m",
+        "executor-memory": "1000m",
+        "executor-memoryOverhead": "500m",
+        "python-memory": "4000m",
     }
 
     # Build the process dictionary
@@ -93,7 +89,6 @@ def generate() -> dict:
         parameters=[spatial_extent, temporal_extent],
         default_job_options=job_options,
     )
-
 
 
 if __name__ == "__main__":
