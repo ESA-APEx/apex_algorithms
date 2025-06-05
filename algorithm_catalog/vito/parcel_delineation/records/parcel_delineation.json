@@ -9,7 +9,7 @@
   "properties": {
     "created": "2025-06-02T00:00:00Z",
     "updated": "2025-06-02T00:00:00Z",
-    "type": "apex_algorithm",
+    "type": "service",
     "title": "Parcel Delination based on ML using Sentinal-2",
     "description": "An openEO process example for delineating agricultural parcels based on ML using Sentinel-2 data.",
     "cost_estimate": 0.11,
