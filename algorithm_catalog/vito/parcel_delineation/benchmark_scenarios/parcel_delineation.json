@@ -7,7 +7,7 @@
         "process_graph": {
             "parcel_delineation1": {
                 "process_id": "parcel_delineation",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json",
                 "arguments": {
                     "spatial_extent": {
 			"west": 5.0,
