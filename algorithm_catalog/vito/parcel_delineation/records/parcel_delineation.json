@@ -2,7 +2,8 @@
   "id": "parcel_delineation",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+      "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+      "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
