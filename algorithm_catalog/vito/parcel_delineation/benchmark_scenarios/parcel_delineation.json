@@ -1,0 +1,28 @@
+[
+    {
+        "id": "parcel_delineation",
+        "type": "openeo",
+        "description": "Parcel Delineation based on ML using Sentinal-2",
+        "backend": "openeo.dataspace.copernicus.eu",
+        "process_graph": {
+            "parcel_delineation1": {
+                "process_id": "parcel_delineation",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b828eecc13f1bd4d012576d746329041cf840c61/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json",
+                "arguments": {
+                    "spatial_extent": {
+			"west": 5.0,
+			"south": 51.2,
+			"east": 5.1,
+			"north": 51.3
+		    },
+                    "temporal_extent": [
+                        "2021-01-01",
+                        "2021-12-31"
+                    ]
+                },
+                "result": true
+            }
+        },
+        "reference_data": {}
+    }
+]
