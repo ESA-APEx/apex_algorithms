@@ -210,14 +210,14 @@
   "description": "Parcel delineation using Sentinel-2",
   "default_job_options": {
     "udf-dependency-archives": [
-      "https://artifactory.vgt.vito.be:443/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",
-      "https://artifactory.vgt.vito.be:443/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip#onnx_models"
+      "https://artifactory.vgt.vito.be/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",
+      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip#onnx_models"
     ],
     "driver-memory": "500m",
     "driver-memoryOverhead": "1000m",
     "executor-memory": "1000m",
     "executor-memoryOverhead": "500m",
-    "python-memory": "4000m"
+    "python-memory": "4200m"
   },
   "parameters": [
     {

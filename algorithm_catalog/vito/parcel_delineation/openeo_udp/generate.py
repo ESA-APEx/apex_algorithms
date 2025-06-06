@@ -77,7 +77,7 @@ def generate() -> dict:
         "driver-memoryOverhead": "1000m",
         "executor-memory": "1000m",
         "executor-memoryOverhead": "500m",
-        "python-memory": "4000m",
+        "python-memory": "4200m",
     }
 
     # Build the process dictionary
