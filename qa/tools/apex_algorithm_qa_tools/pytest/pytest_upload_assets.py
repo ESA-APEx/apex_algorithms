@@ -94,6 +94,7 @@ class S3UploadPlugin:
         """Collect assets to upload"""
         assert self.collected_assets is not None, "No active collection of assets"
         self.collected_assets[name] = path
+        self.upload_stats["collected"] += 1
 
     def pytest_runtest_logstart(self, nodeid):
         # Start new collection of assets for current test node
