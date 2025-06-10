@@ -220,12 +220,13 @@ class ScenarioProcessor:
 def main():
     parser = argparse.ArgumentParser(description="Benchmark failure/success handler")
     parser.add_argument("--mode", choices=["failure", "success"], required=True)
-    parser.add_argument("--repo", default=os.getenv("GITHUB_REPO"))
-    parser.add_argument("--token", default=os.getenv("GITHUB_TOKEN"))
+
+    GITHUB_REPO = "ESA-APEx/apex_algorithms"
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    if not GITHUB_TOKEN:
+        raise EnvironmentError("GITHUB_TOKEN environment variable is not set.")
     args = parser.parse_args()
 
-    if not args.token or not args.repo:
-        raise SystemExit("GITHUB_REPO and GITHUB_TOKEN must be set or passed as args.")
 
     logging.basicConfig(
         level=logging.INFO,
@@ -234,9 +235,9 @@ def main():
     )
 
     run_id = os.getenv("GITHUB_RUN_ID", "0")
-    run_url = f"https://github.com/{args.repo}/actions/runs/{run_id}"
+    run_url = f"https://github.com/{GITHUB_REPO}/actions/runs/{run_id}"
 
-    config = GitHubConfig(repo=args.repo, token=args.token)
+    config = GitHubConfig(repo=GITHUB_REPO, token=GITHUB_TOKEN)
     manager = IssueManager(config, run_url)
     processor = ScenarioProcessor()
 

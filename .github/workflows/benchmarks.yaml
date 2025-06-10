@@ -53,13 +53,20 @@ jobs:
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
             python qa/tools/apex_algorithm_qa_tools/issue_handler.py --mode failure
+          else
+            echo "No failure on open issues"
           fi
+          
 
       - name: Handle Successes on Open Issues
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python qa/tools/apex_algorithm_qa_tools/issue_handler.py --mode success
+          if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
+            python qa/tools/apex_algorithm_qa_tools/issue_handler.py --mode success
+          else
+            echo "No Succes on open issues"
+          fi
 
       - name: List local reports
         if: ${{ !cancelled() }}
