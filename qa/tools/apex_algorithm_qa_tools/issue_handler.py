@@ -110,7 +110,7 @@ class IssueManager:
             "---\n\n"
             "### Process Graph\n"
             "```json\n"
-            f"{scenario['process_graph']}\n"
+            f"{scenario.process_graph}\n"
             "```\n\n"
             "---\n"
             "### Error Logs\n"
