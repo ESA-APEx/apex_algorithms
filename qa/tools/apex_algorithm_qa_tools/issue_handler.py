@@ -1,5 +1,6 @@
 
 import os
+import re
 import json
 import logging
 import argparse
@@ -34,10 +35,10 @@ class Scenario:
     scenario_link: str
 
 @dataclass
-class FailureRecord:
-    test_name: str
+class TestRecord:
     scenario_id: str
-    logs: str
+    status: str  # 'PASSED' or 'FAILED'
+    logs: Optional[str] = None
 
 # -----------------------------------------------------------------------------
 # Issue Manager
@@ -150,6 +151,12 @@ class IssueManager:
         resp.raise_for_status()
         self.logger.info("Commented on issue #%d", issue_number)
 
+    def close_issue(self, issue_number: int) -> None:
+        url = f"{self.base_issues_url}/{issue_number}"
+        resp = requests.patch(url, headers=self.headers, json={"state": "closed"})
+        resp.raise_for_status()
+        self.logger.info("Closed issue #%d", issue_number)
+
 # -----------------------------------------------------------------------------
 # Scenario Processor 
 # -----------------------------------------------------------------------------
@@ -170,7 +177,7 @@ class ScenarioProcessor:
                     scenario_link=self._build_scenario_link(scenario_id),
                 )
                 return details
-        self.logger.warning("Scenario '%s' not found", scenario_id)
+        self.logger.info("Scenario '%s' not found", scenario_id)
         return None
 
     def _load_contacts(self, scenario_id: str) -> List[Any]:
@@ -182,7 +189,7 @@ class ScenarioProcessor:
                     data = json.loads(rec.read_text())
                     return data.get("properties", {}).get("contacts", [])
                 except json.JSONDecodeError as e:
-                    self.logger.error("Invalid JSON in %s: %s", rec, e)
+                    self.logger.info("Invalid JSON in %s: %s", rec, e)
         self.logger.info("No contacts for '%s'", scenario_id)
         return []
 
@@ -198,72 +205,71 @@ class ScenarioProcessor:
         self.logger.info("No scenario definition for '%s'", scenario_id)
         return ""
 
-    def parse_failures(self) -> List[FailureRecord]:
-        text = Path("qa/benchmarks/pytest_output.txt")
-        if not text.exists():
-            self.logger.error("Log file not found: %s", text)
+    def parse_results(self) -> List[TestRecord]:
+        text_path = Path("qa/benchmarks/pytest_output.txt")
+        if not text_path.exists():
+            self.logger.info("Log file not found: %s", text_path)
             return []
-        content = text.read_text()
-        pattern = r"=+ FAILURES =+.*?(test_run_benchmark\[(.*?)\]).*?\n(.*?)(?=\n=+|\Z)"
-        records = []
-        for m in __import__('re').finditer(pattern, content, __import__('re').DOTALL):
-            records.append(FailureRecord(
-                test_name=m.group(1),
-                scenario_id=m.group(2),
-                logs=m.group(3).strip()
-            ))
-        self.logger.info("Found %d failures", len(records))
+        content = text_path.read_text()
+        records: List[TestRecord] = []
+        # capture individual test outcomes
+        for match in re.finditer(r"(test_run_benchmark\[(.*?)\]).*?\s(PASSED|FAILED)", content):
+            test_name = match.group(1)
+            scenario_id = match.group(2)
+            status = match.group(3)
+            logs = None
+            if status == 'FAILED':
+                # grab failure block
+                fail_block = re.search(
+                    rf"=+ FAILURES =+.*?{re.escape(test_name)}.*?\n(.*?)(?=\n=+|\Z)",
+                    content, re.DOTALL
+                )
+                if fail_block:
+                    logs = fail_block.group(1).strip()
+            records.append(TestRecord(scenario_id=scenario_id, status=status, logs=logs))
         return records
 
 # -----------------------------------------------------------------------------
 # Unified Handler
 # -----------------------------------------------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Benchmark failure/success handler")
-    parser.add_argument("--mode", choices=["failure", "success"], required=True)
 
-    GITHUB_REPO = "ESA-APEx/apex_algorithms"
-    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-    if not GITHUB_TOKEN:
-        raise EnvironmentError("GITHUB_TOKEN environment variable is not set.")
-    args = parser.parse_args()
+    repo = os.getenv("GITHUB_REPO", "ESA-APEx/apex_algorithms")
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        raise EnvironmentError("GITHUB_TOKEN not set.")
 
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(name)s %(levelname)s %(message)s",
-        handlers=[logging.StreamHandler()]
-    )
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s %(name)s %(levelname)s %(message)s")
 
     run_id = os.getenv("GITHUB_RUN_ID", "0")
-    run_url = f"https://github.com/{GITHUB_REPO}/actions/runs/{run_id}"
+    workflow_url = f"https://github.com/{repo}/actions/runs/{run_id}"
 
-    config = GitHubConfig(repo=GITHUB_REPO, token=GITHUB_TOKEN)
-    manager = IssueManager(config, run_url)
-    scenarios = ScenarioProcessor()
+    config = GitHubConfig(repo=repo, token=token)
+    manager = IssueManager(config, workflow_url)
+    processor = ScenarioProcessor()
 
-    existing = manager.get_existing_issues()
-    failures = scenarios.parse_failures()
-    #TODO expand to also handle successes
+    # parse all test results
+    results = processor.parse_results()
+    open_issues = manager.get_existing_issues()
 
-    for rec in failures:
-        scen = scenarios.get_scenario_details(rec.scenario_id)
+    # handle each result
+    for rec in results:
+        title = f"Benchmark Failure: {rec.scenario_id}" #TODO loosely coupled with create_issue; tighten to avoid bugs
+        scen = processor.get_scenario_details(rec.scenario_id)
         if not scen:
             continue
-        title = f"Scenario Failure: {rec.scenario_id}"
-        if title not in existing:
-            if args.mode == "failure":
-                manager.create_issue(scen, rec.logs)
-        else:
-            num = existing[title].get("number")
-            if not num:
-                manager.logger.error("Issue without number: %s", title)
-                continue
-            if args.mode == "failure":
-                body = manager.build_comment_body(scen, success=False)
+        if rec.status == 'FAILED':
+            if title in open_issues:
+                num = open_issues[title]['number']
+                manager.comment_issue(num, manager.build_comment_body(scen, success=False))
             else:
-                body = manager.build_comment_body(scen, success=True)
-            manager.comment_issue(num, body)
+                manager.create_issue(scen, rec.logs or "No logs captured.")
+        else:  # PASSED
+            if title in open_issues:
+                num = open_issues[title]['number']
+                manager.comment_issue(num, manager.build_comment_body(scen, success=True))
+                manager.close_issue(num)
 
 if __name__ == "__main__":
     main()
