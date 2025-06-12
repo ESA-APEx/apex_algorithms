@@ -101,7 +101,7 @@ class IssueManager:
         )
 
         body = (
-            f"## Benchmark Failure: {scenario.id}\n\n"
+            f"##Scenario Failure: {scenario.id}\n\n"
             f"**Scenario ID**: {scenario.id}\n"
             f"**Backend**: {scenario.backend}\n"
             f"**Timestamp**: {timestamp}\n\n"
@@ -142,7 +142,7 @@ class IssueManager:
 
     def create_issue(self, scenario: Scenario, logs: str) -> None:
         self.logger.info("Creating issue for scenario '%s'", scenario.id)
-        title = f"Benchmark Failure: {scenario.id}"
+        title = f"Scenario Failure: {scenario.id}"
         body = self.build_issue_body(scenario, logs)
         payload = {"title": title, "body": body, "labels": [self.config.label]}
         resp = requests.post(self.base_issues_url, headers=self.headers, json=payload)
@@ -261,7 +261,7 @@ def main():
 
     # handle each result
     for rec in results:
-        title = f"Benchmark Failure: {rec.scenario_id}" #TODO loosely coupled with create_issue; tighten to avoid bugs
+        title = f"Scenario Failure: {rec.scenario_id}" #TODO loosely coupled with create_issue; tighten to avoid bugs
         scen = processor.get_scenario_details(rec.scenario_id)
         if not scen:
             continue
