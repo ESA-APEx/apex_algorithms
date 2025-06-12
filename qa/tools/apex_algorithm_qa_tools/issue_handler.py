@@ -233,6 +233,7 @@ class ScenarioProcessor:
                 if fail_block:
                     logs = fail_block.group(1).strip()
             records.append(TestRecord(scenario_id=scenario_id, status=status, logs=logs))
+        self.logger.info("Parsed %d test records", len(records))
         return records
 
 # -----------------------------------------------------------------------------
@@ -247,6 +248,7 @@ def main():
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(name)s %(levelname)s %(message)s")
+    logger = logging.getLogger(
 
     run_id = os.getenv("GITHUB_RUN_ID", "0")
     workflow_url = f"https://github.com/{repo}/actions/runs/{run_id}"
@@ -264,15 +266,21 @@ def main():
         title = f"Scenario Failure: {rec.scenario_id}" #TODO loosely coupled with create_issue; tighten to avoid bugs
         scen = processor.get_scenario_details(rec.scenario_id)
         if not scen:
+            logger.info("No scenario details found for '%s'", rec.scenario_id)
             continue
         if rec.status == 'FAILED':
+            logger.info("Processing failure for scenario '%s'", rec.scenario_id)
             if title in open_issues:
+                logger.info("Updating existing issue for '%s'", rec.scenario_id)
                 num = open_issues[title]['number']
                 manager.comment_issue(num, manager.build_comment_body(scen, success=False))
             else:
+                logger.info("Creating new issue for '%s'", rec.scenario_id)
                 manager.create_issue(scen, rec.logs or "No logs captured.")
         else:  # PASSED
+            logger.info("Processing success for scenario '%s'", rec.scenario_id)
             if title in open_issues:
+                logger.info("Updating existing issue for '%s'", rec.scenario_id)
                 num = open_issues[title]['number']
                 manager.comment_issue(num, manager.build_comment_body(scen, success=True))
 
