@@ -151,12 +151,6 @@ class IssueManager:
         resp.raise_for_status()
         self.logger.info("Commented on issue #%d", issue_number)
 
-    def close_issue(self, issue_number: int) -> None:
-        url = f"{self.base_issues_url}/{issue_number}"
-        resp = requests.patch(url, headers=self.headers, json={"state": "closed"})
-        resp.raise_for_status()
-        self.logger.info("Closed issue #%d", issue_number)
-
 # -----------------------------------------------------------------------------
 # Scenario Processor 
 # -----------------------------------------------------------------------------
@@ -269,7 +263,6 @@ def main():
             if title in open_issues:
                 num = open_issues[title]['number']
                 manager.comment_issue(num, manager.build_comment_body(scen, success=True))
-                manager.close_issue(num)
 
 if __name__ == "__main__":
     main()

@@ -45,8 +45,8 @@ jobs:
           APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
           APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
 
-
       - name: Handle Benchmark Results
+        if: ${{ always() }}
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             GITHUB_REPO: ${{ github.repository }}
