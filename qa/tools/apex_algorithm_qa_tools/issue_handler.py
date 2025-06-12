@@ -40,7 +40,7 @@ class FailureRecord:
     logs: str
 
 # -----------------------------------------------------------------------------
-# Issue Manager with pagination 
+# Issue Manager
 # -----------------------------------------------------------------------------
 class IssueManager:
     def __init__(self, config: GitHubConfig, workflow_run_url: str):
@@ -124,7 +124,8 @@ class IssueManager:
         status = "Success" if success else "Failure"
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         return (
-            f"## Benchmark {status}: {scenario.id}\n"
+            f"## Status: {status}\n"
+            f"## Benchmark: {scenario.id}\n"
             f"**Scenario ID**: {scenario.id}\n"
             f"**Backend**: {scenario.backend}\n"
             f"**Timestamp**: {timestamp}\n\n"
@@ -135,7 +136,7 @@ class IssueManager:
         )
 
     def create_issue(self, scenario: Scenario, logs: str) -> None:
-        title = f"Scenario Failure: {scenario.id}"
+        title = f"Benchmark Failure: {scenario.id}"
         body = self.build_issue_body(scenario, logs)
         payload = {"title": title, "body": body, "labels": [self.config.label]}
         resp = requests.post(self.base_issues_url, headers=self.headers, json=payload)
@@ -239,13 +240,14 @@ def main():
 
     config = GitHubConfig(repo=GITHUB_REPO, token=GITHUB_TOKEN)
     manager = IssueManager(config, run_url)
-    processor = ScenarioProcessor()
+    scenarios = ScenarioProcessor()
 
     existing = manager.get_existing_issues()
-    failures = processor.parse_failures()
+    failures = scenarios.parse_failures()
+    #TODO expand to also handle successes
 
     for rec in failures:
-        scen = processor.get_scenario_details(rec.scenario_id)
+        scen = scenarios.get_scenario_details(rec.scenario_id)
         if not scen:
             continue
         title = f"Scenario Failure: {rec.scenario_id}"
@@ -258,7 +260,7 @@ def main():
                 manager.logger.error("Issue without number: %s", title)
                 continue
             if args.mode == "failure":
-                body = manager.build_issue_body(scen, rec.logs)
+                body = manager.build_comment_body(scen, success=False)
             else:
                 body = manager.build_comment_body(scen, success=True)
             manager.comment_issue(num, body)
