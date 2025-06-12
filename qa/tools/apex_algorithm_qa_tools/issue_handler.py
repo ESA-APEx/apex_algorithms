@@ -60,6 +60,7 @@ class IssueManager:
         """
         page = 1
         existing = {}
+        self.logger.info("Fetching existing issues with label '%s'", self.config.label)
         while True:
             params = {"state": "open", "labels": self.config.label, "per_page": self.config.page_size, "page": page}
             resp = requests.get(self.base_issues_url, headers=self.headers, params=params)
@@ -76,8 +77,10 @@ class IssueManager:
         return existing
 
     def build_issue_body(self, scenario: Scenario, logs: str) -> str:
+        
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         contact_entries = []
+        self.logger.info("Building issue body for scenario '%s'", scenario.id)
         if scenario.contacts:
             primary = scenario.contacts[0]
             name = primary.get("name", "")
@@ -124,6 +127,7 @@ class IssueManager:
     def build_comment_body(self, scenario: Scenario, success: bool) -> str:
         status = "Success" if success else "Failure"
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+        self.logger.info("Building comment body for scenario '%s' with status '%s'", scenario.id, status)
         return (
             f"## Status: {status}\n"
             f"## Benchmark: {scenario.id}\n"
@@ -137,6 +141,7 @@ class IssueManager:
         )
 
     def create_issue(self, scenario: Scenario, logs: str) -> None:
+        self.logger.info("Creating issue for scenario '%s'", scenario.id)
         title = f"Benchmark Failure: {scenario.id}"
         body = self.build_issue_body(scenario, logs)
         payload = {"title": title, "body": body, "labels": [self.config.label]}
@@ -146,6 +151,7 @@ class IssueManager:
         self.logger.info("Created issue %s", url)
 
     def comment_issue(self, issue_number: int, body: str) -> None:
+        self.logger.info("Commenting on issue #%d", issue_number)
         url = f"{self.base_issues_url}/{issue_number}/comments"
         resp = requests.post(url, headers=self.headers, json={"body": body})
         resp.raise_for_status()
@@ -159,6 +165,7 @@ class ScenarioProcessor:
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def get_scenario_details(self, scenario_id: str) -> Optional[Scenario]:
+        self.logger.info("Fetching details for benchmark scenario '%s'", scenario_id)
 
         for sc in get_benchmark_scenarios():
             if sc.id == scenario_id:
@@ -167,14 +174,15 @@ class ScenarioProcessor:
                     description=sc.description,
                     backend=sc.backend,
                     process_graph=json.dumps(sc.process_graph, indent=2),
-                    contacts=self._load_contacts(scenario_id),
-                    scenario_link=self._build_scenario_link(scenario_id),
+                    contacts=self.load_contacts(scenario_id),
+                    scenario_link=self.build_scenario_link(scenario_id),
                 )
                 return details
         self.logger.info("Scenario '%s' not found", scenario_id)
         return None
 
-    def _load_contacts(self, scenario_id: str) -> List[Any]:
+    def load_contacts(self, scenario_id: str) -> List[Any]:
+        self.logger.info("Loading contacts for scenario '%s'", scenario_id)
         root = get_project_root() / "algorithm_catalog"
         for provider in root.iterdir():
             rec = provider / scenario_id / "records" / f"{scenario_id}.json"
@@ -187,7 +195,8 @@ class ScenarioProcessor:
         self.logger.info("No contacts for '%s'", scenario_id)
         return []
 
-    def _build_scenario_link(self, scenario_id: str) -> str:
+    def build_scenario_link(self, scenario_id: str) -> str:
+        self.logger.info("Building scenario link for '%s'", scenario_id)
         sha = os.getenv("GITHUB_SHA", "main")
         base = f"https://github.com/{os.getenv('GITHUB_REPO')}/blob/{sha}"
         root = get_project_root() / "algorithm_catalog"
@@ -200,6 +209,7 @@ class ScenarioProcessor:
         return ""
 
     def parse_results(self) -> List[TestRecord]:
+        self.logger.info("Parsing test results from pytest output")
         text_path = Path("qa/benchmarks/pytest_output.txt")
         if not text_path.exists():
             self.logger.info("Log file not found: %s", text_path)
@@ -212,7 +222,9 @@ class ScenarioProcessor:
             scenario_id = match.group(2)
             status = match.group(3)
             logs = None
+            self.logger.info("Found test '%s' with status '%s'", test_name, status)
             if status == 'FAILED':
+                self.logger.info("Capturing logs for failed test '%s'", test_name)
                 # grab failure block
                 fail_block = re.search(
                     rf"=+ FAILURES =+.*?{re.escape(test_name)}.*?\n(.*?)(?=\n=+|\Z)",
