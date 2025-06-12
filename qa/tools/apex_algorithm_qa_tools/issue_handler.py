@@ -248,7 +248,7 @@ def main():
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(name)s %(levelname)s %(message)s")
-    logger = logging.getLogger(
+    logger = logging.getLogger()
 
     run_id = os.getenv("GITHUB_RUN_ID", "0")
     workflow_url = f"https://github.com/{repo}/actions/runs/{run_id}"
