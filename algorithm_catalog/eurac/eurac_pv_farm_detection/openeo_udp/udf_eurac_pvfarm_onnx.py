@@ -76,7 +76,7 @@ def apply_model(input_xr: xr.DataArray) -> xr.DataArray:
 
     # Step 1: Load the ONNX model
     inspect(message="load onnx model")
-    ort_session = load_onnx_model("EURAC_pvfarm_rf_1_median_depth_15.onnx")
+    ort_session = load_onnx_model("rf_1_median_depth_15.onnx")
 
     # Step 2: Preprocess the input
     inspect(message="preprocess input")
