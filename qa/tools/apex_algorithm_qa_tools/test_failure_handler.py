@@ -9,19 +9,6 @@ from typing import Any, Dict, List, Optional
 import requests
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
 
-GITHUB_REPO = "ESA-APEx/apex_algorithms"
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-if not GITHUB_TOKEN:
-    raise EnvironmentError("GITHUB_TOKEN environment variable is not set.")
-
-ISSUE_LABEL = "benchmark-failure"
-GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY", "unknown/repo")
-GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID", "0")
-WORKFLOW_BASE_URL = (
-    f"https://github.com/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
-)
-GITHUB_SHA = os.getenv("GITHUB_SHA", "main")
-
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -34,18 +21,26 @@ class GitHubIssueManager:
     and creating new issues.
     """
 
-    def __init__(self):
-        self.repo = GITHUB_REPO
-        self.token = GITHUB_TOKEN
-        self.issue_label = ISSUE_LABEL
-        self.workflow_base_url = WORKFLOW_BASE_URL
+    def __init__(
+        self,
+        repository: Optional[str] = None,
+        token: Optional[str] = None,
+        issue_label: str = "benchmark-failure",
+    ):
+        self.repo = repository or os.getenv("GITHUB_REPOSITORY", "n/a")
+        self.token = token or os.getenv("GITHUB_TOKEN")
+        self.issue_label = issue_label
+
+    def _auth_header(self) -> str:
+        assert self.token, "GitHub token is required"
+        return f"Bearer {self.token}"
 
     def get_existing_issues(self) -> Dict[str, Any]:
         """
         Retrieve a mapping of existing open issue titles to issue details.
         """
         url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={self.issue_label}"
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": self._auth_header()}
         try:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
@@ -99,6 +94,16 @@ class GitHubIssueManager:
                     e,
                 )
 
+        github_server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+        github_repository = os.getenv("GITHUB_REPOSITORY")
+        github_run_id = os.getenv("GITHUB_RUN_ID")
+        if github_repository and github_run_id:
+            workflow_run_url = (
+                f"{github_server_url}/{github_repository}/actions/runs/{github_run_id}"
+            )
+        else:
+            workflow_run_url = "n/a"
+
         body = (
             f"## Benchmark Failure: {scenario['id']}\n\n"
             f"**Scenario ID**: {scenario['id']}\n"
@@ -106,9 +111,9 @@ class GitHubIssueManager:
             f"**Failure Count**: {failure_count}\n"
             f"**Timestamp**: {timestamp}\n\n"
             f"**Links**:\n"
-            f"- Workflow Run: {self.workflow_base_url}\n"
+            f"- Workflow Run: {workflow_run_url}\n"
             f"- Scenario Definition: {scenario_link}\n"
-            f"- Artifacts: {self.workflow_base_url}#artifacts\n\n"
+            f"- Artifacts: {workflow_run_url}#artifacts\n\n"
             "---\n"
             f"### Contact Information\n{contact_table}\n"
             "---\n\n"
@@ -131,7 +136,7 @@ class GitHubIssueManager:
         issue_body = self.build_issue_body(scenario, logs, failure_count=1)
         url = f"https://api.github.com/repos/{self.repo}/issues"
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": self._auth_header(),
             "Accept": "application/vnd.github.v3+json",
         }
         data = {
@@ -206,9 +211,9 @@ class ScenarioProcessor:
         """
         Generate a URL to the scenario definition file at the specific commit.
         """
-        base_url = (
-            f"https://github.com/{GITHUB_REPO}/blob/{os.getenv('GITHUB_SHA', 'main')}"
-        )
+        github_repository = os.getenv("GITHUB_REPOSITORY", "n/a")
+        github_sha = os.getenv("GITHUB_SHA", "main")
+        base_url = f"https://github.com/{github_repository}/blob/{github_sha}"
         algorithm_catalog = get_project_root() / "algorithm_catalog"
         for provider_dir in algorithm_catalog.iterdir():
             if not provider_dir.is_dir():
