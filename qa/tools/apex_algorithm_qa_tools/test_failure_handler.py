@@ -1,11 +1,10 @@
-
-import os
-import re
 import json
 import logging
+import os
+import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 import requests
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
@@ -18,17 +17,23 @@ if not GITHUB_TOKEN:
 ISSUE_LABEL = "benchmark-failure"
 GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY", "unknown/repo")
 GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID", "0")
-WORKFLOW_BASE_URL = f"https://github.com/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
+WORKFLOW_BASE_URL = (
+    f"https://github.com/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
+)
 GITHUB_SHA = os.getenv("GITHUB_SHA", "main")
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
 
 class GitHubIssueManager:
     """
     Handles interactions with the GitHub API, including building the issue body
     and creating new issues.
     """
+
     def __init__(self):
         self.repo = GITHUB_REPO
         self.token = GITHUB_TOKEN
@@ -45,19 +50,29 @@ class GitHubIssueManager:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
             issues = response.json()
-            return {issue["title"]: issue for issue in issues if issue.get("state") == "open"}
+            return {
+                issue["title"]: issue
+                for issue in issues
+                if issue.get("state") == "open"
+            }
         except requests.RequestException as e:
-            logger.error("Failed to fetch issues: %s. Response: %s", e, getattr(response, "text", "No response"))
+            logger.error(
+                "Failed to fetch issues: %s. Response: %s",
+                e,
+                getattr(response, "text", "No response"),
+            )
             return {}
 
-    def build_issue_body(self, scenario: Dict[str, Any], logs: str, failure_count: int) -> str:
+    def build_issue_body(
+        self, scenario: Dict[str, Any], logs: str, failure_count: int
+    ) -> str:
         """
         Build the GitHub issue body based on scenario details, logs, and contacts.
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         contacts = scenario.get("contacts", [])
         scenario_link = scenario.get("scenario_link", "")
-        
+
         contact_table = ""
         if contacts:
             try:
@@ -65,10 +80,12 @@ class GitHubIssueManager:
                 contact_table += "| Name | Organization | Contact |\n"
                 contact_table += "|------|--------------|---------|\n"
                 primary_contact = contacts[0]
-                contact_info = primary_contact.get('contactInstructions', '')
-                if primary_contact.get('links'):
-                    links = [f"[{link.get('title', 'link')}]({link.get('href', '#')})"
-                             for link in primary_contact.get('links', [])]
+                contact_info = primary_contact.get("contactInstructions", "")
+                if primary_contact.get("links"):
+                    links = [
+                        f"[{link.get('title', 'link')}]({link.get('href', '#')})"
+                        for link in primary_contact.get("links", [])
+                    ]
                     contact_info += " (" + ", ".join(links) + ")"
                 contact_table += (
                     f"| {primary_contact.get('name', '')} "
@@ -76,8 +93,12 @@ class GitHubIssueManager:
                     f"| {contact_info} |\n"
                 )
             except Exception as e:
-                logger.error("Error constructing contact table for scenario '%s': %s", scenario['id'], e)
-        
+                logger.error(
+                    "Error constructing contact table for scenario '%s': %s",
+                    scenario["id"],
+                    e,
+                )
+
         body = (
             f"## Benchmark Failure: {scenario['id']}\n\n"
             f"**Scenario ID**: {scenario['id']}\n"
@@ -111,12 +132,12 @@ class GitHubIssueManager:
         url = f"https://api.github.com/repos/{self.repo}/issues"
         headers = {
             "Authorization": f"Bearer {self.token}",
-            "Accept": "application/vnd.github.v3+json"
+            "Accept": "application/vnd.github.v3+json",
         }
         data = {
             "title": f"Scenario Failure: {scenario['id']}",
             "body": issue_body,
-            "labels": [self.issue_label]
+            "labels": [self.issue_label],
         }
         try:
             response = requests.post(url, json=data, headers=headers)
@@ -124,13 +145,17 @@ class GitHubIssueManager:
             issue_url = response.json().get("html_url", "URL not available")
             logger.info("Created new issue: %s", issue_url)
         except requests.RequestException as e:
-            logger.error("Failed to create issue for scenario '%s': %s", scenario['id'], e)
+            logger.error(
+                "Failed to create issue for scenario '%s': %s", scenario["id"], e
+            )
+
 
 class ScenarioProcessor:
     """
     Processes scenario details, including retrieving scenario data,
     contacts, and parsing the log file for failed tests.
     """
+
     def get_scenario_details(self, scenario_id: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve scenario details by ID.
@@ -142,7 +167,7 @@ class ScenarioProcessor:
                         "id": scenario.id,
                         "description": scenario.description,
                         "backend": scenario.backend,
-                        "process_graph": json.dumps(scenario.process_graph, indent=2)
+                        "process_graph": json.dumps(scenario.process_graph, indent=2),
                     }
                     # Add contacts and scenario link using helper methods.
                     details["contacts"] = self.get_scenario_contacts(scenario_id)
@@ -181,7 +206,9 @@ class ScenarioProcessor:
         """
         Generate a URL to the scenario definition file at the specific commit.
         """
-        base_url = f"https://github.com/{GITHUB_REPO}/blob/{os.getenv('GITHUB_SHA', 'main')}"
+        base_url = (
+            f"https://github.com/{GITHUB_REPO}/blob/{os.getenv('GITHUB_SHA', 'main')}"
+        )
         algorithm_catalog = get_project_root() / "algorithm_catalog"
         for provider_dir in algorithm_catalog.iterdir():
             if not provider_dir.is_dir():
@@ -189,7 +216,9 @@ class ScenarioProcessor:
             algorithm_dir = provider_dir / scenario_id
             if not algorithm_dir.exists():
                 continue
-            scenario_path = algorithm_dir / "benchmark_scenarios" / f"{scenario_id}.json"
+            scenario_path = (
+                algorithm_dir / "benchmark_scenarios" / f"{scenario_id}.json"
+            )
             if scenario_path.exists():
                 relative_path = scenario_path.relative_to(get_project_root())
                 return f"{base_url}/{relative_path.as_posix()}"
@@ -216,11 +245,9 @@ class ScenarioProcessor:
                 test_name = match.group(1)
                 scenario_id = match.group(2)
                 logs = match.group(3).strip()
-                failures.append({
-                    "test_name": test_name,
-                    "scenario_id": scenario_id,
-                    "logs": logs
-                })
+                failures.append(
+                    {"test_name": test_name, "scenario_id": scenario_id, "logs": logs}
+                )
             logger.info("Found %d failed scenario(s)", len(failures))
             return failures
         except Exception as e:
@@ -251,7 +278,10 @@ def main() -> None:
         if issue_title not in existing_issues:
             github_manager.create_issue(scenario, logs)
         else:
-            logger.info("Issue already exists for scenario '%s'. Skipping.", scenario_id)
+            logger.info(
+                "Issue already exists for scenario '%s'. Skipping.", scenario_id
+            )
+
 
 if __name__ == "__main__":
     main()
