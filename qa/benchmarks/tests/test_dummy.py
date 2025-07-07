@@ -44,3 +44,14 @@ def test_upload_assets(tmp_path, upload_assets_on_fail, x):
     path.write_text("Hello, world.\n")
     upload_assets_on_fail(path)
     assert x == 5
+
+
+def test_output_stuff():
+    print("print print")
+    import logging
+
+    logger = logging.getLogger("test_output_stuff")
+    logger.info("logger info")
+    logger.warning("logger warning")
+    logger.error("logger error")
+    assert False

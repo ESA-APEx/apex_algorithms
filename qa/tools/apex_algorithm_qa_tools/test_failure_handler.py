@@ -9,9 +9,6 @@ from typing import Any, Dict, List, Optional
 import requests
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
 
 
@@ -230,16 +227,12 @@ class ScenarioProcessor:
         logger.warning("No benchmark found for scenario '%s'", scenario_id)
         return ""
 
-    def parse_failed_tests(self) -> List[Dict[str, str]]:
+    def parse_failed_tests(self, pytest_output_path: Path) -> List[Dict[str, str]]:
         """
         Parse the pytest output file to extract failed tests and logs.
         """
-        log_file = Path("qa/benchmarks/pytest_output.txt")
-        if not log_file.exists():
-            logger.error("Pytest output file not found at %s", log_file)
-            return []
         try:
-            content = log_file.read_text()
+            content = pytest_output_path.read_text()
             failures = []
             pattern = (
                 r"=+ FAILURES =+\n.*?_* (test_run_benchmark\[(.*?)\])"
@@ -256,19 +249,27 @@ class ScenarioProcessor:
             logger.info("Found %d failed scenario(s)", len(failures))
             return failures
         except Exception as e:
-            logger.error("Error parsing log file: %s", e)
-            return []
+            raise RuntimeError(f"Failed to parse {pytest_output_path}") from e
 
 
 def main() -> None:
     """
     Main flow: parse failed tests, check for existing issues, and create new issues as needed.
     """
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+
     github_manager = GitHubIssueManager()
     scenario_processor = ScenarioProcessor()
 
     existing_issues = github_manager.get_existing_issues()
-    failed_tests = scenario_processor.parse_failed_tests()
+
+    # TODO: this should actually be a CLI argument instead of hardcoded
+    pytest_ouput_path = Path("qa/benchmarks/pytest_output.txt")
+    failed_tests = scenario_processor.parse_failed_tests(
+        pytest_ouput_path=pytest_ouput_path
+    )
 
     for failure in failed_tests:
         scenario_id = failure["scenario_id"]
