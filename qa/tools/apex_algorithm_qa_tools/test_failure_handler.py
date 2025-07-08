@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 import os
@@ -256,6 +257,10 @@ def main() -> None:
     """
     Main flow: parse failed tests, check for existing issues, and create new issues as needed.
     """
+    cli = argparse.ArgumentParser()
+    cli.add_argument("--terminal-report", required=True, type=Path)
+    cli_args = cli.parse_args()
+
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
@@ -265,10 +270,8 @@ def main() -> None:
 
     existing_issues = github_manager.get_existing_issues()
 
-    # TODO: this should actually be a CLI argument instead of hardcoded
-    pytest_ouput_path = Path("qa/benchmarks/pytest_output.txt")
     failed_tests = scenario_processor.parse_failed_tests(
-        pytest_ouput_path=pytest_ouput_path
+        pytest_output_path=cli_args.terminal_report
     )
 
     for failure in failed_tests:

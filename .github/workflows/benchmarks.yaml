@@ -55,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if grep -q "FAILED" qa/benchmarks/pytest_output.txt; then
-            python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py
+            python qa/tools/apex_algorithm_qa_tools/test_failure_handler.py --terminal-report qa/benchmarks/pytest_output.txt
           else
             echo "No test failures detected"
           fi
