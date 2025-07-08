@@ -422,10 +422,7 @@ class GithubIssueHandler:
             scenario_id = test_report.get("scenario_id")
             node_id = test_report.get("nodeid")
             outcome = test_report.get("outcome")
-
-            if outcome != "failed":
-                # TODO #171 also handle passing tests
-                continue
+            failing_test = outcome == "failed"
 
             # Find benchmark scenario by ID
             benchmark_scenario = self.get_benchmark_scenarios(scenario_id)
@@ -450,18 +447,20 @@ class GithubIssueHandler:
                 i for i in all_existing_issues if i["title"] == issue_title
             ]
 
-            if not existing_issues:
-                logger.info(f"Creating new issue for scenario {scenario_id}")
+            if failing_test and not existing_issues:
+                logger.info(
+                    f"Creating new issue for newly failing scenario {scenario_id!r}"
+                )
                 self.github_api.create_issue(
                     title=issue_title,
                     body=scenario_run_info.build_issue_body(),
                     labels=[self.issue_label],
                 )
-            else:
+            elif existing_issues:
                 for issue in existing_issues:
                     issue_number = issue["number"]
                     logger.info(
-                        f"Commenting on existing issue {issue_number} for scenario {scenario_id}"
+                        f"Commenting on existing issue #{issue_number} for scenario {scenario_id!r}"
                     )
                     self.github_api.create_issue_comment(
                         issue_number=issue_number,
