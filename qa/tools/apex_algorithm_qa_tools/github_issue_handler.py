@@ -6,12 +6,15 @@ import json
 import logging
 import os
 import re
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
-from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
+from apex_algorithm_qa_tools.scenarios import (
+    BenchmarkScenario,
+    get_benchmark_scenarios,
+    get_project_root,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +103,7 @@ class GithubApi:
             method="POST", path="/issues", data=data, expected_status=201
         )
         logger.info(
-            f"Created new issue: {resp.get('number')=} {resp.get('title')=} {resp.get('url')=}"
+            f"Created new issue: #{resp.get('number')} {resp.get('title')!r} at {resp.get('url')}"
         )
         return resp
 
@@ -119,215 +122,39 @@ class GithubApi:
         )
 
 
-class GitHubIssueManager:
-    """
-    Handles interactions with the GitHub API, including building the issue body
-    and creating new issues.
-    """
-
-    # TODO: merge GitHubIssueManager and ScenarioProcessor?
-
-    def __init__(
-        self, repository: str, token: str = None, issue_label: str = "benchmark-failure"
-    ):
-        self._github_api = GithubApi(repository=repository, token=token)
-        self.issue_label = issue_label
-
-    def get_existing_issues(self) -> List[dict]:
-        """
-        Retrieve a mapping of existing open issue titles to issue details.
-        """
-        # TODO Overkill to do this in a separate method?
-        issues = self._github_api.list_issues(labels=[self.issue_label])
-        logger.info(
-            f"Listed {len(issues)} existing issues (labeled '{self.issue_label}')"
-        )
-        return issues
-
-    def get_workflow_run_url(self) -> str:
+class GithubContext:
+    def __init__(self):
+        # Environment variables set by GitHub Actions
         # TODO: get this from report/metrics instead of environment variables?
-        github_server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
-        github_repository = os.getenv("GITHUB_REPOSITORY")
-        github_run_id = os.getenv("GITHUB_RUN_ID")
-        if github_repository and github_run_id:
-            workflow_run_url = (
-                f"{github_server_url}/{github_repository}/actions/runs/{github_run_id}"
-            )
-        else:
-            workflow_run_url = "n/a"
-        return workflow_run_url
+        self.server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+        self.repository = os.getenv("GITHUB_REPOSITORY", "ESA-APEx/apex_algorithms")
+        self.run_id = os.getenv("GITHUB_RUN_ID")
+        self.sha = os.getenv("GITHUB_SHA", "main")
+        self.token = os.getenv("GITHUB_TOKEN")
 
-    def build_issue_body(
-        self, scenario: Dict[str, Any], logs: str, failure_count: int
-    ) -> str:
-        """
-        Build the GitHub issue body based on scenario details, logs, and contacts.
-        """
-        # TODO use real templating system?
-        # TODO: avoid current timestamp, get timestamp from pytest report
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        contacts = scenario.get("contacts", [])
-        scenario_link = scenario.get("scenario_link", "")
+    def get_workflow_run_url(self) -> str | None:
+        """Link to current workflow run."""
+        if self.repository and self.run_id:
+            return f"{self.server_url}/{self.repository}/actions/runs/{self.run_id}"
 
-        contact_table = ""
-        if contacts:
-            try:
-                contact_table += "\n\n**Point of Contact**:\n\n"
-                contact_table += "| Name | Organization | Contact |\n"
-                contact_table += "|------|--------------|---------|\n"
-                primary_contact = contacts[0]
-                contact_info = primary_contact.get("contactInstructions", "")
-                if primary_contact.get("links"):
-                    links = [
-                        f"[{link.get('title', 'link')}]({link.get('href', '#')})"
-                        for link in primary_contact.get("links", [])
-                    ]
-                    contact_info += " (" + ", ".join(links) + ")"
-                contact_table += (
-                    f"| {primary_contact.get('name', '')} "
-                    f"| {primary_contact.get('organization', '')} "
-                    f"| {contact_info} |\n"
-                )
-            except Exception as e:
-                logger.error(
-                    "Error constructing contact table for scenario '%s': %s",
-                    scenario["id"],
-                    e,
-                )
-
-        workflow_run_url = self.get_workflow_run_url()
-
-        body = (
-            f"## Benchmark Failure: {scenario['id']}\n\n"
-            f"**Scenario ID**: {scenario['id']}\n"
-            f"**Backend System**: {scenario['backend']}\n"
-            f"**Failure Count**: {failure_count}\n"
-            f"**Timestamp**: {timestamp}\n\n"
-            f"**Links**:\n"
-            f"- Workflow Run: {workflow_run_url}\n"
-            f"- Scenario Definition: {scenario_link}\n"
-            f"- Artifacts: {workflow_run_url}#artifacts\n\n"
-            "---\n"
-            f"### Contact Information\n{contact_table}\n"
-            "---\n\n"
-            "### Process Graph\n"
-            "```json\n"
-            f"{scenario['process_graph']}\n"
-            "```\n\n"
-            "---\n"
-            "### Error Logs\n"
-            "```plaintext\n"
-            f"{logs}\n"
-            "```\n"
-        )
-        return body
-
-    def create_issue(self, scenario: Dict[str, Any], logs: str) -> dict:
-        """
-        Create a new GitHub issue for the given scenario failure.
-        """
-        # TODO: overkill to do this in a separate method?
-        return self._github_api.create_issue(
-            title=f"Scenario Failure: {scenario['id']}",
-            body=self.build_issue_body(scenario, logs, failure_count=1),
-            labels=[self.issue_label],
-        )
-
-    def create_issue_comment(self, issue_number: int, text: str) -> dict:
-        """
-        Create a comment on an existing issue for the given scenario failure.
-        """
-        # TODO: overkill to do this in a separate method?
-        return self._github_api.create_issue_comment(
-            issue_number=issue_number, body=text
-        )
+    def get_file_permalink(self, path: str) -> str | None:
+        """Permalink to a file in the repository at the specific commit."""
+        if self.repository and self.sha:
+            return f"{self.server_url}/{self.repository}/blob/{self.sha}/{path}"
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class TerminalReportSection:
     title: Union[str, None]
     subnodes: List[Union[str, TerminalReportSection]]
 
 
-class ScenarioProcessor:
-    """
-    Processes scenario details, including retrieving scenario data,
-    contacts, and parsing the log file for failed tests.
-    """
+# Simple alias for now
+TestMetricsData = Dict[str, Any]
 
-    def get_scenario_details(self, scenario_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Retrieve scenario details by ID.
-        """
-        # TODO: don't try-except this
-        try:
-            for scenario in get_benchmark_scenarios():
-                if scenario.id == scenario_id:
-                    details = {
-                        "id": scenario.id,
-                        "description": scenario.description,
-                        "backend": scenario.backend,
-                        "process_graph": json.dumps(scenario.process_graph, indent=2),
-                    }
-                    # Add contacts and scenario link using helper methods.
-                    details["contacts"] = self.get_scenario_contacts(scenario_id)
-                    details["scenario_link"] = self.get_scenario_link(scenario_id)
-                    return details
-            logger.warning("Scenario '%s' not found", scenario_id)
-            return None
-        except Exception as e:
-            logger.error("Error loading scenarios: %s", e)
-            return None
 
-    def get_scenario_contacts(self, scenario_id: str) -> List[Any]:
-        """
-        Retrieve contact information for a scenario from the algorithm catalog.
-        """
-        # TODO: this looks like it can be simplified (single "exists" check or glob?)
-        algorithm_catalog = get_project_root() / "algorithm_catalog"
-        for provider_dir in algorithm_catalog.iterdir():
-            if not provider_dir.is_dir():
-                continue
-            algorithm_dir = provider_dir / scenario_id
-            if not algorithm_dir.exists():
-                continue
-            records_path = algorithm_dir / "records" / f"{scenario_id}.json"
-            if records_path.exists():
-                try:
-                    with records_path.open() as f:
-                        record = json.load(f)
-                    return record.get("properties", {}).get("contacts", [])
-                except Exception as e:
-                    logger.error("Error loading contacts from %s: %s", records_path, e)
-                    return []
-        logger.warning("No contacts found for scenario '%s'", scenario_id)
-        return []
-
-    def get_scenario_link(self, scenario_id: str) -> str:
-        """
-        Generate a URL to the scenario definition file at the specific commit.
-        """
-        github_repository = os.getenv("GITHUB_REPOSITORY", "n/a")
-        github_sha = os.getenv("GITHUB_SHA", "main")
-        base_url = f"https://github.com/{github_repository}/blob/{github_sha}"
-        algorithm_catalog = get_project_root() / "algorithm_catalog"
-        # TODO: simplify this chain of exist checks?
-        for provider_dir in algorithm_catalog.iterdir():
-            if not provider_dir.is_dir():
-                continue
-            algorithm_dir = provider_dir / scenario_id
-            if not algorithm_dir.exists():
-                continue
-            scenario_path = (
-                algorithm_dir / "benchmark_scenarios" / f"{scenario_id}.json"
-            )
-            if scenario_path.exists():
-                relative_path = scenario_path.relative_to(get_project_root())
-                return f"{base_url}/{relative_path.as_posix()}"
-        logger.warning("No benchmark found for scenario '%s'", scenario_id)
-        return ""
-
-    def parse_metrics_json(self, path: Path) -> Dict[str, Any]:
+class PytestReportParser:
+    def parse_metrics_json(self, path: Path) -> List[TestMetricsData]:
         """
         Parse the metrics.json file to extract relevant metrics.
         Produces a list with of one dictionary per test/scenario run.
@@ -378,6 +205,8 @@ class ScenarioProcessor:
 
         Returns nested TerminalReportSection data structure.
         """
+        logger.info(f"Parsing sections from terminal report dump {path}")
+
         root = TerminalReportSection(title="root", subnodes=[])
         current_section = root
 
@@ -405,7 +234,7 @@ class ScenarioProcessor:
                 )
                 root.subnodes[-1].subnodes.append(current_section)
             else:
-                current_section.subnodes.append(line.strip())
+                current_section.subnodes.append(line.rstrip())
 
         return root
 
@@ -425,69 +254,220 @@ class ScenarioProcessor:
         return logs
 
 
-def main() -> None:
-    """
-    Main flow: parse failed tests, check for existing issues, and create new issues as needed.
-    """
-    # TODO: move this main to GitHubIssueManager/ScenarioProcessor
-    cli = argparse.ArgumentParser()
-    cli.add_argument("--terminal-report", required=True, type=Path)
-    cli.add_argument("--metrics-json", required=True, type=Path)
-    cli_args = cli.parse_args()
+@dataclasses.dataclass(frozen=True)
+class ScenarioRunInfo:
+    """Information about a benchmark scenario run"""
 
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+    scenario: BenchmarkScenario
+    github_context: GithubContext
+    test_metrics: TestMetricsData
+    failure_logs: str | None = None
 
-    github_manager = GitHubIssueManager(
-        repository=os.getenv("GITHUB_REPOSITORY", "n/a"),
-        token=os.getenv("GITHUB_TOKEN", "n/a"),
-    )
-    scenario_processor = ScenarioProcessor()
+    def get_contacts(self) -> list | None:
+        """Get contact information from corresponding OGC API record."""
+        # Guess records path from benchmark scenario source.
+        if isinstance(self.scenario.source, Path):
+            paths = list(
+                (self.scenario.source.parent.parent / "records").glob("*.json")
+            )
+            logger.info(
+                f"Looking up contact info for {self.scenario.id} in {paths=} (from {self.scenario.source})"
+            )
+            for path in paths:
+                try:
+                    with path.open("r", encoding="utf8") as f:
+                        record = json.load(f)
+                    if contacts := record.get("properties", {}).get("contacts"):
+                        return contacts
+                except Exception as e:
+                    logger.warning(f"Failed to read contacts from {path}: {e!r}")
 
-    all_existing_issues = github_manager.get_existing_issues()
+    def get_scenario_link(self) -> str | None:
+        """
+        Generate a URL to the scenario definition file at the specific commit.
+        """
+        if isinstance(self.scenario.source, Path):
+            path = self.scenario.source.relative_to(get_project_root()).as_posix()
+            return self.github_context.get_file_permalink(path)
 
-    failure_logs = scenario_processor.extract_failure_logs(
-        path=cli_args.terminal_report
-    )
+    def issue_title(self) -> str:
+        return f"Scenario Failure: {self.scenario.id}"
 
-    for test_report in scenario_processor.parse_metrics_json(cli_args.metrics_json):
-        logger.info(f"Handling {test_report=}")
-        scenario_id = test_report.get("scenario_id")
-        node_id = test_report.get("nodeid")
-        outcome = test_report.get("outcome")
+    def build_issue_body(self) -> str:
+        """Build the GitHub issue body"""
+        # TODO use real templating system?
+        contacts = self.get_contacts()
+        contact_table = ""
+        if contacts:
+            try:
+                contact_table += "\n\n**Point of Contact**:\n\n"
+                contact_table += "| Name | Organization | Contact |\n"
+                contact_table += "|------|--------------|---------|\n"
+                primary_contact = contacts[0]
+                contact_info = primary_contact.get("contactInstructions", "")
+                if primary_contact.get("links"):
+                    links = [
+                        f"[{link.get('title', 'link')}]({link.get('href', '#')})"
+                        for link in primary_contact.get("links", [])
+                    ]
+                    contact_info += " (" + ", ".join(links) + ")"
+                contact_table += (
+                    f"| {primary_contact.get('name', '')} "
+                    f"| {primary_contact.get('organization', '')} "
+                    f"| {contact_info} |\n"
+                )
+            except Exception as e:
+                logger.error(
+                    f"Failed constructing contact table for scenario {self.scenario.id}: {e!r}"
+                )
 
-        if outcome != "failed":
-            # TODO #171 also handle passing tests
-            continue
+        workflow_run_url = self.github_context.get_workflow_run_url()
+        scenario_link = self.get_scenario_link()
+        process_graph = json.dumps(self.scenario.process_graph, indent=2)
 
-        logs = failure_logs.get(node_id.split("::")[-1])
+        body = (
+            f"## Benchmark Failure: {self.scenario.id}\n\n"
+            f"**Scenario ID**: {self.scenario.id}\n"
+            f"**Backend System**: {self.scenario.backend}\n"
+            f"**Outcome**: {self.test_metrics['outcome']}\n"
+            f"**Links**:\n"
+            f"- Workflow Run: {workflow_run_url}\n"
+            f"- Scenario Definition: {scenario_link}\n"
+            f"- Artifacts: {workflow_run_url}#artifacts\n\n"
+            "---\n"
+            f"### Contact Information\n{contact_table}\n"
+            "---\n\n"
+            "### Process Graph\n"
+            "```json\n"
+            f"{process_graph}\n"
+            "```\n\n"
+            "---\n"
+            "### Error Logs\n"
+            "```plaintext\n"
+            f"{self.failure_logs}\n"
+            "```\n"
+        )
+        return body
 
-        scenario = scenario_processor.get_scenario_details(scenario_id)
-        if not scenario:
-            # TODO: still possible to create issue/comment even without scenario details?
-            logger.warning("Skipping scenario '%s' - details not found", scenario_id)
-            continue
+    def build_comment_body(self) -> str:
+        """Build the comment body for an existing issue"""
+        workflow_run_url = self.github_context.get_workflow_run_url()
+        self.test_metrics["outcome"]
+        return (
+            f"Results of latest run {workflow_run_url}:\n"
+            f"- Outcome: {self.test_metrics['outcome']}\n"
+        )
 
-        # TODO: avoid duplicate logic to build title
-        issue_title = f"Scenario Failure: {scenario_id}"
 
-        existing_issues = [i for i in all_existing_issues if i["title"] == issue_title]
+class GithubIssueHandler:
+    def __init__(
+        self,
+        github_context: GithubContext | None = None,
+        github_token: str | None = None,
+        issue_label: str = "benchmark-failure",
+    ):
+        self.github_context = github_context or GithubContext()
+        self.github_api = GithubApi(
+            repository=self.github_context.repository,
+            token=github_token or self.github_context.token,
+        )
+        self.issue_label = issue_label
+        self._benchmark_scenarios = get_benchmark_scenarios()
 
-        if not existing_issues:
-            logger.info(f"Creating new issue for scenario {scenario_id}")
-            github_manager.create_issue(scenario, logs)
+    def get_benchmark_scenarios(self, scenario_id: str) -> BenchmarkScenario | None:
+        matches = [s for s in self._benchmark_scenarios if s.id == scenario_id]
+        if len(matches) == 1:
+            return matches[0]
+        elif len(matches) == 0:
+            return None
         else:
-            for issue in existing_issues:
-                logger.info(
-                    f"Commenting on existing issue {issue['number']} for scenario {scenario_id}"
+            raise ValueError(
+                f"Found {len(matches)} benchmark scenarios with {scenario_id=}"
+            )
+
+    def main(self) -> None:
+        """
+        Main flow: parse failed tests, check for existing issues, and create new issues as needed.
+        """
+        cli = argparse.ArgumentParser()
+        cli.add_argument("--terminal-report", required=True, type=Path)
+        cli.add_argument("--metrics-json", required=True, type=Path)
+        cli_args = cli.parse_args()
+
+        logging.basicConfig(
+            level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+        )
+
+        # Parse pytest reports
+        pytest_report_parser = PytestReportParser()
+        test_reports = pytest_report_parser.parse_metrics_json(cli_args.metrics_json)
+        logger.info(
+            f"Extracted {len(test_reports)} test reports from {cli_args.metrics_json}"
+        )
+        failure_logs = pytest_report_parser.extract_failure_logs(
+            path=cli_args.terminal_report
+        )
+        logger.info(
+            f"Extracted {len(failure_logs)} failure logs from {cli_args.terminal_report}"
+        )
+
+        # Collect existing GitHub issues
+        all_existing_issues = self.github_api.list_issues(labels=[self.issue_label])
+        logger.info(
+            f"Found {len(all_existing_issues)} existing issues labeled '{self.issue_label}'"
+        )
+
+        for test_report in test_reports:
+            logger.info(f"Handling {test_report=}")
+            scenario_id = test_report.get("scenario_id")
+            node_id = test_report.get("nodeid")
+            outcome = test_report.get("outcome")
+
+            if outcome != "failed":
+                # TODO #171 also handle passing tests
+                continue
+
+            # Find benchmark scenario by ID
+            benchmark_scenario = self.get_benchmark_scenarios(scenario_id)
+            if not benchmark_scenario:
+                # TODO: still possible to create issue/comment even without scenario details?
+                logger.warning(f"Skipping {scenario_id=}: no benchmark scenario found")
+                continue
+
+            # Logs are organized based on the last part of the node_id
+            logs = failure_logs.get(node_id.split("::")[-1])
+
+            scenario_run_info = ScenarioRunInfo(
+                scenario=benchmark_scenario,
+                github_context=self.github_context,
+                test_metrics=test_report,
+                failure_logs=logs,
+            )
+
+            # Look for existing issues with the same title
+            issue_title = scenario_run_info.issue_title()
+            existing_issues = [
+                i for i in all_existing_issues if i["title"] == issue_title
+            ]
+
+            if not existing_issues:
+                logger.info(f"Creating new issue for scenario {scenario_id}")
+                self.github_api.create_issue(
+                    title=issue_title,
+                    body=scenario_run_info.build_issue_body(),
+                    labels=[self.issue_label],
                 )
-                workflow_run_url = github_manager.get_workflow_run_url()
-                github_manager.create_issue_comment(
-                    issue_number=issue["number"],
-                    text=f"Results of latest run {workflow_run_url}: {outcome=}",
-                )
+            else:
+                for issue in existing_issues:
+                    issue_number = issue["number"]
+                    logger.info(
+                        f"Commenting on existing issue {issue_number} for scenario {scenario_id}"
+                    )
+                    self.github_api.create_issue_comment(
+                        issue_number=issue_number,
+                        body=scenario_run_info.build_comment_body(),
+                    )
 
 
 if __name__ == "__main__":
-    main()
+    GithubIssueHandler().main()

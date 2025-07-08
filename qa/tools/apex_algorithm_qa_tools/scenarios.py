@@ -37,9 +37,12 @@ class BenchmarkScenario:
     job_options: dict | None = None
     reference_data: dict = dataclasses.field(default_factory=dict)
     reference_options: dict = dataclasses.field(default_factory=dict)
+    source: str | Path | None = None
 
     @classmethod
-    def from_dict(cls, data: dict) -> BenchmarkScenario:
+    def from_dict(
+        cls, data: dict, *, source: str | Path | None = None
+    ) -> BenchmarkScenario:
         jsonschema.validate(instance=data, schema=_get_benchmark_scenario_schema())
         # TODO: also include the `lint_benchmark_scenario` stuff here (maybe with option to toggle deep URL inspection)?
 
@@ -53,6 +56,7 @@ class BenchmarkScenario:
             reference_data=data.get("reference_data", {}),
             job_options=data.get("job_options"),
             reference_options=data.get("reference_options", {}),
+            source=source,
         )
 
 
@@ -70,7 +74,9 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
             data = json.load(f)
         # TODO: support single scenario files in addition to listings?
         assert isinstance(data, list)
-        scenarios.extend(BenchmarkScenario.from_dict(item) for item in data)
+        scenarios.extend(
+            BenchmarkScenario.from_dict(item, source=Path(path)) for item in data
+        )
     return scenarios
 
 

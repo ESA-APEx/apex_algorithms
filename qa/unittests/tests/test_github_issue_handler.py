@@ -2,14 +2,9 @@ import textwrap
 
 from apex_algorithm_qa_tools.github_issue_handler import (
     GithubApi,
-    GitHubIssueManager,
-    ScenarioProcessor,
+    PytestReportParser,
     TerminalReportSection,
 )
-
-
-def test_dummy():
-    assert GitHubIssueManager
 
 
 class TestGithubApi:
@@ -94,7 +89,7 @@ class TestGithubApi:
         assert comment == {"id": 456, "body": "This is a test comment."}
 
 
-class TestScenarioProcessor:
+class TestPytestReportParser:
     def test_parse_metrics_json(self, tmp_path):
         path = tmp_path / "metrics.json"
         path.write_text(
@@ -126,7 +121,7 @@ class TestScenarioProcessor:
         """
         )
 
-        metrics = ScenarioProcessor().parse_metrics_json(path)
+        metrics = PytestReportParser().parse_metrics_json(path)
         assert metrics == [
             {
                 "nodeid": "tests/test_benchmarks.py::test_run_benchmark[max_ndvi]",
@@ -176,7 +171,7 @@ class TestScenarioProcessor:
         pytest_output_path = tmp_path / "pytest_output.txt"
         pytest_output_path.write_text(textwrap.dedent(pytest_output))
 
-        sections = ScenarioProcessor().parse_terminal_report_sections(
+        sections = PytestReportParser().parse_terminal_report_sections(
             pytest_output_path
         )
         assert sections == TerminalReportSection(
@@ -233,7 +228,8 @@ class TestScenarioProcessor:
 
             =================================== FAILURES ===================================
             _____________________ test_run_benchmark[sentinel1_stats] ______________________
-            hello sentinel1
+            hello
+                sentinel1
 
             _________________________ test_run_benchmark[max_ndvi] _________________________
             max the NDVI!
@@ -249,9 +245,9 @@ class TestScenarioProcessor:
         pytest_output_path = tmp_path / "pytest_output.txt"
         pytest_output_path.write_text(textwrap.dedent(pytest_output))
 
-        logs = ScenarioProcessor().extract_failure_logs(pytest_output_path)
+        logs = PytestReportParser().extract_failure_logs(pytest_output_path)
         assert logs == {
-            "test_run_benchmark[sentinel1_stats]": "hello sentinel1",
+            "test_run_benchmark[sentinel1_stats]": "hello\n    sentinel1",
             "test_run_benchmark[max_ndvi]": textwrap.dedent(
                 """\
                 max the NDVI!
