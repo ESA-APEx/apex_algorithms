@@ -1,6 +1,6 @@
 import textwrap
 
-from apex_algorithm_qa_tools.test_failure_handler import (
+from apex_algorithm_qa_tools.github_issue_handler import (
     GitHubIssueManager,
     ScenarioProcessor,
     TerminalReportSection,

@@ -358,6 +358,7 @@ def main() -> None:
     )
 
     for test_report in scenario_processor.parse_metrics_json(cli_args.metrics_json):
+        logger.info("Handling {test_report=}")
         scenario_id = test_report.get("scenario_id")
         node_id = test_report.get("nodeid")
         outcome = test_report.get("outcome")
