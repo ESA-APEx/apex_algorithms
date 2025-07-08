@@ -7,6 +7,7 @@ and skip all other non-dummy tests.
 """
 
 import pytest
+import requests
 
 
 @pytest.mark.parametrize("y", [4, 5, 6])
@@ -55,3 +56,8 @@ def test_output_stuff():
     logger.warning("logger warning")
     logger.error("logger error")
     assert False
+
+
+def test_requests_fail():
+    r = requests.get("https://nope.test/meh", timeout=0.1)
+    assert r.status_code == 200

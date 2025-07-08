@@ -1,11 +1,14 @@
+from __future__ import annotations
+
 import argparse
+import dataclasses
 import json
 import logging
 import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import requests
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_project_root
@@ -153,6 +156,12 @@ class GitHubIssueManager:
             )
 
 
+@dataclasses.dataclass
+class TerminalReportSection:
+    title: Union[str, None]
+    subnodes: List[Union[str, TerminalReportSection]]
+
+
 class ScenarioProcessor:
     """
     Processes scenario details, including retrieving scenario data,
@@ -228,39 +237,17 @@ class ScenarioProcessor:
         logger.warning("No benchmark found for scenario '%s'", scenario_id)
         return ""
 
-    def parse_failed_tests(self, pytest_output_path: Path) -> List[Dict[str, str]]:
-        """
-        Parse the pytest output file to extract failed tests and logs.
-        """
-        try:
-            content = pytest_output_path.read_text()
-            failures = []
-            pattern = (
-                r"=+ FAILURES =+\n.*?_* (test_run_benchmark\[(.*?)\])"
-                r"(?:.*?)\n(.*?)(?=\n=+|\Z)"
-            )
-            matches = re.finditer(pattern, content, re.DOTALL)
-            for match in matches:
-                test_name = match.group(1)
-                scenario_id = match.group(2)
-                logs = match.group(3).strip()
-                failures.append(
-                    {"test_name": test_name, "scenario_id": scenario_id, "logs": logs}
-                )
-            logger.info("Found %d failed scenario(s)", len(failures))
-            return failures
-        except Exception as e:
-            raise RuntimeError(f"Failed to parse {pytest_output_path}") from e
-
     def parse_metrics_json(self, path: Path) -> Dict[str, Any]:
         """
         Parse the metrics.json file to extract relevant metrics.
+        Produces a list with of one dictionary per test/scenario run.
         """
         logger.info(f"Parsing metrics from {path}")
         with path.open("r", encoding="utf8") as f:
             metrics = json.load(f)
 
         def get_metric(metrics: List[list], name: str, default=None) -> Any:
+            """Helper to extract a metric by name from the list of metrics."""
             found = [v for (k, v) in metrics if k == name]
             if len(found) == 0:
                 return default
@@ -291,6 +278,62 @@ class ScenarioProcessor:
             for m in metrics
         ]
 
+    def parse_terminal_report_sections(self, path: Path) -> TerminalReportSection:
+        """
+        Parse sections from pytest terminal report, which are formatted as:
+
+            ===== H1 =====
+            _____ H2 _____
+            ...
+
+        Returns nested TerminalReportSection data structure.
+        """
+        root = TerminalReportSection(title="root", subnodes=[])
+        current_section = root
+
+        # regexes to find section headers ("===== H1 =====", "_____ H2 _____", ...)
+        h1_regex = re.compile(r"^={4,}\s+(?P<title>.+)\s+={4,}$")
+        h2_regex = re.compile(r"^_{4,}\s+(?P<title>.+)\s+_{4,}$")
+
+        for line in path.open("r", encoding="utf8"):
+            if match := h1_regex.match(line):
+                # Start new h1 section
+                current_section = TerminalReportSection(
+                    title=match.group("title"), subnodes=[]
+                )
+                root.subnodes.append(current_section)
+            elif match := h2_regex.match(line):
+                # Start new h2 section within the current h1
+                if not (
+                    len(root.subnodes) > 0
+                    and isinstance(root.subnodes[-1], TerminalReportSection)
+                ):
+                    # Ensure we have a preceding H1 section
+                    root.subnodes.append(TerminalReportSection(title=None, subnodes=[]))
+                current_section = TerminalReportSection(
+                    title=match.group("title"), subnodes=[]
+                )
+                root.subnodes[-1].subnodes.append(current_section)
+            else:
+                current_section.subnodes.append(line.strip())
+
+        return root
+
+    def extract_failure_logs(self, path: Path) -> Dict[str, str]:
+        """Extract per test failure logs from the terminal report."""
+        logs = {}
+        for l1_node in self.parse_terminal_report_sections(path).subnodes:
+            if (
+                isinstance(l1_node, TerminalReportSection)
+                and l1_node.title == "FAILURES"
+            ):
+                for l2_node in l1_node.subnodes:
+                    if isinstance(l2_node, TerminalReportSection):
+                        # TODO: this assumes level 2 only has text lines,
+                        #       and no further subsections, but that is ok for now.
+                        logs[l2_node.title] = "\n".join(l2_node.subnodes).strip()
+        return logs
+
 
 def main() -> None:
     """
@@ -298,6 +341,7 @@ def main() -> None:
     """
     cli = argparse.ArgumentParser()
     cli.add_argument("--terminal-report", required=True, type=Path)
+    cli.add_argument("--metrics-json", required=True, type=Path)
     cli_args = cli.parse_args()
 
     logging.basicConfig(
@@ -309,13 +353,20 @@ def main() -> None:
 
     existing_issues = github_manager.get_existing_issues()
 
-    failed_tests = scenario_processor.parse_failed_tests(
-        pytest_output_path=cli_args.terminal_report
+    failure_logs = scenario_processor.extract_failure_logs(
+        path=cli_args.terminal_report
     )
 
-    for failure in failed_tests:
-        scenario_id = failure["scenario_id"]
-        logs = failure["logs"]
+    for test_report in scenario_processor.parse_metrics_json(cli_args.metrics_json):
+        scenario_id = test_report.get("scenario_id")
+        node_id = test_report.get("nodeid")
+        outcome = test_report.get("outcome")
+
+        if outcome != "failed":
+            # TODO #171 also handle passing tests
+            continue
+
+        logs = failure_logs.get(node_id.split("::")[-1])
 
         scenario = scenario_processor.get_scenario_details(scenario_id)
         if not scenario:
