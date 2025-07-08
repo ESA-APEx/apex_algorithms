@@ -16,48 +16,146 @@ from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios, get_proje
 logger = logging.getLogger(__name__)
 
 
+class GithubApi:
+    """
+    Generic GitHub API client for authenticated requests to a specific repository.
+    """
+
+    def __init__(self, repository: str, token: str):
+        self._repo = repository
+        self._token = token
+
+    def request(
+        self,
+        *,
+        method: str,
+        path: str,
+        params: Optional[dict] = None,
+        data: Optional[dict] = None,
+        expected_status: Optional[int] = 200,
+        timeout: float = 10.0,
+    ) -> dict:
+        """
+        Helper method to make authenticated requests to the GitHub API.
+        """
+        try:
+            url = f"https://api.github.com/repos/{self._repo}/{path.lstrip('/')}"
+            headers = {
+                "Authorization": f"Bearer {self._token}",
+                "Accept": "application/vnd.github+json",
+            }
+            logger.debug(f"Doing `{method} {url}` with {params=}")
+            resp = requests.request(
+                method=method,
+                url=url,
+                headers=headers,
+                params=params,
+                json=data,
+                timeout=timeout,
+            )
+            logger.debug(f"Response: {resp!r}")
+            resp.raise_for_status()
+            if expected_status is not None and resp.status_code != expected_status:
+                raise RuntimeError(
+                    f"Unexpected status code {resp.status_code} (!= {expected_status}) for `{method} {url}`: {resp.text}"
+                )
+            return resp.json()
+        except requests.HTTPError as e:
+            raise RuntimeError(
+                f"Failed to `{method} {url}`: {e=} {e.response.text=}"
+            ) from e
+        except Exception as e:
+            raise RuntimeError(f"Failed to `{method} {url}`: {e=}") from e
+
+    def list_issues(
+        self, *, state: str = "open", labels: Optional[List[str]] = None
+    ) -> List[dict]:
+        """
+        List (open) issues in the repository
+
+        https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues
+        """
+        params = {
+            "state": state,
+            "page": 1,  # TODO: handle pagination
+        }
+        if labels:
+            params["labels"] = ",".join(labels)
+        return self.request(method="GET", path="/issues", params=params)
+
+    def create_issue(
+        self, *, title: str, body: str, labels: Optional[List[str]] = None
+    ) -> dict:
+        """
+        Create new issue under the repository.
+
+        https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#create-an-issue
+        """
+        data = {
+            "title": title,
+            "body": body,
+            "labels": labels or [],
+        }
+        resp = self.request(
+            method="POST", path="/issues", data=data, expected_status=201
+        )
+        logger.info(
+            f"Created new issue: {resp.get('number')=} {resp.get('title')=} {resp.get('url')=}"
+        )
+        return resp
+
+    def create_issue_comment(self, issue_number: int, body: str) -> dict:
+        """
+        Create a comment on an existing issue.
+
+        https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
+        """
+        data = {"body": body}
+        return self.request(
+            method="POST",
+            path=f"/issues/{issue_number}/comments",
+            data=data,
+            expected_status=201,
+        )
+
+
 class GitHubIssueManager:
     """
     Handles interactions with the GitHub API, including building the issue body
     and creating new issues.
     """
 
+    # TODO: merge GitHubIssueManager and ScenarioProcessor?
+
     def __init__(
-        self,
-        repository: Optional[str] = None,
-        token: Optional[str] = None,
-        issue_label: str = "benchmark-failure",
+        self, repository: str, token: str = None, issue_label: str = "benchmark-failure"
     ):
-        self.repo = repository or os.getenv("GITHUB_REPOSITORY", "n/a")
-        self.token = token or os.getenv("GITHUB_TOKEN")
+        self._github_api = GithubApi(repository=repository, token=token)
         self.issue_label = issue_label
 
-    def _auth_header(self) -> str:
-        assert self.token, "GitHub token is required"
-        return f"Bearer {self.token}"
-
-    def get_existing_issues(self) -> Dict[str, Any]:
+    def get_existing_issues(self) -> List[dict]:
         """
         Retrieve a mapping of existing open issue titles to issue details.
         """
-        url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={self.issue_label}"
-        headers = {"Authorization": self._auth_header()}
-        try:
-            response = requests.get(url, headers=headers)
-            response.raise_for_status()
-            issues = response.json()
-            return {
-                issue["title"]: issue
-                for issue in issues
-                if issue.get("state") == "open"
-            }
-        except requests.RequestException as e:
-            logger.error(
-                "Failed to fetch issues: %s. Response: %s",
-                e,
-                getattr(response, "text", "No response"),
+        # TODO Overkill to do this in a separate method?
+        issues = self._github_api.list_issues(labels=[self.issue_label])
+        logger.info(
+            f"Listed {len(issues)} existing issues (labeled '{self.issue_label}')"
+        )
+        return issues
+
+    def get_workflow_run_url(self) -> str:
+        # TODO: get this from report/metrics instead of environment variables?
+        github_server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+        github_repository = os.getenv("GITHUB_REPOSITORY")
+        github_run_id = os.getenv("GITHUB_RUN_ID")
+        if github_repository and github_run_id:
+            workflow_run_url = (
+                f"{github_server_url}/{github_repository}/actions/runs/{github_run_id}"
             )
-            return {}
+        else:
+            workflow_run_url = "n/a"
+        return workflow_run_url
 
     def build_issue_body(
         self, scenario: Dict[str, Any], logs: str, failure_count: int
@@ -65,6 +163,8 @@ class GitHubIssueManager:
         """
         Build the GitHub issue body based on scenario details, logs, and contacts.
         """
+        # TODO use real templating system?
+        # TODO: avoid current timestamp, get timestamp from pytest report
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         contacts = scenario.get("contacts", [])
         scenario_link = scenario.get("scenario_link", "")
@@ -95,15 +195,7 @@ class GitHubIssueManager:
                     e,
                 )
 
-        github_server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
-        github_repository = os.getenv("GITHUB_REPOSITORY")
-        github_run_id = os.getenv("GITHUB_RUN_ID")
-        if github_repository and github_run_id:
-            workflow_run_url = (
-                f"{github_server_url}/{github_repository}/actions/runs/{github_run_id}"
-            )
-        else:
-            workflow_run_url = "n/a"
+        workflow_run_url = self.get_workflow_run_url()
 
         body = (
             f"## Benchmark Failure: {scenario['id']}\n\n"
@@ -130,30 +222,25 @@ class GitHubIssueManager:
         )
         return body
 
-    def create_issue(self, scenario: Dict[str, Any], logs: str) -> None:
+    def create_issue(self, scenario: Dict[str, Any], logs: str) -> dict:
         """
         Create a new GitHub issue for the given scenario failure.
         """
-        issue_body = self.build_issue_body(scenario, logs, failure_count=1)
-        url = f"https://api.github.com/repos/{self.repo}/issues"
-        headers = {
-            "Authorization": self._auth_header(),
-            "Accept": "application/vnd.github.v3+json",
-        }
-        data = {
-            "title": f"Scenario Failure: {scenario['id']}",
-            "body": issue_body,
-            "labels": [self.issue_label],
-        }
-        try:
-            response = requests.post(url, json=data, headers=headers)
-            response.raise_for_status()
-            issue_url = response.json().get("html_url", "URL not available")
-            logger.info("Created new issue: %s", issue_url)
-        except requests.RequestException as e:
-            logger.error(
-                "Failed to create issue for scenario '%s': %s", scenario["id"], e
-            )
+        # TODO: overkill to do this in a separate method?
+        return self._github_api.create_issue(
+            title=f"Scenario Failure: {scenario['id']}",
+            body=self.build_issue_body(scenario, logs, failure_count=1),
+            labels=[self.issue_label],
+        )
+
+    def create_issue_comment(self, issue_number: int, text: str) -> dict:
+        """
+        Create a comment on an existing issue for the given scenario failure.
+        """
+        # TODO: overkill to do this in a separate method?
+        return self._github_api.create_issue_comment(
+            issue_number=issue_number, body=text
+        )
 
 
 @dataclasses.dataclass
@@ -172,6 +259,7 @@ class ScenarioProcessor:
         """
         Retrieve scenario details by ID.
         """
+        # TODO: don't try-except this
         try:
             for scenario in get_benchmark_scenarios():
                 if scenario.id == scenario_id:
@@ -195,6 +283,7 @@ class ScenarioProcessor:
         """
         Retrieve contact information for a scenario from the algorithm catalog.
         """
+        # TODO: this looks like it can be simplified (single "exists" check or glob?)
         algorithm_catalog = get_project_root() / "algorithm_catalog"
         for provider_dir in algorithm_catalog.iterdir():
             if not provider_dir.is_dir():
@@ -222,6 +311,7 @@ class ScenarioProcessor:
         github_sha = os.getenv("GITHUB_SHA", "main")
         base_url = f"https://github.com/{github_repository}/blob/{github_sha}"
         algorithm_catalog = get_project_root() / "algorithm_catalog"
+        # TODO: simplify this chain of exist checks?
         for provider_dir in algorithm_catalog.iterdir():
             if not provider_dir.is_dir():
                 continue
@@ -339,6 +429,7 @@ def main() -> None:
     """
     Main flow: parse failed tests, check for existing issues, and create new issues as needed.
     """
+    # TODO: move this main to GitHubIssueManager/ScenarioProcessor
     cli = argparse.ArgumentParser()
     cli.add_argument("--terminal-report", required=True, type=Path)
     cli.add_argument("--metrics-json", required=True, type=Path)
@@ -348,17 +439,20 @@ def main() -> None:
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
-    github_manager = GitHubIssueManager()
+    github_manager = GitHubIssueManager(
+        repository=os.getenv("GITHUB_REPOSITORY", "n/a"),
+        token=os.getenv("GITHUB_TOKEN", "n/a"),
+    )
     scenario_processor = ScenarioProcessor()
 
-    existing_issues = github_manager.get_existing_issues()
+    all_existing_issues = github_manager.get_existing_issues()
 
     failure_logs = scenario_processor.extract_failure_logs(
         path=cli_args.terminal_report
     )
 
     for test_report in scenario_processor.parse_metrics_json(cli_args.metrics_json):
-        logger.info("Handling {test_report=}")
+        logger.info(f"Handling {test_report=}")
         scenario_id = test_report.get("scenario_id")
         node_id = test_report.get("nodeid")
         outcome = test_report.get("outcome")
@@ -371,16 +465,28 @@ def main() -> None:
 
         scenario = scenario_processor.get_scenario_details(scenario_id)
         if not scenario:
+            # TODO: still possible to create issue/comment even without scenario details?
             logger.warning("Skipping scenario '%s' - details not found", scenario_id)
             continue
 
+        # TODO: avoid duplicate logic to build title
         issue_title = f"Scenario Failure: {scenario_id}"
-        if issue_title not in existing_issues:
+
+        existing_issues = [i for i in all_existing_issues if i["title"] == issue_title]
+
+        if not existing_issues:
+            logger.info(f"Creating new issue for scenario {scenario_id}")
             github_manager.create_issue(scenario, logs)
         else:
-            logger.info(
-                "Issue already exists for scenario '%s'. Skipping.", scenario_id
-            )
+            for issue in existing_issues:
+                logger.info(
+                    f"Commenting on existing issue {issue['number']} for scenario {scenario_id}"
+                )
+                workflow_run_url = github_manager.get_workflow_run_url()
+                github_manager.create_issue_comment(
+                    issue_number=issue["number"],
+                    text=f"Results of latest run {workflow_run_url}: {outcome=}",
+                )
 
 
 if __name__ == "__main__":

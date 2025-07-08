@@ -1,6 +1,7 @@
 import textwrap
 
 from apex_algorithm_qa_tools.github_issue_handler import (
+    GithubApi,
     GitHubIssueManager,
     ScenarioProcessor,
     TerminalReportSection,
@@ -9,6 +10,88 @@ from apex_algorithm_qa_tools.github_issue_handler import (
 
 def test_dummy():
     assert GitHubIssueManager
+
+
+class TestGithubApi:
+    def test_list_issues(self, requests_mock):
+        def handle_get_issues(request, context):
+            assert request.headers["Authorization"] == "Bearer t0k9n!"
+            assert request.query == "state=open&page=1"
+            return [
+                {"number": 123, "title": "Issue 123"},
+                {"number": 345, "title": "Issue 345"},
+            ]
+
+        requests_mock.get(
+            "https://api.github.com/repos/esa/apex/issues",
+            json=handle_get_issues,
+        )
+        api = GithubApi(repository="esa/apex", token="t0k9n!")
+        issues = api.list_issues()
+        assert issues == [
+            {"number": 123, "title": "Issue 123"},
+            {"number": 345, "title": "Issue 345"},
+        ]
+
+    def test_list_issues_with_labels(self, requests_mock):
+        def handle_get_issues(request, context):
+            assert request.headers["Authorization"] == "Bearer t0k9n!"
+            assert request.query == "state=open&page=1&labels=test-failure"
+            return [
+                {"number": 123, "title": "Issue 123"},
+                {"number": 345, "title": "Issue 345"},
+            ]
+
+        requests_mock.get(
+            "https://api.github.com/repos/esa/apex/issues",
+            json=handle_get_issues,
+        )
+        api = GithubApi(repository="esa/apex", token="t0k9n!")
+        issues = api.list_issues(labels=["test-failure"])
+        assert issues == [
+            {"number": 123, "title": "Issue 123"},
+            {"number": 345, "title": "Issue 345"},
+        ]
+
+    def test_create_issue(self, requests_mock):
+        def handle_create_issue(request, context):
+            assert request.headers["Authorization"] == "Bearer t0k9n!"
+            assert request.method == "POST"
+            assert request.json() == {
+                "title": "Test Issue",
+                "body": "This is a test issue.",
+                "labels": ["test-failure"],
+            }
+            context.status_code = 201
+            return {"number": 123, "title": "Test Issue"}
+
+        requests_mock.post(
+            "https://api.github.com/repos/esa/apex/issues",
+            json=handle_create_issue,
+        )
+        api = GithubApi(repository="esa/apex", token="t0k9n!")
+        issue = api.create_issue(
+            title="Test Issue", body="This is a test issue.", labels=["test-failure"]
+        )
+        assert issue == {"number": 123, "title": "Test Issue"}
+
+    def test_create_issue_comment(self, requests_mock):
+        def handle_create_comment(request, context):
+            assert request.headers["Authorization"] == "Bearer t0k9n!"
+            assert request.method == "POST"
+            assert request.json() == {"body": "This is a test comment."}
+            context.status_code = 201
+            return {"id": 456, "body": "This is a test comment."}
+
+        requests_mock.post(
+            "https://api.github.com/repos/esa/apex/issues/123/comments",
+            json=handle_create_comment,
+        )
+        api = GithubApi(repository="esa/apex", token="t0k9n!")
+        comment = api.create_issue_comment(
+            issue_number=123, body="This is a test comment."
+        )
+        assert comment == {"id": 456, "body": "This is a test comment."}
 
 
 class TestScenarioProcessor:
