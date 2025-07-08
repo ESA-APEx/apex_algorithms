@@ -13,7 +13,7 @@ def test_dummy():
 
 
 class TestScenarioProcessor:
-    def test_basic(self, tmp_path):
+    def test_parse_failed_tests_basic(self, tmp_path):
         pytest_output = """
             ============================= test session starts ==============================
             rootdir: /foo/bar
@@ -95,4 +95,59 @@ class TestScenarioProcessor:
                 ),
             },
             # TODO: there should also be an entry for `test_run_benchmark[max_ndvi]` here
+        ]
+
+    def test_parse_metrics_json(self, tmp_path):
+        path = tmp_path / "metrics.json"
+        path.write_text("""
+        [
+            {
+                "nodeid": "tests/test_benchmarks.py::test_run_benchmark[max_ndvi]",
+                "report": {
+                    "outcome": "failed",
+                    "duration": 12.34
+                },
+                "metrics": [
+                    ["scenario_id", "max_ndvi"],
+                    ["test:phase:start", "compare"],
+                    ["test:phase:end", "download-reference"],
+                    ["test:phase:exception", "compare"],
+                    ["job_id", "j-1234"],
+                    ["costs", 4]
+                ]
+            },
+            {
+                "nodeid": "something_else",
+                "report": {
+                    "outcome": "whatever"
+                },
+                "metrics": []
+            }
+        ]
+        """)
+
+        metrics = ScenarioProcessor().parse_metrics_json(path)
+        assert metrics == [
+            {
+                "nodeid": "tests/test_benchmarks.py::test_run_benchmark[max_ndvi]",
+                "outcome": "failed",
+                "duration": 12.34,
+                "scenario_id": "max_ndvi",
+                "job_id": "j-1234",
+                "costs": 4,
+                "test:phase:start": "compare",
+                "test:phase:end": "download-reference",
+                "test:phase:exception": "compare",
+            },
+            {
+                "nodeid": "something_else",
+                "outcome": "whatever",
+                "duration": None,
+                "scenario_id": None,
+                "job_id": None,
+                "costs": None,
+                "test:phase:start": None,
+                "test:phase:end": None,
+                "test:phase:exception": None,
+            },
         ]

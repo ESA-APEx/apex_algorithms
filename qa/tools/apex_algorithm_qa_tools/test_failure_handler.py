@@ -252,6 +252,45 @@ class ScenarioProcessor:
         except Exception as e:
             raise RuntimeError(f"Failed to parse {pytest_output_path}") from e
 
+    def parse_metrics_json(self, path: Path) -> Dict[str, Any]:
+        """
+        Parse the metrics.json file to extract relevant metrics.
+        """
+        logger.info(f"Parsing metrics from {path}")
+        with path.open("r", encoding="utf8") as f:
+            metrics = json.load(f)
+
+        def get_metric(metrics: List[list], name: str, default=None) -> Any:
+            found = [v for (k, v) in metrics if k == name]
+            if len(found) == 0:
+                return default
+            elif len(found) == 1:
+                return found[0]
+            else:
+                raise ValueError(f"Multiple values found for metric '{name}': {found}")
+
+        # Flatten the data structure a bit for easier access
+        # TODO: instead of simple dict: wrap this in some kind of data class structure?
+        return [
+            {
+                "nodeid": m["nodeid"],
+                "outcome": m["report"].get("outcome"),
+                "duration": m["report"].get("duration"),
+                **{
+                    k: get_metric(metrics=m["metrics"], name=k)
+                    for k in [
+                        "scenario_id",
+                        "job_id",
+                        "costs",
+                        "test:phase:start",
+                        "test:phase:end",
+                        "test:phase:exception",
+                    ]
+                },
+            }
+            for m in metrics
+        ]
+
 
 def main() -> None:
     """
