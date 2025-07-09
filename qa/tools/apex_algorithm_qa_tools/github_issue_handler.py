@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import datetime
 import json
 import logging
 import os
 import re
+import textwrap
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -179,6 +181,7 @@ class PytestReportParser:
             {
                 "nodeid": m["nodeid"],
                 "outcome": m["report"].get("outcome"),
+                "start": m["report"].get("start"),
                 "duration": m["report"].get("duration"),
                 **{
                     k: get_metric(metrics=m["metrics"], name=k)
@@ -293,17 +296,48 @@ class ScenarioRunInfo:
     def issue_title(self) -> str:
         return f"Scenario Failure: {self.scenario.id}"
 
-    def build_issue_body(self) -> str:
-        """Build the GitHub issue body"""
-        # TODO use real templating system?
-        contacts = self.get_contacts()
-        contact_table = ""
-        if contacts:
-            try:
-                contact_table += "\n\n**Point of Contact**:\n\n"
-                contact_table += "| Name | Organization | Contact |\n"
-                contact_table += "|------|--------------|---------|\n"
+    def build_workflow_run_overview(self) -> str:
+        scenario_link = self.get_scenario_link()
+        workflow_run_url = self.github_context.get_workflow_run_url()
+        overview = textwrap.dedent(
+            f"""
+            **Benchmark scenario ID**: `{self.scenario.id}`
+            **Benchmark scenario definition**: {scenario_link}
+            **openEO backend**: {self.scenario.backend}
+            """
+        )
+        if workflow_run_url:
+            overview += textwrap.dedent(
+                f"""
+                **GitHub Actions workflow run**: {workflow_run_url}
+                **Workflow artifacts**: {workflow_run_url}#artifacts
+                """
+            )
+        overview += textwrap.dedent(
+            f"""
+            **Test start**: {datetime.datetime.fromtimestamp(self.test_metrics['start'])!s}
+            **Test duration**: {datetime.timedelta(seconds=self.test_metrics['duration'])!s}
+            **Test outcome**: {self.test_metrics['outcome']}
+            """
+        )
+
+        if self.test_metrics.get("test:phase:exception"):
+            overview += textwrap.dedent(
+                f"""
+                **Last successful test phase**: {self.test_metrics.get('test:phase:end')}
+                **Failure in test phase**: {self.test_metrics['test:phase:exception']}
+                """
+            )
+
+        return overview
+
+    def build_contact_table(self) -> str | None:
+        try:
+            contacts = self.get_contacts()
+            if contacts:
                 primary_contact = contacts[0]
+                name = primary_contact.get("name", "n/a")
+                org = primary_contact.get("organization", "n/a")
                 contact_info = primary_contact.get("contactInstructions", "")
                 if primary_contact.get("links"):
                     links = [
@@ -311,52 +345,37 @@ class ScenarioRunInfo:
                         for link in primary_contact.get("links", [])
                     ]
                     contact_info += " (" + ", ".join(links) + ")"
-                contact_table += (
-                    f"| {primary_contact.get('name', '')} "
-                    f"| {primary_contact.get('organization', '')} "
-                    f"| {contact_info} |\n"
+                return textwrap.dedent(
+                    f"""
+                    | Name   | Organization | Contact |
+                    |--------|--------------|---------|
+                    | {name} | {org}        | {contact_info} |
+                    """
                 )
-            except Exception as e:
-                logger.error(
-                    f"Failed constructing contact table for scenario {self.scenario.id}: {e!r}"
-                )
+        except Exception as e:
+            logger.error(
+                f"Failed constructing contact table for scenario {self.scenario.id}: {e!r}"
+            )
 
-        workflow_run_url = self.github_context.get_workflow_run_url()
-        scenario_link = self.get_scenario_link()
+    def build_issue_body(self) -> str:
+        body = self.build_workflow_run_overview()
+
+        contact_table = self.build_contact_table()
+        if contact_table:
+            body += "\n\n### Contact Information\n\n" + contact_table
+
         process_graph = json.dumps(self.scenario.process_graph, indent=2)
+        body += "\n\n### Process Graph"
+        body += f"\n\n```json\n{process_graph}\n```"
 
-        body = (
-            f"## Benchmark Failure: {self.scenario.id}\n\n"
-            f"**Scenario ID**: {self.scenario.id}\n"
-            f"**Backend System**: {self.scenario.backend}\n"
-            f"**Outcome**: {self.test_metrics['outcome']}\n"
-            f"**Links**:\n"
-            f"- Workflow Run: {workflow_run_url}\n"
-            f"- Scenario Definition: {scenario_link}\n"
-            f"- Artifacts: {workflow_run_url}#artifacts\n\n"
-            "---\n"
-            f"### Contact Information\n{contact_table}\n"
-            "---\n\n"
-            "### Process Graph\n"
-            "```json\n"
-            f"{process_graph}\n"
-            "```\n\n"
-            "---\n"
-            "### Error Logs\n"
-            "```plaintext\n"
-            f"{self.failure_logs}\n"
-            "```\n"
-        )
+        body += "\n\n### Error Logs"
+        body += f"\n\n```plaintext\n{self.failure_logs}\n```\n"
+
         return body
 
     def build_comment_body(self) -> str:
         """Build the comment body for an existing issue"""
-        workflow_run_url = self.github_context.get_workflow_run_url()
-        self.test_metrics["outcome"]
-        return (
-            f"Results of latest run {workflow_run_url}:\n"
-            f"- Outcome: {self.test_metrics['outcome']}\n"
-        )
+        return "Report of latest run:\n\n" + self.build_workflow_run_overview()
 
 
 class GithubIssueHandler:
