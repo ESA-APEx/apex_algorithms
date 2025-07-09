@@ -1,0 +1,36 @@
+[
+  {
+    "id": "add35",
+    "type": "openeo",
+    "description": "add 3 and 5",
+    "backend": "openeo.test",
+    "process_graph": {
+      "add1": {
+        "process_id": "add",
+        "arguments": {
+          "x": 3,
+          "y": 5
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  },
+  {
+    "id": "add3555",
+    "type": "openeo",
+    "description": "add 3 and 555",
+    "backend": "openeo.test",
+    "process_graph": {
+      "add1": {
+        "process_id": "add",
+        "arguments": {
+          "x": 3,
+          "y": 555
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  }
+]
