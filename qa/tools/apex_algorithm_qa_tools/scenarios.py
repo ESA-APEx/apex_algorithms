@@ -59,6 +59,18 @@ class BenchmarkScenario:
             source=source,
         )
 
+    @classmethod
+    def read_scenarios_file(cls, path: str | Path) -> List[BenchmarkScenario]:
+        """
+        Load list of benchmark scenarios from a JSON file.
+        """
+        path = Path(path)
+        with path.open("r", encoding="utf8") as f:
+            data = json.load(f)
+        # TODO: support single scenario files in addition to listings?
+        assert isinstance(data, list)
+        return [cls.from_dict(item, source=path) for item in data]
+
 
 def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
     # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
@@ -70,13 +82,7 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
         + "/**/*benchmark_scenarios*/*.json",
         recursive=True,
     ):
-        with open(path) as f:
-            data = json.load(f)
-        # TODO: support single scenario files in addition to listings?
-        assert isinstance(data, list)
-        scenarios.extend(
-            BenchmarkScenario.from_dict(item, source=Path(path)) for item in data
-        )
+        scenarios.extend(BenchmarkScenario.read_scenarios_file(path))
     return scenarios
 
 

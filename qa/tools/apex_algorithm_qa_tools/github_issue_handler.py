@@ -125,24 +125,36 @@ class GithubApi:
 
 
 class GithubContext:
-    def __init__(self):
+    def __init__(
+        self,
+        *,
+        server_url: str | None = None,
+        repository: str | None = None,
+        run_id: str | None = None,
+        sha: str | None = None,
+        token: str | None = None,
+    ):
         # Environment variables set by GitHub Actions
         # TODO: get this from report/metrics instead of environment variables?
-        self.server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
-        self.repository = os.getenv("GITHUB_REPOSITORY", "ESA-APEx/apex_algorithms")
-        self.run_id = os.getenv("GITHUB_RUN_ID")
-        self.sha = os.getenv("GITHUB_SHA", "main")
-        self.token = os.getenv("GITHUB_TOKEN")
+        self.server_url = server_url or os.getenv(
+            "GITHUB_SERVER_URL", "https://github.com"
+        )
+        self.repository = repository or os.getenv(
+            "GITHUB_REPOSITORY", "ESA-APEx/apex_algorithms"
+        )
+        self.run_id = run_id or os.getenv("GITHUB_RUN_ID")
+        self.sha = sha or os.getenv("GITHUB_SHA", "main")
+        self.token = token or os.getenv("GITHUB_TOKEN")
 
     def get_workflow_run_url(self) -> str | None:
         """Link to current workflow run."""
         if self.repository and self.run_id:
             return f"{self.server_url}/{self.repository}/actions/runs/{self.run_id}"
 
-    def get_file_permalink(self, path: str) -> str | None:
+    def get_file_permalink(self, path: str | Path) -> str | None:
         """Permalink to a file in the repository at the specific commit."""
         if self.repository and self.sha:
-            return f"{self.server_url}/{self.repository}/blob/{self.sha}/{path}"
+            return f"{self.server_url}/{self.repository}/blob/{self.sha}/{path!s}"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -290,7 +302,9 @@ class ScenarioRunInfo:
         Generate a URL to the scenario definition file at the specific commit.
         """
         if isinstance(self.scenario.source, Path):
-            path = self.scenario.source.relative_to(get_project_root()).as_posix()
+            path = self.scenario.source
+            if path.is_absolute():
+                path = path.relative_to(get_project_root())
             return self.github_context.get_file_permalink(path)
 
     def issue_title(self) -> str:
@@ -313,13 +327,23 @@ class ScenarioRunInfo:
                 **Workflow artifacts**: {workflow_run_url}#artifacts
                 """
             )
-        overview += textwrap.dedent(
-            f"""
-            **Test start**: {datetime.datetime.fromtimestamp(self.test_metrics['start'])!s}
-            **Test duration**: {datetime.timedelta(seconds=self.test_metrics['duration'])!s}
-            **Test outcome**: {self.test_metrics['outcome']}
-            """
-        )
+
+        if self.test_metrics.get("start") and self.test_metrics.get("duration"):
+            start_dt = datetime.datetime.fromtimestamp(
+                self.test_metrics["start"], tz=datetime.timezone.utc
+            )
+            overview += textwrap.dedent(
+                f"""
+                **Test start**: {start_dt!s}
+                **Test duration**: {datetime.timedelta(seconds=self.test_metrics['duration'])!s}
+                """
+            )
+        if self.test_metrics.get("outcome"):
+            overview += textwrap.dedent(
+                f"""\
+                **Test outcome**: {self.test_metrics['outcome']}
+                """
+            )
 
         if self.test_metrics.get("test:phase:exception"):
             overview += textwrap.dedent(
@@ -375,7 +399,7 @@ class ScenarioRunInfo:
 
     def build_comment_body(self) -> str:
         """Build the comment body for an existing issue"""
-        return "Report of latest run:\n\n" + self.build_workflow_run_overview()
+        return "Report of latest run:\n" + self.build_workflow_run_overview()
 
 
 class GithubIssueHandler:

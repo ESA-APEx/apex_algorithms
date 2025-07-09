@@ -1,10 +1,16 @@
 import textwrap
+from pathlib import Path
 
+import pytest
 from apex_algorithm_qa_tools.github_issue_handler import (
     GithubApi,
+    GithubContext,
     PytestReportParser,
+    ScenarioRunInfo,
     TerminalReportSection,
+    TestMetricsData,
 )
+from apex_algorithm_qa_tools.scenarios import BenchmarkScenario
 
 
 class TestGithubApi:
@@ -89,6 +95,51 @@ class TestGithubApi:
         assert comment == {"id": 456, "body": "This is a test comment."}
 
 
+@pytest.fixture
+def github_context() -> GithubContext:
+    """GithubContext with explicit initialization."""
+    return GithubContext(
+        server_url="https://github.test",
+        repository="foorg/bar-pro",
+        run_id="1234",
+        sha="abcdef123456",
+        token="t0k9n!",
+    )
+
+
+class TestGithubContext:
+    @pytest.fixture
+    def with_github_env(self, monkeypatch):
+        monkeypatch.setenv("GITHUB_SERVER_URL", "https://github.test")
+        monkeypatch.setenv("GITHUB_REPOSITORY", "foorg/bar-pro")
+        monkeypatch.setenv("GITHUB_RUN_ID", "1234")
+        monkeypatch.setenv("GITHUB_SHA", "abcdef123456")
+        monkeypatch.setenv("GITHUB_TOKEN", "t0k9n!")
+
+    def test_workflow_run_explicit_init(self, github_context):
+        assert github_context.get_workflow_run_url() == (
+            "https://github.test/foorg/bar-pro/actions/runs/1234"
+        )
+
+    def test_workflow_run_with_github_env(self, with_github_env):
+        context = GithubContext()
+        assert context.get_workflow_run_url() == (
+            "https://github.test/foorg/bar-pro/actions/runs/1234"
+        )
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "path/to/file.json",
+            Path("path/to/file.json"),
+        ],
+    )
+    def test_get_permalink_explicit_init(self, github_context, path):
+        assert github_context.get_file_permalink(path) == (
+            "https://github.test/foorg/bar-pro/blob/abcdef123456/path/to/file.json"
+        )
+
+
 class TestPytestReportParser:
     def test_parse_metrics_json(self, tmp_path):
         path = tmp_path / "metrics.json"
@@ -130,6 +181,7 @@ class TestPytestReportParser:
                 "scenario_id": "max_ndvi",
                 "job_id": "j-1234",
                 "costs": 4,
+                "start": None,
                 "test:phase:start": "compare",
                 "test:phase:end": "download-reference",
                 "test:phase:exception": "compare",
@@ -141,6 +193,7 @@ class TestPytestReportParser:
                 "scenario_id": None,
                 "job_id": None,
                 "costs": None,
+                "start": None,
                 "test:phase:start": None,
                 "test:phase:end": None,
                 "test:phase:exception": None,
@@ -255,3 +308,165 @@ class TestPytestReportParser:
                 subsub"""
             ),
         }
+
+
+class TestScenarioRunInfo:
+    @pytest.fixture
+    def benchmark_scenario(self, test_data_root) -> BenchmarkScenario:
+        path = (
+            test_data_root
+            / "algorithm_catalog"
+            / "foorg"
+            / "add35"
+            / "benchmark_scenarios"
+            / "add3x.json"
+        )
+        return BenchmarkScenario.read_scenarios_file(path)[0]
+
+    @pytest.fixture
+    def metrics_data(self) -> TestMetricsData:
+        return {
+            "nodeid": "tests/test_foo.py::test_bar[meh]",
+            "start": 1752050000,
+            "duration": 120,
+            "outcome": "failed",
+            "test:phase:start": "compare",
+            "test:phase:end": "download-reference",
+            "test:phase:exception": "compare",
+        }
+
+    @pytest.fixture
+    def scenario_run_info(
+        self, benchmark_scenario, github_context, metrics_data
+    ) -> ScenarioRunInfo:
+        return ScenarioRunInfo(
+            scenario=benchmark_scenario,
+            github_context=github_context,
+            test_metrics=metrics_data,
+            failure_logs=textwrap.dedent(
+                """
+                        x = 3 * 0
+                >       pi = 22 / x
+                E       ZeroDivisionError
+                """
+            ),
+        )
+
+    def test_build_workflow_run_overview_minimal(
+        self, benchmark_scenario, github_context
+    ):
+        scenario_run_info = ScenarioRunInfo(
+            scenario=benchmark_scenario, github_context=github_context, test_metrics={}
+        )
+        assert scenario_run_info.build_workflow_run_overview() == textwrap.dedent(
+            """
+            **Benchmark scenario ID**: `add35`
+            **Benchmark scenario definition**: https://github.test/foorg/bar-pro/blob/abcdef123456/qa/unittests/tests/data/algorithm_catalog/foorg/add35/benchmark_scenarios/add3x.json
+            **openEO backend**: openeo.test
+
+            **GitHub Actions workflow run**: https://github.test/foorg/bar-pro/actions/runs/1234
+            **Workflow artifacts**: https://github.test/foorg/bar-pro/actions/runs/1234#artifacts
+            """
+        )
+
+    def test_build_workflow_run_overview_full(self, scenario_run_info):
+        assert scenario_run_info.build_workflow_run_overview() == textwrap.dedent(
+            """
+            **Benchmark scenario ID**: `add35`
+            **Benchmark scenario definition**: https://github.test/foorg/bar-pro/blob/abcdef123456/qa/unittests/tests/data/algorithm_catalog/foorg/add35/benchmark_scenarios/add3x.json
+            **openEO backend**: openeo.test
+
+            **GitHub Actions workflow run**: https://github.test/foorg/bar-pro/actions/runs/1234
+            **Workflow artifacts**: https://github.test/foorg/bar-pro/actions/runs/1234#artifacts
+
+            **Test start**: 2025-07-09 08:33:20+00:00
+            **Test duration**: 0:02:00
+            **Test outcome**: failed
+
+            **Last successful test phase**: download-reference
+            **Failure in test phase**: compare
+            """
+        )
+
+    def test_build_contact_table(self, scenario_run_info):
+        assert scenario_run_info.build_contact_table() == textwrap.dedent(
+            """
+            | Name   | Organization | Contact |
+            |--------|--------------|---------|
+            | John Doe | Foorg        | Pigeon post is preferred. ([Foorg Website](https://www.foorg.test/)) |
+            """
+        )
+
+    def test_build_issue_body(self, scenario_run_info):
+        assert scenario_run_info.build_issue_body() == textwrap.dedent(
+            """
+            **Benchmark scenario ID**: `add35`
+            **Benchmark scenario definition**: https://github.test/foorg/bar-pro/blob/abcdef123456/qa/unittests/tests/data/algorithm_catalog/foorg/add35/benchmark_scenarios/add3x.json
+            **openEO backend**: openeo.test
+
+            **GitHub Actions workflow run**: https://github.test/foorg/bar-pro/actions/runs/1234
+            **Workflow artifacts**: https://github.test/foorg/bar-pro/actions/runs/1234#artifacts
+
+            **Test start**: 2025-07-09 08:33:20+00:00
+            **Test duration**: 0:02:00
+            **Test outcome**: failed
+
+            **Last successful test phase**: download-reference
+            **Failure in test phase**: compare
+
+
+            ### Contact Information
+
+
+            | Name   | Organization | Contact |
+            |--------|--------------|---------|
+            | John Doe | Foorg        | Pigeon post is preferred. ([Foorg Website](https://www.foorg.test/)) |
+
+
+            ### Process Graph
+
+            ```json
+            {
+              "add1": {
+                "process_id": "add",
+                "arguments": {
+                  "x": 3,
+                  "y": 5
+                },
+                "result": true
+              }
+            }
+            ```
+
+            ### Error Logs
+
+            ```plaintext
+
+                    x = 3 * 0
+            >       pi = 22 / x
+            E       ZeroDivisionError
+
+            ```
+            """
+        )
+
+    def test_build_comment_body(self, scenario_run_info):
+        assert scenario_run_info.build_comment_body() == textwrap.dedent(
+            """\
+            Report of latest run:
+
+            **Benchmark scenario ID**: `add35`
+            **Benchmark scenario definition**: https://github.test/foorg/bar-pro/blob/abcdef123456/qa/unittests/tests/data/algorithm_catalog/foorg/add35/benchmark_scenarios/add3x.json
+            **openEO backend**: openeo.test
+
+            **GitHub Actions workflow run**: https://github.test/foorg/bar-pro/actions/runs/1234
+            **Workflow artifacts**: https://github.test/foorg/bar-pro/actions/runs/1234#artifacts
+
+            **Test start**: 2025-07-09 08:33:20+00:00
+            **Test duration**: 0:02:00
+            **Test outcome**: failed
+
+            **Last successful test phase**: download-reference
+            **Failure in test phase**: compare
+            """
+        )
