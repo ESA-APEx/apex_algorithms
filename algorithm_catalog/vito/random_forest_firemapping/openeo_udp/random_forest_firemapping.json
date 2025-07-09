@@ -3,7 +3,7 @@
         "loadmlmodel1": {
             "process_id": "load_ml_model",
             "arguments": {
-                "id": "https://openeo.vito.be/openeo/1.2/jobs/j-250707130527460a823273791daa4344/results/items/ZWNjZTlmZWEwNGI4YzljNzZhYzc2YjQ1YjZiYTAwYzIwZjIxMWJkYTQ4NTZjMTRhYTQ0NzViOGU4ZWQ0MzNjZEBlZ2kuZXU=/a57df24a856cff107494dedfbfdcc180/ml_model_metadata.json?expires=1752501082"
+                "id": "https://openeo.vito.be/openeo/1.2/jobs/j-2507090746214d00b34f082e64671976/results/items/ZWNjZTlmZWEwNGI4YzljNzZhYzc2YjQ1YjZiYTAwYzIwZjIxMWJkYTQ4NTZjMTRhYTQ0NzViOGU4ZWQ0MzNjZEBlZ2kuZXU=/d71468ed31587706876305381299e692/ml_model_metadata.json?expires=1752652945"
             }
         },
         "loadcollection1": {
