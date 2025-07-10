@@ -490,6 +490,9 @@ class GithubIssueHandler:
                 i for i in all_existing_issues if i["title"] == issue_title
             ]
 
+            logger.info(
+                f"{scenario_id=} {outcome=} {failing_test=} {len(existing_issues)=}"
+            )
             if failing_test and not existing_issues:
                 logger.info(
                     f"Creating new issue for newly failing scenario {scenario_id!r}"
@@ -509,6 +512,8 @@ class GithubIssueHandler:
                         issue_number=issue_number,
                         body=scenario_run_info.build_comment_body(),
                     )
+            else:
+                logger.info(f"Nothing to do for {scenario_id=}")
 
 
 if __name__ == "__main__":
