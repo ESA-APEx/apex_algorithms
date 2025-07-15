@@ -114,16 +114,19 @@
     {
       "rel": "thumbnail",
       "type": "image/png",
+      "title": "Thumbnail image",
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/header.png"
     },
     {
       "rel": "preview",
       "type": "image/jpeg",
+      "title": "Parcel Delineation",
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_1.jpg"
     },
     {
       "rel": "preview",
       "type": "image/jpeg",
+      "title": "Parcel Delineation - Filtered",
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_2.jpg"
     }
   ]
