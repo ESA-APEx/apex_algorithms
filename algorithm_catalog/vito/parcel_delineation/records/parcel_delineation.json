@@ -91,7 +91,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
     },
     {
       "rel": "code",
