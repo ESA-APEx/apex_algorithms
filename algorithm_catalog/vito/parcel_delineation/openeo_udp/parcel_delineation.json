@@ -207,7 +207,7 @@
   },
   "id": "parcel_delineation",
   "summary": "Parcel delineation using Sentinel-2 data retrieved from the CDSE and processed on openEO.",
-  "description": "Parcel delineation using Sentinel-2",
+  "description": "# Parcel Delineation\nParcel delineation refers to the identification and marking of agricultural boundaries. \nThis process is *essential* for tasks such as crop yield estimation and land management. \nAccurate delineation also aids in classifying crop types and managing farmland more effectively.\n \n## Algorithm for Parcel Delineation Using Sentinel-2 Data  \n\nThis algorithm performs parcel delineation using Sentinel-2 data and a pre-trained`U-Net machine learning model. The process involves the following steps:\n1. **Pre-processing Sentinel-2 Data:**\n   1. Filter data to ensure a maximum of 10% cloud coverage.  \n   2. Apply a cloud mask based on the SCL layer.  \n2. **Compute NDVI:**\n   1. The Normalized Difference Vegetation Index (NDVI) is calculated from the pre-processed data.\n   2. The NDVI serves as input to the U-Net model. \n3. **Predict Delineation:**\n   1. The U-Net model predicts parcel delineation boundaries. \n4. **Optimization and Labeling:**\n   1. Apply a Sobel filter to enhance edge detection.  \n   2. Use Felzenszwalb's algorithm for segmentation and labeling of delineated parcels.\n ",
   "default_job_options": {
     "udf-dependency-archives": [
       "https://artifactory.vgt.vito.be/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",

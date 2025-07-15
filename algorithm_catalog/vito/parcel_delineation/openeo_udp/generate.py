@@ -85,7 +85,7 @@ def generate() -> dict:
         process_graph=sobel_felzenszwalb,
         process_id="parcel_delineation",
         summary="Parcel delineation using Sentinel-2 data retrieved from the CDSE and processed on openEO.",
-        description="Parcel delineation using Sentinel-2",
+        description= (Path(__file__).parent / "README.md").read_text(),
         parameters=[spatial_extent, temporal_extent],
         default_job_options=job_options,
     )
