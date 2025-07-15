@@ -2,15 +2,15 @@
   "id": "parcel_delineation",
   "type": "Feature",
   "conformsTo": [
-      "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
-      "https://apex.esa.int/core/openeo-udp"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
   "properties": {
     "created": "2025-06-02T00:00:00Z",
     "updated": "2025-06-02T00:00:00Z",
     "type": "service",
-    "title": "Parcel Delination based on ML using Sentinal-2",
+    "title": "Parcel Delineation based on ML using Sentinel-2",
     "description": "An openEO process example for delineating agricultural parcels based on ML using Sentinel-2 data.",
     "cost_estimate": 0.11,
     "cost_unit": "platform credits per km²",
@@ -91,7 +91,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-	"href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
     },
     {
       "rel": "code",
@@ -110,6 +110,24 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=parceldelination&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json&server=https://openeo.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/header.png"
+    },
+    {
+      "rel": "preview",
+      "type": "image/jpeg",
+      "title": "Parcel Delineation",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_1.jpg"
+    },
+    {
+      "rel": "preview",
+      "type": "image/jpeg",
+      "title": "Parcel Delineation - Filtered",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_2.jpg"
     }
   ]
 }
