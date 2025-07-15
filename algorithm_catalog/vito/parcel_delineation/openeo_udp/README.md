@@ -5,7 +5,7 @@ Accurate delineation also aids in classifying crop types and managing farmland m
  
 ## Algorithm for Parcel Delineation Using Sentinel-2 Data  
 
-This algorithm performs parcel delineation using Sentinel-2 data and a pre-trained`U-Net machine learning model. The process involves the following steps:
+This algorithm performs parcel delineation using Sentinel-2 data and a pre-trained U-Net machine learning model. The process involves the following steps:
 1. **Pre-processing Sentinel-2 Data:**
    1. Filter data to ensure a maximum of 10% cloud coverage.  
    2. Apply a cloud mask based on the SCL layer.  
