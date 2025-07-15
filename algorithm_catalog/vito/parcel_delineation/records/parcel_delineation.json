@@ -118,13 +118,13 @@
     },
     {
       "rel": "preview",
-      "type": "image/png",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_1.png"
+      "type": "image/jpeg",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_1.jpg"
     },
     {
       "rel": "preview",
-      "type": "image/png",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_2.png"
+      "type": "image/jpeg",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_2.jpg"
     }
   ]
 }
