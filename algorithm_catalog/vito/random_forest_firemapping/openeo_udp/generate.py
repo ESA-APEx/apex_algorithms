@@ -29,7 +29,7 @@ def generate() -> dict:
     inference_cube = s2_feature_cube.merge_cubes(s1_feature_cube)
 
     # link to the trained model: this model has an expiry date
-    model = "https://openeo.vito.be/openeo/1.2/jobs/j-250707130527460a823273791daa4344/results/items/ZWNjZTlmZWEwNGI4YzljNzZhYzc2YjQ1YjZiYTAwYzIwZjIxMWJkYTQ4NTZjMTRhYTQ0NzViOGU4ZWQ0MzNjZEBlZ2kuZXU=/a57df24a856cff107494dedfbfdcc180/ml_model_metadata.json?expires=1752501082"
+    model = "https://openeo.vito.be/openeo/1.2/jobs/j-25071606273445d397068beb485ed457/results/items/ZWNjZTlmZWEwNGI4YzljNzZhYzc2YjQ1YjZiYTAwYzIwZjIxMWJkYTQ4NTZjMTRhYTQ0NzViOGU4ZWQ0MzNjZEBlZ2kuZXU=/3d1f92a8205422f7a7cc9a83f908a2ac/ml_model_metadata.json?expires=1753253368"
 
     # predict of training data
     inference = inference_cube.predict_random_forest(
