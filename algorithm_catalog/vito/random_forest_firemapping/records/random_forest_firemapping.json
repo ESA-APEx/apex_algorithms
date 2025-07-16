@@ -1,115 +1,115 @@
 {
-  "id": "parcel_delineation",
-  "type": "Feature",
-  "conformsTo": [
-      "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
-      "https://apex.esa.int/core/openeo-udp"
-  ],
-  "geometry": null,
-  "properties": {
-    "created": "2025-06-02T00:00:00Z",
-    "updated": "2025-06-02T00:00:00Z",
-    "type": "service",
-    "title": "Forest Fire Mapping using Random Forest based on Sentinel-2 and Sentinel-1 data",
-    "description": "An openEO process example for mapping forest fires using Random Forest based on Sentinel-2 and Sentinel-1 data.",
-    "cost_estimate": 0.45,
-    "cost_unit": "platform credits per km²",
-    "keywords": [
-      "forest fires",
-      "mapping"
+    "id": "parcel_delineation",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
     ],
-    "language": {
-      "code": "en-US",
-      "name": "English (United States)"
-    },
-    "languages": [
-      {
-        "code": "en-US",
-        "name": "English (United States)"
-      }
-    ],
-    "contacts": [
-      {
-        "name": "Pratichhya Sharma",
-        "position": "Researcher",
-        "organization": "VITO",
-        "links": [
-          {
-            "href": "https://www.vito.be/",
-            "title": "VITO Website",
-            "rel": "about",
-            "type": "text/html"
-          },
-          {
-            "href": "https://github.com/kvantricht",
-            "title": "GitHub",
-            "rel": "about",
-            "type": "text/html"
-          }
+    "geometry": null,
+    "properties": {
+        "created": "2025-06-02T00:00:00Z",
+        "updated": "2025-06-02T00:00:00Z",
+        "type": "service",
+        "title": "Forest Fire Mapping using Random Forest based on Sentinel-2 and Sentinel-1 data",
+        "description": "An openEO process example for mapping forest fires using Random Forest based on Sentinel-2 and Sentinel-1 data.",
+        "cost_estimate": 0.45,
+        "cost_unit": "platform credits per km²",
+        "keywords": [
+            "forest fires",
+            "mapping"
         ],
-        "contactInstructions": "Contact via VITO",
-        "roles": [
-          "principal investigator"
-        ]
-      },
-      {
-        "name": "VITO",
-        "links": [
-          {
-            "href": "https://www.vito.be/",
-            "title": "VITO Website",
-            "rel": "about",
-            "type": "text/html"
-          }
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
         ],
-        "contactInstructions": "SEE WEBSITE",
-        "roles": [
-          "processor"
-        ]
-      }
-    ],
-    "themes": [
-      {
-        "concepts": [
-          {
-            "id": "Sentinel-2"
-          }
+        "contacts": [
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/kvantricht",
+                        "title": "GitHub",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "SEE WEBSITE",
+                "roles": [
+                    "processor"
+                ]
+            }
         ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
-      }
-    ],
-    "formats": [
-      {
-        "name": "GeoTIFF"
-      }
-    ],
-    "license": "CC-BY-4.0"
-  },
-  "linkTemplates": [],
-  "links": [
-    {
-      "rel": "application",
-      "type": "application/vnd.openeo+json;type=process",
-      "title": "openEO Process Definition",
-	"href": "NEED TO ADD PROCESS DEFINITION URL"
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "Sentinel-2"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "GeoTIFF"
+            }
+        ],
+        "license": "CC-BY-4.0"
     },
-    {
-      "rel": "code",
-      "type": "text/html",
-      "title": "Git source repository",
-      "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/RandomForest-ForestFire"
-    },
-    {
-      "rel": "service",
-      "type": "application/json",
-      "title": "CDSE openEO federation",
-      "href": "https://openeofed.dataspace.copernicus.eu"
-    },
-    {
-      "rel": "webapp",
-      "type": "text/html",
-      "title": "OpenEO Web Editor",
-      "href": "NEED TO ADD WEBAPP URL"
-    }
-  ]
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "example-output",
+            "type": "image/tif",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/random_forest/random_forest_firemapping.tif"
+        },
+        {
+            "rel": "code",
+            "type": "text/html",
+            "title": "Git source repository",
+            "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/RandomForest-ForestFire"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "openEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=random_forest_firemapping&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8ace24cf9853989b964e65246249e1379833be9d/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json&server=https://openeo.vito.be"
+        }
+    ]
 }
