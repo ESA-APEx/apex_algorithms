@@ -339,9 +339,11 @@ class ScenarioRunInfo:
                 """
             )
         if self.test_metrics.get("outcome"):
+            outcome = self.test_metrics["outcome"]
+            icon = {"passed": "✅", "failed": "❌"}.get(outcome, "❓")
             overview += textwrap.dedent(
                 f"""\
-                **Test outcome**: {self.test_metrics['outcome']}
+                **Test outcome**: {icon} {outcome}
                 """
             )
 

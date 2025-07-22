@@ -381,7 +381,7 @@ class TestScenarioRunInfo:
 
             **Test start**: 2025-07-09 08:33:20+00:00
             **Test duration**: 0:02:00
-            **Test outcome**: failed
+            **Test outcome**: ❌ failed
 
             **Last successful test phase**: download-reference
             **Failure in test phase**: compare
@@ -409,7 +409,7 @@ class TestScenarioRunInfo:
 
             **Test start**: 2025-07-09 08:33:20+00:00
             **Test duration**: 0:02:00
-            **Test outcome**: failed
+            **Test outcome**: ❌ failed
 
             **Last successful test phase**: download-reference
             **Failure in test phase**: compare
@@ -464,7 +464,7 @@ class TestScenarioRunInfo:
 
             **Test start**: 2025-07-09 08:33:20+00:00
             **Test duration**: 0:02:00
-            **Test outcome**: failed
+            **Test outcome**: ❌ failed
 
             **Last successful test phase**: download-reference
             **Failure in test phase**: compare
