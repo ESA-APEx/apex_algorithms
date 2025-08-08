@@ -1,0 +1,50 @@
+pre {
+  background-color: var(--greylight) !important;
+  padding: 1rem !important;
+  border: none !important;
+  border-radius: var(--border-radius);
+
+  code:not(.sourceCode) {
+    color: var(--darkblue) !important;
+    background-color: transparent !important;
+  }
+}
+
+code {
+  white-space: pre-wrap !important;
+}
+
+code:not(.sourceCode) {
+  color: var(--lightgreen);
+  background-color: var(--darkblue) !important;
+  border-radius: 5px;
+  padding: .2rem .3rem !important;
+}
+
+div.sourceCode {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.bi::before {
+  color: white !important;
+}
+
+
+.cell-output {
+  background-color: rgb(243 247 248 / 80%);
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  color: var(--darkblue);
+
+  pre, code {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0px !important;
+  }
+}
+
+.cell {
+  margin-bottom: 1rem;
+}
