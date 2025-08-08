@@ -1,6 +1,6 @@
 [
     {
-        "id": "WorldAgriCommodities Asia",
+        "id": "WorldAgriCommodities_Asia",
         "type": "openeo",
         "description": "openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data of the WorldAgriCommodities project",
         "backend": "openeo.dataspace.copernicus.eu",

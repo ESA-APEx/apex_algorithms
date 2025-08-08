@@ -98,12 +98,6 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
-    },
-    {
-      "rel": "self",
-      "type": "application/json",
-      "title": "This record",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json"
     }
   ]
 }
