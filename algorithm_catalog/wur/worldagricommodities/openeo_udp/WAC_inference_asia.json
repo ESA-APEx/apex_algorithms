@@ -2708,8 +2708,8 @@
       "result": true
     }
   },
-  "id": "WAC_inference_asia",
-  "summary": "WAC_inference_asia",
+  "id": "wac_inference_asia",
+  "summary": "wac_inference_asia",
   "default_job_options": {
     "driver-memory": "2000m",
     "driver-memoryOverhead": "2000m",

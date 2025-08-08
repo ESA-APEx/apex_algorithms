@@ -6,8 +6,8 @@
         "backend": "openeo.dataspace.copernicus.eu",
         "process_graph": {
             "parcel_delineation1": {
-                "process_id": "WAC_inference_asia",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json",
+                "process_id": "wac_inference_asia",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/wur/worldagricommodities/openeo_udp/wac_inference_asia.json",
                 "arguments": {
                     "spatial_extent": {
 			            "west": 300000,
