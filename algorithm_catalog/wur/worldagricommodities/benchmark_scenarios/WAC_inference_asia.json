@@ -1,0 +1,32 @@
+[
+    {
+        "id": "WorldAgriCommodities Asia",
+        "type": "openeo",
+        "description": "openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data of the WorldAgriCommodities project",
+        "backend": "openeo.dataspace.copernicus.eu",
+        "process_graph": {
+            "parcel_delineation1": {
+                "process_id": "WAC_inference_asia",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b828eecc13f1bd4d012576d746329041cf840c61/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json",
+                "arguments": {
+                    "spatial_extent": {
+			            "west": 300000,
+                        "south": 9800000,
+                        "east": 305000,
+                        "north": 9805000,
+                        "crs": "EPSG:3035"
+		            },
+                    "temporal_extent": [
+                        "2023-06-01",
+                        "2023-08-01"
+                    ]
+                },
+                "result": true
+            }
+        },
+        "reference_data": {
+	   }
+    }
+]
+
+

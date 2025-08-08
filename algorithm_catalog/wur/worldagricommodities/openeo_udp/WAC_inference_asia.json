@@ -1,0 +1,2855 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B02",
+          "B03",
+          "B04",
+          "B05",
+          "B06",
+          "B07",
+          "B08",
+          "B11",
+          "B12"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "west": 300000,
+          "south": 9800000,
+          "east": 305000,
+          "north": 9805000,
+          "crs": "EPSG:3035"
+        },
+        "temporal_extent": [
+          "2023-06-01",
+          "2023-08-01"
+        ]
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "method": "near",
+        "projection": "EPSG:3035",
+        "resolution": 10
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "west": 300000,
+          "south": 9800000,
+          "east": 305000,
+          "north": 9805000,
+          "crs": "EPSG:3035"
+        },
+        "temporal_extent": [
+          "2023-06-01",
+          "2023-08-01"
+        ]
+      }
+    },
+    "resamplespatial2": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "loadcollection2"
+        },
+        "method": "near",
+        "projection": "EPSG:3035",
+        "resolution": 10
+      }
+    },
+    "toscldilationmask1": {
+      "process_id": "to_scl_dilation_mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial2"
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "mask": {
+          "from_node": "toscldilationmask1"
+        }
+      }
+    },
+    "aggregatetemporalperiod1": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "mask1"
+        },
+        "period": "month",
+        "reducer": {
+          "process_graph": {
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "process": {
+          "process_graph": {
+            "ln1": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add1": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln1"
+                }
+              }
+            },
+            "subtract1": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add1"
+                },
+                "y": 1.7417268007636313
+              }
+            },
+            "divide1": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract1"
+                },
+                "y": 0.28157190528471965
+              }
+            },
+            "multiply2": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide1"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract2": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply2"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply2": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "process": {
+          "process_graph": {
+            "exp1": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply3": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "process": {
+          "process_graph": {
+            "exp2": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add2": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp2"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply2"
+        },
+        "cube2": {
+          "from_node": "apply3"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide2": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension1": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes1"
+        },
+        "label": "B02",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement2": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "multiply3": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement2"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply4": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "process": {
+          "process_graph": {
+            "ln2": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add3": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln2"
+                }
+              }
+            },
+            "subtract3": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add3"
+                },
+                "y": 1.7261204997060209
+              }
+            },
+            "divide3": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract3"
+                },
+                "y": 0.31278470460199115
+              }
+            },
+            "multiply4": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide3"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract4": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply4"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply5": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply4"
+        },
+        "process": {
+          "process_graph": {
+            "exp3": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply6": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply4"
+        },
+        "process": {
+          "process_graph": {
+            "exp4": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add4": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp4"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes2": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply5"
+        },
+        "cube2": {
+          "from_node": "apply6"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide4": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension2": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes2"
+        },
+        "label": "B03",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes3": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "adddimension1"
+        },
+        "cube2": {
+          "from_node": "adddimension2"
+        }
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement3": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "multiply5": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement3"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply7": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "process": {
+          "process_graph": {
+            "ln3": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add5": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln3"
+                }
+              }
+            },
+            "subtract5": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add5"
+                },
+                "y": 1.6798346251414997
+              }
+            },
+            "divide5": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract5"
+                },
+                "y": 0.49975819607143745
+              }
+            },
+            "multiply6": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide5"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract6": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply6"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply8": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply7"
+        },
+        "process": {
+          "process_graph": {
+            "exp5": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply9": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply7"
+        },
+        "process": {
+          "process_graph": {
+            "exp6": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add6": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp6"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes4": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply8"
+        },
+        "cube2": {
+          "from_node": "apply9"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide6": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension3": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes4"
+        },
+        "label": "B04",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes5": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes3"
+        },
+        "cube2": {
+          "from_node": "adddimension3"
+        }
+      }
+    },
+    "reducedimension4": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement4": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 3
+              }
+            },
+            "multiply7": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement4"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply10": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension4"
+        },
+        "process": {
+          "process_graph": {
+            "ln4": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add7": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln4"
+                }
+              }
+            },
+            "subtract7": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add7"
+                },
+                "y": 2.3828939530384052
+              }
+            },
+            "divide7": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract7"
+                },
+                "y": 0.37493930737942316
+              }
+            },
+            "multiply8": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide7"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract8": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply8"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply11": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply10"
+        },
+        "process": {
+          "process_graph": {
+            "exp7": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply12": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply10"
+        },
+        "process": {
+          "process_graph": {
+            "exp8": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add8": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp8"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes6": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply11"
+        },
+        "cube2": {
+          "from_node": "apply12"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide8": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension4": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes6"
+        },
+        "label": "B05",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes7": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes5"
+        },
+        "cube2": {
+          "from_node": "adddimension4"
+        }
+      }
+    },
+    "reducedimension5": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement5": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 4
+              }
+            },
+            "multiply9": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement5"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply13": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension5"
+        },
+        "process": {
+          "process_graph": {
+            "ln5": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add9": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln5"
+                }
+              }
+            },
+            "subtract9": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add9"
+                },
+                "y": 1.7417268007636313
+              }
+            },
+            "divide9": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract9"
+                },
+                "y": 0.28157190528471965
+              }
+            },
+            "multiply10": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide9"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract10": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply10"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply14": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply13"
+        },
+        "process": {
+          "process_graph": {
+            "exp9": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply15": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply13"
+        },
+        "process": {
+          "process_graph": {
+            "exp10": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add10": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp10"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes8": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply14"
+        },
+        "cube2": {
+          "from_node": "apply15"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide10": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension5": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes8"
+        },
+        "label": "B06",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes9": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes7"
+        },
+        "cube2": {
+          "from_node": "adddimension5"
+        }
+      }
+    },
+    "reducedimension6": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement6": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 5
+              }
+            },
+            "multiply11": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement6"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply16": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension6"
+        },
+        "process": {
+          "process_graph": {
+            "ln6": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add11": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln6"
+                }
+              }
+            },
+            "subtract11": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add11"
+                },
+                "y": 1.7417268007636313
+              }
+            },
+            "divide11": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract11"
+                },
+                "y": 0.28157190528471965
+              }
+            },
+            "multiply12": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide11"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract12": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply12"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply17": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply16"
+        },
+        "process": {
+          "process_graph": {
+            "exp11": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply18": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply16"
+        },
+        "process": {
+          "process_graph": {
+            "exp12": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add12": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp12"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes10": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply17"
+        },
+        "cube2": {
+          "from_node": "apply18"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide12": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension6": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes10"
+        },
+        "label": "B07",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes11": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes9"
+        },
+        "cube2": {
+          "from_node": "adddimension6"
+        }
+      }
+    },
+    "reducedimension7": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement7": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 6
+              }
+            },
+            "multiply13": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement7"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply19": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension7"
+        },
+        "process": {
+          "process_graph": {
+            "ln7": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add13": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln7"
+                }
+              }
+            },
+            "subtract13": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add13"
+                },
+                "y": 1.7417268007636313
+              }
+            },
+            "divide13": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract13"
+                },
+                "y": 0.28157190528471965
+              }
+            },
+            "multiply14": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide13"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract14": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply14"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply20": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply19"
+        },
+        "process": {
+          "process_graph": {
+            "exp13": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply21": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply19"
+        },
+        "process": {
+          "process_graph": {
+            "exp14": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add14": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp14"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes12": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply20"
+        },
+        "cube2": {
+          "from_node": "apply21"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide14": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension7": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes12"
+        },
+        "label": "B08",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes13": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes11"
+        },
+        "cube2": {
+          "from_node": "adddimension7"
+        }
+      }
+    },
+    "reducedimension8": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement8": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 7
+              }
+            },
+            "multiply15": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement8"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply22": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension8"
+        },
+        "process": {
+          "process_graph": {
+            "ln8": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add15": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln8"
+                }
+              }
+            },
+            "subtract15": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add15"
+                },
+                "y": 1.7417268007636313
+              }
+            },
+            "divide15": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract15"
+                },
+                "y": 0.28157190528471965
+              }
+            },
+            "multiply16": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide15"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract16": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply16"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply23": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply22"
+        },
+        "process": {
+          "process_graph": {
+            "exp15": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply24": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply22"
+        },
+        "process": {
+          "process_graph": {
+            "exp16": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add16": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp16"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes14": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply23"
+        },
+        "cube2": {
+          "from_node": "apply24"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide16": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension8": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes14"
+        },
+        "label": "B11",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes15": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes13"
+        },
+        "cube2": {
+          "from_node": "adddimension8"
+        }
+      }
+    },
+    "reducedimension9": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement9": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 8
+              }
+            },
+            "multiply17": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement9"
+                },
+                "y": 0.005
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply25": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension9"
+        },
+        "process": {
+          "process_graph": {
+            "ln9": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add17": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "ln9"
+                }
+              }
+            },
+            "subtract17": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "add17"
+                },
+                "y": 1.7417268007636313
+              }
+            },
+            "divide17": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract17"
+                },
+                "y": 0.28157190528471965
+              }
+            },
+            "multiply18": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide17"
+                },
+                "y": 5.0
+              }
+            },
+            "subtract18": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply18"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply26": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply25"
+        },
+        "process": {
+          "process_graph": {
+            "exp17": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply27": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply25"
+        },
+        "process": {
+          "process_graph": {
+            "exp18": {
+              "process_id": "exp",
+              "arguments": {
+                "p": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "add18": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "exp18"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes16": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply26"
+        },
+        "cube2": {
+          "from_node": "apply27"
+        },
+        "overlap_resolver": {
+          "process_graph": {
+            "divide18": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "y"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension9": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes16"
+        },
+        "label": "B12",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes17": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes15"
+        },
+        "cube2": {
+          "from_node": "adddimension9"
+        }
+      }
+    },
+    "ndvi1": {
+      "process_id": "ndvi",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "nir": "B08",
+        "red": "B04"
+      }
+    },
+    "adddimension10": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "ndvi1"
+        },
+        "label": "NDVI",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "reducedimension10": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "adddimension10"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement10": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply28": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension10"
+        },
+        "process": {
+          "process_graph": {
+            "clip1": {
+              "process_id": "clip",
+              "arguments": {
+                "max": 1,
+                "min": -1,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "subtract19": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "clip1"
+                },
+                "y": -1
+              }
+            },
+            "divide19": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract19"
+                },
+                "y": 2
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension11": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply28"
+        },
+        "label": "NDVI",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes18": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes17"
+        },
+        "cube2": {
+          "from_node": "adddimension11"
+        }
+      }
+    },
+    "loadcollection3": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "VV",
+          "VH"
+        ],
+        "id": "SENTINEL1_GLOBAL_MOSAICS",
+        "spatial_extent": {
+          "west": 300000,
+          "south": 9800000,
+          "east": 305000,
+          "north": 9805000,
+          "crs": "EPSG:3035"
+        },
+        "temporal_extent": [
+          "2023-05-31",
+          "2023-08-01"
+        ]
+      }
+    },
+    "resamplespatial3": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "loadcollection3"
+        },
+        "method": "near",
+        "projection": "EPSG:3035",
+        "resolution": 10
+      }
+    },
+    "apply29": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial3"
+        },
+        "process": {
+          "process_graph": {
+            "log1": {
+              "process_id": "log",
+              "arguments": {
+                "base": 10,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "multiply19": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": 10,
+                "y": {
+                  "from_node": "log1"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension11": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply29"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement11": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply30": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension11"
+        },
+        "process": {
+          "process_graph": {
+            "clip2": {
+              "process_id": "clip",
+              "arguments": {
+                "max": 0,
+                "min": -25,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "subtract20": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "clip2"
+                },
+                "y": -25
+              }
+            },
+            "divide20": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract20"
+                },
+                "y": 25
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension12": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply30"
+        },
+        "label": "VV",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "reducedimension12": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply29"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement12": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply31": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension12"
+        },
+        "process": {
+          "process_graph": {
+            "clip3": {
+              "process_id": "clip",
+              "arguments": {
+                "max": -5,
+                "min": -30,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "subtract21": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "clip3"
+                },
+                "y": -30
+              }
+            },
+            "divide21": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract21"
+                },
+                "y": 25
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension13": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply31"
+        },
+        "label": "VH",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes19": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "adddimension12"
+        },
+        "cube2": {
+          "from_node": "adddimension13"
+        }
+      }
+    },
+    "mergecubes20": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes18"
+        },
+        "cube2": {
+          "from_node": "mergecubes19"
+        }
+      }
+    },
+    "loadcollection4": {
+      "process_id": "load_collection",
+      "arguments": {
+        "id": "COPERNICUS_30",
+        "spatial_extent": {
+          "west": 300000,
+          "south": 9800000,
+          "east": 305000,
+          "north": 9805000,
+          "crs": "EPSG:3035"
+        },
+        "temporal_extent": null
+      }
+    },
+    "resamplespatial4": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "loadcollection4"
+        },
+        "method": "bilinear",
+        "projection": "EPSG:3035",
+        "resolution": 10
+      }
+    },
+    "reducedimension13": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial4"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "mean2": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension14": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension13"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement13": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply32": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension14"
+        },
+        "process": {
+          "process_graph": {
+            "clip4": {
+              "process_id": "clip",
+              "arguments": {
+                "max": 8000,
+                "min": -400,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "subtract22": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "clip4"
+                },
+                "y": -400
+              }
+            },
+            "divide22": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract22"
+                },
+                "y": 8400
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension14": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply32"
+        },
+        "label": "DEM",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes21": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes20"
+        },
+        "cube2": {
+          "from_node": "adddimension14"
+        }
+      }
+    },
+    "apply33": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "process": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "west": 300000,
+                  "south": 9800000,
+                  "east": 305000,
+                  "north": 9805000,
+                  "crs": "EPSG:3035"
+                },
+                "data": {
+                  "from_parameter": "x"
+                },
+                "runtime": "Python",
+                "udf": "import numpy as np\nimport xarray as xr\nimport logging\nfrom pyproj import Transformer\nfrom typing import Dict\n\n# Setup logging\ndef _setup_logging() -> logging.Logger:\n    logging.basicConfig(level=logging.INFO, format=\"%(message)s\")\n    return logging.getLogger(__name__)\n\nlogger = _setup_logging()\n\ndef apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:\n    \"\"\"\n    Constructs a lon/lat grid as a new DataArray based on the cube's spatial resolution\n    and the geographic extent provided in `context`.\n\n    Args:\n        cube (xr.DataArray): Input data cube with 'x' and 'y' dimensions.\n        context (dict): Dictionary containing ''crs'.\n\n    Returns:\n        xr.DataArray: A new DataArray of shape (2, y, x) with bands ['lon', 'lat'].\n    \"\"\"\n\n\n    crs   = context[\"crs\"]\n    transformer = Transformer.from_crs(crs, \"EPSG:4326\", always_xy=True)\n    longitudes, latitudes = transformer.transform(cube.x, cube.y)\n    lon_grid, lat_grid = np.meshgrid(longitudes, latitudes)\n\n    logger.info(f\"Cube x range: {cube.x.min().values}, {cube.x.max().values}\")\n    logger.info(f\"Cube y range: {cube.y.min().values}, {cube.y.max().values}\")\n\n    logger.info(f\"Transformed longitudes range: {longitudes.min()}, {longitudes.max()}\")\n    logger.info(f\"Transformed latitudes range: {latitudes.min()}, {latitudes.max()}\")\n\n\n    # Build output DataArray\n    return xr.DataArray(\n        data=np.stack([lon_grid, lat_grid], axis=0),  # shape: (2, y, x)\n        dims=(\"bands\", \"y\", \"x\"),\n        coords={\n            \"bands\": [\"lon\", \"lat\"],\n            \"x\": cube.coords[\"x\"],\n            \"y\": cube.coords[\"y\"]\n        }\n    )"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "resamplespatial5": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "apply33"
+        },
+        "method": "near",
+        "projection": "EPSG:3035",
+        "resolution": 10
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial5"
+        },
+        "dimension": "bands",
+        "target": [
+          "lon",
+          "lat"
+        ]
+      }
+    },
+    "reducedimension15": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "renamelabels1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement14": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply34": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension15"
+        },
+        "process": {
+          "process_graph": {
+            "clip5": {
+              "process_id": "clip",
+              "arguments": {
+                "max": 180,
+                "min": -180,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "subtract23": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "clip5"
+                },
+                "y": -180
+              }
+            },
+            "divide23": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract23"
+                },
+                "y": 360
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension15": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply34"
+        },
+        "label": "lon",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "reducedimension16": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "renamelabels1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement15": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply35": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension16"
+        },
+        "process": {
+          "process_graph": {
+            "clip6": {
+              "process_id": "clip",
+              "arguments": {
+                "max": 60,
+                "min": -60,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "subtract24": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "clip6"
+                },
+                "y": -60
+              }
+            },
+            "divide24": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract24"
+                },
+                "y": 120
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension16": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply35"
+        },
+        "label": "lat",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes22": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "adddimension15"
+        },
+        "cube2": {
+          "from_node": "adddimension16"
+        }
+      }
+    },
+    "mergecubes23": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes21"
+        },
+        "cube2": {
+          "from_node": "mergecubes22"
+        }
+      }
+    },
+    "applyneighborhood1": {
+      "process_id": "apply_neighborhood",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes23"
+        },
+        "overlap": [
+          {
+            "dimension": "x",
+            "value": 64,
+            "unit": "px"
+          },
+          {
+            "dimension": "y",
+            "value": 64,
+            "unit": "px"
+          }
+        ],
+        "process": {
+          "process_graph": {
+            "runudf2": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "model_path": "dynamic_models//best_weights_att_unet_lagtime_5_Fused3_2023_totalLoss6V1_without_loss_sent_Southeast_Asia20.onnx"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "import sys\nimport functools\nimport numpy as np\nimport xarray as xr\nimport logging\nfrom typing import Dict, Tuple\n\n\n# Setup logger\ndef _setup_logging():\n    logging.basicConfig(level=logging.INFO)\n    return logging.getLogger(__name__)\n\nlogger = _setup_logging()\n\n# Add ONNX paths\nsys.path.append(\"onnx_deps\")\nsys.path.append(\"onnx_models\")\nimport onnxruntime as ort\n\n# Constants for sanitization\n_INF_REPLACEMENT = 1e6\n_NEG_INF_REPLACEMENT = -1e6\n\n@functools.lru_cache(maxsize=1)\ndef _load_ort_session(model_name: str) -> ort.InferenceSession:\n    \"\"\"Loads an ONNX model and returns a cached ONNX runtime session.\"\"\"\n    return ort.InferenceSession(f\"onnx_models/{model_name}\")\n\ndef preprocess_image(cube: xr.DataArray) -> Tuple[np.ndarray, Dict[str, xr.Coordinate], np.ndarray]:\n    \"\"\"\n    Prepare the input cube for inference:\n      - Transpose to (y, x, bands)\n      - Sanitize NaN/Inf\n      - Return batch tensor, coords, and invalid-value mask\n    \"\"\"\n    # Reorder dims\n    reordered = cube.transpose(\"y\", \"x\", \"bands\")\n    values = reordered.values.astype(np.float32)\n\n    # Mask invalid entries\n    mask_invalid = ~np.isfinite(values)\n\n    # Replace NaN with 0, inf with large sentinel\n    sanitized = np.where(np.isnan(values), 0.0, values)\n    sanitized = np.where(np.isposinf(sanitized), _INF_REPLACEMENT, sanitized)\n    sanitized = np.where(np.isneginf(sanitized), _NEG_INF_REPLACEMENT, sanitized)\n\n    # Add batch dimension\n    input_tensor = sanitized[None, ...]\n    logger.info(f\"Preprocessed tensor shape={input_tensor.shape}\")\n    return input_tensor, reordered.coords, mask_invalid\n\n\ndef run_inference(\n    session: ort.InferenceSession,\n    input_name: str,\n    input_tensor: np.ndarray\n) -> np.ndarray:\n    \"\"\"Run ONNX session and remove batch dimension from output.\"\"\"\n    outputs = session.run(None, {input_name: input_tensor})\n    pred = np.squeeze(outputs[0], axis=0)\n    logger.info(f\"Inference output shape={pred.shape}\")\n    return pred\n\n\ndef postprocess_output(\n    pred: np.ndarray,  # Shape: [y, x, bands]\n    coords: Dict[str, xr.Coordinate],\n    mask_invalid: np.ndarray  # Shape: [y, x, bands]\n) -> xr.DataArray:\n    \"\"\"\n    Appends winning class index as new band to predictions:\n      - Keeps original prediction values\n      - Adds new band (-1 for invalid, 0..n-1 for winning class)\n    \"\"\"\n    # Get winning class index (shape: [y, x])\n    class_index = np.argmax(pred, axis=-1, keepdims=True)  # Keepdims for concatenation\n\n    # Identify invalid pixels (any invalid in input bands)\n    invalid_mask = np.any(mask_invalid, axis=-1, keepdims=True)\n\n    # Mark invalid pixels as -1 in class index\n    class_index = np.where(invalid_mask, -1, class_index).astype(np.float32)\n\n    # Concatenate with original predictions (shape: [y, x, bands+1])\n    combined = np.concatenate([pred, class_index], axis=-1)\n\n    # Update band coordinates\n    original_band_coords = np.arange(pred.shape[-1])\n    new_band_coords = np.append(original_band_coords, pred.shape[-1])  # Appends \"class_index\" band\n\n    return xr.DataArray(\n        combined,\n        dims=(\"y\", \"x\", \"bands\"),\n        coords={\n            \"y\": coords[\"y\"],\n            \"x\": coords[\"x\"],\n            \"bands\": new_band_coords  # Now includes extra band\n        },\n        attrs={\"description\": f\"Original bands + class_index (band {pred.shape[-1]})\"}\n    )\n\n\ndef apply_model(\n    cube: xr.DataArray,\n    model_path: str\n) -> xr.DataArray:\n    \"\"\"\n    Full inference pipeline: preprocess, infer, postprocess.\n    \"\"\"\n    input_tensor, coords, mask_invalid = preprocess_image(cube)\n    session = _load_ort_session(model_path)\n    input_name = session.get_inputs()[0].name\n    raw_pred = run_inference(session, input_name, input_tensor)\n\n    result = postprocess_output(raw_pred, coords, mask_invalid)\n    logger.info(f\"apply_model result shape={result.shape}\")\n    return result\n\n\ndef apply_datacube(cube: xr.DataArray, context: dict) -> xr.DataArray:\n    \"\"\"\n    Apply ONNX model per timestep in the datacube.\n    \"\"\"\n    logger.info(f\"apply_datacube received shape={cube.shape}, dims={cube.dims}\")\n\n    model_path  = str(context.get(\"model_path\" ))\n\n    logger.info(f\"Applying model: {model_path}\")\n\n    cube = cube.transpose('y', 'x', 'bands', 't')\n\n    if 't' in cube.dims:\n        logger.info(\"Applying model per timestep via groupby-map.\")\n        return cube.groupby('t').map(lambda da: apply_model(da,  model_path))\n    else:\n        logger.info(\"Single timestep: applying model once.\")\n        return apply_model(cube,  model_path)"
+              },
+              "result": true
+            }
+          }
+        },
+        "size": [
+          {
+            "dimension": "x",
+            "value": 128,
+            "unit": "px"
+          },
+          {
+            "dimension": "y",
+            "value": 128,
+            "unit": "px"
+          }
+        ]
+      }
+    },
+    "renamelabels2": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "applyneighborhood1"
+        },
+        "dimension": "bands",
+        "target": [
+          "prob_class_0",
+          "prob_class_1",
+          "prob_class_2",
+          "prob_class_3",
+          "prob_class_4",
+          "prob_class_5",
+          "prob_class_6",
+          "prob_class_7",
+          "prob_class_8",
+          "prob_class_9",
+          "prob_class_10",
+          "prob_class_11",
+          "prob_class_12",
+          "prob_class_13",
+          "prob_class_14",
+          "prob_class_15",
+          "prob_class_16",
+          "prob_class_17",
+          "prob_class_18",
+          "prob_class_19",
+          "prob_class_20",
+          "prob_class_21",
+          "prob_class_22",
+          "prob_class_23",
+          "classification"
+        ]
+      },
+      "result": true
+    }
+  },
+  "id": "WAC_inference_asia",
+  "summary": "WAC_inference_asia",
+  "default_job_options": {
+    "driver-memory": "2000m",
+    "driver-memoryOverhead": "2000m",
+    "executor-memory": "3000m",
+    "executor-memoryOverhead": "3000m",
+    "python-memory": "8000m",
+    "max-executors": 20,
+    "udf-dependency-archives": [
+      "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_dependencies_1.16.3.zip#onnx_deps",
+      "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/WorldAgriCommodities/dynamic_models.zip#onnx_models"
+    ]
+  },
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "default": {
+        "west": 300000,
+        "south": 9800000,
+        "east": 305000,
+        "north": 9805000,
+        "crs": "EPSG:3035"
+      },
+      "optional": true
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2023-06-01",
+        "2023-08-01"
+      ],
+      "optional": true
+    }
+  ]
+}
