@@ -85,7 +85,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b828eecc13f1bd4d012576d746329041cf840c61/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json"
     },
     {
       "rel": "code",
@@ -103,7 +103,7 @@
       "rel": "self",
       "type": "application/json",
       "title": "This record",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b828eecc13f1bd4d012576d746329041cf840c61/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/wur/worldagricommodities/openeo_udp/WAC_inference_asia.json"
     }
   ]
 }
