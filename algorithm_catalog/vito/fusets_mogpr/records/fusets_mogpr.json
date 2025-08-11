@@ -144,7 +144,7 @@
             "rel": "example-output",
             "type": "application/netcdf",
             "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/fusets_mogpr.nc"
+            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-16156495398!tests_test_benchmarks.py__test_run_benchmark_fusets_mogpr_!actual/openEO.nc"
         },
         {
             "rel": "webapp",
