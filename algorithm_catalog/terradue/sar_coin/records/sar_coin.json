@@ -122,6 +122,12 @@
       "type": "image/png",
       "title": "Preview of the Coherence and Intensity RBG of the SAR-COIN service service result on the Geohazards Exploitation Platform",
       "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/media/cover.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/sar_coin/records/coin_thumnbail.png"
     }
   ]
 }

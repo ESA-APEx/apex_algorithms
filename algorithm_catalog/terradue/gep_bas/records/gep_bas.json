@@ -123,6 +123,12 @@
       "type": "image/png",
       "title": "Preview of the Burned Area Severity service result on the Disaster Charter Platform",
       "href": "https://docs.disasterscharter.org/services/burned-area-severity/media/tutorial-bas-011.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/gep_bas/records/bas_thumnbail.png"
     }
   ]
 }
