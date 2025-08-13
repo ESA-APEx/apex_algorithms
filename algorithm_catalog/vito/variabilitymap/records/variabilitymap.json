@@ -141,7 +141,7 @@
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://artifactory.vgt.vito.be:443/auxdata-public/Nextland/services/descriptions/yieldpotentialmap/yieldmap_categories.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/records/thumbnail.jpg"
         }
     ]
 }
