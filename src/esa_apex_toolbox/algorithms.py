@@ -9,7 +9,7 @@ import requests
 
 
 class LINK_REL:
-    UDP = "openeo-process"
+    UDP = "application"
     SERVICE = "service"
 
 
@@ -53,7 +53,7 @@ class UdpLink:
             raise InvalidMetadataError("Missing 'rel' attribute in link object")
         if data["rel"] != LINK_REL.UDP:
             raise InvalidMetadataError(f"Expected link with rel='{LINK_REL.UDP}' but got {data['rel']!r}")
-        if "type" in data and data["type"] != "application/json":
+        if "type" in data and data["type"] != "application/vnd.openeo+json;type=process":
             raise InvalidMetadataError(f"Expected link with type='application/json' but got {data['type']!r}")
         if "href" not in data:
             raise InvalidMetadataError("Missing 'href' attribute in link object")
@@ -113,7 +113,7 @@ class Algorithm:
             )
 
         properties = data.get("properties", {})
-        if properties.get("type") != "apex_algorithm":
+        if properties.get("type") != "service":
             raise InvalidMetadataError(f"Expected an APEX algorithm object, but got type {properties.get('type')!r}.")
 
         links = data.get("links", [])
@@ -158,15 +158,22 @@ class GithubAlgorithmRepository:
         self.branch = branch
         self._session = requests.Session()
 
-    def _list_files(self):
-        url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}".strip("/")
+
+    def _list_files(self,url = None):
+        if url is None:
+            url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}".strip("/")
         resp = self._session.get(url, headers={"Accept": "application/vnd.github.object+json"})
         resp.raise_for_status()
         listing = resp.json()
         assert listing["type"] == "dir"
         for item in listing["entries"]:
-            if item["type"] == "file":
+            if item["type"] == "file" and item["name"].endswith(".json"):
                 yield item
+            if item["type"] == "dir":
+                # Recursively list files in organization subdirectories
+                subfolder = f"{url}/{item['name']}"
+                for subitem in self._list_files(url = subfolder):
+                    yield subitem
 
     def list_algorithms(self) -> List[str]:
         # TODO: method to list names vs method to list parsed Algorithm objects?

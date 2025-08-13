@@ -5,17 +5,18 @@
        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
     ],
     "properties": {
-      "type": "apex_algorithm",
+      "type": "service",
       "title": "Algorithm One",
       "description": "A first algorithm."
     },
     "links": [
-       {
-        "rel": "openeo-process",
-        "type": "application/json",
+      {
+        "rel": "application",
+        "type": "application/vnd.openeo+json;type=process",
         "title": "UDP One",
         "href": "https://esa-apex.test/udp/algorithm01.json"
-      },{
+      },
+     {
         "rel": "service",
         "type": "application/json",
         "title": "openEO service",
