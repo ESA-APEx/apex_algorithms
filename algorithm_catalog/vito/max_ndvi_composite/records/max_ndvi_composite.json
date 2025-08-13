@@ -115,6 +115,12 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=max_ndvi_composite&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/max_ndvi_composite/openeo_udp/max_ndvi_composite.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/max_ndvi_composite/records/thumbnail.jpg"
     }
   ]
 }

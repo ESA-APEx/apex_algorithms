@@ -116,6 +116,12 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_stats&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/sentinel1_stats/openeo_udp/sentinel1_stats.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/sentinel1_stats/records/thumbnail.png"
     }
   ]
 }

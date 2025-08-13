@@ -136,6 +136,12 @@
             "type": "text/html",
             "title": "OpenEO Web Editor",
             "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=variabilitymap&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/openeo_udp/variabilitymap.json&server=https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://artifactory.vgt.vito.be:443/auxdata-public/Nextland/services/descriptions/yieldpotentialmap/yieldmap_categories.png"
         }
     ]
 }
