@@ -83,7 +83,7 @@
                         "2023-09-15"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/802407a95c6376e72c2323f44dad20d7411cdee7/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0962bf79f836859e701fa7437307240ef689ff2e/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json",
                 "process_id": "random_forest_firemapping"
             }
         },
