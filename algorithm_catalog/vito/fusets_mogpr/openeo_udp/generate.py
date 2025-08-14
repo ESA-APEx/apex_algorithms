@@ -47,13 +47,13 @@ def generate() -> dict:
         )
     s1_collection = Parameter.string(
         name="s1_collection", 
-        description="S1 data collection to use for fusing the data",
+        description="S1 data collection to use for fusing the data.",
         default='RVI', 
         values=['RVI', 'GRD']
     )
     s2_collection = Parameter.string(
         name="s2_collection", 
-        description="S2 data collection to use for fusing the data",
+        description="S2 data collection to use for fusing the data.",
         default='NDVI', 
         values=['NDVI', 'FAPAR', 'LAI', 'FCOVER', 'EVI', 'CCC', 'CWC']
     )
