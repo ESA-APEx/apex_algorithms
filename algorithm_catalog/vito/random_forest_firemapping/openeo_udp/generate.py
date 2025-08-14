@@ -34,7 +34,7 @@ def generate() -> dict:
     inference_cube = s2_feature_cube.merge_cubes(s1_feature_cube)
 
     # link to the trained model: this model has an expiry date
-    model = "https://openeo.vito.be/openeo/1.2/jobs/j-25071606273445d397068beb485ed457/results/items/ZWNjZTlmZWEwNGI4YzljNzZhYzc2YjQ1YjZiYTAwYzIwZjIxMWJkYTQ4NTZjMTRhYTQ0NzViOGU4ZWQ0MzNjZEBlZ2kuZXU=/3d1f92a8205422f7a7cc9a83f908a2ac/ml_model_metadata.json?expires=1753253368"
+    model = "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RandomForest-ForestFire-model.json"
 
     # predict of training data
     inference = inference_cube.predict_random_forest(
