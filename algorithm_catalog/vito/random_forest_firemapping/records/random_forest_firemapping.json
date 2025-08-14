@@ -92,7 +92,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8ace24cf9853989b964e65246249e1379833be9d/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/802407a95c6376e72c2323f44dad20d7411cdee7/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json"
         },
         {
             "rel": "service",
