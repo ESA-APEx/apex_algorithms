@@ -104,7 +104,7 @@
           "rel": "example-output",
           "type": "image/tif",
           "title": "Example output",
-          "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/random_forest/random_forest_firemapping.tif"
+          "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RF_ForestFire.tif"
         },
         {
             "rel": "webapp",

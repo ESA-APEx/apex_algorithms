@@ -88,7 +88,7 @@
             }
         },
         "reference_data": {
-            "output.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/random_forest/random_forest_firemapping.tif"
+            "output.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RF_ForestFire.tif"
         }
     }
 ]

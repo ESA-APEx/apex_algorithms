@@ -300,6 +300,11 @@
         "applyneighborhood1": {
             "process_id": "apply_neighborhood",
             "arguments": {
+                "context": {
+                    "padding_window_size": {
+                        "from_parameter": "padding_window_size"
+                    }
+                },
                 "data": {
                     "from_node": "reducedimension1"
                 },
@@ -324,7 +329,7 @@
                                     "from_parameter": "data"
                                 },
                                 "runtime": "Python",
-                                "udf": "import xarray\nimport numpy as np\nfrom skimage.feature import graycomatrix, graycoprops\nfrom openeo.metadata import CollectionMetadata\n\n\ndef apply_metadata(metadata: CollectionMetadata, context: dict) -> CollectionMetadata:\n    return metadata.rename_labels(\n        dimension = \"bands\",\n        target = [\"contrast\",\"variance\",\"NDFI\"]\n    )\n\n\ndef apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:\n    \"\"\"\n    Applies spatial texture analysis and spectral index computation to a Sentinel-2 data cube.\n\n    Computes:\n    - NDFI (Normalized Difference Fraction Index) from bands B08 and B12\n    - Texture features (contrast and variance) using Gray-Level Co-occurrence Matrix (GLCM)\n\n    Args:\n        cube (xarray.DataArray): A 3D data cube with dimensions (bands, y, x) containing at least bands B08 and B12.\n        context (dict): A context dictionary (currently unused, included for API compatibility).\n\n    Returns:\n        xarray.DataArray: A new data cube with dimensions (bands, y, x) containing:\n                          - 'contrast': GLCM contrast\n                          - 'variance': GLCM variance\n                          - 'NDFI': Normalised Difference Fire Index\n    \"\"\"\n    \n    # Parameters\n    window_size = 33\n    pad = window_size // 2\n    levels = 256  # For 8-bit images\n    \n    # Load Data\n    # data = cube.values # shape: (t, bands, y, x)\n    \n    #first get NDFI\n    b08 = cube.sel(bands=\"B08\")\n    b12 = cube.sel(bands=\"B12\")\n\n    # Compute mean values\n    avg_b08 = b08.mean()\n    avg_b12 = b12.mean()\n\n    # Calculate NDFI\n    ndfi = ((b12 / avg_b12) - (b08 / avg_b08)) / (b08 / avg_b08)\n    \n    # Padding the image to handle border pixels for GLCM\n    padded = np.pad(b12, pad_width=pad, mode='reflect')\n\n    # Normalize to 0–255 range\n    img_norm = (padded - padded.min()) / (padded.max() - padded.min())\n    padded = (img_norm * 255).astype(np.uint8)\n    \n    # Initialize feature maps\n    shape = b12.shape\n    contrast = np.zeros(shape)\n    variance = np.zeros(shape)\n    \n    for i in range(pad, pad + shape[0]):\n        for j in range(pad, pad + shape[1]):\n            window = padded[i - pad:i + pad + 1, j - pad:j + pad + 1]\n            \n            # Compute GLCM\n            glcm = graycomatrix(window, distances=[5], angles=[0], levels=levels, symmetric=True, normed=True)\n            \n            # Texture features\n            contrast[i - pad, j - pad] = graycoprops(glcm, 'contrast')[0, 0]\n            variance[i - pad, j - pad] = np.var(window)\n\n    all_texture = np.stack([contrast,variance,ndfi])\n    # create a data cube with all the calculated properties\n    textures = xarray.DataArray(\n        data=all_texture,\n        dims=[\"bands\", \"y\", \"x\"],\n        coords={\"bands\": [\"contrast\",\"variance\",\"NDFI\"], \"y\": cube.coords[\"y\"], \"x\": cube.coords[\"x\"]},\n    )\n\n    return textures"
+                                "udf": "import xarray\nimport numpy as np\nfrom skimage.feature import graycomatrix, graycoprops\nfrom openeo.metadata import CollectionMetadata\n\n\ndef apply_metadata(metadata: CollectionMetadata, context: dict) -> CollectionMetadata:\n    return metadata.rename_labels(\n        dimension = \"bands\",\n        target = [\"contrast\",\"variance\",\"NDFI\"]\n    )\n\n\ndef apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:\n    \"\"\"\n    Applies spatial texture analysis and spectral index computation to a Sentinel-2 data cube.\n\n    Computes:\n    - NDFI (Normalized Difference Fraction Index) from bands B08 and B12\n    - Texture features (contrast and variance) using Gray-Level Co-occurrence Matrix (GLCM)\n\n    Args:\n        cube (xarray.DataArray): A 3D data cube with dimensions (bands, y, x) containing at least bands B08 and B12.\n        context (dict): A context dictionary (currently unused, included for API compatibility).\n\n    Returns:\n        xarray.DataArray: A new data cube with dimensions (bands, y, x) containing:\n                          - 'contrast': GLCM contrast\n                          - 'variance': GLCM variance\n                          - 'NDFI': Normalised Difference Fire Index\n    \"\"\"\n    \n    # Parameters\n    window_size = context.get(\"padding_window_size\", 33)  # Default to 33 if not provided\n    pad = window_size // 2\n    levels = 256  # For 8-bit images\n    \n    # Load Data\n    # data = cube.values # shape: (t, bands, y, x)\n    \n    #first get NDFI\n    b08 = cube.sel(bands=\"B08\")\n    b12 = cube.sel(bands=\"B12\")\n\n    # Compute mean values\n    avg_b08 = b08.mean()\n    avg_b12 = b12.mean()\n\n    # Calculate NDFI\n    ndfi = ((b12 / avg_b12) - (b08 / avg_b08)) / (b08 / avg_b08)\n    \n    # Padding the image to handle border pixels for GLCM\n    padded = np.pad(b12, pad_width=pad, mode='reflect')\n\n    # Normalize to 0–255 range\n    img_norm = (padded - padded.min()) / (padded.max() - padded.min())\n    padded = (img_norm * 255).astype(np.uint8)\n    \n    # Initialize feature maps\n    shape = b12.shape\n    contrast = np.zeros(shape)\n    variance = np.zeros(shape)\n    \n    for i in range(pad, pad + shape[0]):\n        for j in range(pad, pad + shape[1]):\n            window = padded[i - pad:i + pad + 1, j - pad:j + pad + 1]\n            \n            # Compute GLCM\n            glcm = graycomatrix(window, distances=[5], angles=[0], levels=levels, symmetric=True, normed=True)\n            \n            # Texture features\n            contrast[i - pad, j - pad] = graycoprops(glcm, 'contrast')[0, 0]\n            variance[i - pad, j - pad] = np.var(window)\n\n    all_texture = np.stack([contrast,variance,ndfi])\n    # create a data cube with all the calculated properties\n    textures = xarray.DataArray(\n        data=all_texture,\n        dims=[\"bands\", \"y\", \"x\"],\n        coords={\"bands\": [\"contrast\",\"variance\",\"NDFI\"], \"y\": cube.coords[\"y\"], \"x\": cube.coords[\"x\"]},\n    )\n\n    return textures"
                             },
                             "result": true
                         }
@@ -746,6 +751,15 @@
                     ]
                 }
             }
+        },
+        {
+            "name": "padding_window_size",
+            "description": "Padding window size for GLCM computation. Eg. when padding_window_size is set to 33, it refers to a 33x33 pixel window. 32 up/down or left/right pixels are added.",
+            "schema": {
+                "type": "integer"
+            },
+            "default": 33,
+            "optional": true
         }
     ]
 }
