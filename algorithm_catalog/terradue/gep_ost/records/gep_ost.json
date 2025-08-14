@@ -1,5 +1,5 @@
 {
-  "id": "sar_coin",
+  "id": "gep_ost",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
@@ -7,20 +7,21 @@
   ],
   "geometry": null,
   "properties": {
-    "created": "2024-10-09T00:00:00Z",
-    "updated": "2024-10-09T00:00:00Z",
+    "created": "2025-08-14T00:00:00Z",
+    "updated": "2025-08-14T00:00:00Z",
     "type": "service",
-    "title": "SAR-COIN - Coherence and Intensity Composite",
-    "description": "The SAR-COIN service computes the coherence and backscatter from a pair of Sentinel-1 SLC datasets. It produces geocoded composites and red-cyan visual products to highlight changes in coherence and backscatter.",
-    "cost_estimate": 2.5,
+    "title": "OpenSARToolkit (OST) by ESA-PhiLab",
+    "description": "The Open SAR Toolkit (OST) was initially developed at the Food and Agriculture Organization of the United Nations (FAO). It has now been completely re-factored and transferred into a simpler and less-dependency rich python3 version. OST lowers the entry barrier for pre-processing of Sentinel-1 data. OST supports the production of ARD products, either Radiometrically Terrain Corrected (RTC) products or Geometrically Terrain Corrected (GTC) products, along with option to automate the generation of small to large-scale Sentinel-1 time-series and timescan data.",
+    "cost_estimate": 1.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "SAR",
-      "coherence",
-      "backscatter",
-      "Sentinel-1",
-      "disaster management",
-      "remote sensing"
+      "OST",
+      "OpenSARToolkit",
+      "remote sensing",
+      "ARD",
+      "RTC",
+      "GTC",
+      "RBR"
     ],
     "language": {
       "code": "en-US",
@@ -98,37 +99,37 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-coherence-intensity-0_7_8"
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/opensartoolkit-1_0_24"
     },
     {
       "rel": "about",
       "type": "text/html",
       "title": "Service Documentation",
-      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/service-specs/"
+      "href": "https://github.com/ESA-PhiLab/OpenSarToolkit"
     },
     {
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/s1-coherence-intensity.0.7.8.cwl"
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/opensartoolkit-1_0_24.cwl"
     },
     {
       "rel": "webapp",
       "type": "text/html",
       "title": "Web App",
-      "href": "https://geohazards-tep.eu/geobrowser/?id=sar-coin-app"
+      "href": "https://geohazards-tep.eu/geobrowser/?id=ost-app"
     },
     {
       "rel": "preview",
       "type": "image/png",
-      "title": "Preview of the Coherence and Intensity RBG of the SAR-COIN service service result on the Geohazards Exploitation Platform",
-      "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/media/cover.png"
+      "title": "Preview of the Burned Area Severity service result on the Disaster Charter Platform",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/gep_ost/records/preview_OST_v1.0.24_GTC.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/sar_coin/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/gep_bas/records/thumbnail.png"
     }
   ]
 }

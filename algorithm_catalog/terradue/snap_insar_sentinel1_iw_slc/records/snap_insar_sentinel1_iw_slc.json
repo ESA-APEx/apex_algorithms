@@ -35,9 +35,14 @@
     ],
     "contacts": [
       {
-        "name": "GEP Support Team",
-        "position": "Support Team",
-        "organization": "Geohazards Exploitation Platform (GEP)",
+        "name": "Platform team",
+        "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
         "links": [
           {
             "href": "https://geohazards-tep.eu",
@@ -46,12 +51,8 @@
             "type": "text/html"
           }
         ],
-        "contactInstructions": "For inquiries, please email the GEP support team.",
-        "email": "contact@geohazards-tep.eu",
-        "roles": [
-          "processor",
-          "service provider"
-        ]
+        "contactInstructions": "For inquiries on selecting Processing Services from the GEP Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at Terradue",
+        "email": "contact@geohazards-tep.eu"
       }
     ],
     "themes": [
@@ -69,7 +70,7 @@
     ],
     "formats": [
       {
-        "name": "GeoTiff"
+        "name": "GeoTIFF"
       },
       {
         "name": "PNG"
