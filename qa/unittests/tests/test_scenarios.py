@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import jsonschema
 import pytest
 from apex_algorithm_qa_tools.scenarios import (
@@ -25,6 +27,8 @@ def test_get_benchmark_scenarios():
 )
 def test_lint_scenario(scenario: BenchmarkScenario):
     lint_benchmark_scenario(scenario)
+
+    assert isinstance(scenario.source, Path) and scenario.source.exists()
 
 
 class TestBenchmarkScenario:
