@@ -86,7 +86,7 @@
           "from_node": "reducedimension1"
         },
         "label": "FAPAR",
-        "name": "FAPAR",
+        "name": "bands",
         "type": "bands"
       }
     },
@@ -122,6 +122,43 @@
             }
           }
         }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applypolygon1"
+        },
+        "process": {
+          "process_graph": {
+            "linearscalerange1": {
+              "process_id": "linear_scale_range",
+              "arguments": {
+                "inputMax": 100,
+                "inputMin": 0,
+                "outputMax": 100,
+                "outputMin": 0,
+                "x": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "bands",
+        "target": [
+          "variability"
+        ]
       },
       "result": true
     }
