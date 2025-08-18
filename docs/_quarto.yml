@@ -24,12 +24,12 @@ website:
     contents:
       - href: index.md
         text: Welcome
-      - href: benchmarking.md
       - href: catalogue.md
+      - href: benchmarking.md
 
 format:
   html:
     toc-depth: 4
     page-layout: full
-    theme: zephyr
+    theme: [cosmo, css/custom.scss]
 bread-crumbs: true

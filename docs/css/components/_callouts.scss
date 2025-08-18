@@ -1,0 +1,15 @@
+.callout {
+  background-color: var(--white);
+  color: var(--darkblue);
+  border-top: none !important;
+  border-bottom: none !important;
+  border-right: none !important;
+  padding: 0.75rem;
+}
+.callout-header {
+  background-color: unset !important;
+  color : var(--darkblue);
+  border-bottom: 1px solid var(--darkblue) !important;
+  margin-bottom: .25rem !important;
+  padding-bottom: .25rem !important;
+}

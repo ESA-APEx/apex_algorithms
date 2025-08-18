@@ -1,10 +1,12 @@
 import json
 import re
+import textwrap
 import time
 from pathlib import Path
 from typing import Callable, List
 
 import dirty_equals
+import openeo.rest.job
 import pandas
 import pyarrow.dataset
 import pyarrow.parquet
@@ -23,7 +25,7 @@ CONTENT_TEST_ADDITION_PY = """
     def test_3plus(track_metric, x):
         track_metric("x squared", x * x)
         assert 3 + x == 8
-    """
+"""
 
 
 def roughly_now(abs=60):
@@ -64,7 +66,7 @@ def this_month() -> str:
     return time.strftime("%Y-%m")
 
 
-def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
+def test_track_metric_basic_json(pytester: pytest.Pytester, tmp_path):
     pytester.makeconftest(CONTENT_CONFTEST)
     pytester.makepyfile(test_addition=CONTENT_TEST_ADDITION_PY)
 
@@ -107,6 +109,261 @@ def test_track_metric_json(pytester: pytest.Pytester, tmp_path):
             },
             "metrics": [
                 ["x squared", 36],
+            ],
+        },
+    ]
+
+
+@pytest.mark.parametrize(
+    ["src", "expected", "expected_warnings"],
+    [
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 123, update=True)
+            """,
+            [["foo", 123]],
+            None,
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1)
+                track_metric("foo", 22)
+            """,
+            [["foo", 1], ["foo", 22]],
+            ["append with existing entries"],
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1, update=True)
+                track_metric("foo", 22, update=True)
+                track_metric("foo", 333, update=True)
+            """,
+            [["foo", 333]],
+            None,
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1, update=True)
+                track_metric("bar", 22, update=True)
+                track_metric("foo", 333, update=True)
+            """,
+            [["foo", 333], ["bar", 22]],
+            None,
+        ),
+        (
+            """
+            def test_this(track_metric):
+                track_metric("foo", 1)
+                track_metric("foo", 22)
+                track_metric("foo", 333, update=True)
+            """,
+            [["foo", 333], ["foo", 333]],
+            ["append with existing entries", "update with multiple entries"],
+        ),
+    ],
+)
+def test_track_metric_update_mode(
+    pytester: pytest.Pytester, tmp_path, src, expected, expected_warnings
+):
+    pytester.makeconftest(CONTENT_CONFTEST)
+    pytester.makepyfile(test_this=textwrap.dedent(src))
+
+    metrics_path = tmp_path / "metrics.json"
+    run_result = pytester.runpytest_subprocess(f"--track-metrics-json={metrics_path}")
+
+    with metrics_path.open("r", encoding="utf8") as f:
+        metrics = json.load(f)
+    assert metrics == [
+        {
+            "nodeid": "test_this.py::test_this",
+            "report": {
+                "outcome": "passed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": expected,
+        },
+    ]
+
+    if expected_warnings:
+        run_result.stdout.re_match_lines(
+            [f".*UserWarning:.*{re.escape(w)}.*" for w in expected_warnings],
+        )
+    else:
+        assert "UserWarning" not in run_result.stdout.str()
+
+
+@pytest.mark.parametrize(
+    ["src", "expected"],
+    [
+        (
+            """
+            def test_phases(track_phase):
+                with track_phase("setup"):
+                    x = 123
+                with track_phase("math"):
+                    y = x * 2
+                with track_phase("compare"):
+                    assert y == 5
+            """,
+            [
+                ["test:phase:start", "compare"],
+                ["test:phase:end", "math"],
+                ["test:phase:exception", "compare"],
+            ],
+        ),
+        (
+            """
+            def test_phases(track_phase):
+                with track_phase("setup"):
+                    x = 123
+                with track_phase("math"):
+                    y = x * 2
+                assert y == 5
+            """,
+            [
+                ["test:phase:start", "math"],
+                ["test:phase:end", "math"],
+            ],
+        ),
+    ],
+)
+def test_track_phase_basic(pytester: pytest.Pytester, tmp_path, src, expected):
+    pytester.makeconftest(CONTENT_CONFTEST)
+    pytester.makepyfile(test_addition=textwrap.dedent(src))
+    metrics_path = tmp_path / "metrics.json"
+
+    pytester.runpytest_subprocess(f"--track-metrics-json={metrics_path}")
+
+    with metrics_path.open("r", encoding="utf8") as f:
+        metrics = json.load(f)
+    assert metrics == [
+        {
+            "nodeid": "test_addition.py::test_phases",
+            "report": {
+                "outcome": "failed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": expected,
+        },
+    ]
+
+
+def test_track_phase_describe_exception(pytester: pytest.Pytester, tmp_path):
+    pytester.makeconftest(CONTENT_CONFTEST)
+    src = """
+        import pytest
+
+        def describe_exception(exc):
+            if isinstance(exc, ZeroDivisionError):
+                return "oh-no-infinity"
+
+        @pytest.mark.parametrize("x", [0, 1])
+        def test_phases(track_phase, x):
+            with track_phase("math", describe_exception=describe_exception):
+                y = 1 / x
+            with track_phase("compare"):
+                assert y == 5
+    """
+    pytester.makepyfile(test_addition=textwrap.dedent(src))
+    metrics_path = tmp_path / "metrics.json"
+
+    pytester.runpytest_subprocess(f"--track-metrics-json={metrics_path}")
+
+    with metrics_path.open("r", encoding="utf8") as f:
+        metrics = json.load(f)
+    assert metrics == [
+        {
+            "nodeid": "test_addition.py::test_phases[0]",
+            "report": {
+                "outcome": "failed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": [
+                ["test:phase:start", "math"],
+                ["test:phase:exception", "math:oh-no-infinity"],
+            ],
+        },
+        {
+            "nodeid": "test_addition.py::test_phases[1]",
+            "report": {
+                "outcome": "failed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": [
+                ["test:phase:start", "compare"],
+                ["test:phase:end", "math"],
+                ["test:phase:exception", "compare"],
+            ],
+        },
+    ]
+
+
+def _write_json(path: Path, data: dict):
+    """Helper to write JSON data to a file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf8") as f:
+        json.dump(fp=f, obj=data)
+
+
+def test_track_phase_describe_derived_from_change(pytester: pytest.Pytester, tmp_path):
+    actual = tmp_path / "actual"
+    reference = tmp_path / "reference"
+
+    _write_json(
+        actual / openeo.rest.job.DEFAULT_JOB_RESULTS_FILENAME,
+        {"links": [{"rel": "derived_from", "href": "/path/to/S2_V1.SAFE"}]},
+    )
+    _write_json(
+        reference / openeo.rest.job.DEFAULT_JOB_RESULTS_FILENAME,
+        {"links": [{"rel": "derived_from", "href": "/path/to/S2_V2.SAFE"}]},
+    )
+
+    pytester.makeconftest(CONTENT_CONFTEST)
+    src = f"""
+        from apex_algorithm_qa_tools.benchmarks import analyse_results_comparison_exception
+        import openeo.testing.results
+
+        def test_derived_from(track_phase):
+            with track_phase(
+                "compare",
+                describe_exception=analyse_results_comparison_exception,
+            ):
+                openeo.testing.results.assert_job_results_allclose(
+                    actual={str(actual)!r},
+                    expected={str(reference)!r},
+                )
+    """
+    pytester.makepyfile(test_addition=textwrap.dedent(src))
+    metrics_path = tmp_path / "metrics.json"
+
+    pytester.runpytest_subprocess(f"--track-metrics-json={metrics_path}")
+
+    with metrics_path.open("r", encoding="utf8") as f:
+        metrics = json.load(f)
+    assert metrics == [
+        {
+            "nodeid": "test_addition.py::test_derived_from",
+            "report": {
+                "outcome": "failed",
+                "duration": pytest.approx(0, abs=1),
+                "start": roughly_now(),
+                "stop": roughly_now(),
+            },
+            "metrics": [
+                ["test:phase:start", "compare"],
+                ["test:phase:exception", "compare:derived_from-change"],
             ],
         },
     ]

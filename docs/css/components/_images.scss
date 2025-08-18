@@ -1,0 +1,10 @@
+.quarto-figure-center > figure > div td {
+  text-align: left;
+}
+
+.panel-caption, .figure-caption, figcaption, table caption {
+  color: var(--white) !important;
+  text-align: center;
+  font-style: italic;
+  margin: 0.5rem 0;
+}

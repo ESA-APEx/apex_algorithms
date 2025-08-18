@@ -84,7 +84,7 @@ def generate() -> dict:
         "python-memory": "3g",
         "udf-dependency-archives": [
             "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps",
-            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/photovoltaic/rf_1_median_depth_15.onnx#onnx_models"
+            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/photovoltaic/rf_1_median_depth_15.zip#onnx_models"
         ]
     }
 

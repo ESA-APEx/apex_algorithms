@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import dataclasses
+import glob
 import json
 import logging
 import re
-import glob
 from pathlib import Path
 from typing import List
 
@@ -37,9 +37,12 @@ class BenchmarkScenario:
     job_options: dict | None = None
     reference_data: dict = dataclasses.field(default_factory=dict)
     reference_options: dict = dataclasses.field(default_factory=dict)
+    source: str | Path | None = None
 
     @classmethod
-    def from_dict(cls, data: dict) -> BenchmarkScenario:
+    def from_dict(
+        cls, data: dict, *, source: str | Path | None = None
+    ) -> BenchmarkScenario:
         jsonschema.validate(instance=data, schema=_get_benchmark_scenario_schema())
         # TODO: also include the `lint_benchmark_scenario` stuff here (maybe with option to toggle deep URL inspection)?
 
@@ -53,20 +56,33 @@ class BenchmarkScenario:
             reference_data=data.get("reference_data", {}),
             job_options=data.get("job_options"),
             reference_options=data.get("reference_options", {}),
+            source=source,
         )
 
+    @classmethod
+    def read_scenarios_file(cls, path: str | Path) -> List[BenchmarkScenario]:
+        """
+        Load list of benchmark scenarios from a JSON file.
+        """
+        path = Path(path)
+        with path.open("r", encoding="utf8") as f:
+            data = json.load(f)
+        # TODO: support single scenario files in addition to listings?
+        assert isinstance(data, list)
+        return [cls.from_dict(item, source=path) for item in data]
 
-def get_benchmark_scenarios(root = None) -> List[BenchmarkScenario]:
+
+def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
     # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
     # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
     scenarios = []
     # old style glob is used to support symlinks
-    for path in glob.glob(str( (root or get_project_root()) / "algorithm_catalog") + "/**/*benchmark_scenarios*/*.json", recursive=True):
-        with open(path) as f:
-            data = json.load(f)
-        # TODO: support single scenario files in addition to listings?
-        assert isinstance(data, list)
-        scenarios.extend(BenchmarkScenario.from_dict(item) for item in data)
+    for path in glob.glob(
+        str((root or get_project_root()) / "algorithm_catalog")
+        + "/**/*benchmark_scenarios*/*.json",
+        recursive=True,
+    ):
+        scenarios.extend(BenchmarkScenario.read_scenarios_file(path))
     return scenarios
 
 

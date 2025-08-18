@@ -1,5 +1,6 @@
 """
-Pytest plugin to track test/benchmark metrics and report them with a JSON file.
+Pytest plugin to track test/benchmark metrics/events/status
+and report them through a JSON/Parquet file.
 
 
 Usage:
@@ -12,13 +13,22 @@ Usage:
     ]
     ```
 
--   Use the `track_metric` fixture to record metrics during tests:
+-   Use the `track_metric` fixture (a callable) to record metrics during tests:
 
     ```python
     def test_dummy(track_metric):
         x = 3
         track_metric("x squared", x*x)
-    ...
+    ```
+
+-   It's also possible to work in update mode to update a metric along the way
+    (instead of append mode which is the default):
+
+    ```python
+        track_metric("milestone", "phase2", update=True)
+        ...
+        track_metric("milestone", "phase3", update=True)
+    ```
 
 -   Run the tests with desired configuration through CLI options and env vars:
     - CLI option to store metrics to (local) JSON file:
@@ -39,6 +49,7 @@ Usage:
       to define how to partition the Parquet files.
 """
 
+import contextlib
 import dataclasses
 import datetime
 import json
@@ -53,6 +64,7 @@ import pyarrow.fs
 import pyarrow.parquet
 import pytest
 from apex_algorithm_qa_tools.pytest import get_run_id
+from openeo.util import repr_truncate
 
 _TRACK_METRICS_PLUGIN_NAME = "track_metrics"
 
@@ -285,10 +297,12 @@ class TrackMetricsReporter:
             reports.append(str(self._parquet_local))
         if self._parquet_s3:
             reports.append(str(self._parquet_s3))
-        if reports:
-            terminalreporter.write_sep(
-                "-", f"Generated track_metrics report: {', '.join(reports)}"
-            )
+        terminalreporter.write_sep("=", "track_metrics summary")
+        for report in reports:
+            terminalreporter.write_line(f"- Generated report {report}")
+        terminalreporter.write_line(
+            "- Data: " + repr_truncate(self._suite_metrics, width=512)
+        )
 
     def get_metrics(
         self, user_properties: List[Tuple[str, Any]]
@@ -320,7 +334,11 @@ def track_metric(
     Fixture to record a metric during tests/benchmarks,
     which will be stored in the pytest node's "user_properties".
 
-    Returns a callable that expects a metric name and value
+    Returns a callable that expects:
+    - a metric name (str)
+    - a value (str, int, float, etc.)
+    - an optional `update` flag (bool) to update existing metrics
+      instead of appending (the default).
     """
 
     reporter: TrackMetricsReporter | None = pytestconfig.pluginmanager.get_plugin(
@@ -329,13 +347,102 @@ def track_metric(
 
     if reporter:
 
-        def append(name: MetricName, value: MetricValue):
-            reporter.get_metrics(request.node.user_properties).append((name, value))
+        def track(name: MetricName, value: MetricValue, *, update: bool = False):
+            metrics: List[Tuple[str, Any]] = reporter.get_metrics(
+                request.node.user_properties
+            )
+
+            # Existing entries under same name?
+            indices = [i for i, (n, _) in enumerate(metrics) if n == name]
+
+            if update and indices:
+                # Update mode: update existing metric entry
+                if len(indices) > 1:
+                    warnings.warn(
+                        f"track_metric {name!r} update with multiple entries at {indices!r}"
+                    )
+                for i in indices:
+                    metrics[i] = (name, value)
+
+            else:
+                # Append mode
+                if indices:
+                    warnings.warn(
+                        f"track_metric {name!r} append with existing entries at {indices!r}"
+                    )
+                metrics.append((name, value))
 
     else:
         warnings.warn("Fixture `track_metric` is a no-op (incomplete set up).")
 
-        def append(name: MetricName, value: MetricValue):
+        def track(name: MetricName, value: MetricValue, update: bool = False):
             pass
 
-    return append
+    return track
+
+
+@pytest.fixture
+def track_phase(track_metric: MetricsTracker):
+    """
+    Fixture that acts as a context manager to mark
+    different phases of a test/benchmark
+    and tracks the start, end or failure of that phase.
+
+    Basic usage:
+
+    ```python
+    def test_example(track_phase):
+        with track_phase("setup"):
+            x = 0
+        with track_phase("math"):
+            y = 1 / x
+    ```
+
+    This will produce the following metrics/events:
+
+    - `("test:phase:start", "math")`: "math" was the last phase that started
+    - `("test:phase:end", "setup")`: "setup" was the last phase that ended without exception
+    - `("test:phase:exception", "math")`: there was an exception in the "math" phase
+
+
+    It's also possible to provide a custom function to describe exceptions
+    raised during the phase to produce a more detailed metric/event:
+
+    ```python
+    def describe_exception(exc: Exception) -> Union[str, None]:
+        if isinstance(exc, ZeroDivisionError):
+            return "division-by-zero"
+
+    def test_example(track_phase):
+        ...
+        with track_phase("math", describe_exception=describe_exception):
+            y = 1 / x
+    ```
+
+    Which will produce this exception metric/event:
+    - `("test:phase:exception", "math:division-by-zero")`
+    """
+
+    @contextlib.contextmanager
+    def track(
+        phase: str,
+        *,
+        describe_exception: Callable[[Exception], Union[str, None]] = lambda e: None,
+    ):
+        track_metric("test:phase:start", phase, update=True)
+        try:
+            yield
+        except Exception as exc:
+            # TODO: support nesting of `track_phase` in the sense
+            #       that only the inner-most phase is marked with the exception
+            #       instead of the outer-most phase like it is now.
+            desc = describe_exception(exc)
+            if desc:
+                value = f"{phase}:{desc}"
+            else:
+                value = phase
+            track_metric("test:phase:exception", value, update=True)
+            raise
+        track_metric("test:phase:end", phase, update=True)
+
+    return track

@@ -47,6 +47,7 @@ from apex_algorithm_qa_tools.pytest import get_run_id
 _log = logging.getLogger(__name__)
 
 _UPLOAD_ASSETS_PLUGIN_NAME = "upload_assets"
+_USER_PROPERTY = "upload_assets"
 
 
 def pytest_addoption(parser: pytest.Parser):
@@ -94,6 +95,10 @@ class S3UploadPlugin:
         """Collect assets to upload"""
         assert self.collected_assets is not None, "No active collection of assets"
         self.collected_assets[name] = path
+        # TODO: this stat won't work properly in pytest-xdist context
+        #       because incrementing stat happens on xdist workers,
+        #       while summary is done from xdist controller).
+        self.upload_stats["collected"] += 1
 
     def pytest_runtest_logstart(self, nodeid):
         # Start new collection of assets for current test node
@@ -102,26 +107,40 @@ class S3UploadPlugin:
     def pytest_runtest_logreport(self, report: pytest.TestReport):
         # TODO #22: option to upload on other outcome as well?
         if report.when == "call" and report.outcome == "failed":
-            self._upload_collected_assets(nodeid=report.nodeid)
+            self._upload_collected_assets(nodeid=report.nodeid, report=report)
+
+        # Merge stats
+        for upload_info in (
+            v for k, v in report.user_properties if k == _USER_PROPERTY
+        ):
+            for k, v in upload_info["stats"].items():
+                self.upload_stats[k] += v
+            if upload_info["uploads"]:
+                self.upload_reports[report.nodeid] = upload_info["uploads"]
 
     def pytest_runtest_logfinish(self, nodeid):
         # Reset collection of assets
         self.collected_assets = None
 
-    def _upload_collected_assets(self, nodeid: str):
-        upload_report = {}
+    def _upload_collected_assets(self, nodeid: str, report: pytest.TestReport):
+        upload_info = {
+            "stats": {"uploaded": 0, "failed": 0},
+            "uploads": {},
+        }
         for name, path in self.collected_assets.items():
             try:
                 url = self._upload_asset(nodeid=nodeid, name=name, path=path)
-                upload_report[name] = {"url": url}
-                self.upload_stats["uploaded"] += 1
+                upload_info["uploads"][name] = {"url": url}
+                upload_info["stats"]["uploaded"] += 1
             except Exception as e:
                 _log.error(
                     f"Failed to upload asset {name=} from {path=}: {e=}", exc_info=True
                 )
-                upload_report[name] = {"error": str(e)}
-                self.upload_stats["failed"] += 1
-        self.upload_reports[nodeid] = upload_report
+                upload_info["uploads"][name] = {"error": str(e)}
+                upload_info["stats"]["failed"] += 1
+
+        # Pass upload info through user_properties to be xdist-compatible
+        report.user_properties.append([_USER_PROPERTY, upload_info])
 
     def _upload_asset(self, nodeid: str, name: str, path: Path) -> str:
         safe_nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", nodeid)
@@ -142,9 +161,8 @@ class S3UploadPlugin:
         return f"Plugin `upload_assets` is active, with upload to {self.bucket!r}"
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep(
-            "-", f"`upload_assets` stats: {dict(self.upload_stats)}"
-        )
+        terminalreporter.write_sep("=", "upload_assets summary")
+        terminalreporter.write_line(f"- stats: {dict(self.upload_stats)}")
         for nodeid, upload_report in self.upload_reports.items():
             terminalreporter.write_line(f"- {nodeid}:")
             for name, report in sorted(upload_report.items()):
