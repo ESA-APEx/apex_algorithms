@@ -7,6 +7,7 @@
         "process_graph": {
             "randomforestfiremapping1": {
                 "arguments": {
+                    "padding_window_size": 33,
                     "spatial_extent": {
                         "coordinates": [
                             [
