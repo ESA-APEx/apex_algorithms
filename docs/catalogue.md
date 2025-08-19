@@ -16,6 +16,10 @@ This page will delve deeper into the setup and operations of this integration, p
 # Record Mapping
 The following sections demonstrate how the various sections from the record are connected to the information displayed in the APEx Algorithm Service Catalogue.
 
+## Service Visibility
+
+In those cases where the service is not intended to be publicly available, the `properties.visibility` property in the record can be set to `private`. This ensures that the service will not be listed in the [APEx Algorithm Services Catalogue](https://algorithm-catalogue.apex.esa.int/). The default value for this property is `public`, meaning that if it is not specified, the service will be visible in the catalogue.
+
 ## Services Overview
 
 @tbl-overview-mapping illustrates how the various sections from the record are connected to the general overview of all the services in the APEx Service Catalogue as shown in @fig-overview.
