@@ -161,7 +161,7 @@ class S3UploadPlugin:
         return f"Plugin `upload_assets` is active, with upload to {self.bucket!r}"
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", "upload_assets summary")
+        terminalreporter.write_sep("=", "upload_assets summary")
         terminalreporter.write_line(f"- stats: {dict(self.upload_stats)}")
         for nodeid, upload_report in self.upload_reports.items():
             terminalreporter.write_line(f"- {nodeid}:")

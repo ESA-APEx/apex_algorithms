@@ -1,0 +1,107 @@
+.btn-primary {
+  padding: 1rem 1.85rem !important;
+  border: none !important;
+  border-radius: 100rem !important;
+
+  background-color: var(--lightgreen) !important;
+  color: var(--white) !important;
+
+  font-size: var(--text-base) !important;
+  line-height: 1.2 !important;
+
+  &:hover {
+    background-color: var(--green) !important;
+  }
+}
+
+.btn-secondary {
+  padding: 1rem 1.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 100rem;
+
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--white);
+
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.2;
+
+  &:hover {
+    background-color: var(--green);
+    border-color: var(--green);
+  }
+}
+
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.85rem;
+  border: none;
+  border-radius: 100rem;
+
+  background-color: var(--white);
+  color: var(--darkblue);
+
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.2;
+
+  &:hover {
+    background-color: var(--lightgreen);
+  }
+
+  &[target="_blank"] {
+    &::after {
+      content: '';
+      display: block;
+      width: 1rem;
+      height: 1rem;
+      background-image: url('./assets/img/icons/icon-arrow-upright-green.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-inline-start: .5rem;
+    }
+
+    &:hover::after {
+      background-image: url('./assets/img/icons/icon-arrow-upright.svg');
+    }
+  }
+}
+
+.btn-link {
+  padding: 0;
+
+  color: var(--white);
+
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color 0.3s;
+
+  &:hover {
+    color: var(--white);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+    text-decoration-color: transparent;
+  }
+}
+
+.btn--arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 10px;
+    background-repeat: no-repeat;
+
+    background-image: url('./assets/img/icons/arrow_right_alt.svg');
+  }
+}

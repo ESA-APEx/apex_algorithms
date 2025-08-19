@@ -297,7 +297,7 @@ class TrackMetricsReporter:
             reports.append(str(self._parquet_local))
         if self._parquet_s3:
             reports.append(str(self._parquet_s3))
-        terminalreporter.write_sep("-", "track_metrics summary")
+        terminalreporter.write_sep("=", "track_metrics summary")
         for report in reports:
             terminalreporter.write_line(f"- Generated report {report}")
         terminalreporter.write_line(

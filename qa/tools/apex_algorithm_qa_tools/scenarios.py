@@ -37,9 +37,12 @@ class BenchmarkScenario:
     job_options: dict | None = None
     reference_data: dict = dataclasses.field(default_factory=dict)
     reference_options: dict = dataclasses.field(default_factory=dict)
+    source: str | Path | None = None
 
     @classmethod
-    def from_dict(cls, data: dict) -> BenchmarkScenario:
+    def from_dict(
+        cls, data: dict, *, source: str | Path | None = None
+    ) -> BenchmarkScenario:
         jsonschema.validate(instance=data, schema=_get_benchmark_scenario_schema())
         # TODO: also include the `lint_benchmark_scenario` stuff here (maybe with option to toggle deep URL inspection)?
 
@@ -53,7 +56,20 @@ class BenchmarkScenario:
             reference_data=data.get("reference_data", {}),
             job_options=data.get("job_options"),
             reference_options=data.get("reference_options", {}),
+            source=source,
         )
+
+    @classmethod
+    def read_scenarios_file(cls, path: str | Path) -> List[BenchmarkScenario]:
+        """
+        Load list of benchmark scenarios from a JSON file.
+        """
+        path = Path(path)
+        with path.open("r", encoding="utf8") as f:
+            data = json.load(f)
+        # TODO: support single scenario files in addition to listings?
+        assert isinstance(data, list)
+        return [cls.from_dict(item, source=path) for item in data]
 
 
 def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
@@ -66,11 +82,7 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
         + "/**/*benchmark_scenarios*/*.json",
         recursive=True,
     ):
-        with open(path) as f:
-            data = json.load(f)
-        # TODO: support single scenario files in addition to listings?
-        assert isinstance(data, list)
-        scenarios.extend(BenchmarkScenario.from_dict(item) for item in data)
+        scenarios.extend(BenchmarkScenario.read_scenarios_file(path))
     return scenarios
 
 
