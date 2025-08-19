@@ -86,13 +86,12 @@
         "license": "CC-BY-4.0"
     },
     "linkTemplates": [],
-    "links": 
-    [
+    "links": [
         {
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0962bf79f836859e701fa7437307240ef689ff2e/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json"
         },
         {
             "rel": "service",
@@ -101,23 +100,22 @@
             "href": "https://openeofed.dataspace.copernicus.eu"
         },
         {
-          "rel": "example-output",
-          "type": "image/tif",
-          "title": "Example output",
-          "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RF_ForestFire.tif"
+            "rel": "example-output",
+            "type": "image/tif",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RF_ForestFire.tif"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=random_forest_firemapping&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0962bf79f836859e701fa7437307240ef689ff2e/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json&server=https://openeo.vito.be"
-        }
-        ,
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=random_forest_firemapping&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json&server=https://openeo.vito.be"
+        },
         {
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/RandomForest/algorithm_catalog/vito/random_forest_firemapping/records/forest_fire.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/random_forest_firemapping/records/forest_fire.png"
         }
     ]
 }
