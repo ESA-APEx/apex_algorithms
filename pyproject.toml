@@ -39,6 +39,9 @@ dev = [
 [tool.hatch.version]
 path = "src/esa_apex_toolbox/_about.py"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/esa_apex_toolbox"]
+
 [tool.black]
 line-length = 120
 
