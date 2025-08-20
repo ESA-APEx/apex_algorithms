@@ -157,14 +157,28 @@ class GithubAlgorithmRepository:
         self.folder = folder
         self.branch = branch
         self._session = requests.Session()
+        self._organizations = list(self._list_organizations())
+        self._algorithms = None
+
+
+    def _list_organizations(self):
+        org_listing, url = self._get_listing()
+        for item in org_listing["entries"]:
+            if item["type"] == "dir" :
+                yield item['name']
+
+    def _list_algorithms(self, organization):
+        url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}/{organization}".strip("/")
+        org_listing, url = self._get_listing(url)
+        for item in org_listing["entries"]:
+            if item["type"] == "dir" :
+                yield item['name']
+
+
 
 
     def _list_files(self,url = None):
-        if url is None:
-            url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}".strip("/")
-        resp = self._session.get(url, headers={"Accept": "application/vnd.github.object+json"})
-        resp.raise_for_status()
-        listing = resp.json()
+        listing, url = self._get_listing(url)
         assert listing["type"] == "dir"
         for item in listing["entries"]:
             if item["type"] == "file" and item["name"].endswith(".json"):
@@ -175,12 +189,26 @@ class GithubAlgorithmRepository:
                 for subitem in self._list_files(url = subfolder):
                     yield subitem
 
+    def _get_listing(self, url=None):
+        if url is None:
+            url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}".strip("/")
+        resp = self._session.get(url, headers={"Accept": "application/vnd.github.object+json"})
+        resp.raise_for_status()
+        listing = resp.json()
+        return listing, url
+
     def list_algorithms(self) -> List[str]:
         # TODO: method to list names vs method to list parsed Algorithm objects?
-        return [item["name"] for item in self._list_files()]
+        if self._algorithms is None:
+            self._algorithms = {org: list(self._list_algorithms(org)) for org in self._organizations}
+        return [ algorithm_name for algos in self._algorithms.values() for algorithm_name in algos]
 
     def get_algorithm(self, name: str) -> Algorithm:
         # TODO: get url from listing from API request, instead of hardcoding this raw url?
-        url = f"https://raw.githubusercontent.com/{self.owner}/{self.repo}/{self.branch}/{self.folder}/{name}"
+        all_algos = self.list_algorithms()
+        orgs = [ org for org, algos in self._algorithms.items() if name in algos]
+        if len(orgs) != 1:
+            raise ValueError(f"Algorithm {name!r} not found in {all_algos}")
+        url = f"https://raw.githubusercontent.com/{self.owner}/{self.repo}/{self.branch}/{self.folder}/{orgs[0]}/{name}/records/{name}.json"
         # TODO: how to make sure GitHub URL is requested with additional headers?
         return Algorithm.from_ogc_api_record(url)

@@ -210,16 +210,16 @@ class TestGithubAlgorithmRepository:
     def test_list_algorithms(self, repo):
         listing = repo.list_algorithms()
         assert listing
-        assert all(re.fullmatch(r"[a-z0-9_]+\.json", item) for item in listing)
+        assert all(re.fullmatch(r"[a-z0-9_]+", item) for item in listing)
 
     def test_get_algorithm(self, repo):
-        algorithm = repo.get_algorithm("max_ndvi_composite.json")
+        algorithm = repo.get_algorithm("max_ndvi_composite")
         assert algorithm == Algorithm(
             id="max_ndvi_composite",
             title="Max NDVI Composite based on Sentinel-2 data",
-            description="A compositing algorithm for Sentinel-2 L2A data, ranking observations by their maximum NDVI.",
+            description="A compositing algorithm for Sentinel-2 L2A data, ranking observations by their maximum NDVI. The cost depends on both the area and number of input observations.",
             udp_link=UdpLink(
-                href="https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json",
+                href="https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/max_ndvi_composite/openeo_udp/max_ndvi_composite.json",
                 title="openEO Process Definition",
             ),
             organization="VITO",
