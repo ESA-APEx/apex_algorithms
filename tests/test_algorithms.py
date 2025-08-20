@@ -17,7 +17,7 @@ DATA_ROOT = Path(__file__).parent / "data"
 class TestUdpLink:
     def test_from_link_object_basic(self):
         data = {
-            "rel": "openeo-process",
+            "rel": "application",
             "href": "https://esa-apex.test/udp/basic.json",
         }
         link = UdpLink.from_link_object(data)
@@ -26,7 +26,7 @@ class TestUdpLink:
 
     def test_from_link_object_with_title(self):
         data = {
-            "rel": "openeo-process",
+            "rel": "application",
             "href": "https://esa-apex.test/udp/basic.json",
             "title": "My basic UDP",
         }
@@ -46,19 +46,19 @@ class TestUdpLink:
             "rel": "self",
             "href": "https://esa-apex.test/udp/basic.json",
         }
-        with pytest.raises(InvalidMetadataError, match="Expected link with rel='openeo-process'"):
+        with pytest.raises(InvalidMetadataError, match="Expected link with rel='application'"):
             _ = UdpLink.from_link_object(data)
 
     def test_from_link_object_no_href(self):
         data = {
-            "rel": "openeo-process",
+            "rel": "application",
         }
         with pytest.raises(InvalidMetadataError, match="Missing 'href' attribute"):
             _ = UdpLink.from_link_object(data)
 
     def test_from_link_object_wrong_type(self):
         data = {
-            "rel": "openeo-process",
+            "rel": "application",
             "href": "https://esa-apex.test/udp/basic.json",
             "type": "application/xml",
         }
@@ -73,7 +73,7 @@ class TestAlgorithm:
             "type": "Feature",
             "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
             "properties": {
-                "type": "apex_algorithm",
+                "type": "service",
             },
             "links": [
                 {"rel": "service", "href": "https://openeo.test/"},
@@ -99,7 +99,7 @@ class TestAlgorithm:
             "type": "Feature",
             "conformsTo": ["http://nope.test/"],
             "properties": {
-                "type": "apex_algorithm",
+                "type": "service",
             },
         }
         with pytest.raises(
@@ -126,14 +126,14 @@ class TestAlgorithm:
             "type": "Feature",
             "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
             "properties": {
-                "type": "apex_algorithm",
+                "type": "service",
                 "title": "Basic",
                 "description": "The basics.",
             },
             "links": [
                 {
-                    "rel": "openeo-process",
-                    "type": "application/json",
+                    "rel": "application",
+                    "type": "application/vnd.openeo+json;type=process",
                     "title": "Basic UDP",
                     "href": "https://esa-apex.test/udp/basic.json",
                 },

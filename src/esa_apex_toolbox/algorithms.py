@@ -54,7 +54,7 @@ class UdpLink:
         if data["rel"] != LINK_REL.UDP:
             raise InvalidMetadataError(f"Expected link with rel='{LINK_REL.UDP}' but got {data['rel']!r}")
         if "type" in data and data["type"] != "application/vnd.openeo+json;type=process":
-            raise InvalidMetadataError(f"Expected link with type='application/json' but got {data['type']!r}")
+            raise InvalidMetadataError(f"Expected link with type='application/vnd.openeo+json;type=process' but got {data['type']!r}")
         if "href" not in data:
             raise InvalidMetadataError("Missing 'href' attribute in link object")
         return cls(
