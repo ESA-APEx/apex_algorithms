@@ -62,7 +62,7 @@ class TestUdpLink:
             "href": "https://esa-apex.test/udp/basic.json",
             "type": "application/xml",
         }
-        with pytest.raises(InvalidMetadataError, match="Expected link with type='application/json'"):
+        with pytest.raises(InvalidMetadataError, match="Expected link with type='application/vnd.openeo\+json;type=process' .*"):
             _ = UdpLink.from_link_object(data)
 
 
