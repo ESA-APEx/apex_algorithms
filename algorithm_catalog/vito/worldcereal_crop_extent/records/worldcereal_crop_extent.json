@@ -52,7 +52,7 @@
           "principal investigator"
         ]
       },
-     {
+      {
         "name": "Copernicus Dataspace Ecosystem",
         "links": [
           {
@@ -125,6 +125,12 @@
       "type": "text/html",
       "title": "WorldCereal Processing hub",
       "href": "https://hub.esa-worldcereal.org/generate-custom-products"
-    }    
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcereal_crop_extent/records/thumbnail.png"
+    }
   ]
 }

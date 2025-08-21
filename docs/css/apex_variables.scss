@@ -1,0 +1,79 @@
+/*-- scss:defaults --*/
+
+:root {
+  // colors
+  --darkblue: #003247;
+  --lightblue: #00619E;
+  --green: #008E7A;
+  --lightgreen: #00AE9D;
+  --yellow: #FBAB18;
+  --orange: #F47920;
+  --body-bg: #043346;
+
+  --white: #fff;
+  --black: #000;
+  --light: #e7e7e7;
+  --greylight: #F3F7F8;
+  --stroke: #dcdcdc;
+
+  --underline: #CCD6DA;
+
+  --bs-heading-color: #003247 !important;
+  --bs-body-line-height: 1.25 !important;
+
+  // Colors in rgb
+  --darkblue-rgb: rgb(0, 50, 71);
+  --lightblue-rgb: 0, 97, 158;
+  --green-rgb: 0, 142, 122;
+  --lightgreen-rgb: 0, 174, 157;
+  --yellow-rgb: 251, 171, 24;
+  --orange-rgb: 244, 121, 32;
+  --light-rgb: 231, 231, 231;
+
+  --text-4xl: 3.1875rem;
+  --text-3xl: 2.375rem;
+  --text-2xl: 1.75rem;
+  --text-xl: 1.5rem;
+  --text-lg: 1.25rem;
+  --text-base: 1.1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+  --font-family: 'NotesESA', Arial, sans-serif;
+
+  --border-radius: 10px;
+  --opacity: 1.0;
+  --lineheight: 1.25;
+
+}
+
+$body-bg: rgb(0, 50, 71);
+
+$grid-body-width: 1200px !default;
+$grid-column-gutter-width: 2.5rem;
+$body-color: rgb(173, 189, 196);
+$headings-color: var(--white);
+$link-color: #00AE9D;
+$font-family-sans-serif: var(--font-family);
+$border-radius: var(--border-radius);
+$font-size-root: 16px;
+
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1500px
+) !default;
+
+$container-max-widths: (
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl: 1440px
+) !default;
+
+$enable-rfs: false;
+$line-height-base: 1.2;

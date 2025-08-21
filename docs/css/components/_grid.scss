@@ -1,0 +1,23 @@
+#quarto-content {
+  margin: auto;
+
+  @include media-breakpoint-up(sm) {
+    width: calc(map-get($container-max-widths, sm) + 50px);
+  }
+
+  @include media-breakpoint-up(md) {
+    width: calc(map-get($container-max-widths, md) + 50px);
+  }
+
+  @include media-breakpoint-up(lg) {
+    width: calc(map-get($container-max-widths, lg) + 50px);
+  }
+
+  @include media-breakpoint-up(xl) {
+    width: calc(map-get($container-max-widths, xl) + 50px);
+  }
+
+  @include media-breakpoint-up(xxl) {
+    width: calc(map-get($container-max-widths, xxl) + 50px);
+  }
+}
