@@ -60,6 +60,15 @@
         "formats"
       ],
       "properties": {
+        "visibility": {
+          "type": "string",
+          "description": "Visibility of the service in the APEx Algorithm Services Catalogue. Set to private to ensure the service is not listed in the catalogue.",
+          "enum": [
+            "public",
+            "private"
+          ],
+          "default": "public"
+        },
         "created": {
           "type": "string",
           "description": "Create date/time of the record."
