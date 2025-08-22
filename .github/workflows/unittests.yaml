@@ -13,9 +13,11 @@ jobs:
           python-version: "3.12"
       - name: Install test suite dependencies
         run: |
+          python -m pip install .[tests]          
           python -m pip install qa/tools
           python -m pip install -r qa/unittests/requirements.txt
       - name: Test with pytest
         run: |
+          pytest
           cd qa/unittests
           pytest
