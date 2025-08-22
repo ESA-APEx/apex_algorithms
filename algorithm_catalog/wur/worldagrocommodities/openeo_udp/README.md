@@ -1,5 +1,5 @@
 # World Agri Commodities (WAC) Processing Pipeline
-This repository implements an end-to-end openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data, a suite of preprocessing steps, vegetation indices, and a sliding-window ONNX model. The ML model was trained to classify agriculture activity for specific commodities in sout-east asia in the context of ESA's World Agro Commodities project
+This repository implements an end-to-end openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data, a suite of preprocessing steps, vegetation indices, and a sliding-window ONNX model. The ML model was trained to classify agriculture activity for specific commodities in the context of ESA's World Agro Commodities project
 
 ## Algorithm and Workflow
 ### 1 Data Loading
@@ -34,5 +34,5 @@ Patch-based sliding window (size 128×128 px, overlap 64 px) via apply_neighborh
 
 ONNX U-Net model loaded at runtime
 
-Output bands renamed to prob_class_0…prob_class_{N-1} plus prob_class
+Output bands renamed to sigmoid_prob_class_0…prob_class_{N-1} plus prob_class
  
