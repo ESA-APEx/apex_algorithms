@@ -13,11 +13,8 @@
         "title": "Variability maps",
         "description": "Daily crop performance calculation",
         "keywords": [
-            "Variabilitymap",
-            "nextland services",
-            "agriculture",
-            "EO",
-            "biopar"
+            "Agriculture",
+            "Sentinel 2"
         ],
         "language": {
             "code": "en-US",

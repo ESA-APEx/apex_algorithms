@@ -15,8 +15,9 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "agriculture",
-      "crops"
+      "Agriculture",
+      "Sentinel 2",
+      "Sentinel 1"
     ],
     "language": {
       "code": "en-US",
