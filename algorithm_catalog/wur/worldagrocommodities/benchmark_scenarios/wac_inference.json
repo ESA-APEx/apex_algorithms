@@ -1,0 +1,32 @@
+[
+    {
+        "id": "WorldAgriCommodities",
+        "type": "openeo",
+        "description": "openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data of the WorldAgriCommodities project",
+        "backend": "openeo.dataspace.copernicus.eu",
+        "process_graph": {
+            "parcel_delineation1": {
+                "process_id": "wac_inference",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/96dfa13ba74ccbfb3432c6ebd38c42e704526e79/algorithm_catalog/wur/worldagrocommodities/records/wac_inference.json",
+                "arguments": {
+                    "spatial_extent": {
+			            "west": 716200,
+                        "south": 605530,
+                        "east": 722380,
+                        "north": 612410,
+                        "crs": "EPSG:32630"
+		            },
+                    "temporal_extent": [
+                        "2023-06-01",
+                        "2023-09-01"
+                    ]
+                },
+                "result": true
+            }
+        },
+        "reference_data": {
+	   }
+    }
+]
+
+
