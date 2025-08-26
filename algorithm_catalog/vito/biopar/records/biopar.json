@@ -15,6 +15,7 @@
         "cost_estimate": 0.1,
         "cost_unit": "platform credits per km² per observation",
         "keywords": [
+            "Agriculture",
             "Vegetation",
             "Sentinel 2"
         ],
