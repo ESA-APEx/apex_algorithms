@@ -15,13 +15,8 @@
     "cost_estimate": 1.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "OST",
-      "OpenSARToolkit",
-      "remote sensing",
-      "ARD",
-      "RTC",
-      "GTC",
-      "RBR"
+      "Sentinel 1",
+      "Land"
     ],
     "language": {
       "code": "en-US",
