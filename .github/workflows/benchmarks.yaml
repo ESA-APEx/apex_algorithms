@@ -31,7 +31,7 @@ jobs:
           pytest \
             -vv \
             --log-cli-level=INFO \
-            --random-subset=1 \
+            -k bap_composite \
             --html report/report.html --self-contained-html \
             --track-metrics-json=report/metrics.json \
             --track-metrics-parquet-s3-bucket="apex-benchmarks" \
