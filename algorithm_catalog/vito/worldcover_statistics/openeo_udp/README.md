@@ -14,3 +14,10 @@ This service is maintained and provided by Terrascope.
 
 The European Space Agency (ESA) WorldCover 10 m 2021 product provides a global land cover map for 2021 at 10 m resolution based on Sentinel-1 and Sentinel-2 data. The WorldCover product comes with 11 land cover classes, aligned with UN-FAO's Land Cover Classification System, and has been generated in the framework of the ESA WorldCover project.
 
+
+## Performance
+
+The cost of an example run using 3 medium sized areas spread across Europe was 6 platform credits, it finished in under 4 minutes total runtime.
+Performance characteristics may differ depending on the type of polygon inputs, for instance, a single large area versus many small areas. Hence it 
+is advised to perform tests based on your desired geometry.
+
