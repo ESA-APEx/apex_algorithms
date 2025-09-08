@@ -79,7 +79,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldcover_stats/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
     },
     {
       "rel": "service",
@@ -91,7 +91,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://openeofed.dataspace.copernicus.eu/?wizard=UDP&wizard~process=worldcover-statistics&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldcover_stats/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
+      "href": "https://openeofed.dataspace.copernicus.eu/?wizard=UDP&wizard~process=worldcover-statistics&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
     },
     {
       "rel": "cite-as",
