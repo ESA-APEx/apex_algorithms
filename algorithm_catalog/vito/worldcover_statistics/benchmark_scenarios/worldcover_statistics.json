@@ -35,7 +35,7 @@
         }
       },
       "description": "Land cover statistics for one or more areas based on ESA WorldCover 2021, provided by Terrascope.",
-      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldcover_stats/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json",
+      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json",
       "process_id": "worldcover_statistics",
       "result": true
     }
