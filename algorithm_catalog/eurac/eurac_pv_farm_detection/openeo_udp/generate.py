@@ -60,6 +60,7 @@ def generate() -> dict:
         
     )
 
+
     prediction = s2_cube.reduce_bands(reducer=udf)
 
     # Post-process the data with an opening (erosion + dilation)
@@ -82,9 +83,11 @@ def generate() -> dict:
         "executor-memory": "1g",
         "python-memory": "3g",
         "udf-dependency-archives": [
-            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
+            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps",
+            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/photovoltaic/rf_1_median_depth_15.zip#onnx_models"
         ]
     }
+
 
     return build_process_dict(
         process_graph=dilated_cube,

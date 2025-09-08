@@ -38,26 +38,27 @@ def get_variabilitymap(
 
     biopar_type = "FAPAR"
 
-    mask = mask = scl.process("to_scl_dilation_mask", data=scl)
+    mask = scl.process("to_scl_dilation_mask", data=scl)
     S2_bands_mask = s2_cube.mask(mask)
 
     # fetch udf to reduce bands
     reduce_bands_udf = openeo.UDF.from_file("shub_fapar_udf.py")
     S2_bands_mask_reduced = S2_bands_mask.reduce_bands(reduce_bands_udf)
 
-    input_data = S2_bands_mask_reduced.add_dimension(label=biopar_type, name=biopar_type, type='bands')
+    input_data = S2_bands_mask_reduced.add_dimension(label=biopar_type, name='bands', type='bands')
 
     ################ get and apply variability map udf #################
 
     mask_value = 999.0
-
-    variabilitymap_udf = Path("variabilitymap_udf.py").read_text()
-
-    udf_process = lambda data: data.run_udf(udf=variabilitymap_udf,
-                                            runtime='Python', context={
-            'mask_value': mask_value, 'raw': {"from_parameter": "raw"}, 'band': biopar_type
+    udf_process = openeo.UDF.from_file(
+        "variabilitymap_udf.py",
+        runtime='Python', 
+        context={
+            'mask_value': mask_value, 'raw': raw, 'band': biopar_type
         })
-    variabilitymap = input_data.apply_polygon(geometries=spatial_extent, process=udf_process, mask_value=mask_value)
+    variabilitymap = (input_data.apply_polygon(geometries=spatial_extent, process=udf_process, mask_value=mask_value)
+                      .linear_scale_range(0,100,0,100).rename_labels(dimension= 'bands', target=['variability']))
+
     return variabilitymap
 
 
@@ -68,9 +69,9 @@ def generate() -> dict:
         name="temporal_extent", 
         description="Temporal extent specified as two-element array with start and end date/date-time. \nThis is date range for which to apply the data fusion"
         )
-    spatial_extent = Parameter.spatial_extent(
+    spatial_extent = Parameter.geojson(
         name="spatial_extent", 
-        description="Limits the data to process to the specified bounding box or polygons.\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\nEmpty geometries are ignored.\nSet this parameter to null to set no limit for the spatial extent."
+        description="Limits the data to process to the specified polygons.\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with any of the polygons (as defined in the Simple Features standard by the OGC).\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\nEmpty geometries are ignored.\nSet this parameter to null to set no limit for the spatial extent."
         )
     
     raw = Parameter.boolean(

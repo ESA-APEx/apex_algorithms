@@ -38,6 +38,12 @@ def pytest_addoption(parser):
         type=str,
         help="When provided this url will be used instead of the backend listed in the benchmark json files.",
     )
+    parser.addoption(
+        "--backend-filter",
+        action="store",
+        type=str,
+        help="A regex patter to filter the available scenarios by backend.",
+    )
 
 
 def pytest_ignore_collect(collection_path, config):

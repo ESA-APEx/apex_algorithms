@@ -1,5 +1,5 @@
 apex-algorithm-qa-tools
-openeo>=0.31.0
+openeo>=0.42.0
 pytest>=8.2.0
 requests>=2.32.0
 xarray>=2024.6.0

@@ -33,6 +33,14 @@ From `qa/benchmarks` folder, run:
 pytest
 ```
 
+Use the normal pytest flags and options to control the benchmark run.
+For example, to run a specific benchmark scenario by its id, say "max_ndvi",
+with increased verbosity and live logging at DEBUG level:
+
+```bash
+pytest -vv --log-cli-level=DEBUG -k '[max_ndvi]'
+```
+
 ## `openeo` client library
 
 The test suite heavily relies on the

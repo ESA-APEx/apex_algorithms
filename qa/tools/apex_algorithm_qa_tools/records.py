@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import List, Any
+from typing import Any, List
 
-from apex_algorithm_qa_tools.common import (
-    get_project_root,
-)
+from apex_algorithm_qa_tools.common import get_project_root
 
 _log = logging.getLogger(__name__)
 
@@ -23,4 +21,3 @@ def get_ogc_records() -> List[Any]:
             data = json.load(f)
             records.append(data)
     return records
-

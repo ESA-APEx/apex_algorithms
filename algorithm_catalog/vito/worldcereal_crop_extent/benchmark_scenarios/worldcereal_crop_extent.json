@@ -25,16 +25,6 @@
         "result": true
       }
     },
-    "job_options": {
-      "driver-memory": "4g",
-      "executor-memory": "2g",
-      "executor-memoryOverhead": "1g",
-      "python-memory": "3g",
-      "soft-errors": "true",
-      "udf-dependency-archives": [
-        "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
-      ]
-    },
     "reference_data": {
       "worldcereal-cropland-extent.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent.tif",
       "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/job-results.json",
