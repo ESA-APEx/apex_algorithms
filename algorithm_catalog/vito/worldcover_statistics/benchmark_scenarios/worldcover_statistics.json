@@ -1,0 +1,44 @@
+[{
+  "id": "worldcover_statistics",
+  "type": "openeo",
+  "description": "World cover statistics.",
+  "backend": "openeofed.dataspace.copernicus.eu",
+  "process_graph": {
+    "worldcover_statistics": {
+      "arguments": {
+        "geometries": {
+          "coordinates": [
+            [
+              [
+                6.990046173926822,
+                50.92370033913926
+              ],
+              [
+                6.990915651805,
+                50.8595444392102
+              ],
+              [
+                7.239586324963913,
+                50.84527557041392
+              ],
+              [
+                7.238716847085734,
+                50.92917965051333
+              ],
+              [
+                6.990046173926822,
+                50.92370033913926
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        }
+      },
+      "description": "Land cover statistics for one or more areas based on ESA WorldCover 2021, provided by Terrascope.",
+      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json",
+      "process_id": "worldcover_statistics",
+      "result": true
+    }
+  },
+  "reference_data": {}
+}]
