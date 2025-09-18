@@ -15,8 +15,7 @@
         "cost_estimate": 12,
         "cost_unit": "platform credits per km²",
         "keywords": [
-            "timeseries",
-            "Gaussian Process Regression (GPR)"
+            "Data Fusion"
         ],
         "language": {
             "code": "en-US",

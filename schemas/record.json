@@ -104,8 +104,21 @@
           "type": "array",
           "description": "The topic or topics of the APEx service. Typically represented using free-form keywords, tags, key phrases, or classification codes.",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "enum": [
+              "Vegetation",
+              "Agriculture",
+              "Land",
+              "Energy",
+              "Disaster",
+              "Sentinel 1",
+              "Sentinel 2",
+              "Landsat 8",
+              "Data Fusion"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
         },
         "language": {
           "description": "The language used for textual values in this record representation.",
