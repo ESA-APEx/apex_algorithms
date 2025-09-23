@@ -13,6 +13,19 @@ All algorithms registered in this repository are seamlessly integrated and visua
  
 This page will delve deeper into the setup and operations of this integration, providing further insights into how users can benefit from the services offered.
 
+# Getting Started
+
+::: {.callout-note}
+Before you begin, ensure your algorithm is hosted on an APEx-compliant platform. If you need assistance in selecting a suitable platform, refer to the [APEx Hosting Platform Onboarding Support](https://esa-apex.github.io/apex_documentation/propagation/onboarding.html#hosting-platform-onboarding-support) section.
+:::
+
+Onboarding your service to the APEx Algorithm Services Catalogue is a straightforward process. Follow these steps to get started:
+
+1. Start by creating an OGC API Record for your algorithm. You can use one of the existing records in the repository as a template to guide you. Make sure to fill in all the required fields and provide accurate information about your service. More details about the record structure can be found in the [Record Mapping](#record-mapping) section below.
+2. Fork the current repository and add your record file to `algorithm_catalog/<provider>/<service>/records/<service>.json`. You can create the necessary subdirectories if they do not already exist.
+3. Once your record is ready, submit a pull request to this repository. The APEx team will review your submission and, upon approval, your service will be added to the APEx Algorithm Services Catalogue.
+
+
 # Record Mapping
 The following sections demonstrate how the various sections from the record are connected to the information displayed in the APEx Algorithm Service Catalogue.
 
