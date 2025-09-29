@@ -80,11 +80,15 @@ def generate():
 
     from openeo.processes import text_concat, date_shift
 
+    format_opts = {
+        "filename_prefix": "ramona_biomass",
+        "overviews": "AUTO"
+    }
 
     cube = (connection.load_stac("https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS",
                                         temporal_extent=[date_param, date_shift(date_param, 1, "day")])
                    .filter_spatial(connection.load_url(text_concat(["https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/", country_name, ".json"]),
-        format="GeoJSON")))
+        format="GeoJSON")).save_result(format="GTiff", options= format_opts ))
 
     udp = build_process_dict(process_graph=cube, process_id="ramona_biomass_extract",
                                       description=(Path(__file__).parent / "README.md").read_text(),

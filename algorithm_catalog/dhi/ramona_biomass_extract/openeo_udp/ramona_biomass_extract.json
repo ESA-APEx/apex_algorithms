@@ -54,6 +54,19 @@
         "geometries": {
           "from_node": "loadurl1"
         }
+      }
+    },
+    "saveresult1": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "format": "GTiff",
+        "options": {
+          "filename_prefix": "ramona_biomass",
+          "overviews": "AUTO"
+        }
       },
       "result": true
     }
