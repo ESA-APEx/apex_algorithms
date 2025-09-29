@@ -8,4 +8,9 @@ This is a simple data extraction, without additional processing.
 
 ## Performance
 
-Extracts are created in 10 minutes or less.
+The table below lists cost and timings of test runs. You may see (small) deviations from this
+in your own runs.
+
+| Country | Wall time   | Credit cost |
+|---------|-------------|-------------|
+| Benin   | 3.5 minutes | 6           |

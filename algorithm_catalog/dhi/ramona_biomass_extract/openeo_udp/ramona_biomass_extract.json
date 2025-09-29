@@ -72,7 +72,7 @@
     }
   },
   "id": "ramona_biomass_extract",
-  "description": "# Herbaceous Biomass Extract\n\nFor a selected African country and month, returns the Ramona biomass data. \n\n## Methodology\n\nThis is a simple data extraction, without additional processing.\n\n## Performance\n\nExtracts are created in 10 minutes or less.\n",
+  "description": "# Herbaceous Biomass Extract\n\nFor a selected African country and month, returns the Ramona biomass data. \n\n## Methodology\n\nThis is a simple data extraction, without additional processing.\n\n## Performance\n\nThe table below lists cost and timings of test runs. You may see (small) deviations from this\nin your own runs.\n\n| Country | Wall time   | Credit cost |\n|---------|-------------|-------------|\n| Benin   | 3.5 minutes | 6           |\n",
   "parameters": [
     {
       "name": "country",
