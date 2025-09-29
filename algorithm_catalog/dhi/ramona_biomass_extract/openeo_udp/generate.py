@@ -86,10 +86,10 @@ def generate():
 
     udp = build_process_dict(process_graph=cube, process_id="ramona_biomass_extract",
                                       description=(Path(__file__).parent / "README.md").read_text(),
-                                      parameters=[country_name])
+                                      parameters=[country_name, date_param])
     # connection.save_user_defined_process(process_graph=cube, user_defined_process_id="ramona_rangeland_extract",
     #                                   description=(Path(__file__).parent / "README.md").read_text(),
-    #                                   parameters=[country_name])
+    #                                   parameters=[country_name, date_param])
     return udp
 
 

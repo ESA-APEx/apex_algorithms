@@ -92,7 +92,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=ramona_biomass_extract&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Fmain%2Falgorithm_catalog%2Fdhi%2Framona_rangeland_extract%2Fopeneo_udp%2Framona_rangeland_extract.json"
+      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=ramona_biomass_extract&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Framona_rangeland%2Falgorithm_catalog%2Fdhi%2Framona_biomass_extract%2Fopeneo_udp%2Framona_biomass_extract.json"
     },
     {
       "rel": "about",

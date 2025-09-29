@@ -124,6 +124,15 @@
           "zimbabwe"
         ]
       }
+    },
+    {
+      "name": "date",
+      "description": "A date with time.",
+      "schema": {
+        "type": "string",
+        "subtype": "date-time",
+        "format": "date-time"
+      }
     }
   ]
 }
