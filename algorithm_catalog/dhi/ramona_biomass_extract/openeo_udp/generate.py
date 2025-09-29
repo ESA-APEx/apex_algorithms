@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import openeo
+from docutils.nodes import description
 from openeo.api.process import Parameter
 from openeo.processes import text_concat
 from openeo.rest.udp import build_process_dict
@@ -71,10 +72,11 @@ def generate():
     country_name = Parameter.string(
         name="country",
         description="Country for which data is to be extracted.",
-        values=african_countries
+        values=african_countries,
+        default= "benin"
     )
 
-    date_param = Parameter.date_time("date")
+    date_param = Parameter.date_time("date",description="A date between 2021-08-01 and 2023-01-31.", default="2021-08-01T00:00:00Z")
 
     from openeo.processes import text_concat, date_shift
 
@@ -87,9 +89,9 @@ def generate():
     udp = build_process_dict(process_graph=cube, process_id="ramona_biomass_extract",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, date_param])
-    # connection.save_user_defined_process(process_graph=cube, user_defined_process_id="ramona_rangeland_extract",
-    #                                   description=(Path(__file__).parent / "README.md").read_text(),
-    #                                   parameters=[country_name, date_param])
+    connection.save_user_defined_process(process_graph=cube, user_defined_process_id="ramona_rangeland_extract",
+                                      description=(Path(__file__).parent / "README.md").read_text(),
+                                      parameters=[country_name, date_param])
     return udp
 
 
