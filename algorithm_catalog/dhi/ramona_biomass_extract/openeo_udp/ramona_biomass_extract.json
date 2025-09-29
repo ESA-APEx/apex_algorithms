@@ -1,0 +1,129 @@
+{
+  "process_graph": {
+    "dateshift1": {
+      "process_id": "date_shift",
+      "arguments": {
+        "date": {
+          "from_parameter": "date"
+        },
+        "unit": "day",
+        "value": 1
+      }
+    },
+    "loadstac1": {
+      "process_id": "load_stac",
+      "arguments": {
+        "temporal_extent": [
+          {
+            "from_parameter": "date"
+          },
+          {
+            "from_node": "dateshift1"
+          }
+        ],
+        "url": "https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS"
+      }
+    },
+    "textconcat1": {
+      "process_id": "text_concat",
+      "arguments": {
+        "data": [
+          "https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/",
+          {
+            "from_parameter": "country"
+          },
+          ".json"
+        ]
+      }
+    },
+    "loadurl1": {
+      "process_id": "load_url",
+      "arguments": {
+        "format": "GeoJSON",
+        "url": {
+          "from_node": "textconcat1"
+        }
+      }
+    },
+    "filterspatial1": {
+      "process_id": "filter_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "geometries": {
+          "from_node": "loadurl1"
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "ramona_biomass_extract",
+  "description": "# Herbaceous Biomass Extract\n\nFor a selected African country and month, returns the Ramona biomass data. \n\n## Methodology\n\nThis is a simple data extraction, without additional processing.\n\n## Performance\n\nExtracts are created in 10 minutes or less.\n",
+  "parameters": [
+    {
+      "name": "country",
+      "description": "Country for which data is to be extracted.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "algeria",
+          "angola",
+          "benin",
+          "botswana",
+          "burkina_faso",
+          "burundi",
+          "cameroon",
+          "cape_verde",
+          "central_african_republic",
+          "chad",
+          "comoros",
+          "congo",
+          "democratic_congo",
+          "djibouti",
+          "egypt",
+          "equatorial_guinea",
+          "eritrea",
+          "eswatini",
+          "ethiopia",
+          "gabon",
+          "gambia",
+          "ghana",
+          "guinea",
+          "guinea_bissau",
+          "ivory_coast",
+          "kenya",
+          "lesotho",
+          "liberia",
+          "libya",
+          "madagascar",
+          "malawi",
+          "mali",
+          "mauritania",
+          "mauritius",
+          "morocco",
+          "mozambique",
+          "namibia",
+          "niger",
+          "nigeria",
+          "rwanda",
+          "sao_tome_and_principe",
+          "senegal",
+          "seychelles",
+          "sierra_leone",
+          "somalia",
+          "south_africa",
+          "south_sudan",
+          "sudan",
+          "tanzania",
+          "togo",
+          "tunisia",
+          "uganda",
+          "western_sahara",
+          "zambia",
+          "zimbabwe"
+        ]
+      }
+    }
+  ]
+}

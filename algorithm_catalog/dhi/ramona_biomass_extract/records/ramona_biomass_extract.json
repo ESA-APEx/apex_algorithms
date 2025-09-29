@@ -1,0 +1,110 @@
+{
+  "id": "ramona_biomas_extract",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "Africa biomass download",
+    "description": "Prepares biomass data from the RAMONA project for a selected African country.",
+    "cost_estimate": 0.05,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "BIOMASS"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Alkiviadis Koukos",
+        "position": "Researcher",
+        "organization": "DHI",
+        "links": [
+          {
+            "href": "https://www.ramona.earth/",
+            "title": "Ramona Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/alkiskk",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via DHI",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
+          },
+          {
+            "id": "BIOMASS",
+            "url": "https://cmr.earthdata.nasa.gov/kms/concept/686feba9-87ba-474c-8280-7f67565cfb2f?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoJSON"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/dhi/ramona_biomass_extract/openeo_udp/ramona_biomass_extract.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO",
+      "href": "https://openeo.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=ramona_biomass_extract&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Fmain%2Falgorithm_catalog%2Fdhi%2Framona_rangeland_extract%2Fopeneo_udp%2Framona_rangeland_extract.json"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "ESA Project website",
+      "href": "https://www.ramona.earth/"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Scientific publication",
+      "href": "https://doi.org/10.3390/rs16111833"
+    }
+  ]
+}
