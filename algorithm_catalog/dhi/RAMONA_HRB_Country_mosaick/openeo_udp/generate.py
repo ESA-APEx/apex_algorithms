@@ -79,8 +79,8 @@ def generate():
     #date_param = Parameter.date_time("date",description="A date between 2021-08-01 and 2023-01-31.", default="2021-08-01T00:00:00Z")
     from openeo.processes import text_concat, date_shift
 
-    year_param = Parameter.string("year", values=["2021", "2022", "2023"])
-    month_param = Parameter.string("month", values=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
+    year_param = Parameter.string("year", default="2021", values=["2021", "2022", "2023"])
+    month_param = Parameter.string("month", default="10", values=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
 
     date_param = text_concat([year_param, "-", month_param, "-01T00:00:00Z"])
 
