@@ -86,7 +86,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/82cde71771b94c092d71c40e2a72a6fe756b6651/algorithm_catalog/wur/worldagrocommodities/openeo_udp/WAC_inference_africa.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/82cde71771b94c092d71c40e2a72a6fe756b6651/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json"
     },
     {
       "rel": "code",

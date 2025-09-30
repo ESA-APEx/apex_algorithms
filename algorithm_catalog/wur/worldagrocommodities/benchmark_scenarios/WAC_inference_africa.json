@@ -6,8 +6,8 @@
         "backend": "openeo.dataspace.copernicus.eu",
         "process_graph": {
             "parcel_delineation1": {
-                "process_id": "WAC_inference_africa",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/82cde71771b94c092d71c40e2a72a6fe756b6651/algorithm_catalog/wur/worldagrocommodities/openeo_udp/WAC_inference_africa.json",
+                "process_id": "wac_inference_africa",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/82cde71771b94c092d71c40e2a72a6fe756b6651/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json",
                 "arguments": {
                     "spatial_extent": {
 			            "west": 716200,
