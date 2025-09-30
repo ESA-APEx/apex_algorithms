@@ -16,7 +16,7 @@ Spatial reprojection & resampling (CRS EPSG:3035, resolution 10 m)
 
 Cloud mask dilation on SCL → mask optical bands
 
-Monthly aggregation (mean) on Sentinel-2, decimation on Sentinel-1 (log transform), DEM temporal mean
+Monthly aggregation (75 percentile) on Sentinel-2 and log-transformed Sentinel-1, DEM temporal mean
 
 Compute vegetation indices (NDVI, NDRE, EVI)
 
