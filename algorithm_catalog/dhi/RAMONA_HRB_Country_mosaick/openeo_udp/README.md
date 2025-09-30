@@ -1,6 +1,6 @@
-# Herbaceous Biomass Extract
+# Herbaceous Herbaceous Biomass country mosaic
 
-For a selected African country and month, returns the Ramona biomass data. 
+For a selected African country, year and month, returns the Ramona biomass data. 
 
 This is an example output for Benin:
 

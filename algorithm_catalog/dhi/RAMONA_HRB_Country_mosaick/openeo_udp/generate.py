@@ -76,9 +76,14 @@ def generate():
         default= "benin"
     )
 
-    date_param = Parameter.date_time("date",description="A date between 2021-08-01 and 2023-01-31.", default="2021-08-01T00:00:00Z")
-
+    #date_param = Parameter.date_time("date",description="A date between 2021-08-01 and 2023-01-31.", default="2021-08-01T00:00:00Z")
     from openeo.processes import text_concat, date_shift
+
+    year_param = Parameter.string("year", values=["2021", "2022", "2023"])
+    month_param = Parameter.string("month", values=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
+
+    date_param = text_concat([year_param, "-", month_param, "-01T00:00:00Z"])
+
 
     format_opts = {
         "filename_prefix": "ramona_biomass",
@@ -90,18 +95,18 @@ def generate():
                    .filter_spatial(connection.load_url(text_concat(["https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/", country_name, ".json"]),
         format="GeoJSON")).save_result(format="GTiff", options= format_opts ))
 
-    udp = build_process_dict(process_graph=cube, process_id="ramona_biomass_extract",
+    udp = build_process_dict(process_graph=cube, process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
-                                      parameters=[country_name, date_param])
-    connection.save_user_defined_process(process_graph=cube, user_defined_process_id="ramona_rangeland_extract",
+                                      parameters=[country_name, year_param, month_param])
+    connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
-                                      parameters=[country_name, date_param])
+                                      parameters=[country_name, year_param, month_param])
     return udp
 
 
 if __name__ == "__main__":
 
-    with open("ramona_biomass_extract.json", "w") as f:
+    with open("RAMONA_HRB_Country_mosaick.json", "w") as f:
         json.dump(generate(), f, indent=2)
 
 import requests
