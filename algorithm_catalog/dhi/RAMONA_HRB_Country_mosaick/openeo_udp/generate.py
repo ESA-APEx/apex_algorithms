@@ -98,7 +98,7 @@ def generate():
     udp = build_process_dict(process_graph=cube, process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, year_param, month_param],
-                             default_job_options={"executor-memory":"7G", "python-memory":"50m", "executor-memoryOverhead":"512m"}
+                             default_job_options={"executor-memory":"7G", "python-memory":"50m", "executor-memoryOverhead":"1G"}
                              )
     connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),

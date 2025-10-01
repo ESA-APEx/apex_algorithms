@@ -79,7 +79,7 @@
         },
         "format": "GTiff",
         "options": {
-          "filename_prefix": "ramona_biomass",
+          "filename_prefix": "ramona_hrb_",
           "overviews": "AUTO"
         }
       },
@@ -91,7 +91,7 @@
   "default_job_options": {
     "executor-memory": "7G",
     "python-memory": "50m",
-    "executor-memoryOverhead": "512m"
+    "executor-memoryOverhead": "1G"
   },
   "parameters": [
     {
