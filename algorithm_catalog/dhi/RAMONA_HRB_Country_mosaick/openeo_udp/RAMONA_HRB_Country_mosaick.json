@@ -89,7 +89,9 @@
   "id": "RAMONA_HRB_Country_mosaick",
   "description": "# Herbaceous Herbaceous Biomass country mosaic\n\nFor a selected African country, year and month, returns the Ramona biomass data. \n\nThis is an example output for Benin:\n\n![Benin](https://github.com/ESA-APEx/apex_algorithms/blob/503edd5ef736b740bccb52f946530b33b85f9ee9/algorithm_catalog/dhi/ramona_biomass_extract/openeo_udp/benin_extract.png)\n\n## Methodology\n\nThis is a simple data extraction, without additional processing.\n\n## Performance\n\nThe table below lists cost and timings of test runs. You may see (small) deviations from this\nin your own runs.\n\n| Country | Wall time   | Credit cost |\n|---------|-------------|-------------|\n| Benin   | 3.5 minutes | 6           |\n",
   "default_job_options": {
-    "executor-memory": "5G"
+    "executor-memory": "7G",
+    "python-memory": "50m",
+    "executor-memoryOverhead": "512m"
   },
   "parameters": [
     {
@@ -174,7 +176,7 @@
     },
     {
       "name": "month",
-      "description": "month",
+      "description": "Data is available between august 2021 and januari 2023.",
       "schema": {
         "type": "string",
         "enum": [

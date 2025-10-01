@@ -80,13 +80,13 @@ def generate():
     from openeo.processes import text_concat, date_shift
 
     year_param = Parameter.string("year", default="2021", values=["2021", "2022", "2023"])
-    month_param = Parameter.string("month", default="10", values=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
+    month_param = Parameter.string("month",description="Data is available between august 2021 and januari 2023.", default="10", values=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
 
     date_param = text_concat([year_param, "-", month_param, "-01T00:00:00Z"])
 
 
     format_opts = {
-        "filename_prefix": "ramona_biomass",
+        "filename_prefix": "ramona_hrb_",
         "overviews": "AUTO"
     }
 
@@ -98,7 +98,7 @@ def generate():
     udp = build_process_dict(process_graph=cube, process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, year_param, month_param],
-                             default_job_options={"executor-memory":"5G"}
+                             default_job_options={"executor-memory":"7G", "python-memory":"50m", "executor-memoryOverhead":"512m"}
                              )
     connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
