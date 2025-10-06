@@ -10,16 +10,19 @@
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f27a33b803a2f462b12f58cace393760b3aec325/algorithm_catalog/wur/worldagrocommodities/openeo_udp/WAC_inference_africa.json",
                 "arguments": {
                     "spatial_extent": {
-			            "west": 716200,
-                        "south": 605530,
-                        "east": 722380,
-                        "north": 612410,
+			            "west": 677736,
+                        "south": 624010,
+                        "east":  682736,
+                        "north": 629010,
                         "crs": "EPSG:32630"
 		            },
                     "temporal_extent": [
-                        "2023-06-01",
-                        "2023-09-01"
-                    ]
+                        "2023-01-01",
+                        "2024-01-01"
+                    ],
+
+                    "crs": "EPSG:32629"
+
                 },
                 "result": true
             }
@@ -28,5 +31,3 @@
 	   }
     }
 ]
-
-

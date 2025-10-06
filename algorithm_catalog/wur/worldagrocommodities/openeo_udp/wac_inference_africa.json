@@ -32,16 +32,11 @@
           }
         },
         "spatial_extent": {
-          "west": 677736,
-          "south": 624010,
-          "east": 694576,
-          "north": 638629,
-          "crs": "EPSG:32629"
+          "from_parameter": "spatial_extent"
         },
-        "temporal_extent": [
-          "2023-01-01",
-          "2024-01-01"
-        ]
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
       }
     },
     "resamplespatial1": {
@@ -52,7 +47,9 @@
           "from_node": "loadcollection1"
         },
         "method": "near",
-        "projection": "EPSG:32629",
+        "projection": {
+          "from_parameter": "crs"
+        },
         "resolution": 10
       }
     },
@@ -80,16 +77,11 @@
           }
         },
         "spatial_extent": {
-          "west": 677736,
-          "south": 624010,
-          "east": 694576,
-          "north": 638629,
-          "crs": "EPSG:32629"
+          "from_parameter": "spatial_extent"
         },
-        "temporal_extent": [
-          "2023-01-01",
-          "2024-01-01"
-        ]
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
       }
     },
     "resamplespatial2": {
@@ -100,7 +92,9 @@
           "from_node": "loadcollection2"
         },
         "method": "near",
-        "projection": "EPSG:32629",
+        "projection": {
+          "from_parameter": "crs"
+        },
         "resolution": 10
       }
     },
@@ -139,7 +133,7 @@
                   "from_parameter": "data"
                 },
                 "probabilities": [
-                  0.5
+                  0.95
                 ]
               },
               "result": true
@@ -446,6 +440,34 @@
         }
       }
     },
+    "arrayelement10": {
+      "process_id": "array_element",
+      "arguments": {
+        "data": {
+          "from_parameter": "temporal_extent"
+        },
+        "index": 0
+      }
+    },
+    "arrayelement11": {
+      "process_id": "array_element",
+      "arguments": {
+        "data": {
+          "from_parameter": "temporal_extent"
+        },
+        "index": 1
+      }
+    },
+    "dateshift1": {
+      "process_id": "date_shift",
+      "arguments": {
+        "date": {
+          "from_node": "arrayelement11"
+        },
+        "unit": "day",
+        "value": 1
+      }
+    },
     "loadcollection3": {
       "process_id": "load_collection",
       "arguments": {
@@ -455,15 +477,15 @@
         ],
         "id": "SENTINEL1_GLOBAL_MOSAICS",
         "spatial_extent": {
-          "west": 677736,
-          "south": 624010,
-          "east": 694576,
-          "north": 638629,
-          "crs": "EPSG:32629"
+          "from_parameter": "spatial_extent"
         },
         "temporal_extent": [
-          "2022-12-31",
-          "2024-01-01"
+          {
+            "from_node": "arrayelement10"
+          },
+          {
+            "from_node": "dateshift1"
+          }
         ]
       }
     },
@@ -475,7 +497,9 @@
           "from_node": "loadcollection3"
         },
         "method": "near",
-        "projection": "EPSG:32629",
+        "projection": {
+          "from_parameter": "crs"
+        },
         "resolution": 10
       }
     },
@@ -526,7 +550,7 @@
                   "from_parameter": "data"
                 },
                 "probabilities": [
-                  0.5
+                  0.95
                 ]
               },
               "result": true
@@ -551,11 +575,7 @@
       "arguments": {
         "id": "COPERNICUS_30",
         "spatial_extent": {
-          "west": 677736,
-          "south": 624010,
-          "east": 694576,
-          "north": 638629,
-          "crs": "EPSG:32629"
+          "from_parameter": "spatial_extent"
         },
         "temporal_extent": null
       }
@@ -568,7 +588,9 @@
           "from_node": "loadcollection4"
         },
         "method": "bilinear",
-        "projection": "EPSG:32629",
+        "projection": {
+          "from_parameter": "crs"
+        },
         "resolution": 10
       }
     },
@@ -616,18 +638,11 @@
             "runudf1": {
               "process_id": "run_udf",
               "arguments": {
-                "context": {
-                  "west": 677736,
-                  "south": 624010,
-                  "east": 694576,
-                  "north": 638629,
-                  "crs": "EPSG:32629"
-                },
                 "data": {
                   "from_parameter": "x"
                 },
                 "runtime": "Python",
-                "udf": "import numpy as np\nimport xarray as xr\nimport logging\nfrom pyproj import Transformer\nfrom typing import Dict\n\n# Setup logging\ndef _setup_logging() -> logging.Logger:\n    logging.basicConfig(level=logging.INFO, format=\"%(message)s\")\n    return logging.getLogger(__name__)\n\nlogger = _setup_logging()\n\ndef apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:\n    \"\"\"\n    Constructs a lon/lat grid as a new DataArray based on the cube's spatial resolution\n    and the geographic extent provided in `context`.\n\n    Args:\n        cube (xr.DataArray): Input data cube with 'x' and 'y' dimensions.\n        context (dict): Dictionary containing ''crs'.\n\n    Returns:\n        xr.DataArray: A new DataArray of shape (2, y, x) with bands ['lon', 'lat'].\n    \"\"\"\n\n\n    crs   = context[\"crs\"]\n    transformer = Transformer.from_crs(crs, \"EPSG:4326\", always_xy=True)\n    longitudes, latitudes = transformer.transform(cube.x, cube.y)\n    lon_grid, lat_grid = np.meshgrid(longitudes, latitudes)\n\n    logger.info(f\"Cube x range: {cube.x.min().values}, {cube.x.max().values}\")\n    logger.info(f\"Cube y range: {cube.y.min().values}, {cube.y.max().values}\")\n\n    logger.info(f\"Transformed longitudes range: {longitudes.min()}, {longitudes.max()}\")\n    logger.info(f\"Transformed latitudes range: {latitudes.min()}, {latitudes.max()}\")\n\n\n    # Build output DataArray\n    return xr.DataArray(\n        data=np.stack([lon_grid, lat_grid], axis=0),  # shape: (2, y, x)\n        dims=(\"bands\", \"y\", \"x\"),\n        coords={\n            \"bands\": [\"lon\", \"lat\"],\n            \"x\": cube.coords[\"x\"],\n            \"y\": cube.coords[\"y\"]\n        }\n    )"
+                "udf": "import numpy as np\nimport xarray as xr\nimport logging\nfrom pyproj import Transformer\nfrom openeo.udf import XarrayDataCube\n\n# Setup logging\ndef _setup_logging() -> logging.Logger:\n    logging.basicConfig(level=logging.INFO, format=\"%(message)s\")\n    return logging.getLogger(__name__)\n\nfrom openeo.udf.udf_data import UdfData\n\n\nlogger = _setup_logging()\n\ndef apply_udf_data(udf_data: UdfData) -> UdfData:\n    \"\"\"This is the actual openeo UDF that will be executed by the backend.\"\"\"\n\n    cube = udf_data.datacube_list[0]\n    arr = cube.get_array().transpose(\"bands\", \"y\", \"x\")\n\n    crs = udf_data.proj\n    if crs is not None:\n        crs = crs[\"EPSG\"]\n\n    logger.info(f\"EPSG code determined for feature extraction: {crs}\")\n\n    transformer = Transformer.from_crs(crs, \"EPSG:4326\", always_xy=True)\n    longitudes, latitudes = transformer.transform(arr.x, arr.y)\n    lon_grid, lat_grid = np.meshgrid(longitudes, latitudes)\n\n    logger.info(f\"Transformed longitudes range: {longitudes.min()}, {longitudes.max()}\")\n    logger.info(f\"Transformed latitudes range: {latitudes.min()}, {latitudes.max()}\")\n\n    combined = xr.DataArray(\n        data=np.stack([lon_grid, lat_grid], axis=0),  # shape: (2, y, x)\n        dims=(\"bands\", \"y\", \"x\"),\n        coords={\n            \"bands\": [\"lon\", \"lat\"],\n            \"x\": arr.coords[\"x\"],\n            \"y\": arr.coords[\"y\"]\n        }\n    )\n\n    cube_output = XarrayDataCube(combined)    \n    udf_data.datacube_list = [cube_output]\n\n    return udf_data\n\n"
               },
               "result": true
             }
@@ -643,7 +658,9 @@
           "from_node": "apply2"
         },
         "method": "near",
-        "projection": "EPSG:32629",
+        "projection": {
+          "from_parameter": "crs"
+        },
         "resolution": 10
       }
     },
@@ -783,12 +800,13 @@
       "result": true
     }
   },
-  "id": "WAC_inference_africa",
-  "summary": "WAC_inference_africa",
+  "id": "wac_inference_africa",
+  "summary": "wac_inference_africa",
   "default_job_options": {
     "driver-memory": "500m",
     "driver-memoryOverhead": "2000m",
     "executor-memory": "2000m",
+    "executor-memoryOverhead": "1000m",
     "python-memory": "3000m",
     "max-executors": 10,
     "udf-dependency-archives": [
@@ -799,7 +817,7 @@
   "parameters": [
     {
       "name": "spatial_extent",
-      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "description": "spatial extent in UTM coordinates",
       "schema": [
         {
           "title": "Bounding Box",
@@ -923,6 +941,15 @@
         "2023-01-01",
         "2024-01-01"
       ],
+      "optional": true
+    },
+    {
+      "name": "crs",
+      "description": "CRS of the output in ",
+      "schema": {
+        "type": "string"
+      },
+      "default": "EPSG:32629",
       "optional": true
     }
   ]
