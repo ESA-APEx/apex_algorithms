@@ -13,27 +13,27 @@ jobs:
   notify-catalogue-web:
     runs-on: ubuntu-latest
     steps:
-      - name: Send repository_dispatch to catalogue web repo
+      - name: Trigger preview pipeline to catalogue web repo
         env:
           GH_TOKEN: ${{ secrets.CI_TOKEN }}
           REPO_OWNER: ${{ github.repository_owner }}
-          CATALOGUE_REPO: apex-algorithms-catalogue-web
-          EVENT_TYPE: ${{ github.event.action == 'closed' && 'data-pr-closed' || 'data-pr-updated' }}
+          WEB_REPO: apex-algorithms-catalogue-web
+          EVENT_TYPE: ${{ github.event.action == 'closed' && 'catalogue-pr-closed' || 'catalogue-pr-updated' }}
         run: |
           pr_number='${{ github.event.pull_request.number }}'
           head_ref='${{ github.event.pull_request.head.ref }}'
           head_sha='${{ github.event.pull_request.head.sha }}'
           head_repo='${{ github.event.pull_request.head.repo.full_name }}'
-          data_repo='${{ github.repository }}'
+          catalogue_repo='${{ github.repository }}'
 
           payload=$(jq -n \
             --arg pr_number "$pr_number" \
             --arg head_ref "$head_ref" \
             --arg head_sha "$head_sha" \
             --arg head_repo "$head_repo" \
-            --arg data_repo "$data_repo" \
-            '{pr_number:$pr_number, head_ref:$head_ref, head_sha:$head_sha, head_repo:$head_repo, data_repo:$data_repo}')
+            --arg catalogue_repo "$catalogue_repo" \
+            '{pr_number:$pr_number, head_ref:$head_ref, head_sha:$head_sha, head_repo:$head_repo, catalogue_repo:$catalogue_repo}')
 
-          gh api repos/$REPO_OWNER/$CATALOGUE_REPO/dispatches \
+          gh api repos/$REPO_OWNER/$WEB_REPO/dispatches \
             -f event_type="$EVENT_TYPE" \
             -f client_payload="$payload"
