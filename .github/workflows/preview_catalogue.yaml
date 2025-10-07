@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Trigger preview pipeline to catalogue web repo
         env:
-          GH_TOKEN: ${{ secrets.CI_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_OWNER: ${{ github.repository_owner }}
           WEB_REPO: apex-algorithms-catalogue-web
           EVENT_TYPE: ${{ github.event.action == 'closed' && 'catalogue-pr-closed' || 'catalogue-pr-updated' }}
