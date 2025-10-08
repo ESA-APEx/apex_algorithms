@@ -10,7 +10,7 @@
     "created": "2024-10-09T00:00:00Z",
     "updated": "2024-10-09T00:00:00Z",
     "type": "service",
-    "title": "Best-Available-Pixel Composit based on Sentinel-2 data",
+    "title": "Best-Available-Pixel Composi based on Sentinel-2 data",
     "description": "A compositing algorithm for Sentinel-2 L2A data, ranking observations by their highest BAP score.",
     "cost_estimate": 0.2,
     "cost_unit": "platform credits per km\u00b2",
