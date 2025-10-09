@@ -9,15 +9,26 @@ on:
 permissions:
   contents: read
 
+env:
+  WEB_REPO: apex-algorithms-catalogue-web
+
 jobs:
   notify-catalogue-web:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate a token for gh cli
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.GH_CATALOGUE_APP_ID }}
+          private-key: ${{ secrets.GH_CATALOGUE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ env.WEB_REPO }}
       - name: Trigger preview pipeline to catalogue web repo
         env:
-          GH_TOKEN: ${{ secrets.CATALOGUE_REPOSITORY_TOKEN }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
           REPOSITORY_OWNER: ${{ github.repository_owner }}
-          WEB_REPOSITORY: apex-algorithms-catalogue-web
+          WEB_REPOSITORY: ${{ env.WEB_REPO }}
           EVENT_TYPE: ${{ github.event.action == 'closed' && 'catalogue-pr-closed' || 'catalogue-pr-updated' }}
         run: |
           pr_number='${{ github.event.pull_request.number }}'
