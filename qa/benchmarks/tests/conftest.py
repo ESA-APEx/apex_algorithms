@@ -104,7 +104,7 @@ def _get_client_credentials_env_var(url: str) -> str:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif hostname == "openeo.cloud":
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
-    elif hostname in {"openeo.vito.be", "openeo.terrascope.be"}:
+    elif hostname in {"openeo-dev.vito.be", "openeo.vito.be", "openeo.terrascope.be"}:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"
     else:
         raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
