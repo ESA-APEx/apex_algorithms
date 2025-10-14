@@ -23642,41 +23642,7 @@
           "from_node": "apply6"
         },
         "geometries": {
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "id": "0",
-              "type": "Feature",
-              "properties": {},
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                  [
-                    [
-                      4.567161970000427,
-                      50.943775881070565
-                    ],
-                    [
-                      4.567161970000427,
-                      50.92105115770309
-                    ],
-                    [
-                      4.607805261247165,
-                      50.92105115770309
-                    ],
-                    [
-                      4.607805261247165,
-                      50.943775881070565
-                    ],
-                    [
-                      4.567161970000427,
-                      50.943775881070565
-                    ]
-                  ]
-                ]
-              }
-            }
-          ]
+          "from_parameter": "geometry"
         },
         "reducer": {
           "process_graph": {
@@ -24039,7 +24005,7 @@
         "maximum": 100
       },
       "optional": true,
-      "default": 70
+      "default": 75
     }
   ]
 }
