@@ -1,0 +1,17 @@
+.listing-actions-group {
+  .input-group-text {
+    background-color: var(--darkblue);
+    padding: 0.5rem 0.75rem !important;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+
+    .bi::before {
+      color: white !important;
+    }
+  }
+
+  .search {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
+}

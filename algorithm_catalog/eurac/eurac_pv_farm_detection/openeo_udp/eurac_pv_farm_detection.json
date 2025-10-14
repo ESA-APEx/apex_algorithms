@@ -1,0 +1,455 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B02",
+          "B03",
+          "B04",
+          "B05",
+          "B06",
+          "B07",
+          "B08",
+          "B8A",
+          "B11",
+          "B12"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 85
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "toscldilationmask1": {
+      "process_id": "to_scl_dilation_mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "mask": {
+          "from_node": "toscldilationmask1"
+        }
+      }
+    },
+    "aggregatetemporalperiod1": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "mask1"
+        },
+        "period": "week",
+        "reducer": {
+          "process_graph": {
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "arrayinterpolatelinear1": {
+              "process_id": "array_interpolate_linear",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "median1": {
+              "process_id": "median",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\nimport functools\nfrom typing import Dict\nimport sys\nimport numpy as np\nimport xarray as xr\nfrom openeo.udf import inspect\n\nsys.path.append(\"onnx_deps\") \nsys.path.append(\"onnx_models\") \nimport onnxruntime as ort\n\n\n\n@functools.lru_cache(maxsize=1)\ndef load_onnx_model(model_name: str) -> ort.InferenceSession:\n    \"\"\"\n    Loads an ONNX model from the onnx_models folder and returns an ONNX runtime session.\n\n    \"\"\"\n    # The onnx_models folder contains the content of the model archive provided in the job options\n    return ort.InferenceSession(f\"onnx_models/{model_name}\")\n\ndef preprocess_input(\n    input_xr: xr.DataArray, ort_session: ort.InferenceSession\n) -> tuple:\n    \"\"\"\n    Preprocess the input DataArray by ensuring the dimensions are in the correct order,\n    reshaping it, and returning the reshaped numpy array and the original shape.\n    \"\"\"\n    input_xr = input_xr.transpose(\"y\", \"x\", \"bands\")\n    input_shape = input_xr.shape\n    input_np = input_xr.values.reshape(-1, ort_session.get_inputs()[0].shape[1])\n    input_np = input_np.astype(np.float32)\n    return input_np, input_shape\n\n\ndef run_inference(input_np: np.ndarray, ort_session: ort.InferenceSession) -> tuple:\n    \"\"\"\n    Run inference using the ONNX runtime session and return predicted labels and probabilities.\n    \"\"\"\n    ort_inputs = {ort_session.get_inputs()[0].name: input_np}\n    ort_outputs = ort_session.run(None, ort_inputs)\n    predicted_labels = ort_outputs[0]\n    return predicted_labels\n\n\ndef postprocess_output(predicted_labels: np.ndarray, input_shape: tuple) -> tuple:\n    \"\"\"\n    Postprocess the output by reshaping the predicted labels and probabilities into the original spatial structure.\n    \"\"\"\n    predicted_labels = predicted_labels.reshape(input_shape[0], input_shape[1])\n\n    return predicted_labels\n\n\ndef create_output_xarray(\n    predicted_labels: np.ndarray, input_xr: xr.DataArray\n) -> xr.DataArray:\n    \"\"\"\n    Create an xarray DataArray with predicted labels and probabilities stacked along the bands dimension.\n    \"\"\"\n\n    return xr.DataArray(\n        predicted_labels,\n        dims=[\"y\", \"x\"],\n        coords={\"y\": input_xr.coords[\"y\"], \"x\": input_xr.coords[\"x\"]},\n    )\n\n\ndef apply_model(input_xr: xr.DataArray) -> xr.DataArray:\n    \"\"\"\n    Run inference on the given input data using the provided ONNX runtime session.\n    This method is called for each timestep in the chunk received by apply_datacube.\n    \"\"\"\n\n    # Step 1: Load the ONNX model\n    inspect(message=\"load onnx model\")\n    ort_session = load_onnx_model(\"rf_1_median_depth_15.onnx\")\n\n    # Step 2: Preprocess the input\n    inspect(message=\"preprocess input\")\n    input_np, input_shape = preprocess_input(input_xr, ort_session)\n\n    # Step 3: Perform inference\n    inspect(message=\"run model inference\")\n    predicted_labels = run_inference(input_np, ort_session)\n\n    # Step 4: Postprocess the output\n    inspect(message=\"post process output\")\n    predicted_labels = postprocess_output(predicted_labels, input_shape)\n\n    # Step 5: Create the output xarray\n    inspect(message=\"create output xarray\")\n    return create_output_xarray(predicted_labels, input_xr)\n\n\ndef apply_datacube(cube: xr.DataArray, context: Dict) -> xr.DataArray:\n    \"\"\"\n    Function that is called for each chunk of data that is processed.\n    The function name and arguments are defined by the UDF API.\n    \"\"\"\n    # Define how you want to handle nan values\n    cube = cube.fillna(-999999)\n\n    # Apply the model for each timestep in the chunk\n    output_data = apply_model(cube)\n\n    return output_data\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applykernel1": {
+      "process_id": "apply_kernel",
+      "arguments": {
+        "border": 0,
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "factor": 0.1111111111111111,
+        "kernel": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "replace_invalid": 0
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applykernel1"
+        },
+        "process": {
+          "process_graph": {
+            "gte1": {
+              "process_id": "gte",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 1
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "gte1"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applykernel2": {
+      "process_id": "apply_kernel",
+      "arguments": {
+        "border": 0,
+        "data": {
+          "from_node": "apply1"
+        },
+        "factor": 0.1111111111111111,
+        "kernel": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "replace_invalid": 0
+      }
+    },
+    "apply2": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applykernel2"
+        },
+        "process": {
+          "process_graph": {
+            "gt1": {
+              "process_id": "gt",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 0
+              }
+            },
+            "multiply2": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "gt1"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "eurac_pv_farm_detection",
+  "summary": "An openEO process developed by Eurac Research to detect photovoltaic farms, based on sentinel2 data.",
+  "description": "# Description\n\nPhotovoltaic farms (PV farms) mapping is essential for establishing valid policies regarding natural resources management and clean energy. As evidenced by the recent COP28 summit, where almost 120 global leaders pledged to triple the world\u2019s renewable energy capacity before 2030, it is crucial to make these mapping efforts scalable and reproducible. Recently, there were efforts towards the global mapping of PV farms [1], but these were limited to fixed time periods of the analyzed satellite imagery and not openly reproducible. \n\nTo resolve this limitation we implemented the detection workflow for mapping solar farms using Sentinel-2 imagery in an openEO process [1].\n\nOpen-source data is used to construct the training dataset, leveraging OpenStreetMap (OSM) to gather PV farm polygons across different countries. Different filtering techniques are involved in the creation of the training set, in particular land cover and terrain. To ensure model robustness, we leveraged the temporal resolution of Sentinel-2 L2A data and utilized openEO to create a reusable workflow that simplifies the data access in the cloud, allowing the collection of training samples over Europe efficiently.\n\nThis workflow includes preprocessing steps such as cloud masking, gap filling, outliers filtering as well as feature extraction. A lot of effort is put in the best training samples generation, ensuring an optimal starting point for the subsequent steps. After compiling the training dataset, we conducted a statistical discrimination analysis of different pixel-level models to determine the most effective one. Our goal is to compare time-series machine learning (ML) models like InceptionTime, which uses 3D data as input, with tree-based models like Random Forest (RF), which employs 2D data along with feature engineering. \n\nAn openEO process graph was constructed for the execution of the inference phase, encapsulating all necessary processes from the preprocessing to the prediction stage.  The UDP process for the PV farms mapping is integrated with the ESA Green Transition Information Factory (GTIF, https://gtif.esa.int/), providing the ability for streamlined and FAIR compliant updates of related energy infrastructure mapping efforts.\n\n\nHow to cite: Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14\u201319 Apr 2024, EGU24-16841, https://doi.org/10.5194/egusphere-egu24-16841, 2024.\n\nFor more information please visit: https://github.com/clausmichele/openEO_photovoltaic/tree/main\n\n\n\n# Performance characteristics\n\n\n## 3-month composite over 400km**2 area\n\nThe processing platform reported these usage statistics for the example:\n\n```\nCredits: 4 \nCPU usage: 633,173 cpu-seconds\nWall time: 187 seconds\nInput Pixel 20,438 mega-pixel\nMax Executor Memory: 1,917 gb\nMemory usage: 3.474.032,311 mb-seconds\nNetwork Received: 12.377.132.070 b\n```\n\nThe relative cost is 0.01 CDSE platform credits per km\u00b2 for a 3 month input window.\n\n# Examples\n\nBelow we overlay a Sentinel2-RGB image with the ML classification, thereby highlighting the detected areas.\n![pv_ml_output](pv_ml_output.png)\n\n# Literature references\n\n[1] M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14\u201319 Apr 2024, EGU24-16841, https://doi.org/10.5194/egusphere-egu24-16841, 2024.\n\n# Known limitations\n\nThe algoritm was validated up to an area equal to 20x20km. For larger spatial and/or temporal extents, dedicated openEO job settings might be required to ensure that the process runs in an optimal configuration. The  integrated ML network, is a prove-of-concept which may not be applicable for all areas of interest. \n\n# Known artifacts\n\nA dilatation and erosion mask is applied to remove small patches in the classified output, which are unlikely PV solar farms. For computation efficiency the kernel size was kept to 3, thereby limiting its effectiveness.  As a result, small misclassified areas might still appear as seen in: \n\n![pv_ml_output](pv_ml_output.png)\n",
+  "returns": {
+    "description": "A data cube with the newly computed values.\n\nAll dimensions stay the same, except for the dimensions specified in corresponding parameters. There are three cases how the dimensions can change:\n\n1. The source dimension is the target dimension:\n   - The (number of) dimensions remain unchanged as the source dimension is the target dimension.\n   - The source dimension properties name and type remain unchanged.\n   - The dimension labels, the reference system and the resolution are preserved only if the number of values in the source dimension is equal to the number of values computed by the process. Otherwise, all other dimension properties change as defined in the list below.\n2. The source dimension is not the target dimension. The target dimension exists with a single label only:\n   - The number of dimensions decreases by one as the source dimension is 'dropped' and the target dimension is filled with the processed data that originates from the source dimension.\n   - The target dimension properties name and type remain unchanged. All other dimension properties change as defined in the list below.\n3. The source dimension is not the target dimension and the latter does not exist:\n   - The number of dimensions remain unchanged, but the source dimension is replaced with the target dimension.\n   - The target dimension has the specified name and the type other. All other dimension properties are set as defined in the list below.\n\nUnless otherwise stated above, for the given (target) dimension the following applies:\n\n- the number of dimension labels is equal to the number of values computed by the process,\n- the dimension labels are incrementing integers starting from zero,\n- the resolution changes, and\n- the reference system is undefined.",
+    "schema": {
+      "type": "object",
+      "subtype": "datacube"
+    }
+  },
+  "categories": [
+    "sentinel-2",
+    "energy"
+  ],
+  "default_job_options": {
+    "driver-memory": "1g",
+    "executor-memory": "1g",
+    "python-memory": "3g",
+    "udf-dependency-archives": [
+      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps",
+      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/photovoltaic/rf_1_median_depth_15.zip#onnx_models"
+    ]
+  },
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "default": {
+        "west": 16.342,
+        "south": 47.962,
+        "east": 16.414,
+        "north": 48.008
+      },
+      "optional": true
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2023-05-01",
+        "2023-09-30"
+      ],
+      "optional": true
+    }
+  ]
+}

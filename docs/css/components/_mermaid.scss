@@ -1,0 +1,38 @@
+$mermaid-font-family: var(--font-family);
+
+$mermaid-label-fg-color: var(--darkblue);
+$mermaid-node-bg-color: var(--white);
+$mermaid-edge-color: var(--lightgreen);
+$mermaid-label-bg-color: var(--white);
+
+
+.edgeLabel {
+  &:not(:has(p)) {
+    display: none !important;
+  }
+}
+
+.labelBkg {
+  background-color: #d1d1d1 !important;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  font-size: small;
+
+  p {
+    background-color: transparent !important;
+  }
+}
+
+
+.apexService {
+
+  rect {
+    fill: var(--darkblue) !important;
+    stroke: var(--white) !important;
+    stroke-width: 1px !important;
+  }
+
+  .nodeLabel {
+    color: var(--white) !important;
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "id": "worldcover_statistics",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "Land cover statistics based on ESA WorldCover data for 2021, provided by Terrascope.",
+    "description": "For a given geometry or set of geometries, computes percentage landcover for 2021.",
+    "cost_estimate": 0.01,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "LAND USE/LAND COVER CLASSIFICATION",
+      "statistics"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Jeroen Dries",
+        "position": "Researcher",
+        "organization": "Terrascope",
+        "links": [
+          {
+            "href": "https://github.com/jdries",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Terrascope",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
+          },
+          {
+            "id": "LAND USE/LAND COVER CLASSIFICATION",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/5066def0-b14b-4a2c-b40f-dc9953860366?format=json"
+          },
+          {
+            "id": "STATISTICAL APPLICATIONS",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/997dc5a6-d83f-4d59-8c5a-1d901b069830?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "CSV"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://openeofed.dataspace.copernicus.eu/?wizard=UDP&wizard~process=worldcover-statistics&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/openeo_udp/worldcover_statistics.json"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "WorldCover 2021 DOI",
+      "href": "https://doi.org/10.5281/zenodo.7254221"
+    }
+  ]
+}

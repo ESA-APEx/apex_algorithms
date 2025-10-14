@@ -52,7 +52,7 @@
           "principal investigator"
         ]
       },
-     {
+      {
         "name": "Copernicus Dataspace Ecosystem",
         "links": [
           {
@@ -94,7 +94,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.1/src/worldcereal/udp/worldcereal_crop_extent.json"
+      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.2/src/worldcereal/udp/worldcereal_crop_extent.json"
     },
     {
       "rel": "code",
@@ -119,6 +119,18 @@
       "type": "text/html",
       "title": "Scientific publication",
       "href": "https://doi.org/10.1038/s43016-023-00841-7"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "WorldCereal Processing hub",
+      "href": "https://hub.esa-worldcereal.org/generate-custom-products"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcereal_crop_extent/records/thumbnail.png"
     }
   ]
 }

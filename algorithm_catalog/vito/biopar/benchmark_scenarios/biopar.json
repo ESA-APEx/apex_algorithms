@@ -48,6 +48,11 @@
                 },
                 "result": true
             }
+        },
+        "reference_data": {
+          "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14014578006!tests_test_benchmarks.py__test_run_benchmark_biopar_!actual/job-results.json",
+          "openEO_2020-07-21Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14014578006!tests_test_benchmarks.py__test_run_benchmark_biopar_!actual/openEO_2020-07-21Z.tif",
+          "openEO_2020-07-19Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14014578006!tests_test_benchmarks.py__test_run_benchmark_biopar_!actual/openEO_2020-07-19Z.tif"
         }
     }
 ]

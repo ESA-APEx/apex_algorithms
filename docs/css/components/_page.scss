@@ -1,0 +1,78 @@
+body {
+  background-color: var(--darkblue);
+  -webkit-font-smoothing: initial !important;
+  padding-top: 16px !important;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--white) !important;
+}
+
+
+p, li {
+  opacity: var(--opacity);
+  line-height: var(--lineheight);
+}
+
+li p {
+  opacity: 1.0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+.blur-container {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.blur {
+  position: absolute;
+  width: 100vw;
+  height: 2800px;
+  right: 0;
+  transform: translateY(-20%);
+  z-index: -1;
+  overflow: hidden;
+
+  &::after {
+    position: absolute;
+    content: '';
+    width: 1430px;
+    aspect-ratio: 2;
+    right: 0;
+    top: 50%;
+    transform: translateX(15%) translateY(-15%) rotate(-10deg);
+    border-radius: 100%;
+    mix-blend-mode: normal;
+    filter: blur(336.075px);
+    background-color: var(--lightgreen);
+    z-index: -1;
+    opacity: var(--opacity);
+  }
+}
+
+#quarto-header {
+  display: none;
+}
+
+#quarto-document-content {
+  a {
+    font-weight: bold;
+    text-decoration: none;
+    opacity: 1.0 !important;
+  }
+}
+.quarto-title-breadcrumbs .breadcrumb li:last-of-type a {
+  color: var(--white) !important;
+}

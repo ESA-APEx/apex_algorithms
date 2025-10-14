@@ -144,13 +144,19 @@
             "rel": "example-output",
             "type": "application/netcdf",
             "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/fusets_mogpr/fusets_mogpr.nc"
+            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-16156495398!tests_test_benchmarks.py__test_run_benchmark_fusets_mogpr_!actual/openEO.nc"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
             "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=fusets_mogpr&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/fusets_mogpr/openeo_udp/fusets_mogpr.json&server=https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/fusets_mogpr/records/thumbnail.jpg"
         }
     ]
 }
