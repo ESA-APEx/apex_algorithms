@@ -1,0 +1,46 @@
+name: Preview catalogue web from data PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - 'algorithm_catalog/**'
+
+permissions:
+  contents: read
+
+env:
+  WEB_REPO: apex-algorithms-catalogue-web
+
+jobs:
+  notify-catalogue-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate a token for gh cli
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.GH_CATALOGUE_APP_ID }}
+          private-key: ${{ secrets.GH_CATALOGUE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ env.WEB_REPO }}
+      - name: Trigger preview pipeline to catalogue web repo
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          WEB_REPOSITORY: ${{ env.WEB_REPO }}
+          EVENT_TYPE: ${{ github.event.action == 'closed' && 'catalogue-pr-closed' || 'catalogue-pr-updated' }}
+        run: |
+          pr_number='${{ github.event.pull_request.number }}'
+          head_ref='${{ github.event.pull_request.head.ref }}'
+          head_sha='${{ github.event.pull_request.head.sha }}'
+          head_repo='${{ github.event.pull_request.head.repo.full_name }}'
+          catalogue_repo='${{ github.repository }}'
+
+          gh api repos/$REPOSITORY_OWNER/$WEB_REPOSITORY/dispatches \
+            -f event_type="$EVENT_TYPE" \
+            -F client_payload[pr_number]="$pr_number" \
+            -F client_payload[head_ref]="$head_ref" \
+            -F client_payload[head_sha]="$head_sha" \
+            -F client_payload[head_repo]="$head_repo" \
+            -F client_payload[catalogue_repo]="$catalogue_repo"
