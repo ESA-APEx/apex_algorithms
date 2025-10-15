@@ -1,0 +1,100 @@
+{
+  "id": "sentinel1_changedetection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-09-09T00:00:00Z",
+    "updated": "2025-09-09T00:00:00Z",
+    "type": "service",
+    "title": "Change detection using Sentinel-1 data",
+    "description": "For a given geometry or set of geometries, detects changes in land cover using Sentinel-1 data.",
+    "cost_estimate": 0.01,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "CHANGE DETECTION",
+      "statistics"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Sivasankar Arul",
+        "position": "Data Scientist",
+        "organization": "Gisat s.r.o.",
+        "links": [
+          {
+            "href": "https://github.com/sivasanarul",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Gisat",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Tree cover change"
+          },
+          {
+            "id": "Active Remote Sensing"
+          },
+          {
+            "id": "Sentinel-1 GRD"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": ""
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/records/changedetection_smallroad_20201025.png"
+    }
+  ]
+}
