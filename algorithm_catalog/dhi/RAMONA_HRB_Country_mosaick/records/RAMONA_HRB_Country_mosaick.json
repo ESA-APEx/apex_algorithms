@@ -80,7 +80,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/dhi/ramona_biomass_extract/openeo_udp/RAMONA_HRB_Country_mosaick.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7f1c18dd6cdffba2f400bfd71239fb9e491c434b/algorithm_catalog/dhi/RAMONA_HRB_Country_mosaick/openeo_udp/RAMONA_HRB_Country_mosaick.json"
     },
     {
       "rel": "service",
@@ -92,7 +92,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=RAMONA_HRB_Country_mosaick&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Framona_rangeland%2Falgorithm_catalog%2Fdhi%2FRAMONA_HRB_Country_mosaick%2Fopeneo_udp%2FRAMONA_HRB_Country_mosaick.json"
+      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=RAMONA_HRB_Country_mosaick&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2F7f1c18dd6cdffba2f400bfd71239fb9e491c434b%2Falgorithm_catalog%2Fdhi%2FRAMONA_HRB_Country_mosaick%2Fopeneo_udp%2FRAMONA_HRB_Country_mosaick.json"
     },
     {
       "rel": "about",
