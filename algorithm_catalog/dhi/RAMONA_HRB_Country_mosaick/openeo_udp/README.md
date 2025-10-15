@@ -15,6 +15,7 @@ This is a simple data extraction, without additional processing.
 The table below lists cost and timings of test runs. You may see (small) deviations from this
 in your own runs.
 
-| Country | Wall time   | Credit cost |
-|---------|-------------|-------------|
-| Benin   | 3.5 minutes | 6           |
+| Country  | Wall time   | Credit cost |
+|----------|-------------|-------------|
+| Benin    | 3.5 minutes | 6           |
+| Cameroon | 9 minutes   | 26          |
