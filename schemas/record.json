@@ -107,6 +107,7 @@
             "type": "string",
             "enum": [
               "Agriculture",
+              "Land Use/Land Cover Classification",
               "Vegetation",
               "Normalized Difference Vegetation Index (NDVI)",
               "Leaf Area Index (LAI)",
@@ -121,7 +122,9 @@
               "Sentinel-2",
               "Landsat-8",
               "Digital Elevation/Terrain Model (DEM)",
-              "ECMWF ERA5"
+              "ECMWF ERA5",
+              "Data Analysis and Visualization",
+              "Statistical Applications"
             ]
           },
           "minItems": 1,
