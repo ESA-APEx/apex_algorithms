@@ -32,6 +32,7 @@
           {
             "href": "https://openeo.cloud",
             "rel": "about",
+            "title": "openEO Platform",
             "type": "text/html"
           }
         ],
