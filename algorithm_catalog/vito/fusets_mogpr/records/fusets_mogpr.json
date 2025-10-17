@@ -15,8 +15,9 @@
         "cost_estimate": 12,
         "cost_unit": "platform credits per km²",
         "keywords": [
-            "timeseries",
-            "Gaussian Process Regression (GPR)"
+            "Data Analysis and Visualization",
+            "Sentinel-1",
+            "Sentinel-2"
         ],
         "language": {
             "code": "en-US",

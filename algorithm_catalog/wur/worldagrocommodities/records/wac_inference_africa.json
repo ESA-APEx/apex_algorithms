@@ -16,8 +16,10 @@
     "cost_estimate": 0.125,
     "cost_unit": "platform credits per km²",
     "keywords": [
-      "classification",
-      "agroforestry"
+      "Agriculture",
+      "Sentinel-2",
+      "Sentinel-1",
+      "Digital Elevation/Terrain Model (DEM)"
     ],
     "language": {
       "code": "en-US",
