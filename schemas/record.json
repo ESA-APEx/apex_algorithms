@@ -503,7 +503,7 @@
           ]
         }
       },
-      "minItems": 2,
+      "minItems": 3,
       "allOf": [
         {
           "contains": {
