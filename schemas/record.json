@@ -102,19 +102,26 @@
         },
         "keywords": {
           "type": "array",
-          "description": "The topic or topics of the APEx service. Typically represented using free-form keywords, tags, key phrases, or classification codes.",
+          "description": "The topic or topics of the APEx service. This represents a list of EarthData Taxonomy (https://gcmd.earthdata.nasa.gov/KeywordViewer).",
           "items": {
             "type": "string",
             "enum": [
-              "Vegetation",
               "Agriculture",
-              "Land",
-              "Energy",
-              "Disaster",
-              "Sentinel 1",
-              "Sentinel 2",
-              "Landsat 8",
-              "Data Fusion"
+              "Vegetation",
+              "Normalized Difference Vegetation Index (NDVI)",
+              "Leaf Area Index (LAI)",
+              "Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)",
+              "Fraction of Vegetation Coverage (fCOVER)",
+              "Energy Production/Use",
+              "Wind Energy Production/Use",
+              "Solar Energy Production/Use",
+              "Natural Hazards",
+              "Wildfires",
+              "Sentinel-1",
+              "Sentinel-2",
+              "Landsat-8",
+              "Digital Elevation/Terrain Model (DEM)",
+              "ECMWF ERA5"
             ]
           },
           "minItems": 1,

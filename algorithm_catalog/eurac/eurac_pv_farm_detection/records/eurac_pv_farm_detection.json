@@ -15,8 +15,9 @@
     "cost_estimate": 0.001,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "Energy",
-      "Sentinel 2"
+      "Energy Production/Use",
+      "Solar Energy Production/Use",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",

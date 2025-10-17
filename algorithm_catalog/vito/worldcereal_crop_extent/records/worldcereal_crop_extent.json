@@ -16,8 +16,10 @@
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
       "Agriculture",
-      "Sentinel 2",
-      "Sentinel 1"
+      "Sentinel-2",
+      "Sentinel-1",
+      "Digital Elevation/Terrain Model (DEM)",
+      "ECMWF ERA5"
     ],
     "language": {
       "code": "en-US",

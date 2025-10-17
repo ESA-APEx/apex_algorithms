@@ -15,7 +15,8 @@
         "cost_estimate": 12,
         "cost_unit": "platform credits per km²",
         "keywords": [
-            "Data Fusion"
+            "Sentinel-1",
+            "Sentinel-2"
         ],
         "language": {
             "code": "en-US",
