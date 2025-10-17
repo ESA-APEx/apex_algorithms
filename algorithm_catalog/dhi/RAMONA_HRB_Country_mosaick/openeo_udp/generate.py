@@ -87,13 +87,14 @@ def generate():
 
     format_opts = {
         "filename_prefix": "ramona_hrb_",
-        "overviews": "AUTO"
+        "overviews": "AUTO",
+        "tile_size": 512
     }
 
     cube = (connection.load_stac("https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS",
                                         temporal_extent=[date_param, date_shift(date_param, 1, "day")])
                    .filter_spatial(connection.load_url(text_concat(["https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/", country_name, ".json"]),
-        format="GeoJSON")).save_result(format="GTiff", options= format_opts ))
+        format="GeoJSON")).linear_scale_range(-10,31000,-10,31000).save_result(format="GTiff", options= format_opts ))
 
     udp = build_process_dict(process_graph=cube, process_id="RAMONA_HRB_Country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),

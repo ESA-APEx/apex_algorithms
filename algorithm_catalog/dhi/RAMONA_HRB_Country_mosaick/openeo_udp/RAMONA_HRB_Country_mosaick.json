@@ -71,16 +71,42 @@
         }
       }
     },
-    "saveresult1": {
-      "process_id": "save_result",
+    "apply1": {
+      "process_id": "apply",
       "arguments": {
         "data": {
           "from_node": "filterspatial1"
         },
+        "process": {
+          "process_graph": {
+            "linearscalerange1": {
+              "process_id": "linear_scale_range",
+              "arguments": {
+                "inputMax": 31000,
+                "inputMin": -10,
+                "outputMax": 31000,
+                "outputMin": -10,
+                "x": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "saveresult1": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
         "format": "GTiff",
         "options": {
           "filename_prefix": "ramona_hrb_",
-          "overviews": "AUTO"
+          "overviews": "AUTO",
+          "tile_size": 512
         }
       },
       "result": true
