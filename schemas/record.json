@@ -424,6 +424,7 @@
             "type": "string",
             "description": "The type or semantics of the relation.",
             "enum": [
+              "platform",
               "application",
               "service",
               "example-output",
@@ -457,7 +458,26 @@
           "type",
           "title",
           "href"
-        ]
+        ],
+        "if": {
+          "properties": {
+            "rel": {
+              "const": "platform"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "Platform record URI (must point into platform_catalog).",
+              "pattern": "^https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/[^\\s]+\\.json$"
+            }
+          },
+          "required": [
+            "href"
+          ]
+        }
       },
       "minItems": 2,
       "allOf": [
@@ -477,6 +497,16 @@
             "properties": {
               "rel": {
                 "const": "application"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "const": "platform"
               }
             }
           }
