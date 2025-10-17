@@ -32,6 +32,7 @@
           {
             "href": "https://openeo.cloud",
             "rel": "about",
+            "title": "openEO Platform",
             "type": "text/html"
           }
         ],
@@ -56,7 +57,7 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "alternate",
+      "rel": "documentation",
       "type": "text/html",
       "title": "openEO platform documentation",
       "href": "https://docs.openeo.cloud"
@@ -66,6 +67,12 @@
       "type": "application/json",
       "title": "openEO service",
       "href": "https://openeo.cloud"
+    },
+    {
+      "rel": "logo",
+      "type": "image/svg+xml",
+      "title": "openEO Platform Logo",
+      "href": "https://openeo.cloud/wp-content/uploads/2023/10/logo-openeoplatform-wide-darkmode.svg"
     }
   ]
 }
