@@ -17,7 +17,10 @@
         "keywords": [
             "Agriculture",
             "Vegetation",
-            "Sentinel 2"
+            "Leaf Area Index (LAI)",
+            "Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)",
+            "Fraction of Vegetation Coverage (fCOVER)",
+            "Sentinel-2"
         ],
         "language": {
             "code": "en-US",
