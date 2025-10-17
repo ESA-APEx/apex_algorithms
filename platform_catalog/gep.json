@@ -1,5 +1,5 @@
 {
-  "id": "openeocloud",
+  "id": "gep",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
@@ -7,11 +7,11 @@
   "properties": {
     "created": "2024-05-17T00:00:00Z",
     "updated": "2024-05-17T00:00:00Z",
-    "type": "openeo_backend",
-    "title": "openEO platform processing backend",
-    "description": "The openEO Platform enables processing using openEO.",
+    "type": "ogc_backend",
+    "title": "Geohazards Exploitation Platform",
+    "description": "",
     "keywords": [
-      "openeo",
+      "ogc",
       "data analysis",
       "platform as a service"
     ],
@@ -27,18 +27,24 @@
     ],
     "contacts": [
       {
-        "name": "openEO platform",
+        "name": "Platform team",
+        "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
         "links": [
           {
-            "href": "https://openeo.cloud",
+            "href": "https://geohazards-tep.eu",
+            "title": "Geohazards Exploitation Platform",
             "rel": "about",
             "type": "text/html"
           }
         ],
-        "contactInstructions": "SEE WEBSITE",
-        "roles": [
-          "operator"
-        ]
+        "contactInstructions": "For inquiries on selecting Processing Services from the GEP Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at Terradue",
+        "email": "contact@geohazards-tep.eu"
       }
     ],
     "themes": [
@@ -56,22 +62,16 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "documentation",
-      "type": "text/html",
-      "title": "openEO platform documentation",
-      "href": "https://docs.openeo.cloud"
-    },
-    {
       "rel": "service",
       "type": "application/json",
-      "title": "openEO service",
-      "href": "https://openeo.cloud"
+      "title": "OGC API Processes Service Endpoint",
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes"
     },
     {
       "rel": "logo",
-      "type": "image/svg+xml",
-      "title": "openEO Platform Logo",
-      "href": "https://openeo.cloud/wp-content/uploads/2023/10/logo-openeoplatform-wide-darkmode.svg"
+      "type": "image/png",
+      "title": "GEP Logo",
+      "href": "https://geohazards-tep.eu/styles/img/logo-geohazard-by-terradue.png"
     }
   ]
 }
