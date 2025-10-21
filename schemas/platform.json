@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "APEx Service - OGC API Record",
+  "title": "APEx Platform - OGC API Record",
   "type": "object",
   "properties": {
     "id": {
@@ -20,24 +20,12 @@
       "items": {
         "type": "string"
       },
-      "minItems": 2,
+      "minItems": 1,
       "uniqueItems": true,
       "anyOf": [
         {
           "contains": {
             "const": "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
-          }
-        }
-      ],
-      "oneOf": [
-        {
-          "contains": {
-            "const": "https://apex.esa.int/core/openeo-udp"
-          }
-        },
-        {
-          "contains": {
-            "const": "https://apex.esa.int/core/ogc-api-processes"
           }
         }
       ]
@@ -53,22 +41,10 @@
         "type",
         "title",
         "description",
-        "cost_estimate",
-        "cost_unit",
         "contacts",
-        "themes",
-        "formats"
+        "themes"
       ],
       "properties": {
-        "visibility": {
-          "type": "string",
-          "description": "Visibility of the service in the APEx Algorithm Services Catalogue. Set to private to ensure the service is not listed in the catalogue.",
-          "enum": [
-            "public",
-            "private"
-          ],
-          "default": "public"
-        },
         "created": {
           "type": "string",
           "description": "Create date/time of the record."
@@ -81,28 +57,21 @@
           "type": "string",
           "description": "Type of the OGC API Record",
           "enum": [
-            "service"
+            "openeo_backend",
+            "ogc_backend"
           ]
         },
         "title": {
           "type": "string",
-          "description": "Title of the APEx service"
+          "description": "Title of the Platform"
         },
         "description": {
           "type": "string",
-          "description": "Description of the APEx service"
-        },
-        "cost_estimate": {
-          "type": "number",
-          "description": "Estimate of the cost for executing the service"
-        },
-        "cost_unit": {
-          "type": "string",
-          "description": "Unit for expressing the execution cost of the service"
+          "description": "Description of the Platform"
         },
         "keywords": {
           "type": "array",
-          "description": "The topic or topics of the APEx service. Typically represented using free-form keywords, tags, key phrases, or classification codes.",
+          "description": "The topic or topics of the Platform. Typically represented using free-form keywords, tags, key phrases, or classification codes.",
           "items": {
             "type": "string"
           }
@@ -150,10 +119,10 @@
         },
         "contacts": {
           "type": "array",
-          "description": "A list of contacts qualified by their role(s) in association to the APEx service described by the record.",
+          "description": "A list of contacts qualified by their role(s) in association to the Platform described by the record.",
           "items": {
             "type": "object",
-            "description": "Identification of, and means of communication with, person responsible\nfor the APEx service.",
+            "description": "Identification of, and means of communication with, person responsible\nfor the Platform.",
             "properties": {
               "name": {
                 "type": "string",
@@ -305,7 +274,7 @@
         },
         "themes": {
           "type": "array",
-          "description": "A knowledge organization system used to classify the APEx service.",
+          "description": "A knowledge organization system used to classify the Platform.",
           "minItems": 1,
           "items": {
             "type": "object",
@@ -350,37 +319,6 @@
               }
             }
           }
-        },
-        "formats": {
-          "type": "array",
-          "description": "A list of available distributions of the APEx service results.",
-          "items": {
-            "type": "object",
-            "anyOf": [
-              {
-                "required": [
-                  "name"
-                ]
-              },
-              {
-                "required": [
-                  "mediaType"
-                ]
-              }
-            ],
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "mediaType": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "license": {
-          "type": "string",
-          "description": "License that is applicable for the APEx service."
         }
       }
     },
@@ -424,19 +362,10 @@
             "type": "string",
             "description": "The type or semantics of the relation.",
             "enum": [
-              "platform",
-              "application",
-              "service",
-              "example-output",
-              "example-input",
-              "preview",
-              "order",
-              "license",
               "about",
-              "webapp",
-              "code",
-              "thumbnail",
-              "cite-as"
+              "documentation",
+              "logo",
+              "service"
             ]
           },
           "type": {
@@ -458,55 +387,16 @@
           "type",
           "title",
           "href"
-        ],
-        "if": {
-          "properties": {
-            "rel": {
-              "const": "platform"
-            }
-          }
-        },
-        "then": {
-          "properties": {
-            "href": {
-              "type": "string",
-              "description": "Platform record URI (must point into platform_catalog).",
-              "pattern": "^https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/[^\\s]+\\.json$"
-            }
-          },
-          "required": [
-            "href"
-          ]
-        }
+        ]
       },
-      "minItems": 3,
+      "minItems": 1,
       "allOf": [
         {
           "contains": {
             "type": "object",
             "properties": {
               "rel": {
-                "const": "service"
-              }
-            }
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "rel": {
-                "const": "application"
-              }
-            }
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "rel": {
-                "const": "platform"
+                "const": "logo"
               }
             }
           }
