@@ -105,6 +105,12 @@
       "type": "text/html",
       "title": "Scientific publication",
       "href": "https://doi.org/10.3390/rs16111833"
+    },
+    {
+        "rel": "thumbnail",
+        "type": "image/png",
+        "title": "Thumbnail image",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/a2e66ffe044b416e7741daaf9b6a19c5e69333fe/algorithm_catalog/dhi/RAMONA_HRB_Country_mosaick/records/thumbnail.png"
     }
   ]
 }
