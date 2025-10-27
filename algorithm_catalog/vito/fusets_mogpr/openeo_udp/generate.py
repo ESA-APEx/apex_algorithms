@@ -27,7 +27,7 @@ def get_mogpr_s1_s2(
     merged_cube = s2_input_cube.merge_cubes(s1_input_cube)
 
     return apply_neighborhood(merged_cube,
-                              lambda data: data.run_udf(udf=Path("set_path.py").read_text()+"\n"+load_mogpr_udf(), runtime='Python', context=dict()),
+                              lambda data: data.run_udf(udf=Path("set_path.py").read_text()+"\n"+load_mogpr_udf(), runtime='Python', version="3.8", context=dict()),
                               size=[
                                   {'dimension': 'x', 'value': 32, 'unit': 'px'},
                                   {'dimension': 'y', 'value': 32, 'unit': 'px'}
