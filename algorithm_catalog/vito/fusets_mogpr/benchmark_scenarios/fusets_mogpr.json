@@ -7,7 +7,7 @@
     "process_graph": {
       "fusetsmogpr": {
         "process_id": "fusets_mogpr",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/09413be3c27e0e695d426c9ffe5a0fe90beefe65/openeo_udp/fusets_mogpr/fusets_mogpr.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/6a70b010e7af41a19ce6d728972f1561295dd8c5/algorithm_catalog/vito/fusets_mogpr/openeo_udp/fusets_mogpr.json",
         "arguments": {
           "s1_collection": "RVI",
           "s2_collection": "NDVI",
