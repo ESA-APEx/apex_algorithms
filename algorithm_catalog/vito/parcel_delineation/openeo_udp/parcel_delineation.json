@@ -184,6 +184,7 @@
                   "from_parameter": "data"
                 },
                 "runtime": "Python",
+                "version": "3.8",
                 "udf": "from xarray import DataArray\nfrom skimage import segmentation, graph\nfrom skimage.filters import sobel\nfrom typing import Dict\nfrom openeo.udf import inspect\n\n\ndef apply_datacube(cube: DataArray, context: Dict) -> DataArray:\n    inspect(message=f\"Dimensions of the final datacube {cube.dims}\")\n    # get the underlying array without the bands and t dimension\n    image_data = cube.squeeze(\"t\", drop=True).squeeze(\"bands\", drop=True).values\n    # compute edges\n    edges = sobel(image_data)\n    # Perform felzenszwalb segmentation\n    segment = segmentation.felzenszwalb(image_data, scale=120, sigma=0.0, min_size=30, channel_axis=None)\n    # Perform the rag boundary analysis and merge the segments\n    bgraph = graph.rag_boundary(segment, edges)\n    # merging segments\n    mergedsegment = graph.cut_threshold(segment, bgraph, 0.15, in_place=False)\n    # create a data cube and perform masking operations\n    output_arr = DataArray(mergedsegment.reshape(cube.shape), dims=cube.dims, coords=cube.coords)\n    output_arr = output_arr.where(cube >= 0.3)   # Mask the output pixels based on the cube values <0.3\n    output_arr = output_arr.where(output_arr >= 0)  # Mask all values less than or equal to zero\n    return output_arr\n"
               },
               "result": true
