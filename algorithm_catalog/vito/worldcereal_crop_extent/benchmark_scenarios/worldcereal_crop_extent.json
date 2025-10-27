@@ -25,6 +25,9 @@
         "result": true
       }
     },
+    "job_options": {
+      "image-name": "python38"
+    },
     "reference_data": {
       "worldcereal-cropland-extent.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent.tif",
       "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/job-results.json",

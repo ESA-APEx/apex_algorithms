@@ -34,7 +34,8 @@
       "soft-errors": "true",
       "udf-dependency-archives": [
         "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
-      ]
+      ],
+      "image-name": "python38"
     },
     "reference_data": {
       "worldcereal-cropland-type.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_type/worldcereal-cropland-type.tif",
