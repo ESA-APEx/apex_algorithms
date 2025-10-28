@@ -1,0 +1,116 @@
+{
+  "id": "RAMONA_HRB_Country_mosaick",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "Ramona herbaceous biomass download for countries in Africa.",
+    "description": "Prepares biomass data from the RAMONA project for a selected African country.",
+    "cost_estimate": 0.05,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "BIOMASS"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Alkiviadis Koukos",
+        "position": "Researcher",
+        "organization": "DHI",
+        "links": [
+          {
+            "href": "https://www.ramona.earth/",
+            "title": "Ramona Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/alkiskk",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via DHI",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
+          },
+          {
+            "id": "BIOMASS",
+            "url": "https://cmr.earthdata.nasa.gov/kms/concept/686feba9-87ba-474c-8280-7f67565cfb2f?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoJSON"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7f1c18dd6cdffba2f400bfd71239fb9e491c434b/algorithm_catalog/dhi/RAMONA_HRB_Country_mosaick/openeo_udp/RAMONA_HRB_Country_mosaick.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO",
+      "href": "https://openeo.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=RAMONA_HRB_Country_mosaick&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2F7f1c18dd6cdffba2f400bfd71239fb9e491c434b%2Falgorithm_catalog%2Fdhi%2FRAMONA_HRB_Country_mosaick%2Fopeneo_udp%2FRAMONA_HRB_Country_mosaick.json"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "ESA Project website",
+      "href": "https://www.ramona.earth/"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Scientific publication",
+      "href": "https://doi.org/10.3390/rs16111833"
+    },
+    {
+        "rel": "thumbnail",
+        "type": "image/png",
+        "title": "Thumbnail image",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/a2e66ffe044b416e7741daaf9b6a19c5e69333fe/algorithm_catalog/dhi/RAMONA_HRB_Country_mosaick/records/thumbnail.png"
+    }
+  ]
+}
