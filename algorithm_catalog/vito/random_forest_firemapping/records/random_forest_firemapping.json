@@ -15,8 +15,10 @@
         "cost_estimate": 0.45,
         "cost_unit": "platform credits per km²",
         "keywords": [
-            "forest fires",
-            "mapping"
+            "Natural Hazards",
+            "Wildfires",
+            "Sentinel-1",
+            "Sentinel-2"
         ],
         "language": {
             "code": "en-US",

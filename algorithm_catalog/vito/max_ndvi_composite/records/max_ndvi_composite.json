@@ -15,7 +15,9 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2 and observation.",
     "keywords": [
-      "vegetation"
+      "Vegetation",
+      "Normalized Difference Vegetation Index (NDVI)",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",

@@ -53,7 +53,7 @@ def generate() -> dict:
 
     # Apply ML algorithm
     # apply a neural network, requires 128x128 pixel 'chunks' as input.
-    segment_udf = openeo.UDF.from_file("udf_segmentation.py")
+    segment_udf = openeo.UDF.from_file("udf_segmentation.py", version="3.8")
     segmentationband = ndviband.apply_neighborhood(
         process=segment_udf,
         size=[{"dimension": "x", "value": 64, "unit": "px"}, {"dimension": "y", "value": 64, "unit": "px"}],
