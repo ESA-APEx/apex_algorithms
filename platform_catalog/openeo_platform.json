@@ -9,12 +9,9 @@
     "updated": "2024-05-17T00:00:00Z",
     "type": "openeo_backend",
     "title": "openEO platform processing backend",
+    "short_title": "openEO Platform",
     "description": "The openEO Platform enables processing using openEO.",
-    "keywords": [
-      "openeo",
-      "data analysis",
-      "platform as a service"
-    ],
+    "keywords": [],
     "language": {
       "code": "en-US",
       "name": "English (United States)"
@@ -42,31 +39,16 @@
         ]
       }
     ],
-    "themes": [
-      {
-        "concepts": [
-          {
-            "id": "DATA ANALYSIS"
-          }
-        ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
-      }
-    ],
+    "themes": [],
     "license": "other"
   },
   "linkTemplates": [],
   "links": [
     {
-      "rel": "documentation",
+      "rel": "website",
       "type": "text/html",
-      "title": "openEO platform documentation",
-      "href": "https://docs.openeo.cloud"
-    },
-    {
-      "rel": "service",
-      "type": "application/json",
-      "title": "openEO service",
-      "href": "https://openeo.cloud"
+      "title": "openEO Platform",
+      "href": "https://openeo.cloud/"
     },
     {
       "rel": "logo",
