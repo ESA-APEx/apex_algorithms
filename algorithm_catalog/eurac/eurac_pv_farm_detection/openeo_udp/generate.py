@@ -57,9 +57,8 @@ def generate() -> dict:
     # Run ML inference to get the classification output
     udf = openeo.UDF.from_file(
         Path(__file__).parent / "udf_eurac_pvfarm_onnx.py",
-        
+        version="3.8",
     )
-
 
     prediction = s2_cube.reduce_bands(reducer=udf)
 

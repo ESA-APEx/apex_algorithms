@@ -7,7 +7,7 @@
         "process_graph": {
             "parcel_delineation1": {
                 "process_id": "wac_inference_africa",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9a0622e87ed31f2034ce4a9beb4165d941dc09cd/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b43116632be5e3cd6150fbff5ae21cb135763654/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json",
                 "arguments": {
                     "spatial_extent": {
 			            "west": 677736,
