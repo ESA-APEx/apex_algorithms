@@ -10,11 +10,7 @@
     "type": "ogc_backend",
     "title": "Geohazards Exploitation Platform",
     "description": "",
-    "keywords": [
-      "ogc",
-      "data analysis",
-      "platform as a service"
-    ],
+    "keywords": [],
     "language": {
       "code": "en-US",
       "name": "English (United States)"
@@ -47,25 +43,16 @@
         "email": "contact@geohazards-tep.eu"
       }
     ],
-    "themes": [
-      {
-        "concepts": [
-          {
-            "id": "DATA ANALYSIS"
-          }
-        ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
-      }
-    ],
+    "themes": [],
     "license": "other"
   },
   "linkTemplates": [],
   "links": [
     {
-      "rel": "service",
-      "type": "application/json",
-      "title": "OGC API Processes Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes"
+      "rel": "website",
+      "type": "text/html",
+      "title": "Geohazards TEP",
+      "href": "https://geohazards-tep.eu/"
     },
     {
       "rel": "logo",
