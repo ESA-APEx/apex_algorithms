@@ -15,8 +15,9 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "agriculture",
-      "crops"
+      "Agriculture",
+      "Sentinel-2",
+      "Sentinel-1"
     ],
     "language": {
       "code": "en-US",
@@ -94,7 +95,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v1.0.0/src/worldcereal/udp/worldcereal_crop_type.json"
+      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v1.1.2/src/worldcereal/udp/worldcereal_crop_type.json"
     },
     {
       "rel": "code",
@@ -132,6 +133,5 @@
       "title": "Thumbnail image",
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcereal_crop_type/records/thumbnail.png"
     }
-
   ]
 }

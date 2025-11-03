@@ -16,7 +16,7 @@ Spatial reprojection & resampling (CRS EPSG:3035, resolution 10 m)
 
 Cloud mask dilation on SCL → mask optical bands
 
-Monthly aggregation (mean) on Sentinel-2, decimation on Sentinel-1 (log transform), DEM temporal mean
+Monthly aggregation (90 percentile) on Sentinel-2 and log-transformed Sentinel-1, DEM temporal mean
 
 Compute vegetation indices (NDVI, NDRE, EVI)
 
@@ -34,5 +34,4 @@ Patch-based sliding window (size 128×128 px, overlap 64 px) via apply_neighborh
 
 ONNX U-Net model loaded at runtime
 
-Output bands renamed to sigmoid_prob_class_0…prob_class_{N-1} plus prob_class
  

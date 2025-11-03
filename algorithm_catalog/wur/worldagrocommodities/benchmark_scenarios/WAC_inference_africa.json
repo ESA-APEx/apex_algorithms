@@ -6,20 +6,23 @@
         "backend": "openeo.dataspace.copernicus.eu",
         "process_graph": {
             "parcel_delineation1": {
-                "process_id": "wac_inference",
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/96dfa13ba74ccbfb3432c6ebd38c42e704526e79/algorithm_catalog/wur/worldagrocommodities/records/wac_inference.json",
+                "process_id": "wac_inference_africa",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b43116632be5e3cd6150fbff5ae21cb135763654/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json",
                 "arguments": {
                     "spatial_extent": {
-			            "west": 716200,
-                        "south": 605530,
-                        "east": 722380,
-                        "north": 612410,
+			            "west": 677736,
+                        "south": 624010,
+                        "east":  682736,
+                        "north": 629010,
                         "crs": "EPSG:32630"
 		            },
                     "temporal_extent": [
-                        "2023-06-01",
-                        "2023-09-01"
-                    ]
+                        "2023-01-01",
+                        "2024-01-01"
+                    ],
+
+                    "crs": "EPSG:32629"
+
                 },
                 "result": true
             }
@@ -28,5 +31,3 @@
 	   }
     }
 ]
-
-
