@@ -1,0 +1,31 @@
+[
+  {
+    "id": "sor2_demo",
+    "type": "openeo",
+    "description": "sor2_demo example",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "maxndvi1": {
+        "process_id": "max_ndvi",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/11c27fb1a90cfc8f2eb285b881d1db8a96c358f4/openeo_udp/examples/max_ndvi/max_ndvi.json",
+        "arguments": {
+          "bbox": {
+            "west": 5.07,
+            "east": 5.09,
+            "south": 51.21,
+            "north": 51.23
+          },
+          "temporal_extent": [
+            "2023-08-01",
+            "2023-09-30"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-15066001243!tests_test_benchmarks.py__test_run_benchmark_max_ndvi_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-15066001243!tests_test_benchmarks.py__test_run_benchmark_max_ndvi_!actual/openEO.tif"
+    }
+  },
+]
