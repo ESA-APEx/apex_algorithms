@@ -1,7 +1,13 @@
+# /// script
+# dependencies = [
+#   "scikit-image",
+# ]
+# ///
+
+from typing import Dict
 from xarray import DataArray
 from skimage import segmentation, graph
 from skimage.filters import sobel
-from typing import Dict
 from openeo.udf import inspect
 
 
