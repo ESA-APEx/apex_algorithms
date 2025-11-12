@@ -1,0 +1,115 @@
+{
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "id": "sor2_demo",
+    "properties": {
+        "created": "2025-01-17T16:32:27Z",
+        "updated": "2025-01-17T16:32:27Z",
+        "type": "service",
+        "title": "SOR2 - DEMO",
+        "description": "SOR2 - Demo service representing the dummy service in the APEx Algorithm Catalogue",
+        "keywords": [
+            "Agriculture",
+            "Sentinel-2"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "cost_estimate": 4,
+        "cost_unit": "platform credits per km²",
+        "contacts": [
+            {
+                "name": "Bram Janssen",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/JanssenBrm",
+                        "title": "GitHub",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "SEE WEBSITE",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "Remote Sensing"
+                    },
+                    {
+                        "id": "Agriculture"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
+            }
+        ],
+        "formats": [
+            {
+                "name": "GeoTIFF"
+            },
+            {
+                "name": "netCDF"
+            }
+        ],
+        "license": "CC-BY-4.0"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/32ea3c9a6fa24fe063cb59164cd318cceb7209b0/openeo_udp/variabilitymap/variabilitymap.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "example-output",
+            "type": "application/netcdf",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=variabilitymap&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/openeo_udp/variabilitymap.json&server=https://openeofed.dataspace.copernicus.eu"
+        }
+    ]
+}
