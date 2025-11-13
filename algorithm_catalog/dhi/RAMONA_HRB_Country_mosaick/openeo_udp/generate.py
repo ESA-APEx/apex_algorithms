@@ -90,8 +90,10 @@ def generate():
         "overviews": "AUTO",
         "tile_size": 512,
         "bands_metadata" : {
-            "scale": 0.01,
-            "unit": "g DW per m2 per month"
+            "biomass" : {
+                "SCALE": 0.01,
+                "unit": "g DW per m2 per month"
+            }
         }
     }
 
