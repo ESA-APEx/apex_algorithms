@@ -10,7 +10,7 @@
     "created": "2025-03-12T00:00:00Z",
     "updated": "2025-03-12T00:00:00Z",
     "type": "service",
-    "title": "Ramona herbaceous biomass download for countries in Africa.",
+    "title": "RAMONA Herbaceous Rageland Biomass (HRB) country level mosaics for Africa (2022).",
     "description": "Prepares biomass data from the RAMONA project for a selected African country.",
     "cost_estimate": 0.05,
     "cost_unit": "platform credits per km\u00b2",
@@ -29,9 +29,9 @@
     ],
     "contacts": [
       {
-        "name": "Alkiviadis Koukos",
-        "position": "Researcher",
-        "organization": "DHI",
+        "name": "The RAMONA project consortium: University of Aarhus, DHI, Lund University and GeoVille.",
+        "position": "Project consortium",
+        "organization": "University of Aarhus, DHI, Lund University and GeoVille.",
         "links": [
           {
             "href": "https://www.ramona.earth/",

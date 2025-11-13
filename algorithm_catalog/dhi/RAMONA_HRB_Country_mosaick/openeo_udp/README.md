@@ -1,6 +1,6 @@
-# Herbaceous Herbaceous Biomass country mosaic
+# RAMONA - Herbaceous Rangeland Biomass (HRB) - Country Level Mosaick
 
-For a selected African country, year and month, returns the Ramona biomass data. 
+For a selected African country, year and month, the process returns a mosaic of the monthly HRB products as a single GeoTIFF.
 
 This is an example output for Benin:
 
@@ -8,7 +8,9 @@ This is an example output for Benin:
 
 ## Methodology
 
-This is a simple data extraction, without additional processing.
+Monthly HRB input files are mosaicked and exported as a GeoTIFF. The RAMONA HRB products have been precomputed. The products were generated for the target year 2022 and specifically from Aug-2021 to January-2023. 
+
+More information can be found at [https://www.ramona.earth/](https://www.ramona.earth/)
 
 ## Performance
 

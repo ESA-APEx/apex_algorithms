@@ -88,7 +88,11 @@ def generate():
     format_opts = {
         "filename_prefix": "ramona_hrb_",
         "overviews": "AUTO",
-        "tile_size": 512
+        "tile_size": 512,
+        "bands_metadata" : {
+            "scale": 0.01,
+            "unit": "g DW per m2 per month"
+        }
     }
 
     cube = (connection.load_stac("https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS",
