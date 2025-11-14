@@ -10,8 +10,8 @@
     "created": "2025-03-12T00:00:00Z",
     "updated": "2025-03-12T00:00:00Z",
     "type": "service",
-    "title": "RAMONA Herbaceous Rageland Biomass (HRB) country level mosaics for Africa (2022).",
-    "description": "Prepares biomass data from the RAMONA project for a selected African country.",
+    "title": "RAMONA Herbaceous Rangeland Biomass (HRB) country level mosaics for Africa (2022).",
+    "description": "Generates country-level mosaicks from the (pre-computed) RAMONA monthly HRB products. The original HRB products follow the Sentinel-2 tiling grid in UTM projection. The resulting mosaic is projected in WGS84 / EPSG 4326.",
     "cost_estimate": 0.05,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
