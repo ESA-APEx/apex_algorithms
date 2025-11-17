@@ -34,4 +34,9 @@ Patch-based sliding window (size 128×128 px, overlap 64 px) via apply_neighborh
 
 ONNX U-Net model loaded at runtime
 
+### 5 Auxiliary Data
+
+After the Model Inference, A preliminary Tree Cover Density Product is included for the year 2020 
+
+
  
