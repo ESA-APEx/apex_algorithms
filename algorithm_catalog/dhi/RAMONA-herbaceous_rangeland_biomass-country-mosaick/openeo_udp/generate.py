@@ -105,7 +105,7 @@ def generate():
     udp = build_process_dict(process_graph=cube, process_id="RAMONA-herbaceous_rangeland_biomass-country-mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, year_param, month_param],
-                             default_job_options={"driver-memory": "12G", "executor-memory":"5G", "python-memory":"50m", "executor-memoryOverhead":"1G"}
+                             default_job_options={"driver-memory": "13G", "executor-memory":"6G", "python-memory":"50m", "executor-memoryOverhead":"1G"}
                              )
     connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_herbaceous_rangeland_biomass_country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
@@ -115,7 +115,7 @@ def generate():
 
 if __name__ == "__main__":
 
-    with open("RAMONA_HRB_Country_mosaick.json", "w") as f:
+    with open("RAMONA-herbaceous_rangeland_biomass-country-mosaick.json", "w") as f:
         json.dump(generate(), f, indent=2)
 
 import requests
