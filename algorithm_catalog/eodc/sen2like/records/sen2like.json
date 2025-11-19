@@ -1,0 +1,104 @@
+{
+  "id": "sen2like",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-05-22T00:00:00Z",
+    "updated": "2025-05-22T00:00:00Z",
+    "type": "service",
+    "title": "Harmonized Landsat/Sentinel-2 ARD",
+    "description": "# Sen2like\n\nThe Sen2Like processor was developed by ESA as part of the EU Copernicus program. It creates Sentinel-2 like harmonized (Level-2H) or fused (Level-2F) surface reflectances by harmonizing Sentinel-2 and Landsat 8/Landsat 9 to increase the temporal revisits. The fusion involves the upscaling of Landsat 8/Landsat 9 data to Sentinel-2 resolution. Furthermore, the resulting sen2like L2H/ L2F data can be processed using openEO to generate statistics, vegetation indices, do comparisons with other datasets, etc.\n\n### Methodology\n\nThe processing of the incoming Landsat and Sentinel-2 L1C data includes the following main processing steps: Geometric Processing, Stitching, Geometric Check, Inter-calibration, Atmospheric correction, BRDF Adjustment, SBAF, Topographic Correction, Data Fusion. If Sentinel-2 L2A data is provided, sen2like processing will not include Atmospheric and Topographic Correction. In the geometric processing step, the input images are co-registered to a Sentinel-2 reference image. The atmospheric correction step makes use of the sen2cor processor and additionally relies on Copernicus Atmosphere Monitoring Service (CAMS) Near Real Time and Reanalysis data as well as the Copernicus Digital Elevation Model. The Data Fusion step alignes Landsat 8 image pixel spacing fully with Sentinel2 image pixel spacing. Depending on the band, the resolution of the Landsat L2F product is 10 m, 20 m or 30 m.\n\n### Quality\n\nThe geometric check process is a Quality Control step of the product. For further information, see Sen2like User Manual.\n\n### Links\n\n- [RD1] openEO platform Sen2like documentation https://docs.openeo.cloud/usecases/ard/sen2like\n- [RD1] Saunier, S. (2025). Sen2like User Manual https://github.com/senbox-org/sen2like/blob/master/sen2like/docs/source/S2-SEN2LIKE-UM-V1.10.pdf",
+    "cost_estimate": 0.01,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "sentinel-2",
+      "landsat-8",
+      "ard"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Valentina Hutter",
+        "position": "Researcher",
+        "organization": "EODC",
+        "links": [
+          {
+            "href": "https://www.eodc.eu/",
+            "title": "EODC Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/ValentinaHutter",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via EODC",
+        "roles": [
+          "principal investigator",
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "SAFE"
+      },
+      {
+        "name": "zip"
+      }
+    ]
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/sen2like/algorithm_catalog/eodc/sen2like/openeo_udp/sen2like.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Sen2like git source repository",
+      "href": "https://github.com/senbox-org/sen2like"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.cloud"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "S. Saunier, J. Louis, V. Debaecker et al., \"Sen2like, A Tool To Generate Sentinel-2 Harmonised Surface Reflectance Products - First Results with Landsat-8,\" IGARSS 2019 - 2019 IEEE International Geoscience and Remote Sensing Symposium, Yokohama, Japan, 2019, pp. 5650-5653",
+      "href": "https://doi.org/10.1109/IGARSS.2019.8899213"
+    }
+  ]
+}
