@@ -86,13 +86,13 @@ def generate():
 
 
     format_opts = {
-        "filename_prefix": "ramona_hrb_",
+        "filename_prefix": "ramona_hrb",
         "overviews": "AUTO",
         "tile_size": 512,
         "bands_metadata" : {
             "biomass" : {
                 "SCALE": 0.01,
-                "unit": "g DW per m2 per month"
+                "Unit": "g DW per m2 per month"
             }
         }
     }
@@ -100,14 +100,14 @@ def generate():
     cube = (connection.load_stac("https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS",
                                         temporal_extent=[date_param, date_shift(date_param, 1, "day")])
                    .filter_spatial(connection.load_url(text_concat(["https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/", country_name, ".json"]),
-        format="GeoJSON")).linear_scale_range(-10,31000,-10,31000).save_result(format="GTiff", options= format_opts ))
+        format="GeoJSON")).linear_scale_range(-10,31000,-10,31000).drop_dimension("t").save_result(format="GTiff", options= format_opts ))
 
-    udp = build_process_dict(process_graph=cube, process_id="RAMONA_HRB_Country_mosaick",
+    udp = build_process_dict(process_graph=cube, process_id="RAMONA-herbaceous_rangeland_biomass-country-mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, year_param, month_param],
-                             default_job_options={"executor-memory":"7G", "python-memory":"50m", "executor-memoryOverhead":"1G"}
+                             default_job_options={"driver-memory": "12G", "executor-memory":"5G", "python-memory":"50m", "executor-memoryOverhead":"1G"}
                              )
-    connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_HRB_Country_mosaick",
+    connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_herbaceous_rangeland_biomass_country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, year_param, month_param])
     return udp
