@@ -133,7 +133,7 @@
       "rel": "notebook",
       "type": "text/html",
       "title": "Parcel Delineation - Example",
-      "href": "https://github.com/Open-EO/openeo-community-examples/blob/main/python/ParcelDelineation/Parcel%20delineation.ipynb"
+      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/Parcel%20delineation.ipynb"
     }
   ]
 }
