@@ -29,6 +29,11 @@
             }
         },
         "reference_data": {
-	   }
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-19588693309!tests_test_benchmarks.py__test_run_benchmark_WorldAgriCommodities_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-19588693309!tests_test_benchmarks.py__test_run_benchmark_WorldAgriCommodities_!actual/openEO.tif"
+    },
+    "reference_options": {
+	  "pixel_tolerance": 0.1
+    }
     }
 ]
