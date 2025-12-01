@@ -105,7 +105,7 @@ def generate():
     udp = build_process_dict(process_graph=cube, process_id="RAMONA-herbaceous_rangeland_biomass-country-mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),
                                       parameters=[country_name, year_param, month_param],
-                             default_job_options={"driver-memory": "13G", "executor-memory":"6G", "python-memory":"50m", "executor-memoryOverhead":"1G"}
+                             default_job_options={"driver-memory": "15G", "executor-memory": "6G", "python-memory": "50m", "executor-memoryOverhead": "1500m", "driver-memoryOverhead": "5G"}
                              )
     connection.save_user_defined_process(process_graph=cube, user_defined_process_id="RAMONA_herbaceous_rangeland_biomass_country_mosaick",
                                       description=(Path(__file__).parent / "README.md").read_text(),

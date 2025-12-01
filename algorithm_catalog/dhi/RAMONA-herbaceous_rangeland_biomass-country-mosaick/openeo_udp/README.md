@@ -21,3 +21,4 @@ in your own runs.
 |----------|-------------|-------------|
 | Benin    | 3.5 minutes | 6           |
 | Cameroon | 9 minutes   | 26          |
+| Ethiopia | 20 minutes  | 64          |
