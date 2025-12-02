@@ -6,7 +6,7 @@
     "backend": "openeo.dataspace.copernicus.eu",
     "process_graph": {
       "RAMONA-herbaceous_rangeland_biomass-country-mosaick": {
-        "process_id": "ramona-herbaceous_rangeland_biomass-country-mosaick",
+        "process_id": "RAMONA-herbaceous_rangeland_biomass-country-mosaick",
         "arguments": {
           "year": "2022",
           "month": "06",
