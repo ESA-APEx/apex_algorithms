@@ -1,0 +1,244 @@
+{
+  "process_graph": {
+    "textconcat1": {
+      "process_id": "text_concat",
+      "arguments": {
+        "data": [
+          {
+            "from_parameter": "year"
+          },
+          "-",
+          {
+            "from_parameter": "month"
+          },
+          "-01T00:00:00Z"
+        ]
+      }
+    },
+    "dateshift1": {
+      "process_id": "date_shift",
+      "arguments": {
+        "date": {
+          "from_node": "textconcat1"
+        },
+        "unit": "day",
+        "value": 1
+      }
+    },
+    "loadstac1": {
+      "process_id": "load_stac",
+      "arguments": {
+        "temporal_extent": [
+          {
+            "from_node": "textconcat1"
+          },
+          {
+            "from_node": "dateshift1"
+          }
+        ],
+        "url": "https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS"
+      }
+    },
+    "textconcat2": {
+      "process_id": "text_concat",
+      "arguments": {
+        "data": [
+          "https://raw.githubusercontent.com/georgique/world-geojson/refs/heads/develop/countries/",
+          {
+            "from_parameter": "country"
+          },
+          ".json"
+        ]
+      }
+    },
+    "loadurl1": {
+      "process_id": "load_url",
+      "arguments": {
+        "format": "GeoJSON",
+        "url": {
+          "from_node": "textconcat2"
+        }
+      }
+    },
+    "filterspatial1": {
+      "process_id": "filter_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "geometries": {
+          "from_node": "loadurl1"
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "process": {
+          "process_graph": {
+            "linearscalerange1": {
+              "process_id": "linear_scale_range",
+              "arguments": {
+                "inputMax": 31000,
+                "inputMin": -10,
+                "outputMax": 31000,
+                "outputMin": -10,
+                "x": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "dropdimension1": {
+      "process_id": "drop_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "name": "t"
+      }
+    },
+    "saveresult1": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "dropdimension1"
+        },
+        "format": "GTiff",
+        "options": {
+          "filename_prefix": "ramona_hrb",
+          "overviews": "AUTO",
+          "tile_size": 512,
+          "bands_metadata": {
+            "biomass": {
+              "SCALE": 0.01,
+              "Unit": "g DW per m2 per month"
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "RAMONA-herbaceous_rangeland_biomass-country-mosaick",
+  "description": "# RAMONA - Herbaceous Rangeland Biomass (HRB) - Country Level Mosaick\n\nFor a selected African country, year and month, the process returns a mosaic of the monthly HRB products as a single GeoTIFF.\n\nThis is an example output for Benin:\n\n![Benin](https://github.com/ESA-APEx/apex_algorithms/blob/503edd5ef736b740bccb52f946530b33b85f9ee9/algorithm_catalog/dhi/ramona_biomass_extract/openeo_udp/benin_extract.png)\n\n## Methodology\n\nMonthly HRB input files are mosaicked and exported as a GeoTIFF. The RAMONA HRB products have been precomputed. The products were generated for the target year 2022 and specifically from Aug-2021 to January-2023. \n\nMore information can be found at [https://www.ramona.earth/](https://www.ramona.earth/)\n\n## Performance\n\nThe table below lists cost and timings of test runs. You may see (small) deviations from this\nin your own runs.\n\n| Country  | Wall time   | Credit cost |\n|----------|-------------|-------------|\n| Benin    | 3.5 minutes | 6           |\n| Cameroon | 9 minutes   | 26          |\n| Ethiopia | 20 minutes  | 64          |\n",
+  "default_job_options": {
+    "driver-memory": "15G",
+    "executor-memory": "6G",
+    "python-memory": "50m",
+    "executor-memoryOverhead": "1500m",
+    "driver-memoryOverhead": "5G"
+  },
+  "parameters": [
+    {
+      "name": "country",
+      "description": "Country for which data is to be extracted.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "algeria",
+          "angola",
+          "benin",
+          "botswana",
+          "burkina_faso",
+          "burundi",
+          "cameroon",
+          "cape_verde",
+          "central_african_republic",
+          "chad",
+          "comoros",
+          "congo",
+          "democratic_congo",
+          "djibouti",
+          "egypt",
+          "equatorial_guinea",
+          "eritrea",
+          "eswatini",
+          "ethiopia",
+          "gabon",
+          "gambia",
+          "ghana",
+          "guinea",
+          "guinea_bissau",
+          "ivory_coast",
+          "kenya",
+          "lesotho",
+          "liberia",
+          "libya",
+          "madagascar",
+          "malawi",
+          "mali",
+          "mauritania",
+          "mauritius",
+          "morocco",
+          "mozambique",
+          "namibia",
+          "niger",
+          "nigeria",
+          "rwanda",
+          "sao_tome_and_principe",
+          "senegal",
+          "seychelles",
+          "sierra_leone",
+          "somalia",
+          "south_africa",
+          "south_sudan",
+          "sudan",
+          "tanzania",
+          "togo",
+          "tunisia",
+          "uganda",
+          "western_sahara",
+          "zambia",
+          "zimbabwe"
+        ]
+      },
+      "default": "benin",
+      "optional": true
+    },
+    {
+      "name": "year",
+      "description": "year",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "2021",
+          "2022",
+          "2023"
+        ]
+      },
+      "default": "2021",
+      "optional": true
+    },
+    {
+      "name": "month",
+      "description": "Data is available between august 2021 and januari 2023.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "01",
+          "02",
+          "03",
+          "04",
+          "05",
+          "06",
+          "07",
+          "08",
+          "09",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      "default": "10",
+      "optional": true
+    }
+  ]
+}
