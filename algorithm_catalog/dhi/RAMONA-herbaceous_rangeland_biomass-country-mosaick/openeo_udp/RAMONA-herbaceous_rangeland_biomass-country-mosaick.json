@@ -127,7 +127,7 @@
       "result": true
     }
   },
-  "id": "RAMONA-herbaceous_rangeland_biomass-country-mosaick",
+  "id": "ramona-herbaceous_rangeland_biomass-country-mosaick",
   "description": "# RAMONA - Herbaceous Rangeland Biomass (HRB) - Country Level Mosaick\n\nFor a selected African country, year and month, the process returns a mosaic of the monthly HRB products as a single GeoTIFF.\n\nThis is an example output for Benin:\n\n![Benin](https://github.com/ESA-APEx/apex_algorithms/blob/503edd5ef736b740bccb52f946530b33b85f9ee9/algorithm_catalog/dhi/ramona_biomass_extract/openeo_udp/benin_extract.png)\n\n## Methodology\n\nMonthly HRB input files are mosaicked and exported as a GeoTIFF. The RAMONA HRB products have been precomputed. The products were generated for the target year 2022 and specifically from Aug-2021 to January-2023. \n\nMore information can be found at [https://www.ramona.earth/](https://www.ramona.earth/)\n\n## Performance\n\nThe table below lists cost and timings of test runs. You may see (small) deviations from this\nin your own runs.\n\n| Country  | Wall time   | Credit cost |\n|----------|-------------|-------------|\n| Benin    | 3.5 minutes | 6           |\n| Cameroon | 9 minutes   | 26          |\n| Ethiopia | 20 minutes  | 64          |\n",
   "default_job_options": {
     "driver-memory": "15G",
