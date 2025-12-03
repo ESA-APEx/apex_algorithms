@@ -106,7 +106,7 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
     assert isinstance(scenario.process_graph, dict)
     for node_id, node in scenario.process_graph.items():
         assert isinstance(node, dict)
-        assert re.match(r"^[a-z0-9_-]+$", node["process_id"])
+        assert re.match(r"^[a-zA-Z0-9_-]+$", node["process_id"])
         assert "arguments" in node
         assert isinstance(node["arguments"], dict)
 

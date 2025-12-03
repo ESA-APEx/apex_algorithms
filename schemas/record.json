@@ -459,7 +459,8 @@
               "webapp",
               "code",
               "thumbnail",
-              "cite-as"
+              "cite-as",
+              "notebook"
             ]
           },
           "type": {
