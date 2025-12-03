@@ -80,7 +80,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8efbe040499e0108a6ed7fce5ca92a3f08115a7f/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/openeo_udp/RAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/openeo_udp/RAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
     },
     {
       "rel": "service",
@@ -89,10 +89,16 @@
       "href": "https://openeo.dataspace.copernicus.eu"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/openeo_platform.json"
+    },
+    {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=RAMONA-herbaceous_rangeland_biomass-country-mosaick&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2F8efbe040499e0108a6ed7fce5ca92a3f08115a7f%2Falgorithm_catalog%2Fdhi%2FRAMONA-herbaceous_rangeland_biomass-country-mosaick%2Fopeneo_udp%2FRAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
+      "href": "https://openeo.dataspace.copernicus.eu/?wizard=UDP&wizard%7Eprocess=RAMONA-herbaceous_rangeland_biomass-country-mosaick&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Fmain%2Falgorithm_catalog%2Fdhi%2FRAMONA-herbaceous_rangeland_biomass-country-mosaick%2Fopeneo_udp%2FRAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
     },
     {
       "rel": "about",
@@ -107,10 +113,10 @@
       "href": "https://doi.org/10.3390/rs16111833"
     },
     {
-        "rel": "thumbnail",
-        "type": "image/png",
-        "title": "Thumbnail image",
-        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8efbe040499e0108a6ed7fce5ca92a3f08115a7f/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/records/thumbnail.png"
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/records/thumbnail.png"
     }
   ]
 }

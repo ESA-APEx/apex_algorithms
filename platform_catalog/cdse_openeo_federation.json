@@ -9,12 +9,9 @@
     "updated": "2024-05-17T00:00:00Z",
     "type": "openeo_backend",
     "title": "openEO processing backend",
+    "short_title": "CDSE",
     "description": "The CDSE openEO federation enables processing using openEO.",
-    "keywords": [
-      "openeo",
-      "data analysis",
-      "platform as a service"
-    ],
+    "keywords": [],
     "language": {
       "code": "en-US",
       "name": "English (United States)"
@@ -32,6 +29,7 @@
           {
             "href": "https://www.vito.be/",
             "rel": "about",
+            "title": "VITO",
             "type": "text/html"
           }
         ],
@@ -41,31 +39,22 @@
         ]
       }
     ],
-    "themes": [
-      {
-        "concepts": [
-          {
-            "id": "DATA ANALYSIS"
-          }
-        ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
-      }
-    ],
+    "themes": [],
     "license": "other"
   },
   "linkTemplates": [],
   "links": [
     {
-      "rel": "alternate",
+      "rel": "website",
       "type": "text/html",
-      "title": "CDSE openEO documentation",
-      "href": "https://documentation.dataspace.copernicus.eu/APIs/openEO/openEO.html"
+      "title": "CDSE openEO Federation",
+      "href": "https://documentation.dataspace.copernicus.eu/APIs/openEO/federation/openeo_federation.html"
     },
     {
-      "rel": "service",
-      "type": "application/json",
-      "title": "openEO service",
-      "href": "https://openeofed.dataspace.copernicus.eu"
+      "rel": "logo",
+      "type": "image/svg+xml",
+      "title": "CDSE Logo",
+      "href": "https://dataspace.copernicus.eu/themes/custom/copernicus/logonew.svg"
     }
   ]
 }

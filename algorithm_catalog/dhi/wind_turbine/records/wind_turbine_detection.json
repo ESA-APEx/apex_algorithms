@@ -91,6 +91,12 @@
       "href": "https://openeo.cloud"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/openeo_platform.json"
+    },
+    {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",

@@ -102,6 +102,12 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/cdse_openeo_federation.json"
+    },
+    {
       "rel": "example-output",
       "type": "application/json",
       "title": "Example output",
