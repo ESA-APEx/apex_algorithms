@@ -89,6 +89,12 @@
       "href": "https://openeo.dataspace.copernicus.eu"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/openeo_platform.json"
+    },
+    {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
@@ -107,10 +113,10 @@
       "href": "https://doi.org/10.3390/rs16111833"
     },
     {
-        "rel": "thumbnail",
-        "type": "image/png",
-        "title": "Thumbnail image",
-        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/records/thumbnail.png"
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/records/thumbnail.png"
     }
   ]
 }
