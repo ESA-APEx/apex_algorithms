@@ -1,0 +1,43 @@
+{
+    "id": "wur",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2025-12-03T13:00:00Z",
+        "updated": "2025-12-03T13:00:00Z",
+        "type": "algoritm_provider",
+        "title": "Wageningen University & Research",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "Wageningen University & Research",
+            "href": "https://www.wur.nl/"
+        },
+        {
+            "rel": "logo",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRng0u0PfPV21hj3R-y9VRh1z_Sj5b61g6Djo4p2mMoJ4GjHkVd3Mm9o0ig9Ubldgk-b0E&usqp=CAU"
+        }
+    ]
+}
