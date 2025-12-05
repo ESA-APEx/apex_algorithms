@@ -129,6 +129,12 @@
             "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/cdse_openeo_federation.json"
         },
         {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalogue/vito/record.json"
+        },
+        {
             "rel": "example-output",
             "type": "application/netcdf",
             "title": "Example output",

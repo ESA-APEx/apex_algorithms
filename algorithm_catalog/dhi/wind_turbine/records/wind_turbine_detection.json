@@ -97,6 +97,12 @@
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/openeo_platform.json"
     },
     {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "DHI",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalogue/dhi/record.json"
+    },
+    {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",

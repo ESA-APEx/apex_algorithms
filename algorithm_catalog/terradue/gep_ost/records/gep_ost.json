@@ -96,6 +96,12 @@
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/gep.json"
     },
     {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalogue/terradue/record.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
