@@ -498,7 +498,7 @@
                 "href": {
                   "type": "string",
                   "description": "Platform record URI (must point into platform_catalog).",
-                  "pattern": "^https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/[^\\s]+\\.json$"
+                  "pattern": "^(?:\\.\\.\/){4}platform_catalog/[^\\s]+\\.json$"
                 }
               },
               "required": [
@@ -519,7 +519,7 @@
                 "href": {
                   "type": "string",
                   "description": "Provider record URI (must point into platform_catalog).",
-                  "pattern": "^https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalogue/[A-Za-z_-]+/record\\.json$"
+                  "pattern": "^(?:\\.\\.\/){2}record\\.json$"
                 }
               },
               "required": [
