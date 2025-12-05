@@ -1,0 +1,174 @@
+{
+    "id": "peakvalley",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2025-01-09T00:00:00Z",
+        "updated": "2025-01-29T00:00:00Z",
+        "type": "service",
+        "title": "Detect peaks and valleys in a time series",
+        "description": "# Peak Valley Detection\n\n## Overview\n\nThe `peakvalley` process provides automated detection of peaks and valleys in time-series data by analysing amplitude changes and slope patterns. It identifies significant drops, recoveries, and inflexion points to classify each time step as a peak, a valley, or a neutral state. \nThis process is particularly useful for applications such as vegetation phenology monitoring, hydrological studies, and climate data analysis.\n\n## Parameters\n\nThe `mogpr_s2` service requires the following parameters:\n\n\n| Name            | Description                                                    | Type    | Default |\n| --------------- | -------------------------------------------------------------- | ------- | ------- |\n| spatial_extent  | Polygon representing the AOI on which to apply the data fusion | GeoJSON |         |\n| temporal_extent | Date range for which to apply the data fusion                  | Array   |         |\n| drop_threshold  | Threshold to drop low confidence predictions                   | Float   | 0.15    |\n| recovery_ratio  | Ratio to recover from drops in the data                        | Float   | 1.0     |\n| slope_threshold  | Threshold to identify steep slopes in the data                | Float   | 0.007   |\n",
+        "cost_estimate": 10,
+        "cost_unit": "platform credits per km²",
+        "keywords": [
+            "Data Analysis and Visualization",
+            "Sentinel-2"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Bram Janssen",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/JanssenBrm",
+                        "title": "GitHub",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/Pratichhya",
+                        "title": "GitHub",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "service provider"
+                ]
+            },
+            {
+                "name": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "SEE WEBSITE",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "Normalised vegetation difference index (NDVI)"
+                    },
+                    {
+                        "id": "Radar Vegetation Index (RVI)"
+                    },
+                    {
+                        "id": "peakvalley"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "JSON"
+            }
+        ],
+        "license": "other"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/peakvalley/openeo_udp/peakvalley.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "about",
+            "type": "text/html",
+            "title": "Documentation",
+            "href": "https://open-eo.github.io/FuseTS/"
+        },
+        {
+            "rel": "code",
+            "type": "text/html",
+            "title": "Git source repository",
+            "href": "https://github.com/Open-EO/FuseTS"
+        },
+        {
+            "rel": "example-output",
+            "type": "application/netcdf",
+            "title": "Example output",
+            "href": ""
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=peakvalley&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/peakvalley/openeo_udp/peakvalley.json&server=https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/peakvalley/records/thumbnail.png"
+        }
+    ]
+}
