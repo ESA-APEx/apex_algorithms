@@ -25,6 +25,25 @@ Onboarding your service to the APEx Algorithm Services Catalogue is a straightfo
 2. Fork the current repository and add your record file to `algorithm_catalog/<provider>/<service>/records/<service>.json`. You can create the necessary subdirectories if they do not already exist.
 3. Once your record is ready, submit a pull request to this repository. The APEx team will review your submission and, upon approval, your service will be added to the APEx Algorithm Services Catalogue.
 
+# Providers and Platforms
+
+To ensure the proper contribution of the services that are part of the APEx Algorithm Services Catalogue, it is essential to include information about the service provider and the hosting platform within the record. 
+
+## Provider Information
+
+### Creating a new Provider Record
+If you are creating a new folder in the `algorithm_catalog` directory for your service, make sure to include a `record.json` file within that folder. This OGC API Record should contain all the necessary information about the service provider, such as the provider's name, description, and contact details, and a link to the website and logo. You can refer to an existing provider folder in the repository as a template for creating your own.
+
+### Linking the Service to the Provider
+It is also important to link the service record to the provider record. This can be achieved by adding an entry in the `links` section of the service record, where the `rel` property is set to `provider` and the  `href` contains the relative path to the provider's record file (`../../record.json`).
+
+## Hosting Platform Information
+
+### Creating a new Platform Record
+If you are integrating a service record that is hosted on an APEx-compliant platform that is not yet represented in the repository, you will need to create a new `<platform>.json` file within the `platform_catalog` directory. This new file contains all the necessary information about the hosting platform, such as its name, description, contact details, website link, and logo. You can refer to an existing platform file in the repository as a template for creating your own.
+
+### Linking the Service to the Hosting Platform
+To link the service record to the hosting platform record, add an entry in the `links` section of the service record. Set the `rel` property to `platform` and the `href` to the relative path of the platform's record file (`../../../../platform_catalog/<platform>.json`).
 
 # Record Mapping
 The following sections demonstrate how the various sections from the record are connected to the information displayed in the APEx Algorithm Service Catalogue.
