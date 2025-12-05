@@ -49,10 +49,6 @@
                 },
                 "result": true
             }
-        },
-        "reference_data": {
-            "openEO.nc": "",
-            "job-results.json": ""
         }
     }
 }

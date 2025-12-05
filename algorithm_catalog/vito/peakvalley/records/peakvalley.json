@@ -153,12 +153,6 @@
             "href": "https://github.com/Open-EO/FuseTS"
         },
         {
-            "rel": "example-output",
-            "type": "application/netcdf",
-            "title": "Example output",
-            "href": ""
-        },
-        {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
