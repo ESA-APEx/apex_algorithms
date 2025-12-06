@@ -54,6 +54,10 @@
                 "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/whittaker/openeo_udp/whittaker.json",
                 "process_id": "whittaker"
             }
+        },
+        "reference_data": {
+            "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/timeseries.json",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/job-results.json"
         }
     }
 ]
