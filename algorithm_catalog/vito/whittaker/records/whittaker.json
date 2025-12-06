@@ -159,6 +159,12 @@
             "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=whittaker&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/whittaker/openeo_udp/whittaker.json&server=https://openeofed.dataspace.copernicus.eu"
         },
         {
+            "rel": "example-output",
+            "type": "application/netcdf",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/timeseries.json"
+        },
+        {
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
