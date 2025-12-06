@@ -5,51 +5,58 @@
         "description": "Computes phenology metrics based on the Phenolopy implementation on NDVI",
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
-        "phenology1": {
-            "arguments": {
-                "spatial_extent": {
-                    "coordinates": [
-                        [
+            "phenology1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "coordinates": [
                             [
-                                5.179169745059369,
-                                51.24984286550534
-                            ],
-                            [
-                                5.170016107999743,
-                                51.25052999567865
-                            ],
-                            [
-                                5.171081610725707,
-                                51.24861004739975
-                            ],
-                            [
-                                5.178604705735125,
-                                51.246720335821465
-                            ],
-                            [
-                                5.179169745059369,
-                                51.24984286550534
+                                [
+                                    5.179169745059369,
+                                    51.24984286550534
+                                ],
+                                [
+                                    5.170016107999743,
+                                    51.25052999567865
+                                ],
+                                [
+                                    5.171081610725707,
+                                    51.24861004739975
+                                ],
+                                [
+                                    5.178604705735125,
+                                    51.246720335821465
+                                ],
+                                [
+                                    5.179169745059369,
+                                    51.24984286550534
+                                ]
                             ]
-                        ]
-                    ],
-                    "type": "Polygon"
+                        ],
+                        "type": "Polygon"
+                    },
+                    "temporal_extent": [
+                        "2022-05-01",
+                        "2022-09-30"
+                    ]
                 },
-                "temporal_extent": [
-                    "2022-05-01",
-                    "2022-09-30"
-                ]
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/phenology/openeo_udp/phenology.json",
+                "process_id": "phenology"
             },
-            "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/phenology/openeo_udp/phenology.json",
-            "process_id": "phenology"
-        },
-        "saveresult1": {
-            "arguments": {
-                "data": {
-                    "from_node": "phenology1"
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "phenology1"
+                    },
+                    "format": "GTiff",
+                    "options": {}
                 },
+                "process_id": "save_result",
                 "result": true
             }
+        },
+        "reference_data": {
+            "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/openEO.tif",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/job-results.json"
         }
     }
-}
 ]
