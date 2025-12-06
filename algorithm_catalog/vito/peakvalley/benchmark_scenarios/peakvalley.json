@@ -36,6 +36,9 @@
                 "process_id": "save_result",
                 "result": true
             }
+        },
+        "reference_data": {
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/peakvalley/openEO.nc"
         }
     }
 ]
