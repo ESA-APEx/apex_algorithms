@@ -62,7 +62,7 @@
       "properties": {
         "visibility": {
           "type": "string",
-          "description": "Visibility of the service in the APEx Algorithm Services Catalogue. Set to private to ensure the service is not listed in the catalogue.",
+          "description": "Visibility of the service in the APEx Algorithm Catalogue. Set to private to ensure the service is not listed in the catalogue.",
           "enum": [
             "public",
             "private"
