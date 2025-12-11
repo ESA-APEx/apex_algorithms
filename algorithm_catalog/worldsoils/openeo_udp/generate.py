@@ -432,7 +432,7 @@ def test_run(d_test_setup=test_setup_small, path_out=Path("./result/")):
         max_cloud_cover=80,
         nmad_sigma=nmad_sigma,
         max_sun_zenith_angle=max_sun_zenith_angle,
-        compute_ci=False
+        compute_ci=True
     )
 
     job = scmap_composite.create_job(title="scmap_composite")
