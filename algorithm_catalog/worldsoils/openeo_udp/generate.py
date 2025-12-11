@@ -266,6 +266,7 @@ def composite(con: Connection,
 
     cond_count = sfreq_count < 3
     s2_masked = s2_masked.mask(cond_count)
+    sfreq_count = sfreq_count.mask(cond_count)
 
     src = s2_masked.reduce_dimension(dimension="t", reducer="mean")
     src_std = s2_masked.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
@@ -411,7 +412,7 @@ test_setup_small = {
 }
 
 test_setup_large = {
-    "bbox": { "west": 11.65, "south": 48.55, "east": 12.0, "north": 48.85, "crs": "EPSG:4326"},
+    "bbox": { "west": 11.60, "south": 48.50, "east": 12.0, "north": 48.9, "crs": "EPSG:4326"},
     "temporal_extent": ["2023-02-01", "2024-11-30"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,

@@ -1547,6 +1547,17 @@
         }
       }
     },
+    "mask8": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "adddimension3"
+        },
+        "mask": {
+          "from_node": "apply5"
+        }
+      }
+    },
     "mergecubes8": {
       "process_id": "merge_cubes",
       "arguments": {
@@ -1554,7 +1565,7 @@
           "from_node": "mergecubes7"
         },
         "cube2": {
-          "from_node": "adddimension3"
+          "from_node": "mask8"
         }
       }
     },
@@ -2565,7 +2576,7 @@
         }
       }
     },
-    "mask8": {
+    "mask9": {
       "process_id": "mask",
       "arguments": {
         "data": {
@@ -2609,11 +2620,11 @@
         }
       }
     },
-    "mask9": {
+    "mask10": {
       "process_id": "mask",
       "arguments": {
         "data": {
-          "from_node": "mask8"
+          "from_node": "mask9"
         },
         "mask": {
           "from_node": "reducedimension21"
@@ -2753,11 +2764,11 @@
         }
       }
     },
-    "mask10": {
+    "mask11": {
       "process_id": "mask",
       "arguments": {
         "data": {
-          "from_node": "mask9"
+          "from_node": "mask10"
         },
         "mask": {
           "from_node": "reducedimension22"
@@ -2769,7 +2780,7 @@
       "process_id": "apply",
       "arguments": {
         "data": {
-          "from_node": "mask10"
+          "from_node": "mask11"
         },
         "process": {
           "process_graph": {
@@ -2787,11 +2798,11 @@
         }
       }
     },
-    "mask11": {
+    "mask12": {
       "process_id": "mask",
       "arguments": {
         "data": {
-          "from_node": "mask10"
+          "from_node": "mask11"
         },
         "mask": {
           "from_node": "apply20"
@@ -2802,7 +2813,7 @@
       "process_id": "add_dimension",
       "arguments": {
         "data": {
-          "from_node": "mask11"
+          "from_node": "mask12"
         },
         "label": "MASK",
         "name": "bands",
