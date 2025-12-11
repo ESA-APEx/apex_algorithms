@@ -17,6 +17,19 @@
         ],
         "id": "SENTINEL2_L2A",
         "properties": {
+          "tileId": {
+            "process_graph": {
+              "32UPU1": {
+                "process_id": "32UPU",
+                "arguments": {
+                  "value": {
+                    "from_parameter": "value"
+                  }
+                },
+                "result": true
+              }
+            }
+          },
           "eo:cloud_cover": {
             "process_graph": {
               "lte1": {
