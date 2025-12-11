@@ -116,7 +116,7 @@ def _ci95(combined_cube: openeo.DataCube, sd_bands: List[str], n: str) -> openeo
     return cubes[0]
 
 def check_tile(x):
-    return x.eq("32UQU")
+    return x.eq("32UPU")
 
 def composite(con: Connection,
               temporal_extent: List[str]|Parameter,
@@ -170,10 +170,12 @@ def composite(con: Connection,
         max_cloud_cover=max_cloud_cover,
         # properties={"tileID": {"eq": {'x': {"from_parameter": "value"}, 'y': "32UPU"}}}
         # properties={"tileID": {"32UPU"}}
-        properties={"tileId": check_tile}
+        properties={"tileId": check_tile}     # might work?
+        # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
         
     ).resample_spatial(resolution=20, method="average")
 
+    
     scl = con.load_collection(
         collection_id="SENTINEL2_L2A",
         temporal_extent=temporal_extent,
