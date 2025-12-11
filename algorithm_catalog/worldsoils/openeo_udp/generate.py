@@ -115,6 +115,8 @@ def _ci95(combined_cube: openeo.DataCube, sd_bands: List[str], n: str) -> openeo
     cubes[0] = cubes[0].rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=sd_bands)
     return cubes[0]
 
+def check_tile(x):
+    return x.eq("32UQU")
 
 def composite(con: Connection,
               temporal_extent: List[str]|Parameter,
@@ -166,7 +168,10 @@ def composite(con: Connection,
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
         max_cloud_cover=max_cloud_cover,
-        properties={"tileId": "32UPU"}
+        # properties={"tileID": {"eq": {'x': {"from_parameter": "value"}, 'y': "32UPU"}}}
+        # properties={"tileID": {"32UPU"}}
+        properties={"tileId": check_tile}
+        
     ).resample_spatial(resolution=20, method="average")
 
     scl = con.load_collection(
