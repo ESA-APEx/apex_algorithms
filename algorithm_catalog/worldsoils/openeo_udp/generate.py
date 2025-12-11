@@ -168,11 +168,8 @@ def composite(con: Connection,
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
         max_cloud_cover=max_cloud_cover,
-        # properties={"tileID": {"eq": {'x': {"from_parameter": "value"}, 'y': "32UPU"}}}
-        # properties={"tileID": {"32UPU"}}
-        properties={"tileId": check_tile}     # might work?
+        # properties={"tileId": check_tile}     # might work?
         # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
-        
     ).resample_spatial(resolution=20, method="average")
 
     
@@ -414,7 +411,7 @@ test_setup_small = {
 }
 
 test_setup_large = {
-    "bbox": { "west": 10.8, "south": 47.8, "east": 11.3, "north": 48.2, "crs": "EPSG:4326"},
+    "bbox": { "west": 11.5, "south": 48.5, "east": 12.1, "north": 48.9, "crs": "EPSG:4326"},
     "temporal_extent": ["2023-02-01", "2024-11-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
@@ -450,7 +447,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.test:
-        test_run(d_test_setup=test_setup_small)
+        test_run(d_test_setup=test_setup_large)
     else:
         # save process to json
         with open(Path(__file__).parent / "scmap_composite.json", "w") as fp:

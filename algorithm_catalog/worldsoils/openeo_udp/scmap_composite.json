@@ -17,20 +17,6 @@
         ],
         "id": "SENTINEL2_L2A",
         "properties": {
-          "tileId": {
-            "process_graph": {
-              "eq1": {
-                "process_id": "eq",
-                "arguments": {
-                  "x": {
-                    "from_parameter": "value"
-                  },
-                  "y": "32UPU"
-                },
-                "result": true
-              }
-            }
-          },
           "eo:cloud_cover": {
             "process_graph": {
               "lte1": {
@@ -224,7 +210,7 @@
         },
         "process": {
           "process_graph": {
-            "eq2": {
+            "eq1": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -233,7 +219,7 @@
                 "y": 3
               }
             },
-            "eq3": {
+            "eq2": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -242,7 +228,7 @@
                 "y": 8
               }
             },
-            "eq4": {
+            "eq3": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -251,7 +237,7 @@
                 "y": 9
               }
             },
-            "eq5": {
+            "eq4": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -260,7 +246,7 @@
                 "y": 10
               }
             },
-            "eq6": {
+            "eq5": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -269,7 +255,7 @@
                 "y": 1
               }
             },
-            "eq7": {
+            "eq6": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -278,7 +264,7 @@
                 "y": 11
               }
             },
-            "eq8": {
+            "eq7": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -287,7 +273,7 @@
                 "y": 0
               }
             },
-            "eq9": {
+            "eq8": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -296,7 +282,7 @@
                 "y": 2
               }
             },
-            "eq10": {
+            "eq9": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -309,6 +295,9 @@
               "process_id": "array_create",
               "arguments": {
                 "data": [
+                  {
+                    "from_node": "eq1"
+                  },
                   {
                     "from_node": "eq2"
                   },
@@ -332,9 +321,6 @@
                   },
                   {
                     "from_node": "eq9"
-                  },
-                  {
-                    "from_node": "eq10"
                   }
                 ]
               }
@@ -702,7 +688,7 @@
         },
         "process": {
           "process_graph": {
-            "eq11": {
+            "eq10": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -724,7 +710,7 @@
         },
         "process": {
           "process_graph": {
-            "eq12": {
+            "eq11": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2499,7 +2485,7 @@
                 "index": 0
               }
             },
-            "eq13": {
+            "eq12": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2508,7 +2494,7 @@
                 "y": 0
               }
             },
-            "eq14": {
+            "eq13": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2521,14 +2507,14 @@
               "process_id": "or",
               "arguments": {
                 "x": {
-                  "from_node": "eq13"
+                  "from_node": "eq12"
                 },
                 "y": {
-                  "from_node": "eq14"
+                  "from_node": "eq13"
                 }
               }
             },
-            "eq15": {
+            "eq14": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2544,11 +2530,11 @@
                   "from_node": "or2"
                 },
                 "y": {
-                  "from_node": "eq15"
+                  "from_node": "eq14"
                 }
               }
             },
-            "eq16": {
+            "eq15": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2564,11 +2550,11 @@
                   "from_node": "or3"
                 },
                 "y": {
-                  "from_node": "eq16"
+                  "from_node": "eq15"
                 }
               }
             },
-            "eq17": {
+            "eq16": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2584,11 +2570,11 @@
                   "from_node": "or4"
                 },
                 "y": {
-                  "from_node": "eq17"
+                  "from_node": "eq16"
                 }
               }
             },
-            "eq18": {
+            "eq17": {
               "process_id": "eq",
               "arguments": {
                 "x": {
@@ -2604,7 +2590,7 @@
                   "from_node": "or5"
                 },
                 "y": {
-                  "from_node": "eq18"
+                  "from_node": "eq17"
                 }
               },
               "result": true
@@ -2633,7 +2619,7 @@
         },
         "process": {
           "process_graph": {
-            "eq19": {
+            "eq18": {
               "process_id": "eq",
               "arguments": {
                 "x": {
