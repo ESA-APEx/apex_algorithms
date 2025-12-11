@@ -168,7 +168,7 @@ def composite(con: Connection,
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
         max_cloud_cover=max_cloud_cover,
-        # properties={"tileId": check_tile}     # might work?
+        # properties={"tileId": check_tile}     # works
         # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
     ).resample_spatial(resolution=20, method="average")
 
@@ -203,8 +203,9 @@ def composite(con: Connection,
     cond_sza = sza > max_sun_zenith_angle
 
     s2_cube = s2_cube.mask(cond_sza)
-    sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     s2_cube = s2_cube.mask(cond_scl)
+    sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
+    
 
     ### Threshold image ###
     # stac_url_th_img = "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/scmap-pvir2%2Bnbr-sen2cor-thresholds-eu-v1.json"
@@ -224,8 +225,9 @@ def composite(con: Connection,
     s2_merged = s2_cube
 
     #### MREF ####
-    mref = s2_merged.reduce_dimension(dimension="t", reducer="mean").filter_bands(S2_BANDS)
-    mref_std = s2_merged.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
+    s2_cube = nmad(s2_cube, 4.0)
+    mref = s2_cube.reduce_dimension(dimension="t", reducer="mean").filter_bands(S2_BANDS)
+    mref_std = s2_cube.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
 
     mref = mref.rename_labels(dimension="bands", target=RES_BANDS["MREF"], source=S2_BANDS)
     mref_std = mref_std.rename_labels(dimension="bands", target=RES_BANDS["MREF-STD"], source=S2_BANDS)
@@ -271,8 +273,6 @@ def composite(con: Connection,
     src = src.rename_labels(dimension="bands", target=RES_BANDS["SRC"], source=S2_BANDS)
     src_std = src_std.rename_labels(dimension="bands", target=RES_BANDS["SRC-STD"], source=S2_BANDS)
 
-
-    
 
     # sfreq_count.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-COUNT"], source=S2_BANDS[0])
 
@@ -412,7 +412,7 @@ test_setup_small = {
 
 test_setup_large = {
     "bbox": { "west": 11.5, "south": 48.5, "east": 12.1, "north": 48.9, "crs": "EPSG:4326"},
-    "temporal_extent": ["2023-02-01", "2024-11-31"],
+    "temporal_extent": ["2023-02-01", "2024-11-30"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
 }
