@@ -184,9 +184,13 @@ def composite(con: Connection,
     s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02")
     scl = scl.reduce_dimension(dimension='t', reducer="first")
 
-    cond_scl = scl.band('SCL').apply(process=scl_to_masks)
+    k = 11
+    kernel_1D = array_create(1, repeat=k)
+    kernel = array_create(kernel_1D, repeat=k)
 
-    kernel = [[1] * 11 for _ in range(11)]
+    cond_scl = scl.band('SCL').apply(process=scl_to_masks).multiply(1.0)
+
+    # kernel = [[1] * 11 for _ in range(11)]
 
     b02_0 = s2_cube.mask(cond_scl)
     dilated_mask = cond_scl.apply_kernel(kernel=kernel)
@@ -282,7 +286,7 @@ test_setup_small = {
 
 test_setup_large = {
     "bbox": { "west": 11.60, "south": 48.50, "east": 12.0, "north": 48.9, "crs": "EPSG:4326"},
-    "temporal_extent": ["2023-02-01", "2024-11-30"],
+    "temporal_extent": ["2023-02-01", "2023-02-20"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
 }

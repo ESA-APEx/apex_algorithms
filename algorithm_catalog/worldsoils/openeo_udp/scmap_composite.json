@@ -1,0 +1,531 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B02",
+          "B03",
+          "B04",
+          "B05",
+          "B06",
+          "B07",
+          "B08",
+          "B8A",
+          "B11",
+          "B12"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_cover"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "bounding_box"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "method": "average",
+        "projection": null,
+        "resolution": 20
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "first1": {
+              "process_id": "first",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_cover"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "bounding_box"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplecubespatial1": {
+      "process_id": "resample_cube_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        },
+        "method": "mode",
+        "target": {
+          "from_node": "resamplespatial1"
+        }
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplecubespatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "first2": {
+              "process_id": "first",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension4": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement2": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension4"
+        },
+        "process": {
+          "process_graph": {
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 3
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 8
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 9
+              }
+            },
+            "eq4": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 10
+              }
+            },
+            "eq5": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 1
+              }
+            },
+            "eq6": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 11
+              }
+            },
+            "eq7": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 0
+              }
+            },
+            "eq8": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 2
+              }
+            },
+            "eq9": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 7
+              }
+            },
+            "arraycreate1": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "eq1"
+                  },
+                  {
+                    "from_node": "eq2"
+                  },
+                  {
+                    "from_node": "eq3"
+                  },
+                  {
+                    "from_node": "eq4"
+                  },
+                  {
+                    "from_node": "eq5"
+                  },
+                  {
+                    "from_node": "eq6"
+                  },
+                  {
+                    "from_node": "eq7"
+                  },
+                  {
+                    "from_node": "eq8"
+                  },
+                  {
+                    "from_node": "eq9"
+                  }
+                ]
+              }
+            },
+            "any1": {
+              "process_id": "any",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate1"
+                }
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "any1"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "mask": {
+          "from_node": "apply1"
+        }
+      }
+    },
+    "arraycreate2": {
+      "process_id": "array_create",
+      "arguments": {
+        "data": 1,
+        "repeat": 11
+      }
+    },
+    "arraycreate3": {
+      "process_id": "array_create",
+      "arguments": {
+        "data": {
+          "from_node": "arraycreate2"
+        },
+        "repeat": 11
+      }
+    },
+    "applykernel1": {
+      "process_id": "apply_kernel",
+      "arguments": {
+        "border": 0,
+        "data": {
+          "from_node": "apply1"
+        },
+        "factor": 1.0,
+        "kernel": {
+          "from_node": "arraycreate3"
+        },
+        "replace_invalid": 0
+      }
+    },
+    "mask2": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "mask": {
+          "from_node": "applykernel1"
+        }
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mask1"
+        },
+        "cube2": {
+          "from_node": "mask2"
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "scmap_composite",
+  "summary": "Bare surface composite with statistical producs",
+  "description": "# SCMaP OpenEO User defined process\n## Purpose\n\nDLR's Soil Composite Mapping Processor (ScMAP) generates a collection of different image data products (SoilSuite) that provide information about the spectral and statistical properties of European soils and other bare surfaces such as rocks. SCMaP utilizes the Sentinel-2 data archive and is a specialized processing chain for detecting and analyzing bare soils/surfaces on a large (continental) scale. Bare surface and soil pixels are selected using an index combining the Normalized Difference Vegetation Index (NDVI) and the Normalized Burned Ratio (NBR) that optimizes the exclusion of photosynthetically active and non-active vegetation. The index is calculated and applied for each individual pixel. The resulting products can be used for multiple purposes such as input for spectral and digital soil property mapping approaches (e.g. bare surface composites), soil erosion analyses and monitoring of agricultural practices (e.g. bare surface frequency and mask product). \n\n## Algorithm\nFor the specified area of interest and time, Sentinel-2 scenes (bands B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12) with cloud cover below the max_cloud_cover threshold are loaded.\nThen, the following steps are executed:\n\n1. Pixels with sun-zenith angles exceeding the specified threshold (default: 70\u00c2\u00b0) are discarded.\n2. Clouds and other invalid pixels are removed based on the Scene Classification Layer (SCL).\n3. NDVI and NBR indices are computed and compared, on a per-pixel basis, to a pre-computed threshold image; pixels falling below the threshold are classified as bare surface\n4. Residual clouds and haze are removed using a Median Absolute Deviation (MAD) outlier detection applied to the B02 band along the temporal axis.\n5. For pixels with at least three valid bare-surface observations over time, the temporal mean reflectance is calculated to produce the Soil Reflectance Composite (SRC).\n6. Urban areas and permanent water bodies are subsequently masked using the WorldCover dataset.\n\nFor a more detailed description of the algorithm and its by-products, please refer to the [Documentation](https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf) of SoilSuite, or to any of the papers linked below.\n\n## Output\n| Band | Full Name | Description | \n| -------- | ------- | ------- |\n| SRC_B*XX*  | Bare Surface Reflectance Composite - Mean | It provides the spectral properties of soils that vary due to different soil organic carbon (SOC) content, soil moisture and soil minerology. This product is often used for spectral and digital soil mapping approaches |\n| SRC_STD_B*XX* | Bare Surface Reflectance Composite - Standard deviation |It informs about the spectral dynamic of bare surfaces and soils |\n| SRC_CI95_B*XX* | Bare Surface Reflectance Composite - 95th Confidence Interval | Similar to the standard deviation, it informs about the spectral dynamic of bare surfaces and soils |\n| MREF_B*XX* | Reflectance Composite - Mean | It represents the mean reflectance of all valid Sentinel-2 observations including vegetation, bare and other surfaces |\n| MREF_STD_B*XX* | Reflectance Composite - Standard deviation | It contains the standard deviation for all valid Sentinel-2 observations |\n| Valid_Pixel_Count | Valid Count | It provides the total number of valid observations at this pixel |\n| Bare_Surface_Count | Bare Surface Count | It provides the number of bare soil occurrences at this pixel |\n| Bare_Surface_Frequency | Bare Surface Frequency | It provides the number of bare soil occurrences over the total number of valid observations |\n| Mask | Mask | The band aggregates simple landcover classes: Pixel may either contain *bare soil* (1), is *permaenently vegetated* (2) or is *another surface* (3) (e.g. water bodies, built-up areas, ..) | \n\n## Usage\nPlease refer to the APEx Documentation [Documentation](https://esa-apex.github.io/apex_documentation/guides/udp_writer_guide.html) and the [GitHub](https://github.com/ESA-APEx/apex_algorithms)\n\n## Literature references\n[SoilSuite Europe](https://geoservice.dlr.de/web/datasets/soilsuite_eur_5y)\n- Rogge, D., Bauer, A, Zeidler, J., M\u00c3\u00bcller, A., Esch, T. and Heiden, U. (2018). Building an exposed soil composite processor (SCMaP) for mapping spatial and temporal characteristics of soils with Landsat imagery (1984-2014). Remote Sensing of Environment, 205, 1-17. ISSN 0034-4257 DOI: 10.3390/rs14184526\n- Heiden, U., d\u00e2\u20ac\u2122Angelo, P., Schwind, P., Karlsh\u00c3\u00b6fer, P., M\u00c3\u00bcller, R., Zepp, S., Wiesmeier, M., & Reinartz, P. (2022). Soil Reflectance Composites\u00e2\u20ac\u201dImproved Thresholding and Performance Evaluation. Remote Sensing, 14(18), 4526. DOI: 10.1016/j.rse.2017.11.004\n- Karlshoefer, P., d\u00e2\u20ac\u2122Angelo, P., Eberle, J., & Heiden, U. (2025). Evaluation framework for the generation of continental bare surface reflectance composites. Geoderma, 459. DOI: 10.1016/j.geoderma.2025.117340\n\n## License\nCC-BY-NC\n\n## Authors / Contact\n- Uta Heiden (Producer, Processor) DLR/EOC Imaging Spectroscopy\n- - uta.heiden@dlr.de\n- Pablo d'Angelo (Producer, Processor) DLR/EOC Photogrammetry and Image Analysis\n- - pablo.angelo@dlr.de\n- Paul Karlsh\u00c3\u00b6fer (Producer, Processor, OpenEO UDP) DLR/EOC Imaging Spectroscopy\n- - paul.karlshoefer@dlr.de\nEOC Geoservice (Host) DLR/EOC\n\n\n## Acknowledgments / Funding \nThe project received funding under the ESA WORLDSOILS project (Contract No. 400131273/20/I-703 NB) and from the EU FPCUP project CUP4SOIL (FPA 275/G/GRO/COPE/17/10042).\n\n# Known limitations\n- The bare surface reflectance quality and availability is lower for areas with spectral mixtures, such as small fields, orchards and agroforestry areas. \n- The spatial resolution is limited by the B12 band of Sentinel, which is available at 20m ground sampling distance.\n- The algorihtm requires threshold image that is loaded via *from_stac(...)*. It is currently available for the European continent.\n- To obtain stable soil reflectance values, users should integrate observations across multiple seasons or, ideally, several years. As a reference point, SoilSuite Europe employed a five-year time range, while SoilSuite Africa used four years.\n",
+  "returns": {
+    "description": "Bare surface composite with statistical producs",
+    "schema": {
+      "type": "object",
+      "subtype": "datacube"
+    }
+  },
+  "categories": [
+    "sentinel-2",
+    "composites",
+    "bare surface"
+  ],
+  "parameters": [
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extend",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bounding_box",
+      "description": "Bounding Box",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      },
+      "default": {
+        "west": 11.1,
+        "south": 48.0,
+        "east": 11.3,
+        "north": 48.2,
+        "crs": "EPSG:4326"
+      },
+      "optional": true
+    },
+    {
+      "name": "max_cloud_cover",
+      "description": "Maximum allowed scene-wide cloud cover for the scene to be considered in the composite",
+      "schema": {
+        "type": "number"
+      },
+      "default": 80,
+      "optional": true
+    },
+    {
+      "name": "nmad_sigma",
+      "description": "Sigma for median absolute deviation outlier detection in Band B02, default=3.0",
+      "schema": {
+        "type": "number"
+      },
+      "default": 3.0,
+      "optional": true
+    },
+    {
+      "name": "compute_ci",
+      "description": "Computes the 95-Confidence interval for each band. Will increase credit consumption",
+      "schema": {
+        "type": "boolean"
+      },
+      "default": false,
+      "optional": true
+    }
+  ]
+}
