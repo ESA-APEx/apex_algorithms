@@ -248,8 +248,8 @@
         "dimension": "t",
         "reducer": {
           "process_graph": {
-            "mean1": {
-              "process_id": "mean",
+            "first1": {
+              "process_id": "first",
               "arguments": {
                 "data": {
                   "from_parameter": "data"
@@ -467,8 +467,8 @@
         "dimension": "t",
         "reducer": {
           "process_graph": {
-            "mean2": {
-              "process_id": "mean",
+            "first2": {
+              "process_id": "first",
               "arguments": {
                 "data": {
                   "from_parameter": "data"
