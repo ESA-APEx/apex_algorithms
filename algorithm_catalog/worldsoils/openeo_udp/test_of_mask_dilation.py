@@ -181,8 +181,8 @@ def composite(con: Connection,
         max_cloud_cover=max_cloud_cover,
     ).resample_cube_spatial(s2_cube, method="mode")
     
-    s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
-    scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
+    # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
+    # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
 
     k = 11
     kernel_1D = array_create([[1.0] * k for _ in range(k)])
@@ -198,7 +198,7 @@ def composite(con: Connection,
     dilated_mask = dilated_mask > 1.0 
     b02_1 = s2_cube.mask(dilated_mask)
     ret = b02_0.merge_cubes(b02_1)
-    return ret
+    return ret.reduce_dimension(dimension='t', reducer="first")
 
 
 def auth(url: str="openeo.dataspace.copernicus.eu") -> Connection:
