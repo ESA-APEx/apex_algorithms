@@ -197,7 +197,7 @@ def composite(con: Connection,
     ret = b02_0.merge_cubes(b02_1)
     #cond_scl = cond_scl.add_dimension(name="bands", label="scl")
     #dilated_mask = dilated_mask.add_dimension(name="bands", label="dilated_scl")
-    ret = ret.merge_cubes(cond_scl)
+    ret = ret.merge_cubes(cond_scl).rename_labels(dimension="bands", target=["B02", "B02d", "SCL"])
     ret = ret.merge_cubes(dilated_mask)
     return ret
 
