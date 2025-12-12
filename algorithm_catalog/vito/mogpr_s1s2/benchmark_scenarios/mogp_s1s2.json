@@ -41,7 +41,7 @@
                         "2021-08-01"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/mogpr_s1s2/openeo_udp/mogpr_s1s2.json",
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/mogpr_s1s2/openeo_udp/mogpr_s1s2.json",
                 "process_id": "mogpr_s1s2"
             },
             "saveresult1": {
