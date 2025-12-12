@@ -531,6 +531,28 @@
         "replace_invalid": 0
       }
     },
+    "apply3": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applykernel1"
+        },
+        "process": {
+          "process_graph": {
+            "gt1": {
+              "process_id": "gt",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 1.0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
     "mask2": {
       "process_id": "mask",
       "arguments": {
@@ -538,7 +560,7 @@
           "from_node": "reducedimension2"
         },
         "mask": {
-          "from_node": "applykernel1"
+          "from_node": "apply3"
         }
       }
     },

@@ -195,6 +195,7 @@ def composite(con: Connection,
 
     b02_0 = s2_cube.mask(cond_scl)
     dilated_mask = cond_scl.apply_kernel(kernel=kernel)
+    dilated_mask = dilated_mask > 1.0 
     b02_1 = s2_cube.mask(dilated_mask)
     ret = b02_0.merge_cubes(b02_1)
     return ret
