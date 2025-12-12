@@ -164,7 +164,7 @@ def composite(con: Connection,
     ### Input Data ###
     s2_cube = con.load_collection(
         collection_id="SENTINEL2_L2A",
-        bands=S2_BANDS,
+        bands=["B02", "SCL"],
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
         max_cloud_cover=max_cloud_cover,
@@ -173,33 +173,29 @@ def composite(con: Connection,
     ).resample_spatial(resolution=20, method="average")
 
     
-    scl = con.load_collection(
-        collection_id="SENTINEL2_L2A",
-        temporal_extent=temporal_extent,
-        spatial_extent=spatial_extent,
-        bands=['SCL'],
-        max_cloud_cover=max_cloud_cover,
-    ).resample_cube_spatial(s2_cube, method="mode")
-    
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
     # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
+    scl = s2_cube.band("SCL")
     s2_cube = s2_cube.band("B02")
+    
     k = 11
     kernel_1D = array_create([[1.0] * k for _ in range(k)])
     # kernel = array_create(kernel_1D, repeat=k)
     kernel = kernel_1D
 
-    cond_scl = scl.band('SCL').apply(process=scl_to_masks)
+    cond_scl = scl.apply(process=scl_to_masks)
 
     # kernel = [[1] * 11 for _ in range(11)]
 
     b02_0 = s2_cube.mask(cond_scl)
+    b02_0 = b02_0.reduce_dimension(dimension='t', reducer="mean")
     dilated_mask = cond_scl.apply_kernel(kernel=kernel)
     dilated_mask = dilated_mask > 1.0 
     b02_1 = s2_cube.mask(dilated_mask)
+    b02_1 = b02_1.reduce_dimension(dimension='t', reducer="mean")
     b02_1 = b02_1.add_dimension(name="bands", label="B02_d")
     ret = b02_0.merge_cubes(b02_1)
-    return ret.reduce_dimension(dimension='t', reducer="mean")
+    return ret
 
 
 def auth(url: str="openeo.dataspace.copernicus.eu") -> Connection:
