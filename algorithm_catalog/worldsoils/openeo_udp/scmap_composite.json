@@ -61,29 +61,6 @@
                 "data": {
                   "from_parameter": "data"
                 },
-                "index": 0
-              },
-              "result": true
-            }
-          }
-        }
-      }
-    },
-    "reducedimension2": {
-      "process_id": "reduce_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "resamplespatial1"
-        },
-        "dimension": "bands",
-        "reducer": {
-          "process_graph": {
-            "arrayelement2": {
-              "process_id": "array_element",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                },
                 "index": 1
               },
               "result": true
@@ -96,7 +73,7 @@
       "process_id": "apply",
       "arguments": {
         "data": {
-          "from_node": "reducedimension2"
+          "from_node": "reducedimension1"
         },
         "process": {
           "process_graph": {
@@ -220,39 +197,6 @@
               "arguments": {
                 "data": {
                   "from_node": "arraycreate1"
-                }
-              },
-              "result": true
-            }
-          }
-        }
-      }
-    },
-    "mask1": {
-      "process_id": "mask",
-      "arguments": {
-        "data": {
-          "from_node": "reducedimension1"
-        },
-        "mask": {
-          "from_node": "apply1"
-        }
-      }
-    },
-    "reducedimension3": {
-      "process_id": "reduce_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "mask1"
-        },
-        "dimension": "t",
-        "reducer": {
-          "process_graph": {
-            "first1": {
-              "process_id": "first",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
                 }
               },
               "result": true
@@ -447,76 +391,11 @@
         }
       }
     },
-    "mask2": {
-      "process_id": "mask",
-      "arguments": {
-        "data": {
-          "from_node": "reducedimension1"
-        },
-        "mask": {
-          "from_node": "apply2"
-        }
-      }
-    },
-    "reducedimension4": {
-      "process_id": "reduce_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "mask2"
-        },
-        "dimension": "t",
-        "reducer": {
-          "process_graph": {
-            "first2": {
-              "process_id": "first",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                }
-              },
-              "result": true
-            }
-          }
-        }
-      }
-    },
-    "adddimension1": {
-      "process_id": "add_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "reducedimension4"
-        },
-        "label": "B02_d",
-        "name": "bands"
-      }
-    },
     "mergecubes1": {
       "process_id": "merge_cubes",
       "arguments": {
         "cube1": {
-          "from_node": "reducedimension3"
-        },
-        "cube2": {
-          "from_node": "adddimension1"
-        }
-      }
-    },
-    "mergecubes2": {
-      "process_id": "merge_cubes",
-      "arguments": {
-        "cube1": {
-          "from_node": "mergecubes1"
-        },
-        "cube2": {
           "from_node": "apply1"
-        }
-      }
-    },
-    "mergecubes3": {
-      "process_id": "merge_cubes",
-      "arguments": {
-        "cube1": {
-          "from_node": "mergecubes2"
         },
         "cube2": {
           "from_node": "apply2"
