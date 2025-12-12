@@ -261,16 +261,6 @@
         }
       }
     },
-    "adddimension1": {
-      "process_id": "add_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "reducedimension3"
-        },
-        "label": "B02",
-        "name": "bands"
-      }
-    },
     "arraycreate2": {
       "process_id": "array_create",
       "arguments": {
@@ -490,7 +480,7 @@
         }
       }
     },
-    "adddimension2": {
+    "adddimension1": {
       "process_id": "add_dimension",
       "arguments": {
         "data": {
@@ -504,21 +494,11 @@
       "process_id": "merge_cubes",
       "arguments": {
         "cube1": {
-          "from_node": "adddimension1"
+          "from_node": "reducedimension3"
         },
         "cube2": {
-          "from_node": "adddimension2"
+          "from_node": "adddimension1"
         }
-      }
-    },
-    "adddimension3": {
-      "process_id": "add_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "apply1"
-        },
-        "label": "scl",
-        "name": "bands"
       }
     },
     "mergecubes2": {
@@ -528,18 +508,8 @@
           "from_node": "mergecubes1"
         },
         "cube2": {
-          "from_node": "adddimension3"
+          "from_node": "apply1"
         }
-      }
-    },
-    "adddimension4": {
-      "process_id": "add_dimension",
-      "arguments": {
-        "data": {
-          "from_node": "apply2"
-        },
-        "label": "dilated_scl",
-        "name": "bands"
       }
     },
     "mergecubes3": {
@@ -549,7 +519,7 @@
           "from_node": "mergecubes2"
         },
         "cube2": {
-          "from_node": "adddimension4"
+          "from_node": "apply2"
         }
       },
       "result": true
