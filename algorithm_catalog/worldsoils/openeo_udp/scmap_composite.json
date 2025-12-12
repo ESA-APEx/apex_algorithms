@@ -519,8 +519,8 @@
         "dimension": "t",
         "reducer": {
           "process_graph": {
-            "first1": {
-              "process_id": "first",
+            "mean1": {
+              "process_id": "mean",
               "arguments": {
                 "data": {
                   "from_parameter": "data"
