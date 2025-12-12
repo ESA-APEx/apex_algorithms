@@ -433,8 +433,8 @@
         },
         "process": {
           "process_graph": {
-            "gt1": {
-              "process_id": "gt",
+            "gte1": {
+              "process_id": "gte",
               "arguments": {
                 "x": {
                   "from_parameter": "x"
