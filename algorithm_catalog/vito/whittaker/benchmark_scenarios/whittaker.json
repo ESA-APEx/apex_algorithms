@@ -1,0 +1,63 @@
+[
+    {
+        "id": "whittaker",
+        "type": "openeo",
+        "description": "Whittaker smoothing on Sentinel-2 NDVI time series",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "whittaker1"
+                    },
+                    "format": "JSON",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            },
+            "whittaker1": {
+                "arguments": {
+                    "smoothing_lambda": 10000,
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ],
+                                [
+                                    5.17085904378298,
+                                    51.24882567194015
+                                ],
+                                [
+                                    5.17857421368097,
+                                    51.2468515482926
+                                ],
+                                [
+                                    5.178972704726344,
+                                    51.24982704376254
+                                ],
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "temporal_extent": [
+                        "2022-01-01",
+                        "2022-12-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/whittaker/openeo_udp/whittaker.json",
+                "process_id": "whittaker"
+            }
+        },
+        "reference_data": {
+            "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/timeseries.json",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/job-results.json"
+        }
+    }
+]
