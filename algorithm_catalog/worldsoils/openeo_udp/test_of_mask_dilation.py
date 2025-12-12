@@ -181,15 +181,15 @@ def composite(con: Connection,
         max_cloud_cover=max_cloud_cover,
     ).resample_cube_spatial(s2_cube, method="mode")
     
-    s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02")
-    scl = scl.reduce_dimension(dimension='t', reducer="first")
+    s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
+    scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
 
     k = 11
-    kernel_1D = array_create([[1] * k for _ in range(k)], )
+    kernel_1D = array_create([[1.0] * k for _ in range(k)])
     # kernel = array_create(kernel_1D, repeat=k)
     kernel = kernel_1D
 
-    cond_scl = scl.band('SCL').apply(process=scl_to_masks).multiply(1.0)
+    cond_scl = scl.band('SCL').apply(process=scl_to_masks)
 
     # kernel = [[1] * 11 for _ in range(11)]
 
