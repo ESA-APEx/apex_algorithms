@@ -175,7 +175,7 @@ def composite(con: Connection,
     
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
     # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
-    scl = s2_cube.band("SCL")
+    scl = s2_cube.band("SCL").multiply(1.0)
     s2_cube = s2_cube.band("B02")
     
     k = 11

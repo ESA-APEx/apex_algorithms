@@ -62,6 +62,15 @@
                   "from_parameter": "data"
                 },
                 "index": 1
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 1.0
               },
               "result": true
             }
