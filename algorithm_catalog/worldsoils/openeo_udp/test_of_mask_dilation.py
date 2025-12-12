@@ -185,8 +185,9 @@ def composite(con: Connection,
     scl = scl.reduce_dimension(dimension='t', reducer="first")
 
     k = 11
-    kernel_1D = array_create(1, repeat=k)
-    kernel = array_create(kernel_1D, repeat=k)
+    kernel_1D = array_create([[1] * k for _ in range(k)], )
+    # kernel = array_create(kernel_1D, repeat=k)
+    kernel = kernel_1D
 
     cond_scl = scl.band('SCL').apply(process=scl_to_masks).multiply(1.0)
 
