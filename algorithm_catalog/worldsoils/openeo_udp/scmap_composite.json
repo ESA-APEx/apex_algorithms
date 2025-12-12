@@ -54,6 +54,29 @@
         "resolution": 20
       }
     },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
     "loadcollection2": {
       "process_id": "load_collection",
       "arguments": {
@@ -99,7 +122,7 @@
         }
       }
     },
-    "reducedimension1": {
+    "reducedimension2": {
       "process_id": "reduce_dimension",
       "arguments": {
         "data": {
@@ -108,7 +131,7 @@
         "dimension": "bands",
         "reducer": {
           "process_graph": {
-            "arrayelement1": {
+            "arrayelement2": {
               "process_id": "array_element",
               "arguments": {
                 "data": {
@@ -126,7 +149,7 @@
       "process_id": "apply",
       "arguments": {
         "data": {
-          "from_node": "reducedimension1"
+          "from_node": "reducedimension2"
         },
         "process": {
           "process_graph": {
@@ -262,7 +285,7 @@
       "process_id": "mask",
       "arguments": {
         "data": {
-          "from_node": "resamplespatial1"
+          "from_node": "reducedimension1"
         },
         "mask": {
           "from_node": "apply1"
@@ -459,11 +482,21 @@
       "process_id": "mask",
       "arguments": {
         "data": {
-          "from_node": "resamplespatial1"
+          "from_node": "reducedimension1"
         },
         "mask": {
           "from_node": "apply2"
         }
+      }
+    },
+    "adddimension1": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mask2"
+        },
+        "label": "B02_d",
+        "name": "bands"
       }
     },
     "mergecubes1": {
@@ -473,11 +506,11 @@
           "from_node": "mask1"
         },
         "cube2": {
-          "from_node": "mask2"
+          "from_node": "adddimension1"
         }
       }
     },
-    "reducedimension2": {
+    "reducedimension3": {
       "process_id": "reduce_dimension",
       "arguments": {
         "data": {
