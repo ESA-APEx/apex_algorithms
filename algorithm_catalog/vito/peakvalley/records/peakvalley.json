@@ -120,7 +120,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/peakvalley/openeo_udp/peakvalley.json"
+            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/peakvalley/openeo_udp/peakvalley.json"
         },
         {
             "rel": "service",
@@ -150,13 +150,13 @@
             "rel": "code",
             "type": "text/html",
             "title": "Git source repository",
-            "href": "https://github.com/Open-EO/FuseTS"
+            "href": "https://github.com/VITObelgium/openeo_algorithm_catalog"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=peakvalley&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/peakvalley/openeo_udp/peakvalley.json&server=https://openeofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=peakvalley&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/peakvalley/openeo_udp/peakvalley.json&server=https://openeofed.dataspace.copernicus.eu"
         },
         {
             "rel": "example-output",

@@ -120,7 +120,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/whittaker/openeo_udp/whittaker.json"
+            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/whittaker/openeo_udp/whittaker.json"
         },
         {
             "rel": "service",
@@ -156,7 +156,7 @@
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=whittaker&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/whittaker/openeo_udp/whittaker.json&server=https://openeofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=whittaker&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/whittaker/openeo_udp/whittaker.json&server=https://openeofed.dataspace.copernicus.eu"
         },
         {
             "rel": "example-output",

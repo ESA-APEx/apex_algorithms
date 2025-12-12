@@ -121,7 +121,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/mogpr_s1s2/openeo_udp/mogpr_s1s2.json"
+            "href": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/mogpr_s1s2/openeo_udp/mogpr_s1s2.json"
         },
         {
             "rel": "service",
@@ -151,7 +151,7 @@
             "rel": "code",
             "type": "text/html",
             "title": "Git source repository",
-            "href": "https://github.com/Open-EO/FuseTS"
+            "href": "https://github.com/VITObelgium/openeo_algorithm_catalog"
         },
         {
             "rel": "example-output",
@@ -163,7 +163,7 @@
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=mogpr_s1s2&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/c025cdd72d8c3e97e11412774f440fcdf675dca6/mogpr_s1s2/openeo_udp/mogpr_s1s2.json&server=https://openeofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=mogpr_s1s2&wizard~processUrl=https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/mogpr_s1s2/openeo_udp/mogpr_s1s2.json&server=https://openeofed.dataspace.copernicus.eu"
         },
         {
             "rel": "thumbnail",
