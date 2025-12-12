@@ -188,7 +188,7 @@ def composite(con: Connection,
     # kernel = [[1] * 11 for _ in range(11)]
 
     b02_0 = s2_cube.mask(cond_scl)
-    b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first")
+    b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first").add_dimension(name="bands", label="B02")
     dilated_mask = cond_scl.apply_kernel(kernel=kernel)
     dilated_mask = dilated_mask >= 1.0 
     b02_1 = s2_cube.mask(dilated_mask)
