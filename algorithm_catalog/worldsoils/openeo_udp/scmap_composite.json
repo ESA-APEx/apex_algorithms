@@ -4,7 +4,6 @@
       "process_id": "load_collection",
       "arguments": {
         "bands": [
-          "B02",
           "SCL"
         ],
         "id": "SENTINEL2_L2A",
@@ -34,103 +33,248 @@
         }
       }
     },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B02",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_cover"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "bounding_box"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
     "resamplespatial1": {
       "process_id": "resample_spatial",
       "arguments": {
         "align": "upper-left",
         "data": {
-          "from_node": "loadcollection1"
+          "from_node": "loadcollection2"
         },
         "method": "average",
         "projection": null,
         "resolution": 20
       }
     },
-    "reducedimension1": {
-      "process_id": "reduce_dimension",
+    "resamplecubespatial1": {
+      "process_id": "resample_cube_spatial",
       "arguments": {
         "data": {
-          "from_node": "resamplespatial1"
+          "from_node": "loadcollection1"
         },
-        "dimension": "bands",
-        "reducer": {
+        "method": "near",
+        "target": {
+          "from_node": "resamplespatial1"
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplecubespatial1"
+        },
+        "process": {
           "process_graph": {
-            "arrayelement1": {
-              "process_id": "array_element",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                },
-                "index": 1
-              }
-            },
             "eq1": {
               "process_id": "eq",
               "arguments": {
                 "x": {
-                  "from_node": "arrayelement1"
+                  "from_parameter": "x"
                 },
                 "y": 3
-              }
-            },
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply2": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplecubespatial1"
+        },
+        "process": {
+          "process_graph": {
             "eq2": {
               "process_id": "eq",
               "arguments": {
                 "x": {
-                  "from_node": "arrayelement1"
+                  "from_parameter": "x"
                 },
-                "y": 10
-              }
-            },
+                "y": 8
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "apply1"
+        },
+        "cube2": {
+          "from_node": "apply2"
+        },
+        "overlap_resolver": {
+          "process_graph": {
             "or1": {
               "process_id": "or",
               "arguments": {
                 "x": {
-                  "from_node": "eq1"
+                  "from_parameter": "x"
                 },
                 "y": {
-                  "from_node": "eq2"
+                  "from_parameter": "y"
                 }
-              }
-            },
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply3": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplecubespatial1"
+        },
+        "process": {
+          "process_graph": {
             "eq3": {
               "process_id": "eq",
               "arguments": {
                 "x": {
-                  "from_node": "arrayelement1"
+                  "from_parameter": "x"
                 },
                 "y": 9
-              }
-            },
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes2": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes1"
+        },
+        "cube2": {
+          "from_node": "apply3"
+        },
+        "overlap_resolver": {
+          "process_graph": {
             "or2": {
               "process_id": "or",
               "arguments": {
                 "x": {
-                  "from_node": "or1"
+                  "from_parameter": "x"
                 },
                 "y": {
-                  "from_node": "eq3"
+                  "from_parameter": "y"
                 }
-              }
-            },
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply4": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplecubespatial1"
+        },
+        "process": {
+          "process_graph": {
             "eq4": {
               "process_id": "eq",
               "arguments": {
                 "x": {
-                  "from_node": "arrayelement1"
+                  "from_parameter": "x"
                 },
-                "y": 8
-              }
-            },
+                "y": 10
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes3": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes2"
+        },
+        "cube2": {
+          "from_node": "apply4"
+        },
+        "overlap_resolver": {
+          "process_graph": {
             "or3": {
               "process_id": "or",
               "arguments": {
                 "x": {
-                  "from_node": "or2"
+                  "from_parameter": "x"
                 },
                 "y": {
-                  "from_node": "eq4"
+                  "from_parameter": "y"
                 }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply5": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes3"
+        },
+        "process": {
+          "process_graph": {
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": 1.0
               },
               "result": true
             }

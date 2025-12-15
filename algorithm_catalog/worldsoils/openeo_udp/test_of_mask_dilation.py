@@ -172,10 +172,18 @@ def composite(con: Connection,
         # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
     ).resample_spatial(resolution=20, method="average")
 
+    scl = con.load_collection(
+        collection_id="SENTINEL2_L2A",
+        temporal_extent=temporal_extent,
+        spatial_extent=spatial_extent,
+        bands=['SCL'],
+        max_cloud_cover=max_cloud_cover,
+    ).resample_cube_spatial(s2_cube, method="near")
+
     
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
     # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
-    scl = s2_cube.band("SCL")
+    # scl = s2_cube.band("SCL")
     s2_cube = s2_cube.band("B02")
     
     k = 11
@@ -183,7 +191,7 @@ def composite(con: Connection,
     # kernel = array_create(kernel_1D, repeat=k)
     kernel = kernel_1D
 
-    cond_scl_cloud = (scl == 3) | (scl == 10) | (scl == 9) | (scl == 8)
+    cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10)).multiply(1.0)
     cond_scl = scl.apply(process=scl_to_masks)
 
     # kernel = [[1] * 11 for _ in range(11)]
