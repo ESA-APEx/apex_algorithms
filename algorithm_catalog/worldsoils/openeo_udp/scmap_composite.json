@@ -454,13 +454,31 @@
         },
         "process": {
           "process_graph": {
-            "gt1": {
-              "process_id": "gt",
+            "multiply2": {
+              "process_id": "multiply",
               "arguments": {
                 "x": {
                   "from_parameter": "x"
                 },
+                "y": 1.0
+              }
+            },
+            "gt1": {
+              "process_id": "gt",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply2"
+                },
                 "y": 0
+              }
+            },
+            "multiply3": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "gt1"
+                },
+                "y": 1.0
               },
               "result": true
             }
