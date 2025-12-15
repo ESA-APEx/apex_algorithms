@@ -283,28 +283,6 @@
         }
       }
     },
-    "apply5": {
-      "process_id": "apply",
-      "arguments": {
-        "data": {
-          "from_node": "mergecubes3"
-        },
-        "process": {
-          "process_graph": {
-            "multiply1": {
-              "process_id": "multiply",
-              "arguments": {
-                "x": {
-                  "from_parameter": "x"
-                },
-                "y": 1.0
-              },
-              "result": true
-            }
-          }
-        }
-      }
-    },
     "mask1": {
       "process_id": "mask",
       "arguments": {
@@ -312,7 +290,7 @@
           "from_node": "reducedimension1"
         },
         "mask": {
-          "from_node": "apply5"
+          "from_node": "mergecubes3"
         }
       }
     },
@@ -493,7 +471,7 @@
       "arguments": {
         "border": 0,
         "data": {
-          "from_node": "apply5"
+          "from_node": "mergecubes3"
         },
         "factor": 1.0,
         "kernel": {
@@ -502,7 +480,7 @@
         "replace_invalid": 0
       }
     },
-    "apply6": {
+    "apply5": {
       "process_id": "apply",
       "arguments": {
         "data": {
@@ -510,31 +488,13 @@
         },
         "process": {
           "process_graph": {
-            "multiply2": {
-              "process_id": "multiply",
-              "arguments": {
-                "x": {
-                  "from_parameter": "x"
-                },
-                "y": 1.0
-              }
-            },
             "gt1": {
               "process_id": "gt",
               "arguments": {
                 "x": {
-                  "from_node": "multiply2"
+                  "from_parameter": "x"
                 },
                 "y": 0
-              }
-            },
-            "multiply3": {
-              "process_id": "multiply",
-              "arguments": {
-                "x": {
-                  "from_node": "gt1"
-                },
-                "y": 1.0
               },
               "result": true
             }
@@ -549,7 +509,7 @@
           "from_node": "reducedimension1"
         },
         "mask": {
-          "from_node": "apply6"
+          "from_node": "apply5"
         }
       }
     },

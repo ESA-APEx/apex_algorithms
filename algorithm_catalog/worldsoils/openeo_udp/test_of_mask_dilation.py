@@ -192,15 +192,15 @@ def composite(con: Connection,
     kernel = kernel_1D
 
 
-    cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10)).multiply(1.0)
+    cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
     cond_scl = scl.apply(process=scl_to_masks)
 
     # kernel = [[1] * 11 for _ in range(11)]
 
     b02_0 = s2_cube.mask(cond_scl_cloud)
     b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first")
-    dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel).multiply(1.0)
-    dilated_mask = (dilated_mask > 0).multiply(1.0)
+    dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
+    dilated_mask = (dilated_mask > 0)
     b02_1 = s2_cube.mask(dilated_mask)
     b02_1 = b02_1.reduce_dimension(dimension='t', reducer="first")
     b02_1 = b02_1.add_dimension(name="bands", label="B02_d")
