@@ -175,7 +175,7 @@ def composite(con: Connection,
     
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
     # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
-    scl = s2_cube.band("SCL").multiply(1.0)
+    scl = s2_cube.band("SCL")
     s2_cube = s2_cube.band("B02")
     
     k = 11
@@ -190,7 +190,7 @@ def composite(con: Connection,
     b02_0 = s2_cube.mask(cond_scl)
     b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first")
     dilated_mask = cond_scl.apply_kernel(kernel=kernel)
-    dilated_mask = dilated_mask >= 1.0 
+    dilated_mask = dilated_mask > 0
     b02_1 = s2_cube.mask(dilated_mask)
     b02_1 = b02_1.reduce_dimension(dimension='t', reducer="first")
     b02_1 = b02_1.add_dimension(name="bands", label="B02_d")

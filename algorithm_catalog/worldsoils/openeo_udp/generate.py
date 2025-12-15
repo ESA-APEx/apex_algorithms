@@ -180,7 +180,7 @@ def composite(con: Connection,
         bands=['SCL', 'sunZenithAngles'],
         max_cloud_cover=max_cloud_cover,
     ).resample_cube_spatial(s2_cube, method="mode")
-    scl = scl.band('SCL').to_scl_dilation_mask(erosion_kernel_size=10)
+    # scl = scl.band('SCL').to_scl_dilation_mask(erosion_kernel_size=10)
 
     sza = con.load_collection(
         collection_id="SENTINEL2_L2A",

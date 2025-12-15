@@ -62,15 +62,6 @@
                   "from_parameter": "data"
                 },
                 "index": 1
-              }
-            },
-            "multiply1": {
-              "process_id": "multiply",
-              "arguments": {
-                "x": {
-                  "from_node": "arrayelement1"
-                },
-                "y": 1.0
               },
               "result": true
             }
@@ -386,13 +377,13 @@
         },
         "process": {
           "process_graph": {
-            "gte1": {
-              "process_id": "gte",
+            "gt1": {
+              "process_id": "gt",
               "arguments": {
                 "x": {
                   "from_parameter": "x"
                 },
-                "y": 1.0
+                "y": 0
               },
               "result": true
             }
