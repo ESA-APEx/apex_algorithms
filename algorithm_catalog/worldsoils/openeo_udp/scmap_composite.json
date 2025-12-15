@@ -62,6 +62,75 @@
                   "from_parameter": "data"
                 },
                 "index": 1
+              }
+            },
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 3
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 10
+              }
+            },
+            "or1": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq1"
+                },
+                "y": {
+                  "from_node": "eq2"
+                }
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 9
+              }
+            },
+            "or2": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or1"
+                },
+                "y": {
+                  "from_node": "eq3"
+                }
+              }
+            },
+            "eq4": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 8
+              }
+            },
+            "or3": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or2"
+                },
+                "y": {
+                  "from_node": "eq4"
+                }
               },
               "result": true
             }

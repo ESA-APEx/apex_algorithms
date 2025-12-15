@@ -183,6 +183,7 @@ def composite(con: Connection,
     # kernel = array_create(kernel_1D, repeat=k)
     kernel = kernel_1D
 
+    cond_scl_cloud = (scl == 3) | (scl == 10) | (scl == 9) | (scl == 8)
     cond_scl = scl.apply(process=scl_to_masks)
 
     # kernel = [[1] * 11 for _ in range(11)]
@@ -199,7 +200,7 @@ def composite(con: Connection,
     #dilated_mask = dilated_mask.add_dimension(name="bands", label="dilated_scl")
     # ret = ret.merge_cubes(cond_scl)
     ret = cond_scl.merge_cubes(dilated_mask)
-    return scl
+    return cond_scl_cloud
      #return ret
 
 
