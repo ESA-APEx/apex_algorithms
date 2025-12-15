@@ -199,7 +199,8 @@ def composite(con: Connection,
     #dilated_mask = dilated_mask.add_dimension(name="bands", label="dilated_scl")
     # ret = ret.merge_cubes(cond_scl)
     ret = cond_scl.merge_cubes(dilated_mask)
-    return ret
+    return scl
+     #return ret
 
 
 def auth(url: str="openeo.dataspace.copernicus.eu") -> Connection:
