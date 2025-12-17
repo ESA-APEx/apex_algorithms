@@ -170,7 +170,7 @@ def composite(con: Connection,
         max_cloud_cover=max_cloud_cover,
         # properties={"tileId": check_tile}     # works
         # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
-    ).resample_spatial(resolution=20, method="average")
+    )#.resample_spatial(resolution=20, method="average")
 
     scl = con.load_collection(
         collection_id="SENTINEL2_L2A",
@@ -178,7 +178,7 @@ def composite(con: Connection,
         spatial_extent=spatial_extent,
         bands=['SCL'],
         max_cloud_cover=max_cloud_cover,
-    ).resample_cube_spatial(s2_cube, method="near")
+    )#.resample_cube_spatial(s2_cube, method="near")
 
     
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
