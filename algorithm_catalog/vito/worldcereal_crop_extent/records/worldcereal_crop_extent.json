@@ -97,7 +97,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.3/src/worldcereal/udp/worldcereal_crop_extent.json"
+      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v2.0.1/src/worldcereal/udp/worldcereal_crop_extent.json"
     },
     {
       "rel": "code",
@@ -115,7 +115,13 @@
       "rel": "platform",
       "type": "application/json",
       "title": "CDSE openEO federation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/cdse_openeo_federation.json"
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
     },
     {
       "rel": "about",

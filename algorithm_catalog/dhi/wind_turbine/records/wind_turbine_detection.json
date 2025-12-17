@@ -94,7 +94,13 @@
       "rel": "platform",
       "type": "application/json",
       "title": "CDSE openEO federation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/openeo_platform.json"
+      "href": "../../../../platform_catalog/openeo_platform.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "DHI",
+      "href": "../../record.json"
     },
     {
       "rel": "webapp",

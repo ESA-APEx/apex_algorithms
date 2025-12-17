@@ -94,7 +94,13 @@
       "rel": "platform",
       "type": "application/json",
       "title": "CDSE openEO federation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/gep.json"
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
     },
     {
       "rel": "service",

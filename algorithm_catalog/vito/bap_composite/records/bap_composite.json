@@ -105,7 +105,13 @@
       "rel": "platform",
       "type": "application/json",
       "title": "CDSE openEO federation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/platform_catalog/cdse_openeo_federation.json"
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
     },
     {
       "rel": "example-output",
