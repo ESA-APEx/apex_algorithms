@@ -62,7 +62,7 @@
       "properties": {
         "visibility": {
           "type": "string",
-          "description": "Visibility of the service in the APEx Algorithm Services Catalogue. Set to private to ensure the service is not listed in the catalogue.",
+          "description": "Visibility of the service in the APEx Algorithm Catalogue. Set to private to ensure the service is not listed in the catalogue.",
           "enum": [
             "public",
             "private"
@@ -447,6 +447,8 @@
             "type": "string",
             "description": "The type or semantics of the relation.",
             "enum": [
+              "platform",
+              "provider",
               "application",
               "service",
               "example-output",
@@ -458,7 +460,8 @@
               "webapp",
               "code",
               "thumbnail",
-              "cite-as"
+              "cite-as",
+              "notebook"
             ]
           },
           "type": {
@@ -480,9 +483,53 @@
           "type",
           "title",
           "href"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "rel": {
+                  "const": "platform"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "href": {
+                  "type": "string",
+                  "description": "Platform record URI (must point into platform_catalog).",
+                  "pattern": "^(?:\\.\\.\/){4}platform_catalog/[^\\s]+\\.json$"
+                }
+              },
+              "required": [
+                "href"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rel": {
+                  "const": "provider"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "href": {
+                  "type": "string",
+                  "description": "Provider record URI (must point into platform_catalog).",
+                  "pattern": "^(?:\\.\\.\/){2}record\\.json$"
+                }
+              },
+              "required": [
+                "href"
+              ]
+            }
+          }
         ]
       },
-      "minItems": 2,
+      "minItems": 3,
       "allOf": [
         {
           "contains": {
@@ -500,6 +547,26 @@
             "properties": {
               "rel": {
                 "const": "application"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "const": "provider"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "const": "platform"
               }
             }
           }
