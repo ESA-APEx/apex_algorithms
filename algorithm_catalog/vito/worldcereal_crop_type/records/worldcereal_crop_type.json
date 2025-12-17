@@ -95,7 +95,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v1.1.2/src/worldcereal/udp/worldcereal_crop_type.json"
+      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v2.0.1/src/worldcereal/udp/worldcereal_crop_type.json"
     },
     {
       "rel": "code",
@@ -137,7 +137,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=worldcereal_crop_type&wizard~processUrl=https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v1.0.0/src/worldcereal/udp/worldcereal_crop_type.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=worldcereal_crop_type&wizard~processUrl=https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v2.0.1/src/worldcereal/udp/worldcereal_crop_type.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "thumbnail",
