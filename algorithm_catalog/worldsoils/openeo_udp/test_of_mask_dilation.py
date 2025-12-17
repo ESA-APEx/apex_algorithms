@@ -186,7 +186,7 @@ def composite(con: Connection,
     # scl = s2_cube.band("SCL")
     s2_cube = s2_cube.band("B02")
     
-    k = 11
+    k = 9
     kernel_1D = array_create([[1.0] * k for _ in range(k)])
     # kernel = array_create(kernel_1D, repeat=k)
     kernel = kernel_1D
