@@ -23,7 +23,10 @@
         ],
         "contacts": [],
         "themes": [],
-        "license": "other"
+        "license": "other",
+        "acl": {
+            "admin": ["@vito.be"]
+        }
     },
     "linkTemplates": [],
     "links": [

@@ -49,7 +49,8 @@
         "title",
         "description",
         "contacts",
-        "themes"
+        "themes",
+        "acl"
       ],
       "properties": {
         "created": {
@@ -324,6 +325,18 @@
               }
             }
           }
+        },
+        "acl": {
+          "type": "object",
+          "properties": {
+            "admin": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
         }
       }
     },
