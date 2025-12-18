@@ -42,6 +42,8 @@ It is also important to link the service record to the provider record. This can
 ### Creating a new Platform Record
 If you are integrating a service record that is hosted on an APEx-compliant platform that is not yet represented in the repository, you will need to create a new `<platform>.json` file within the `platform_catalog` directory. This new file contains all the necessary information about the hosting platform, such as its name, description, contact details, website link, and logo. You can refer to an existing platform file in the repository as a template for creating your own.
 
+Each platform record must also have an `properties.acl` section that defines the access control list for the platform. This information is used to determine which email addresses are authorized to access benchmark information for services hosted on that platform (currently in development). You can either specify specific email addresses or define email domains that are allowed access.
+
 ### Linking the Service to the Hosting Platform
 To link the service record to the hosting platform record, add an entry in the `links` section of the service record. Set the `rel` property to `platform` and the `href` to the relative path of the platform's record file (`../../../../platform_catalog/<platform>.json`).
 
