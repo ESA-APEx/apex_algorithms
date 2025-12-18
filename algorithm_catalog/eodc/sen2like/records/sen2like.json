@@ -82,8 +82,8 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "openEO platform",
-      "href": "../../../../platform_catalog/openeo_platform.json"
+      "title": "EODC openEO Backend",
+      "href": "../../../../platform_catalog/openeo_eodc.json"
     },
     {
       "rel": "application",

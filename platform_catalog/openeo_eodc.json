@@ -1,0 +1,60 @@
+{
+  "id": "openeo_eodc",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-05-17T00:00:00Z",
+    "updated": "2024-05-17T00:00:00Z",
+    "type": "openeo_backend",
+    "title": "EODC openEO Backend",
+    "short_title": "EODC openEO",
+    "description": "The EODC openEO backend enables processing using openEO.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EODC openEO Backend",
+        "links": [
+          {
+            "href": "https://openeo.eodc.eu",
+            "rel": "about",
+            "title": "EODC openEO Backend",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "operator"
+        ]
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "EODC openEO Backend API",
+      "href": "https://openeo.eodc.eu"
+    },
+    {
+      "rel": "logo",
+      "type": "image/svg+xml",
+      "title": "EODC Logo",
+      "href": "https://eodc.eu/wp-content/themes/eodc/assets/imgs/eodc_logo_marine.svg"
+    }
+  ]
+}
