@@ -37,7 +37,13 @@
             "href": "https://eodc.eu/"
         },
         {
-            "rel": "logo",
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://eodc.eu/wp-content/uploads/2024/12/eodc_Logo_earth_white_400x400_rgb.png"  
+        },
+        {
+            "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
             "href": "https://eodc.eu/wp-content/themes/eodc/assets/imgs/eodc_logo_marine.svg"

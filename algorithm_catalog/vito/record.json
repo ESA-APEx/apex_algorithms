@@ -37,7 +37,13 @@
             "href": "https://vito.be"
         },
         {
-            "rel": "logo",
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://vito.be/themes/custom/vitotheme/src/images/logo_white.svg"
+        },
+        {
+            "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
             "href": "https://vito.be/themes/custom/vitotheme/logo.svg"

@@ -37,10 +37,16 @@
             "href": "https://www.dhigroup.com/"
         },
         {
-            "rel": "logo",
+            "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
             "href": "https://cms.dhigroup.com/media/a0lpraol/dhi-white-logo.svg?v=1d9818c2cbe8bf0"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://business.esa.int/sites/business/files/Logo_DHI%20AS.png"
         }
     ]
 }
