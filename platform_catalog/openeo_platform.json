@@ -51,10 +51,16 @@
       "href": "https://openeo.cloud/"
     },
     {
-      "rel": "logo",
+      "rel": "logo-light",
       "type": "image/svg+xml",
       "title": "openEO Platform Logo",
       "href": "https://openeo.cloud/wp-content/uploads/2023/10/logo-openeoplatform-wide-darkmode.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg+xml",
+      "title": "openEO Platform Logo",
+      "href": "https://docs.openeo.cloud/images/logo.png"
     }
   ]
 }

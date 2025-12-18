@@ -363,7 +363,8 @@
             "enum": [
               "about",
               "documentation",
-              "logo",
+              "logo-light",
+              "logo-dark",
               "website"
             ]
           },
@@ -388,14 +389,24 @@
           "href"
         ]
       },
-      "minItems": 1,
+      "minItems": 2,
       "allOf": [
         {
           "contains": {
             "type": "object",
             "properties": {
               "rel": {
-                "const": "logo"
+                "const": "logo-light"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "const": "logo-dark"
               }
             }
           }
