@@ -11,7 +11,7 @@
         "updated": "2025-01-29T00:00:00Z",
         "type": "service",
         "title": "Phenology metrics from Sentinel-2 NDVI",
-        "description": "# Phenology\n\n## Description\n\nComputes phenology metrics based on the [Phenolopy](https://github.com/lewistrotter/PhenoloPy) implementation.\nPhenolopy (phenology + python) is a Python-based library for analysing satellite timeseries data.\nPhenolopy has been designed to investigate the seasonality of satellite timeseries data and their relationship with\ndynamic vegetation properties such as phenology and temporal growth patterns.\nThe temporal domain contains essential information about short- and long-term changes within vegetation life cycles.\nPhenolopy can be applied to derive numerous phenometrics from satellite imagery.\n\n\nTherefore, the `phenology` UDP computes phenology metrics from a time series of satellite images. \n\n![image.png](https://github.com/lewistrotter/Phenolopy/raw/main/documentation/images/pheno_explain.png?raw=true)",
+        "description": "Computes phenology metrics that is designed to investigate the seasonality of satellite timeseries data and their relationship with dynamic vegetation properties such as phenology and temporal growth patterns.",
         "cost_estimate": 10,
         "cost_unit": "platform credits per km²",
         "keywords": [
