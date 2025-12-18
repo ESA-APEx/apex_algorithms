@@ -51,10 +51,16 @@
       "href": "https://documentation.dataspace.copernicus.eu/APIs/openEO/federation/openeo_federation.html"
     },
     {
-      "rel": "logo",
+      "rel": "logo-light",
       "type": "image/svg+xml",
       "title": "CDSE Logo",
       "href": "https://dataspace.copernicus.eu/themes/custom/copernicus/logonew.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg+xml",
+      "title": "CDSE Logo",
+      "href": "https://esa-earthcode.github.io/documentation/img/platforms/platform_logos/cdse.png"
     }
   ]
 }

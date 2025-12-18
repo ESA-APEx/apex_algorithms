@@ -55,7 +55,13 @@
       "href": "https://geohazards-tep.eu/"
     },
     {
-      "rel": "logo",
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "GEP Logo",
+      "href": "https://geohazards-tep.eu/styles/img/logo-geohazard-by-terradue.png"
+    },
+    {
+      "rel": "logo-dark",
       "type": "image/png",
       "title": "GEP Logo",
       "href": "https://geohazards-tep.eu/styles/img/logo-geohazard-by-terradue.png"
