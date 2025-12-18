@@ -37,7 +37,13 @@
             "href": "https://www.wur.nl/"
         },
         {
-            "rel": "logo",
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRng0u0PfPV21hj3R-y9VRh1z_Sj5b61g6Djo4p2mMoJ4GjHkVd3Mm9o0ig9Ubldgk-b0E&usqp=CAU"
+        },
+        {
+            "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
             "href": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRng0u0PfPV21hj3R-y9VRh1z_Sj5b61g6Djo4p2mMoJ4GjHkVd3Mm9o0ig9Ubldgk-b0E&usqp=CAU"

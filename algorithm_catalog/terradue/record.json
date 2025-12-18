@@ -37,7 +37,13 @@
             "href": "https://www.terradue.com/portal/"
         },
         {
-            "rel": "logo",
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.terradue.com/wp-content/uploads/2017/02/logo-03-01-1.svg"
+        },
+        {
+            "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
             "href": "https://www.terradue.com/wp-content/uploads/2017/02/logo-03-01-1.svg"

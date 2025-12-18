@@ -37,7 +37,13 @@
             "href": "https://www.eurac.edu"
         },
         {
-            "rel": "logo",
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://webassets.eurac.edu/31538/1596156835-logo-vertical.svg"
+        },
+        {
+            "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
             "href": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Eurac_Research_logo.svg/2560px-Eurac_Research_logo.svg.png"
