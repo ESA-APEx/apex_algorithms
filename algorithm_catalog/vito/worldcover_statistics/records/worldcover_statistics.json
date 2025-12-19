@@ -116,7 +116,7 @@
       "rel": "notebook",
       "type": "text/html",
       "title": "Example Notebook",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/notebooks/worldcover_statistics_example.ipynb"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/6722483cb25abc4cb72560b01eed229c3282679d/algorithm_catalog/vito/worldcover_statistics/notebooks/worldcover_statistics_example.ipynb"
     }
   ]
 }
