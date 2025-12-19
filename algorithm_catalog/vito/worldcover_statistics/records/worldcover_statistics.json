@@ -111,6 +111,12 @@
       "type": "text/html",
       "title": "WorldCover 2021 DOI",
       "href": "https://doi.org/10.5281/zenodo.7254221"
+    },
+    {
+      "rel": "notebook",
+      "type": "text/html",
+      "title": "Example Notebook",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcover_statistics/notebooks/worldcover_statistics.ipynb"
     }
   ]
 }
