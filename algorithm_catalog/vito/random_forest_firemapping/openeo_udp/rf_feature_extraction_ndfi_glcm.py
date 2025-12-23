@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#   "scikit-image",
+# ]
+# ///
+
 import xarray
 import numpy as np
 from skimage.feature import graycomatrix, graycoprops
