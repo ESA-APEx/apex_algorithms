@@ -55,7 +55,7 @@
             }
         },
         "reference_data": {
-            "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/openEO.tif",
+            "openEO.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/openEO.tif",
             "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/job-results.json"
         }
     }
