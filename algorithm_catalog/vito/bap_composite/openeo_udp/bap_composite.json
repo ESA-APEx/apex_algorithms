@@ -24008,8 +24008,7 @@
       "default": 75
     }
   ]
-},
- "default_job_options": {
+  "default_job_options": {
     "executor-memory": "2500m",
     "executor-memoryOverhead": "3g",
     "python-memory": "disable"
