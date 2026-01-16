@@ -81,6 +81,18 @@
   "linkTemplates": [],
   "links": [
     {
+        "rel": "related",
+        "type": "text/html",
+        "title": "Source code repository used to generate the process graph",
+        "href": "https://github.com/bcdev/apex-efast-openeo"
+    },
+    {
+        "rel": "documentation",
+        "type": "text/html",
+        "title": "Repository containing the JSON process graph, usage information and examples",
+        "href": "https://github.com/bcdev/efast-process-graph"
+    },
+    {
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
