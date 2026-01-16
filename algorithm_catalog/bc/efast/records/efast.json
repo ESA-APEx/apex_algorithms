@@ -81,16 +81,22 @@
   "linkTemplates": [],
   "links": [
     {
-        "rel": "related",
+        "rel": "code",
         "type": "text/html",
         "title": "Source code repository used to generate the process graph",
         "href": "https://github.com/bcdev/apex-efast-openeo"
     },
     {
-        "rel": "documentation",
+        "rel": "notebook",
         "type": "text/html",
-        "title": "Repository containing the JSON process graph, usage information and examples",
-        "href": "https://github.com/bcdev/efast-process-graph"
+        "title": "Example notebook, describing parameters and use of the UDP",
+        "href": "https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/notebooks/EFAST_example.ipynb"
+    },
+    {
+        "rel": "about",
+        "type": "text/html",
+        "title": "Example notebook, describing parameters and use of the UDP",
+        "href": "https://github.com/bcdev/efast-process-graph/blob/main/notebooks/EFAST_example.ipynb"
     },
     {
       "rel": "application",
