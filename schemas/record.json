@@ -524,6 +524,27 @@
                 "href"
               ]
             }
+          },
+          {
+            "if": {
+              "properties": {
+                "rel": {
+                  "const": "notebook"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Must use the correct mimetype",
+                  "enum": ["application/x-ipynb+json"]
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
           }
         ]
       },
