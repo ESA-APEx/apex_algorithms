@@ -70,7 +70,7 @@
     "process_graph": {
       "bapcomposite1": {
         "process_id": "bap_composite_stac308",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/31362189ed2987eba09cf8b9f8066d136a940055/algorithm_catalog/vito/bap_composite/openeo_udp/bap_composite_stac308.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/bap_composite/openeo_udp/bap_composite_stac308.json",
         "arguments": {
           "geometry": {
             "type": "FeatureCollection",
