@@ -61,5 +61,68 @@
     "reference_options": {
       "atol": 1
     }
+  },
+  {
+    "id": "bap_composite_stac308",
+    "type": "openeo",
+    "description": "bap composite example",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "bapcomposite1": {
+        "process_id": "bap_composite_stac308",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/31362189ed2987eba09cf8b9f8066d136a940055/algorithm_catalog/vito/bap_composite/openeo_udp/bap_composite_stac308.json",
+        "arguments": {
+          "geometry": {
+            "type": "FeatureCollection",
+            "features": [
+              {
+                "id": "0",
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [
+                    [
+                      [
+                        4.567161970000427,
+                        50.943775881070565
+                      ],
+                      [
+                        4.567161970000427,
+                        50.92105115770309
+                      ],
+                      [
+                        4.607805261247165,
+                        50.92105115770309
+                      ],
+                      [
+                        4.607805261247165,
+                        50.943775881070565
+                      ],
+                      [
+                        4.567161970000427,
+                        50.943775881070565
+                      ]
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          "temporal_extent": [
+            "2022-05-01",
+            "2022-05-31"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18735405985!tests_test_benchmarks.py__test_run_benchmark_bap_composite_!actual/job-results.json",
+      "openEO_2022-05-01Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18735405985!tests_test_benchmarks.py__test_run_benchmark_bap_composite_!actual/openEO_2022-05-01Z.tif"
+    },
+    "reference_options": {
+      "atol": 1
+    }
   }
 ]
