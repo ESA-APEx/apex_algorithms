@@ -120,7 +120,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=efast&wizard~processUrl=https://raw.githubusercontent.com/bcdev/apex-efast-openeo/refs/heads/hn-parameter-configuration/process_graph.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=efast&wizard~processUrl=https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/process_graph.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
