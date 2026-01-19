@@ -88,15 +88,9 @@
     },
     {
         "rel": "notebook",
-        "type": "text/html",
+        "type": "application/x-ipynb+json",
         "title": "Example notebook, describing parameters and use of the UDP",
         "href": "https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/notebooks/EFAST_example.ipynb"
-    },
-    {
-        "rel": "about",
-        "type": "text/html",
-        "title": "Example notebook, describing parameters and use of the UDP",
-        "href": "https://github.com/bcdev/efast-process-graph/blob/main/notebooks/EFAST_example.ipynb"
     },
     {
       "rel": "application",
