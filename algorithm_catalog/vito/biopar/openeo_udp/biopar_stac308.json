@@ -1,0 +1,237 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B04",
+          "B08",
+          "sunAzimuthAngles",
+          "sunZenithAngles",
+          "viewAzimuthMean",
+          "viewZenithMean"
+        ],
+        "id": "SENTINEL2_L2A_STAC",
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A_STAC",
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "toscldilationmask1": {
+      "process_id": "to_scl_dilation_mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "mask": {
+          "from_node": "toscldilationmask1"
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mask1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "biopar_type": {
+                    "from_parameter": "biopar_type"
+                  }
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "from functools import lru_cache\nfrom pathlib import Path\nimport numpy as np\nfrom typing import Dict\nimport xarray as xr \nfrom openeo.udf.xarraydatacube import XarrayDataCube\nfrom openeo.udf.debug import inspect\nfrom biopar.bioparnp import BioParNp\n\n@lru_cache(maxsize=6)\ndef get_bioparrun(biopar) -> BioParNp:\n    return BioParNp(version='3band', parameter=biopar, singleConfig = True)\n    \ndef apply_datacube(cube: XarrayDataCube, context: Dict) -> XarrayDataCube:\n    valid_biopars= ['FAPAR','LAI','FCOVER','CWC','CCC']\n    biopar = context.get('biopar_type', 'FAPAR') \n    if biopar not in valid_biopars:\n        biopar = 'FAPAR'\n        inspect(biopar, \"is not in valid Biopar list, defaulting to FAPAR\") \n    \n    inarr = cube.get_array()\n    ds_date = inarr\n    \n    from numpy import cos, radians\n    scaling_bands = 0.0001\n\n    saa = ds_date.sel(bands='sunAzimuthAngles')\n    sza = ds_date.sel(bands='sunZenithAngles')\n    vaa = ds_date.sel(bands='viewAzimuthMean')\n    vza = ds_date.sel(bands='viewZenithMean')\n    \n    B03 = ds_date.sel(bands='B03') * scaling_bands\n    B04 = ds_date.sel(bands='B04') * scaling_bands\n    B8 = ds_date.sel(bands='B08') * scaling_bands\n    g1 = cos(radians(vza))\n    g2 = cos(radians(sza))\n    g3 = cos(radians(saa - vaa))\n    #### FLATTEN THE ARRAY ####\n    flat = list(map(lambda arr: arr.flatten(), [B03.values, B04.values,B8.values, g1.values, g2.values, g3.values]))\n    bands = np.array(flat)\n\n    # inspect the parameter passed\n    inspect(biopar, \"biopar parameter passed to the UDF\") \n\n    #### CALCULATE THE BIOPAR BASED ON THE BANDS #####\n    image = get_bioparrun(biopar).run(bands, output_scale=1,output_dtype=np.float32,minmax_flagging=False)  # netcdf algorithm\n    as_image = image.reshape((g1.shape))\n    ## set nodata to nan\n    as_image[np.where(np.isnan(B03))] = np.nan\n    xr_biopar = vza.copy()\n    xr_biopar.values = as_image\n    \n    return XarrayDataCube(xr_biopar)  # xarray.DataArray(as_image,vza.dims,vza.coords)'''"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension1": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "label": {
+          "from_parameter": "biopar_type"
+        },
+        "name": "bands",
+        "type": "bands"
+      },
+      "result": true
+    }
+  },
+  "id": "biopar_stac308",
+  "description": "# Biophysical Parameters \n\nCalculate various biophysical parameters for an area defined by a polygon. The result is a raster file\ncontaining the parameter values. A strict CloudMask is applied to avoid cloud contamination.\n\nThe **Leaf Area Index (LAI)** is half the total area of a canopy's green elements \nper unit of horizontal ground area. The satellite-derived value corresponds to the total green LAI \nof all the canopy layers, including the understory, which may represent a very significant \ncontribution, particularly for forests. The LAI distributed by Terrascope is also known as GAI, \nwhich stands for Green Area Index and is related to the green part of the vegetation only\n (i.e. not only the leaves but excluding the non-green parts).\n\nThe **Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)** quantifies the fraction \nof solar radiation absorbed by leaves for photosynthetic activity. It depends on the \ncanopy structure, vegetation element optical properties, atmospheric conditions, and angular \nconfiguration.\n\nThe **Fraction of Vegetation Coverage (fCOVER)** corresponds to the fraction of ground \ncovered by green vegetation. Practically, it quantifies the vegetation's spatial extent.\n\nThe **Canopy Water Content (CWC)** is the water mass per unit ground area and is a key \nvegetation indicator in agriculture and forestry applications.\n\nThe **Canopy Chlorophyll Content (CCC)** is the total chlorophyll content per \nunit ground area in a contiguous group of plants. It is well suited for quantifying canopy \nlevel nitrogen content and gross primary production estimation.\n\n### Methodology\n\nThe methodology used to derive the biophysical parameters from Sentinel-2 is developed by INRA-\nEMMAH. The methodology was initially developed to generate biophysical products from SPOT-\nVEGETATION, ENVISAT-MERIS, SPOT-HRVIR, and LANDSAT-OLI sensors were later adapted for\nSentinel-2. It mainly simulates a comprehensive database of canopy (TOC) reflectances\nbased on observation of vegetation characteristics and illumination geometry. Neural networks are\nthen trained to estimate a number of these canopy characteristics (BIOPARs) from the simulated TOC\nreflectances, along with set corresponding angles defining the observational configuration.\n\n### Quality\n\n [RD1] reports RMSE\nvalues of 0.89 for LAI, 0.05 for FAPAR, 0.4 for FCOVER, 56 \u00c2\u00b5g/cm2 for CCC and 0.03 g/cm2 for CWC, which demonstrate a good performance of the network. FAPAR and FCOVER show the best\nperformance, with higher RMSE values for mid-range values of the product. LAI is well estimated to be up\nto values of LAI=6, and increasing uncertainties with LAI, and thus CCC and CWC are observed because of their\ndependency on LAI. Furthermore, the networks are unbiased between the BIOPAR\nvariables, as expected.\n\n### Links\n\n- [RD1] Weiss, M., Baret, F. (2016). S2ToolBox Level 2 products: LAI, FAPAR, FCOVER, version\n1.1, 02/05/2016. http://step.esa.int/docs/extra/ATBD_S2ToolBox_L2B_V1.1.pdf",
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Limits the data to process to the specified bounding box or polygons.\\n\\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\\n\\nEmpty geometries are ignored.\\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ]
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "biopar_type",
+      "description": "BIOPAR type [FAPAR,LAI,FCOVER,CCC,CWC]",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "FAPAR",
+          "LAI",
+          "FCOVER",
+          "CCC",
+          "CWC"
+        ]
+      },
+      "default": "FAPAR",
+      "optional": true
+    }
+  ]
+}
