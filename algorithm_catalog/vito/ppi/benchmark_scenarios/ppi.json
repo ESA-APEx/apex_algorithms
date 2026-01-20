@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ppi",
+    "type": "openeo",
+    "description": "ppi example",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "ppi1": {
+        "process_id": "ppi",
+        "namespace": "TODO",
+        "arguments": {
+          "bbox": {
+            "west": 5.07,
+            "east": 5.09,
+            "south": 51.21,
+            "north": 51.23
+          },
+          "temporal_extent": [
+            "2023-08-01",
+            "2023-09-30"
+          ],
+          "geom": "TODO"
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  }
+]
