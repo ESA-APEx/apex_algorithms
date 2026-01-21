@@ -1,0 +1,120 @@
+{
+  "id": "bais2",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-01-21T00:00:00Z",
+    "updated": "2026-01-21T00:00:00Z",
+    "type": "service",
+    "title": "BAIS2 - Burned Area Index for Sentinel-2",
+    "description": "Detects and maps burned areas using Sentinel-2 red-edge spectral bands. BAIS2 leverages the sensitivity of the red-edge region to chlorophyll content for discriminating burn severity at 20m resolution. Index values range from -1 to 1 for burn scars and 1 to 6 for active fires.",
+    "keywords": [
+      "burned area",
+      "fire",
+      "wildfire",
+      "BAIS2",
+      "Sentinel-2",
+      "disaster monitoring",
+      "red-edge"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Development Seed",
+        "organization": "Development Seed",
+        "links": [
+          {
+            "href": "https://developmentseed.org",
+            "title": "Development Seed",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Development Seed",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "DISASTER MANAGEMENT"
+          },
+          {
+            "id": "REMOTE SENSING"
+          },
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "PNG"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "openeo-udp repository",
+      "href": "https://github.com/developmentseed/openeo-udp"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "BAIS2 notebook",
+      "href": "https://github.com/developmentseed/openeo-udp/blob/main/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/bais2_burned_area.ipynb"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "openEO Platform",
+      "href": "../../../../platform_catalog/openeo_platform.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Development Seed",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "preview",
+      "type": "image/png",
+      "title": "Burned area preview (Gran Canaria, 2019-08-19)",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/records/preview.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/records/thumbnail.png"
+    }
+  ]
+}

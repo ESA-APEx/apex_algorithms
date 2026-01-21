@@ -1,0 +1,853 @@
+{
+  "id": "bais2",
+  "summary": "Burned Area Index for Sentinel-2 (BAIS2) color-mapped output.",
+  "description": "Computes the BAIS2 burned area index from Sentinel-2 L2A red-edge bands and renders a color-mapped visualization. The index is sensitive to chlorophyll content in the red-edge region and is suitable for burned-area detection.",
+  "process_graph": {
+    "load_collection": {
+      "process_id": "load_collection",
+      "arguments": {
+        "id": "SENTINEL2_L2A",
+        "spatial_extent": {
+          "from_parameter": "bbox"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        },
+        "bands": [
+          "B04",
+          "B06",
+          "B07",
+          "B8A",
+          "B12"
+        ]
+      }
+    },
+    "bais2_rgb": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "load_collection"
+        },
+        "dimension": "bands",
+        "process": {
+          "process_graph": {
+            "b04": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "b06": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "b07": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "b8a": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 3
+              }
+            },
+            "b12": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 4
+              }
+            },
+            "b04_scaled": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "b04"
+                },
+                "y": 10000
+              }
+            },
+            "b06_scaled": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "b06"
+                },
+                "y": 10000
+              }
+            },
+            "b07_scaled": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "b07"
+                },
+                "y": 10000
+              }
+            },
+            "b8a_scaled": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "b8a"
+                },
+                "y": 10000
+              }
+            },
+            "b12_scaled": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "b12"
+                },
+                "y": 10000
+              }
+            },
+            "mul_b06_b07": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "b06_scaled"
+                },
+                "y": {
+                  "from_node": "b07_scaled"
+                }
+              }
+            },
+            "mul_b06_b07_b8a": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "mul_b06_b07"
+                },
+                "y": {
+                  "from_node": "b8a_scaled"
+                }
+              }
+            },
+            "div_bais_num": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "mul_b06_b07_b8a"
+                },
+                "y": {
+                  "from_node": "b04_scaled"
+                }
+              }
+            },
+            "sqrt_bais_num": {
+              "process_id": "sqrt",
+              "arguments": {
+                "x": {
+                  "from_node": "div_bais_num"
+                }
+              }
+            },
+            "one_minus": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "sqrt_bais_num"
+                }
+              }
+            },
+            "sub_b12_b8a": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "b12_scaled"
+                },
+                "y": {
+                  "from_node": "b8a_scaled"
+                }
+              }
+            },
+            "add_b12_b8a": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "b12_scaled"
+                },
+                "y": {
+                  "from_node": "b8a_scaled"
+                }
+              }
+            },
+            "sqrt_bais_den": {
+              "process_id": "sqrt",
+              "arguments": {
+                "x": {
+                  "from_node": "add_b12_b8a"
+                }
+              }
+            },
+            "div_bais_den": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "sub_b12_b8a"
+                },
+                "y": {
+                  "from_node": "sqrt_bais_den"
+                }
+              }
+            },
+            "add_bais_den": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "div_bais_den"
+                },
+                "y": 1
+              }
+            },
+            "bais": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "one_minus"
+                },
+                "y": {
+                  "from_node": "add_bais_den"
+                }
+              }
+            },
+            "zeros": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "bais"
+                },
+                "y": 0
+              }
+            },
+            "ones": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "zeros"
+                },
+                "y": 1
+              }
+            },
+            "underflow_r": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "underflow_g": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "underflow_b": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "underflow": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "underflow_r"
+                  },
+                  {
+                    "from_node": "underflow_g"
+                  },
+                  {
+                    "from_node": "underflow_b"
+                  }
+                ]
+              }
+            },
+            "low_r": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0
+              }
+            },
+            "low_g": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0
+              }
+            },
+            "low_b": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "zero_r": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0.9803921569
+              }
+            },
+            "zero_g": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "zero_b": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0.0392156863
+              }
+            },
+            "high_r": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "high_g": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0.0784313725
+              }
+            },
+            "high_b": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0.0784313725
+              }
+            },
+            "overflow_r": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "overflow_g": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 0
+              }
+            },
+            "overflow_b": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "ones"
+                },
+                "y": 1
+              }
+            },
+            "overflow": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "overflow_r"
+                  },
+                  {
+                    "from_node": "overflow_g"
+                  },
+                  {
+                    "from_node": "overflow_b"
+                  }
+                ]
+              }
+            },
+            "t_low": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "bais"
+                },
+                "y": 0.5
+              }
+            },
+            "r_low": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "low_r"
+                },
+                "y": {
+                  "from_node": "r_low_delta"
+                }
+              }
+            },
+            "r_low_delta": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "r_low_diff"
+                },
+                "y": {
+                  "from_node": "t_low"
+                }
+              }
+            },
+            "r_low_diff": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "zero_r"
+                },
+                "y": {
+                  "from_node": "low_r"
+                }
+              }
+            },
+            "g_low": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "low_g"
+                },
+                "y": {
+                  "from_node": "g_low_delta"
+                }
+              }
+            },
+            "g_low_delta": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "g_low_diff"
+                },
+                "y": {
+                  "from_node": "t_low"
+                }
+              }
+            },
+            "g_low_diff": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "zero_g"
+                },
+                "y": {
+                  "from_node": "low_g"
+                }
+              }
+            },
+            "b_low": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "low_b"
+                },
+                "y": {
+                  "from_node": "b_low_delta"
+                }
+              }
+            },
+            "b_low_delta": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "b_low_diff"
+                },
+                "y": {
+                  "from_node": "t_low"
+                }
+              }
+            },
+            "b_low_diff": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "zero_b"
+                },
+                "y": {
+                  "from_node": "low_b"
+                }
+              }
+            },
+            "low_to_zero": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "r_low"
+                  },
+                  {
+                    "from_node": "g_low"
+                  },
+                  {
+                    "from_node": "b_low"
+                  }
+                ]
+              }
+            },
+            "t_high": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "bais_high_offset"
+                },
+                "y": 0.49
+              }
+            },
+            "bais_high_offset": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "bais"
+                },
+                "y": 0.5
+              }
+            },
+            "r_high": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "zero_r"
+                },
+                "y": {
+                  "from_node": "r_high_delta"
+                }
+              }
+            },
+            "r_high_delta": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "r_high_diff"
+                },
+                "y": {
+                  "from_node": "t_high"
+                }
+              }
+            },
+            "r_high_diff": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "high_r"
+                },
+                "y": {
+                  "from_node": "zero_r"
+                }
+              }
+            },
+            "g_high": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "zero_g"
+                },
+                "y": {
+                  "from_node": "g_high_delta"
+                }
+              }
+            },
+            "g_high_delta": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "g_high_diff"
+                },
+                "y": {
+                  "from_node": "t_high"
+                }
+              }
+            },
+            "g_high_diff": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "high_g"
+                },
+                "y": {
+                  "from_node": "zero_g"
+                }
+              }
+            },
+            "b_high": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "zero_b"
+                },
+                "y": {
+                  "from_node": "b_high_delta"
+                }
+              }
+            },
+            "b_high_delta": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "b_high_diff"
+                },
+                "y": {
+                  "from_node": "t_high"
+                }
+              }
+            },
+            "b_high_diff": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "high_b"
+                },
+                "y": {
+                  "from_node": "zero_b"
+                }
+              }
+            },
+            "zero_to_high": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "r_high"
+                  },
+                  {
+                    "from_node": "g_high"
+                  },
+                  {
+                    "from_node": "b_high"
+                  }
+                ]
+              }
+            },
+            "cond_under": {
+              "process_id": "lt",
+              "arguments": {
+                "x": {
+                  "from_node": "bais"
+                },
+                "y": 0
+              }
+            },
+            "cond_low": {
+              "process_id": "lt",
+              "arguments": {
+                "x": {
+                  "from_node": "bais"
+                },
+                "y": 0.5
+              }
+            },
+            "cond_high": {
+              "process_id": "lte",
+              "arguments": {
+                "x": {
+                  "from_node": "bais"
+                },
+                "y": 0.99
+              }
+            },
+            "if_high": {
+              "process_id": "if",
+              "arguments": {
+                "value": {
+                  "from_node": "cond_high"
+                },
+                "accept": {
+                  "from_node": "zero_to_high"
+                },
+                "reject": {
+                  "from_node": "overflow"
+                }
+              }
+            },
+            "if_low": {
+              "process_id": "if",
+              "arguments": {
+                "value": {
+                  "from_node": "cond_low"
+                },
+                "accept": {
+                  "from_node": "low_to_zero"
+                },
+                "reject": {
+                  "from_node": "if_high"
+                }
+              }
+            },
+            "if_under": {
+              "process_id": "if",
+              "arguments": {
+                "value": {
+                  "from_node": "cond_under"
+                },
+                "accept": {
+                  "from_node": "underflow"
+                },
+                "reject": {
+                  "from_node": "if_low"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "scale": {
+      "process_id": "linear_scale_range",
+      "arguments": {
+        "data": {
+          "from_node": "bais2_rgb"
+        },
+        "input_min": 0,
+        "input_max": 1,
+        "output_min": 0,
+        "output_max": 255
+      }
+    },
+    "save": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "scale"
+        },
+        "format": "PNG"
+      },
+      "result": true
+    }
+  },
+  "parameters": [
+    {
+      "name": "bbox",
+      "description": "Spatial extent specified as a bounding box with 'west', 'south', 'east' and 'north' fields.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as EPSG code or WKT2 CRS string. Defaults to EPSG:4326 unless explicitly set.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      }
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
