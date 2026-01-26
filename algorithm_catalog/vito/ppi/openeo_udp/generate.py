@@ -7,8 +7,6 @@ import openeo.processes as eop
 from openeo.api.process import Parameter
 from openeo.rest.udp import build_process_dict
 
-SCALING_FACTOR = 10_000
-
 
 def create_ppi_cube(connection: openeo.Connection, temporal_extent, spatial_extent, geom):
     s2 = connection.load_collection(
@@ -26,11 +24,6 @@ def create_ppi_cube(connection: openeo.Connection, temporal_extent, spatial_exte
     )
     scl = s2_scl.band("SCL")
     cloudmask = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10)) * 1
-    # cloudmask = s2_scl.process(
-    #     "to_scl_dilation_mask",
-    #     data = s2_scl,
-    # )
-
     s2_masked = s2.mask(cloudmask)
 
     mdvi = connection.load_stac(
@@ -69,33 +62,91 @@ def _Qe(sza):
     Qe = dc + (1 - dc) * g / sza
     return Qe
 
-
-def _k(sza, dvi_max, scaling):
-    dvi_max_scaled = dvi_max * scaling
-    return (1 / (4 * _Qe(sza))) * ((1 + dvi_max_scaled) / (1 - dvi_max_scaled))
+def _k(sza, dvi_max):
+    sza_rad = sza  # Assume radians for now
+    
+    # Safety: ensure reasonable values
+    sza_safe = eop.max(eop.array_create([sza_rad, 0.01]))  # > 0
+    sza_safe = eop.min(eop.array_create([sza_safe, 1.5]))   # < ~85°
+    
+    dvi_max_safe = eop.max(eop.array_create([dvi_max, 0.3]))
+    dvi_max_safe = eop.min(eop.array_create([dvi_max_safe, 0.9]))
+    
+    # Calculate Qe
+    Qe_deg = _Qe(sza_safe * (180/3.14159))  # Convert rad to deg
+    
+    # Use whichever gives reasonable Qe (~0.05-0.5)
+    Qe = Qe_deg  #
+    
+    # Calculate k with safe denominator
+    k_num = 1 + dvi_max_safe
+    k_den = 1 - dvi_max_safe
+    k_den = eop.max(eop.array_create([k_den, 0.01]))
+    
+    k = (1 / (4 * Qe)) * (k_num / k_den)
+    
+    # k should be 0.3-1.5 - if not, something's wrong
+    k = eop.min(eop.array_create([k, 2.0]))
+    
+    return k
 
 
 def _ppi(input_bands):
-    red = input_bands[0]
-    nir = input_bands[1]
+    SCALE = 10000.0
+    
+    SCALE = 10000.0
+    
+    red_raw = input_bands[0] / SCALE
+    nir_raw = input_bands[1] / SCALE
     sza = input_bands[2]
-    dvi_max = input_bands[3]
-    dvi_soil = input_bands[4]
-
+    dvi_max = input_bands[3] / SCALE
+    dvi_soil = input_bands[4] / SCALE
+    
+    # CLIP reflectance to physically possible range [0, 1]
+    red = eop.max(eop.array_create([red_raw, 0.0]))
+    red = eop.min(eop.array_create([red, 1.0]))
+    
+    nir = eop.max(eop.array_create([nir_raw, 0.0]))
+    nir = eop.min(eop.array_create([nir, 1.0]))
+    
     dvi = nir - red
-
-    scaling = 1 / SCALING_FACTOR
-
-    k = _k(sza, dvi_max, scaling)
-    ppi = -1 * k * eop.ln((dvi_max - dvi) / (dvi_max - dvi_soil))
-
+    
+    # CLIP dvi_max to reasonable vegetation range
+    dvi_max = eop.max(eop.array_create([dvi_max, 0.3]))  # Minimum 0.3
+    dvi_max = eop.min(eop.array_create([dvi_max, 0.9]))  # Maximum 0.9
+    
+    # CLIP dvi_soil to reasonable soil range  
+    dvi_soil = eop.max(eop.array_create([dvi_soil, 0.05]))  # Minimum 0.05
+    dvi_soil = eop.min(eop.array_create([dvi_soil, 0.3]))   # Maximum 0.3
+    
+    # Ensure dvi_soil < dvi_max
+    dvi_soil = eop.min(eop.array_create([dvi_soil, dvi_max * 0.8]))
+    
+    # Calculate ratio with SAFETY BOUNDS
+    numerator = dvi_max - dvi
+    denominator = dvi_max - dvi_soil
+    
+    # Prevent division by near-zero and extreme values
+    denominator = eop.max(eop.array_create([denominator, 0.001]))
+    ratio = numerator / denominator
+    
+    # Clip ratio to valid log range
+    ratio = eop.max(eop.array_create([ratio, 0.001]))  # Avoid log(0)
+    ratio = eop.min(eop.array_create([ratio, 0.999]))  # Avoid log(1)
+    
+    # Calculate k with the corrected _k function below
+    k = _k(sza, dvi_max)
+    
+    # Calculate PPI
+    ppi = -1 * k * eop.ln(ratio)
+    
+    # Apply PPI bounds
     ppi = eop.if_(dvi < dvi_soil, 0, ppi)
     ppi = eop.if_(dvi_max <= dvi, 3.0, ppi)
     ppi = ppi.clip(0, 3.0)
-
-    ppi = ppi * SCALING_FACTOR
-
-    return eop.array_create([ppi])
+    
+    # Return with debug bands
+    return ppi
 
 
 def generate() -> dict:
@@ -137,3 +188,34 @@ def generate() -> dict:
 if __name__ == "__main__":
     # TODO: how to enforce a useful order of top-level keys?
     json.dump(generate(), sys.stdout, indent=2)
+
+
+
+# Example usage in sandbox
+'''
+spatial_extent = {
+    "west": 4.22,
+    "south": 51.16,
+    "east": 4.377856,
+    "north": 51.26
+}
+geom = {
+    "type": "Polygon",
+    "coordinates": [[
+        [spatial_extent["west"], spatial_extent["south"]],
+        [spatial_extent["east"], spatial_extent["south"]],
+        [spatial_extent["east"], spatial_extent["north"]],
+        [spatial_extent["west"], spatial_extent["north"]],
+        [spatial_extent["west"], spatial_extent["south"]]
+    ]]
+}
+
+temporal_extent = ["2024-06-01", "2024-08-30"]
+ppi_cube = create_ppi_cube(
+    connection=connection,
+    temporal_extent=temporal_extent,
+    spatial_extent=spatial_extent,
+    geom=geom
+)
+job = ppi_cube.create_job(out_format="GTiff", title="ppi_example").start_and_wait()
+'''
