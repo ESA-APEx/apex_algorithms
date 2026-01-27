@@ -32,6 +32,31 @@
     ],
     "contacts": [
       {
+        "name": "Paul Senty",
+        "position": "Professional, Earth Observation of Wetlands, Earth Observation Center of Excellence",
+        "organization": "DHI",
+        "email": "pase@dhigroup.com",
+        "roles": [
+            "principal investigator"
+        ]
+      },
+      {
+          "name": "The RAMONA project consortium: University of Aarhus, DHI, Lund University and GeoVille.",
+          "organization": "University of Aarhus, DHI, Lund University and GeoVille",
+          "contactInstructions": "Contact via form on the project website",
+          "roles": [
+              "Project consortium"
+          ],
+          "links": [
+              {
+                  "href": "https://www.ramona.earth/",
+                  "title": "RAMONA website",
+                  "rel": "about",
+                  "type": "text/html"
+              }
+          ]
+      },
+      {
         "name": "Hannes Neuschmidt",
         "position": "Software Engineer",
         "organization": "Brockmann Consult GmbH",
@@ -81,6 +106,12 @@
   "linkTemplates": [],
   "links": [
     {
+        "rel": "about",
+        "type": "text/html",
+        "title": "Scientific Publication",
+        "href": "https://doi.org/10.3390/rs16111833"
+    },
+    {
         "rel": "code",
         "type": "text/html",
         "title": "Source code repository used to generate the process graph",
@@ -90,7 +121,7 @@
         "rel": "notebook",
         "type": "application/x-ipynb+json",
         "title": "Example notebook, describing parameters and use of the UDP",
-        "href": "https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/notebooks/EFAST_example.ipynb"
+        "href": "https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/notebooks/EFAST_example_jupyterlite.ipynb"
     },
     {
       "rel": "application",
@@ -121,6 +152,12 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=efast&wizard~processUrl=https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/process_graph.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+        "rel": "thumbnail",
+        "type": "image/png",
+        "title": "Thumbnail image",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/efast/records/thumbnail.png"
     }
   ]
 }
