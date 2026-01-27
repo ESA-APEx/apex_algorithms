@@ -18,7 +18,7 @@
     },
     "reference_data": {
       "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20768689435!tests_test_benchmarks.py__test_run_benchmark_ramona_benin_!actual/job-results.json",
-      "ramona_hrb.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20768689435!tests_test_benchmarks.py__test_run_benchmark_ramona_benin_!actual/ramona_hrb.tif"
+      "ramona_hrb.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21250263635!tests_test_benchmarks.py__test_run_benchmark_ramona_benin_!actual/ramona_hrb.tif"
     }
   }
 ]
