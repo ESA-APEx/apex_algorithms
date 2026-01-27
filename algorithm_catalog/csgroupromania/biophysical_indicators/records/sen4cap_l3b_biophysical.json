@@ -15,10 +15,9 @@
     "cost_estimate": 1.25,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "Biophysical Indicators",
-      "LAI",
-      "FAPAR",
-      "FCover"
+      "Leaf Area Index (LAI)",
+      "Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)",
+      "Fraction of Vegetation Coverage (fCOVER)"
     ],
     "language": {
       "code": "en-US",

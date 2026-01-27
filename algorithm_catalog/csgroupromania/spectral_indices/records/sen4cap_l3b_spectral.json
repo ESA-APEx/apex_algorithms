@@ -15,10 +15,9 @@
     "cost_estimate": 0.75,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "Spectral Indicators",
-      "NDVI",
-      "NDWI",
-      "Brighteness",
+      "Normalized Difference Vegetation Index (NDVI)",
+      "Normalized Difference Water Index (NDWI)",
+      "Brightness",
       "Sentinel-2",
       "Landsat-8"
     ],
