@@ -8,7 +8,7 @@
   "geometry": null,
   "properties": {
     "created": "2025-12-09T16:30:00Z",
-    "updated": "2025-12-09T16:30:00Z",
+    "updated": "2026-01-27T10:50:00Z",
     "type": "service",
     "title": "Efficient Fusion Algorithm across SpatioTemporal scales (EFAST)",
     "description": "EFAST [1] is a method to create time-series with a fine resolution in space and time from a fine spatial but coarse temporal resolution source (Sentinel-2) and a coarse temporal but fine spatial resolution source (Sentinel-3). In comparison to other methods, EFAST aims to achieve results outperforming single-source interpolation without paying the computational cost of other methods leveraging spatial context.\n\n[1] Senty, Paul, Radoslaw Guzinski, Kenneth Grogan, et al. “Fast Fusion of Sentinel-2 and Sentinel-3 Time Series over Rangelands.” Remote Sensing 16, no. 11 (2024): 1833.",
