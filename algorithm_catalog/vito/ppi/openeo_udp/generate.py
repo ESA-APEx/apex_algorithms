@@ -228,3 +228,35 @@ ppi_cube = create_ppi_cube(
 )
 job = ppi_cube.create_job(out_format="GTiff", title="ppi_example").start_and_wait()
 '''
+
+#%%
+import openeo
+connection = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
+spatial_extent = {
+    "west": 4.22,
+    "south": 51.16,
+    "east": 4.377856,
+    "north": 51.26
+}
+geom = {
+    "type": "Polygon",
+    "coordinates": [[
+        [spatial_extent["west"], spatial_extent["south"]],
+        [spatial_extent["east"], spatial_extent["south"]],
+        [spatial_extent["east"], spatial_extent["north"]],
+        [spatial_extent["west"], spatial_extent["north"]],
+        [spatial_extent["west"], spatial_extent["south"]]
+    ]]
+}
+
+temporal_extent = ["2024-06-01", "2024-08-30"]
+ppi_cube = create_ppi_cube(
+    connection=connection,
+    temporal_extent=temporal_extent,
+    spatial_extent=spatial_extent,
+    geom=geom
+)
+job = ppi_cube.create_job(out_format="GTiff", title="ppi_example").start_and_wait()
+
+#%%
+geom
