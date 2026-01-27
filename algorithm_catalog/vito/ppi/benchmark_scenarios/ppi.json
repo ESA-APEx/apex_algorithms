@@ -7,14 +7,8 @@
     "process_graph": {
       "ppi1": {
         "process_id": "ppi",
-        "namespace": "TODO",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/02de9a6f5e6f99f16f686005de47dc34fc886516/algorithm_catalog/vito/ppi/openeo_udp/ppi.json",
         "arguments": {
-          "bbox": {
-            "west": 4.22,
-            "east": 4.377856,
-            "south": 51.16,
-            "north": 51.26
-          },
           "temporal_extent": [
             "2023-08-01",
             "2023-09-30"
