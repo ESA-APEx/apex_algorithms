@@ -95,12 +95,6 @@
   "linkTemplates": [],
   "links": [
     {
-      "rel": "application",
-      "type": "application/vnd.openeo+json;type=process",
-      "title": "openEO Process Definition",
-      "href": "TODO"
-    },
-    {
       "rel": "service",
       "type": "application/json",
       "title": "CDSE openEO federation",
@@ -116,19 +110,14 @@
       "rel": "example-output",
       "type": "application/json",
       "title": "Example output",
-      "href": "TODO"
+      "href": "https://github.com/ESA-APEx/apex_algorithms/blob/9a627649e5144c1274e9f57ff2d45dfd6d4c9cd4/algorithm_catalog/vito/ppi/records/thumbnail.png"
     },
-    {
-      "rel": "webapp",
-      "type": "text/html",
-      "title": "OpenEO Web Editor",
-      "href": "TODO"
-    },
+
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "TODO"
+      "href": "https://github.com/ESA-APEx/apex_algorithms/blob/9a627649e5144c1274e9f57ff2d45dfd6d4c9cd4/algorithm_catalog/vito/ppi/records/thumbnail.png"
     }
   ]
 }

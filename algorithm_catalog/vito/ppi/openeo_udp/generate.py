@@ -94,9 +94,7 @@ def _k(sza, dvi_max):
 
 def _ppi(input_bands):
     SCALE = 10000.0
-    
-    SCALE = 10000.0
-    
+        
     red_raw = input_bands[0] / SCALE
     nir_raw = input_bands[1] / SCALE
     sza = input_bands[2]
