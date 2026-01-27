@@ -12,8 +12,8 @@
     "type": "service",
     "title": "Plant Phenology Index (PPI)",
     "description": "Plant Phenology Index (PPI) generated near real-time (NRT) from Sentinel-2 satellite observations.",
-    "cost_estimate": "0.04",
-    "cost_unit": "platform credits per km\u00b2 and 3 months observation.",
+    "cost_estimate": 0.04,
+    "cost_unit": "platform credits per km\u00b2 and 3 months of  observation.",
     "keywords": [
       "Vegetation",
       "Plant Phenology Index (PPI)",
