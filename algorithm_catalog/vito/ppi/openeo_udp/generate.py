@@ -9,18 +9,18 @@ from openeo.api.process import Parameter
 from openeo.rest.udp import build_process_dict
 
 
-def create_ppi_cube(connection: openeo.Connection, temporal_extent, spatial_extent, geom):
+def create_ppi_cube(connection: openeo.Connection, temporal_extent, geom):
     s2 = connection.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
-        spatial_extent=spatial_extent,
+        spatial_extent=geom,
         bands=["B04", "B08", "sunZenithAngles"],
     )
 
     s2_scl = connection.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
-        spatial_extent=spatial_extent,
+        spatial_extent=geom,
         bands=["SCL"],
     )
     scl = s2_scl.band("SCL")
@@ -28,7 +28,7 @@ def create_ppi_cube(connection: openeo.Connection, temporal_extent, spatial_exte
     s2_masked = s2.mask(cloudmask)
 
     mdvi = connection.load_stac(
-        "https://stac.openeo.vito.be/collections/MDVI", spatial_extent=spatial_extent, bands=["dvi_max", "dvi_soil"]
+        "https://stac.openeo.vito.be/collections/MDVI", spatial_extent=geom, bands=["dvi_max", "dvi_soil"]
     ).reduce_temporal(reducer=lambda x: eop.max(x, ignore_nodata=True)).rename_labels(dimension="bands", target=["dvi_max", "dvi_soil"])
 
     dvi_max = mdvi.filter_bands(["dvi_max"])
@@ -151,14 +151,12 @@ def _ppi(input_bands):
 def generate() -> dict:
     connection = openeo.connect("openeo.dataspace.copernicus.eu")
 
-    spatial_extent = Parameter.bounding_box(name="bbox")
     temporal_extent = Parameter.temporal_interval(name="temporal_extent")
     geom = Parameter.geojson(name="geometry")
 
     ppi_cube = create_ppi_cube(
         connection=connection,
         temporal_extent=temporal_extent,
-        spatial_extent=spatial_extent,
         geom=geom,
     )
 
@@ -169,7 +167,6 @@ def generate() -> dict:
         summary="",
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[
-            spatial_extent,
             temporal_extent,
             geom,
         ],
@@ -188,7 +185,7 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # TODO: how to enforce a useful order of top-level keys?
-    OUTPUT_PATH = Path(r".\records\ppi.json")
+    OUTPUT_PATH = Path(r".\test\ppi.json")
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
@@ -198,8 +195,10 @@ if __name__ == "__main__":
 
 
 
-# Example usage in sandbox
-'''
+#%% Example usage in sandbox
+import openeo
+connection = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
+
 spatial_extent = {
     "west": 4.22,
     "south": 51.16,
@@ -221,11 +220,10 @@ temporal_extent = ["2024-06-01", "2024-08-30"]
 ppi_cube = create_ppi_cube(
     connection=connection,
     temporal_extent=temporal_extent,
-    spatial_extent=spatial_extent,
     geom=geom
 )
 job = ppi_cube.create_job(out_format="GTiff", title="ppi_example").start_and_wait()
-'''
+
 
 #%%
 import openeo
