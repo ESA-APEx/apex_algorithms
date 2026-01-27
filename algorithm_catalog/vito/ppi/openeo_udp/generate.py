@@ -1,3 +1,4 @@
+#%%
 import json
 import sys
 from pathlib import Path
@@ -28,7 +29,7 @@ def create_ppi_cube(connection: openeo.Connection, temporal_extent, spatial_exte
 
     mdvi = connection.load_stac(
         "https://stac.openeo.vito.be/collections/MDVI", spatial_extent=spatial_extent, bands=["dvi_max", "dvi_soil"]
-    ).reduce_temporal(reducer=lambda x: eop.max(x, ignore_nodata=True))
+    ).reduce_temporal(reducer=lambda x: eop.max(x, ignore_nodata=True)).rename_labels(dimension="bands", target=["dvi_max", "dvi_soil"])
 
     dvi_max = mdvi.filter_bands(["dvi_max"])
     dvi_soil = mdvi.filter_bands(["dvi_soil"])
@@ -160,7 +161,9 @@ def generate() -> dict:
         connection=connection,
         temporal_extent=temporal_extent,
         spatial_extent=spatial_extent,
+        geom=geom,
     )
+
 
     process = build_process_dict(
         process_graph=ppi_cube,
@@ -187,7 +190,13 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # TODO: how to enforce a useful order of top-level keys?
-    json.dump(generate(), sys.stdout, indent=2)
+    OUTPUT_PATH = Path(r".\records\ppi.json")
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
+
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(generate(), f, indent=2)
+
+    print(f"Saved to {OUTPUT_PATH}")
 
 
 
