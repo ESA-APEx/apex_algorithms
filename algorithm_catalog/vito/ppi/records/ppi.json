@@ -15,8 +15,8 @@
     "cost_estimate": 0.04,
     "cost_unit": "platform credits per km\u00b2 and 3 months of  observation.",
     "keywords": [
-      "Vegetation",
-      "Plant Phenology Index (PPI)",
+      "Land Use/Land Cover Classification",
+      "Agriculture",
       "Sentinel-2"
     ],
     "language": {
