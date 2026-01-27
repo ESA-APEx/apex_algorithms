@@ -11,7 +11,7 @@
     "updated": "2026-01-16T00:00:00Z",
     "type": "service",
     "title": "Sen4CAP L3B Biophysical Indicators Processor",
-    "description": "The Sen4CAP L3B Biophysical Indicators Processor takes as input a Sentinel-2 L2A (created with Sen4Cor or MAJA) or Landsat-8 L2A product (created with MAJA) and computes one of the different biophysical indicators supported (LAI, FAPAR or FCover). The computation is performed at tile level, resulting a product formatted according to the Sen4CAP Product Specification Document (PSD). The product contains the raster containin the computed Biophysical Indicator and a mask flag with assesment of each valid or cloud/water/snow/invalid pixel",
+    "description": "The Sen4CAP L3B Biophysical Indicators Processor takes as input a Sentinel-2 L2A (created with Sen4Cor or MAJA) or Landsat-8 L2A product (created with MAJA) and computes one of the different biophysical indicators supported (LAI, FAPAR or FCover). The computation is performed at tile level, resulting a product formatted according to the Sen4CAP Product Specification Document (PSD). The product contains the raster containing the computed Biophysical Indicator and a mask flag with assessment of each valid or cloud/water/snow/invalid pixel",
     "cost_estimate": 1.25,
     "cost_unit": "\u20ac per input product",
     "keywords": [
