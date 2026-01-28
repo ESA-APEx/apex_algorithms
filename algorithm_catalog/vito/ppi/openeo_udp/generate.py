@@ -164,7 +164,7 @@ def generate() -> dict:
     process = build_process_dict(
         process_graph=ppi_cube,
         process_id="ppi",
-        summary="",
+        summary="Satellite-based vegetation index designed to monitor vegetation growth cycles",
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[
             temporal_extent,
@@ -185,7 +185,7 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # TODO: how to enforce a useful order of top-level keys?
-    OUTPUT_PATH = Path(r".\test\ppi.json")
+    OUTPUT_PATH = Path(r"./ppi.json")
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
