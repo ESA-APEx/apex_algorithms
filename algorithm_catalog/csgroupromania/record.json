@@ -1,0 +1,52 @@
+{
+    "id": "csgroupromania",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2025-12-03T13:00:00Z",
+        "updated": "2025-12-03T13:00:00Z",
+        "type": "algoritm_provider",
+        "title": "CS GROUP - ROMANIA",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@cs-soprasteria.com"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "CS GROUP - ROMANIA",
+            "href": "https://www.c-s.ro/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.c-s.ro/wp-content/uploads/logo/CS-GROUP.png"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.c-s.ro/wp-content/uploads/logo/CS-GROUP.png"
+        }
+    ]
+}
