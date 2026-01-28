@@ -1,0 +1,30 @@
+{
+  "type": "Feature",
+  "properties": {
+    "type": "provider",
+    "title": "Development Seed",
+    "description": "Development Seed builds open source geospatial technology and data infrastructure.",
+    "contacts": [
+      {
+        "name": "Development Seed",
+        "emails": [
+          {
+            "value": "info@developmentseed.org"
+          }
+        ],
+        "links": [
+          {
+            "href": "https://developmentseed.org",
+            "rel": "about"
+          }
+        ]
+      }
+    ]
+  },
+  "links": [
+    {
+      "rel": "icon",
+      "href": "https://developmentseed.org/assets/graphics/devseed-logo.svg"
+    }
+  ]
+}
