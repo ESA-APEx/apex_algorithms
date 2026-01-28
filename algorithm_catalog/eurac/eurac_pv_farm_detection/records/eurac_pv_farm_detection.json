@@ -15,8 +15,9 @@
     "cost_estimate": 0.001,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "photovoltaic farm",
-      "detection"
+      "Energy Production/Use",
+      "Solar Energy Production/Use",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
@@ -107,6 +108,18 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Eurac Research",
+      "href": "../../record.json"
     },
     {
       "rel": "webapp",

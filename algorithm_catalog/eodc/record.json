@@ -1,0 +1,52 @@
+{
+    "id": "eodc",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2025-12-03T13:00:00Z",
+        "updated": "2025-12-03T13:00:00Z",
+        "type": "algoritm_provider",
+        "title": "EODC",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@eodc.eu"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "EODC",
+            "href": "https://eodc.eu/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://eodc.eu/wp-content/uploads/2024/12/eodc_Logo_earth_white_400x400_rgb.png"  
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://eodc.eu/wp-content/themes/eodc/assets/imgs/eodc_logo_marine.svg"
+        }
+    ]
+}

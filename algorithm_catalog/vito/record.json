@@ -1,0 +1,52 @@
+{
+    "id": "vito",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2025-12-03T13:00:00Z",
+        "updated": "2025-12-03T13:00:00Z",
+        "type": "algoritm_provider",
+        "title": "Vlaams Instituut voor Technologisch Onderzoek",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@vito.be"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "VITO",
+            "href": "https://vito.be"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://vito.be/themes/custom/vitotheme/src/images/logo_white.svg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://vito.be/themes/custom/vitotheme/logo.svg"
+        }
+    ]
+}

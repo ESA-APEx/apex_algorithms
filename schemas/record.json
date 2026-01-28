@@ -53,8 +53,6 @@
         "type",
         "title",
         "description",
-        "cost_estimate",
-        "cost_unit",
         "contacts",
         "themes",
         "formats"
@@ -62,7 +60,7 @@
       "properties": {
         "visibility": {
           "type": "string",
-          "description": "Visibility of the service in the APEx Algorithm Services Catalogue. Set to private to ensure the service is not listed in the catalogue.",
+          "description": "Visibility of the service in the APEx Algorithm Catalogue. Set to private to ensure the service is not listed in the catalogue.",
           "enum": [
             "public",
             "private"
@@ -102,10 +100,33 @@
         },
         "keywords": {
           "type": "array",
-          "description": "The topic or topics of the APEx service. Typically represented using free-form keywords, tags, key phrases, or classification codes.",
+          "description": "The topic or topics of the APEx service. This represents a list of EarthData Taxonomy (https://gcmd.earthdata.nasa.gov/KeywordViewer).",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "enum": [
+              "Agriculture",
+              "Land Use/Land Cover Classification",
+              "Vegetation",
+              "Normalized Difference Vegetation Index (NDVI)",
+              "Leaf Area Index (LAI)",
+              "Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)",
+              "Fraction of Vegetation Coverage (fCOVER)",
+              "Energy Production/Use",
+              "Wind Energy Production/Use",
+              "Solar Energy Production/Use",
+              "Natural Hazards",
+              "Wildfires",
+              "Sentinel-1",
+              "Sentinel-2",
+              "Landsat-8",
+              "Digital Elevation/Terrain Model (DEM)",
+              "ECMWF ERA5",
+              "Data Analysis and Visualization",
+              "Statistical Applications"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
         },
         "language": {
           "description": "The language used for textual values in this record representation.",
@@ -424,6 +445,8 @@
             "type": "string",
             "description": "The type or semantics of the relation.",
             "enum": [
+              "platform",
+              "provider",
               "application",
               "service",
               "example-output",
@@ -435,7 +458,8 @@
               "webapp",
               "code",
               "thumbnail",
-              "cite-as"
+              "cite-as",
+              "notebook"
             ]
           },
           "type": {
@@ -457,9 +481,74 @@
           "type",
           "title",
           "href"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "rel": {
+                  "const": "platform"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "href": {
+                  "type": "string",
+                  "description": "Platform record URI (must point into platform_catalog).",
+                  "pattern": "^(?:\\.\\.\/){4}platform_catalog/[^\\s]+\\.json$"
+                }
+              },
+              "required": [
+                "href"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rel": {
+                  "const": "provider"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "href": {
+                  "type": "string",
+                  "description": "Provider record URI (must point into platform_catalog).",
+                  "pattern": "^(?:\\.\\.\/){2}record\\.json$"
+                }
+              },
+              "required": [
+                "href"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rel": {
+                  "const": "notebook"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Must use the correct mimetype",
+                  "enum": ["application/x-ipynb+json"]
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
         ]
       },
-      "minItems": 2,
+      "minItems": 3,
       "allOf": [
         {
           "contains": {
@@ -477,6 +566,26 @@
             "properties": {
               "rel": {
                 "const": "application"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "const": "provider"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "const": "platform"
               }
             }
           }

@@ -44,6 +44,13 @@ def pytest_addoption(parser):
         type=str,
         help="A regex patter to filter the available scenarios by backend.",
     )
+    parser.addoption(
+        "--maximum-job-time-in-minutes",
+        action="store",
+        default=None,
+        type=int,
+        help="Maximum time in minutes a batch job is allowed to run before the test fails due to timeout.",
+    )
 
 
 def pytest_ignore_collect(collection_path, config):
@@ -102,7 +109,7 @@ def _get_client_credentials_env_var(url: str) -> str:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
     elif hostname == "openeo-staging.dataspace.copernicus.eu":
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
-    elif hostname == "openeo.cloud":
+    elif hostname in { "openeo.cloud", "openeo.eodc.eu" }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
     elif hostname in {"openeo-dev.vito.be", "openeo.vito.be", "openeo.terrascope.be"}:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"

@@ -1,0 +1,70 @@
+{
+  "id": "gep",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-05-17T00:00:00Z",
+    "updated": "2024-05-17T00:00:00Z",
+    "type": "ogc_backend",
+    "title": "Geohazards Exploitation Platform",
+    "description": "",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Platform team",
+        "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
+        "links": [
+          {
+            "href": "https://geohazards-tep.eu",
+            "title": "Geohazards Exploitation Platform",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries on selecting Processing Services from the GEP Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at Terradue",
+        "email": "contact@geohazards-tep.eu"
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "Geohazards TEP",
+      "href": "https://geohazards-tep.eu/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "GEP Logo",
+      "href": "https://geohazards-tep.eu/styles/img/logo-geohazard-by-terradue.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "GEP Logo",
+      "href": "https://geohazards-tep.eu/styles/img/logo-geohazard-by-terradue.png"
+    }
+  ]
+}

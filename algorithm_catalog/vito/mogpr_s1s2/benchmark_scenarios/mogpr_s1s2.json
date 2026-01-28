@@ -1,0 +1,64 @@
+[
+    {
+        "id": "mogpr_s1s2",
+        "type": "openeo",
+        "description": "Multi output gaussian process regression example on NDVI timeseries",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "mogprs1s21": {
+                "arguments": {
+                    "s1_collection": "RVI",
+                    "s2_collection": "NDVI",
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ],
+                                [
+                                    5.17085904378298,
+                                    51.24882567194015
+                                ],
+                                [
+                                    5.17857421368097,
+                                    51.2468515482926
+                                ],
+                                [
+                                    5.178972704726344,
+                                    51.24982704376254
+                                ],
+                                [
+                                    5.170012098271149,
+                                    51.25062964728295
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "temporal_extent": [
+                        "2021-05-01",
+                        "2021-08-01"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/mogpr_s1s2/openeo_udp/mogpr_s1s2.json",
+                "process_id": "mogpr_s1s2"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "mogprs1s21"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21325868452!tests_test_benchmarks.py__test_run_benchmark_mogpr_s1s2_!actual/openEO.nc"
+        }
+    }
+]
+

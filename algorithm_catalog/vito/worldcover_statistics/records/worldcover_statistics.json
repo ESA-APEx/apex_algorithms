@@ -15,8 +15,9 @@
     "cost_estimate": 0.01,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "LAND USE/LAND COVER CLASSIFICATION",
-      "statistics"
+      "Land Use/Land Cover Classification",
+      "Data Analysis and Visualization",
+      "Statistical Applications"
     ],
     "language": {
       "code": "en-US",
@@ -86,6 +87,18 @@
       "type": "application/json",
       "title": "openEO platform",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
     },
     {
       "rel": "webapp",

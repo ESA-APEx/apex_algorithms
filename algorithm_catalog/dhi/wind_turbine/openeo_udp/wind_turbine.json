@@ -127,6 +127,7 @@
     "python-memory": "4500m",
     "executor-memory": "1g",
     "soft-errors": "true",
-    "executor-cores": 1
+    "executor-cores": 1,
+    "image-name": "python38"
   }
 }

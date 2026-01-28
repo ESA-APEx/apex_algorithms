@@ -15,8 +15,8 @@
     "cost_estimate": 0.11,
     "cost_unit": "platform credits per km²",
     "keywords": [
-      "agricultural parcels",
-      "delineation"
+      "Agriculture",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
@@ -106,6 +106,18 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
+    },
+    {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
@@ -128,6 +140,12 @@
       "type": "image/jpeg",
       "title": "Parcel Delineation - Filtered",
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_2.jpg"
+    },
+    {
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
+      "title": "Parcel Delineation",
+      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/Parcel%20delineation.ipynb"
     }
   ]
 }

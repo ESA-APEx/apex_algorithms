@@ -1,0 +1,52 @@
+{
+    "id": "eurac",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2025-12-03T13:00:00Z",
+        "updated": "2025-12-03T13:00:00Z",
+        "type": "algoritm_provider",
+        "title": "Eurac Research",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@eurac.edu"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "EURAC",
+            "href": "https://www.eurac.edu"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://webassets.eurac.edu/31538/1596156835-logo-vertical.svg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Eurac_Research_logo.svg/2560px-Eurac_Research_logo.svg.png"
+        }
+    ]
+}
