@@ -110,20 +110,20 @@
       "rel": "example-output",
       "type": "application/json",
       "title": "Example output",
-      "href": "https://github.com/ESA-APEx/apex_algorithms/blob/9a627649e5144c1274e9f57ff2d45dfd6d4c9cd4/algorithm_catalog/vito/ppi/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/ppi/records/thumbnail.png"
     },
 
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://github.com/ESA-APEx/apex_algorithms/blob/9a627649e5144c1274e9f57ff2d45dfd6d4c9cd4/algorithm_catalog/vito/ppi/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/ppi/records/thumbnail.png"
     },
     {
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/02de9a6f5e6f99f16f686005de47dc34fc886516/algorithm_catalog/vito/ppi/openeo_udp/ppi.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/ppi/openeo_udp/ppi.json"
     },
 
     {

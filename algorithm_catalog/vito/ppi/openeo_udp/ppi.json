@@ -1054,8 +1054,8 @@
     }
   },
   "id": "ppi",
-  "summary": "",
-  "description": "PPI\n",
+  "summary": "Satellite-based vegetation index designed to monitor vegetation growth cycles",
+  "description": "The Plant Phenology Index (PPI) is a satellite-based vegetation index designed to monitor vegetation growth cycles (phenology) with improved sensitivity during early spring green-up and late autumn senescence. Unlike traditional indices like NDVI, PPI maintains a linear relationship with green leaf area index (LAI) across the entire growing season.\n\nThis openEO process calculates PPI using Sentinel-2 data and MDVI reference collections.\n",
   "parameters": [
     {
       "name": "temporal_extent",
