@@ -25,7 +25,7 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@eurac.edu"]
+            "admin": ["@eurac.edu", "@vito.be"]
         }
     },
     "linkTemplates": [],
