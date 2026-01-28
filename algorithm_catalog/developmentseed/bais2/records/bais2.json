@@ -95,8 +95,8 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "openEO Platform",
-      "href": "../../../../platform_catalog/openeo_platform.json"
+      "title": "TiTiler openEO",
+      "href": "../../../../platform_catalog/titiler_openeo.json"
     },
     {
       "rel": "provider",
