@@ -44,6 +44,18 @@ def pytest_addoption(parser):
         type=str,
         help="A regex patter to filter the available scenarios by backend.",
     )
+    parser.addoption(
+        "--maximum-job-time-in-minutes",
+        action="store",
+        default=None,
+        type=int,
+        help="Maximum time in minutes a batch job is allowed to run before the test fails due to timeout.",
+    )
+    parser.addoption(
+        "--upload-benchmark-report",
+        action="store_true",
+        help="Upload a benchmark report (scenario metadata and job ID) as an asset on test failure.",
+    )
 
 
 def pytest_ignore_collect(collection_path, config):
