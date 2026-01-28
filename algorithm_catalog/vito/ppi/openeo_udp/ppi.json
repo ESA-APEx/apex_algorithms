@@ -1,0 +1,1103 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B04",
+          "B08",
+          "sunZenithAngles"
+        ],
+        "id": "SENTINEL2_L2A",
+        "spatial_extent": {
+          "from_parameter": "geometry"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "spatial_extent": {
+          "from_parameter": "geometry"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 3
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 8
+              }
+            },
+            "or1": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq1"
+                },
+                "y": {
+                  "from_node": "eq2"
+                }
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 9
+              }
+            },
+            "or2": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or1"
+                },
+                "y": {
+                  "from_node": "eq3"
+                }
+              }
+            },
+            "eq4": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": 10
+              }
+            },
+            "or3": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or2"
+                },
+                "y": {
+                  "from_node": "eq4"
+                }
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "or3"
+                },
+                "y": 1
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "mask": {
+          "from_node": "reducedimension1"
+        }
+      }
+    },
+    "loadstac1": {
+      "process_id": "load_stac",
+      "arguments": {
+        "bands": [
+          "dvi_max",
+          "dvi_soil"
+        ],
+        "spatial_extent": {
+          "from_parameter": "geometry"
+        },
+        "url": "https://stac.openeo.vito.be/collections/MDVI"
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "max1": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "dimension": "bands",
+        "target": [
+          "dvi_max",
+          "dvi_soil"
+        ]
+      }
+    },
+    "filterbands1": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "dvi_max"
+        ],
+        "data": {
+          "from_node": "renamelabels1"
+        }
+      }
+    },
+    "filterbands2": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "dvi_soil"
+        ],
+        "data": {
+          "from_node": "renamelabels1"
+        }
+      }
+    },
+    "aggregatespatial1": {
+      "process_id": "aggregate_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands2"
+        },
+        "geometries": {
+          "from_parameter": "geometry"
+        },
+        "reducer": {
+          "process_graph": {
+            "max2": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "vectortoraster1": {
+      "process_id": "vector_to_raster",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatespatial1"
+        },
+        "target": {
+          "from_node": "filterbands1"
+        }
+      }
+    },
+    "renamelabels2": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "vectortoraster1"
+        },
+        "dimension": "bands",
+        "target": [
+          "dvi_soil_scalar"
+        ]
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "filterbands1"
+        },
+        "cube2": {
+          "from_node": "renamelabels2"
+        }
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "min1": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mergecubes2": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mask1"
+        },
+        "cube2": {
+          "from_node": "reducedimension3"
+        }
+      }
+    },
+    "mergecubes3": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes2"
+        },
+        "cube2": {
+          "from_node": "filterbands2"
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes3"
+        },
+        "dimension": "bands",
+        "process": {
+          "process_graph": {
+            "arrayelement2": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "arraycreate1": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "arrayelement2"
+                  },
+                  0.01
+                ]
+              }
+            },
+            "max3": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate1"
+                }
+              }
+            },
+            "arraycreate2": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max3"
+                  },
+                  1.5
+                ]
+              }
+            },
+            "min2": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate2"
+                }
+              }
+            },
+            "multiply2": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "min2"
+                },
+                "y": 57.295827908797776
+              }
+            },
+            "divide1": {
+              "process_id": "divide",
+              "arguments": {
+                "x": 0.0477,
+                "y": {
+                  "from_node": "multiply2"
+                }
+              }
+            },
+            "add1": {
+              "process_id": "add",
+              "arguments": {
+                "x": 0.0336,
+                "y": {
+                  "from_node": "divide1"
+                }
+              }
+            },
+            "arraycreate3": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "add1"
+                  },
+                  1.0
+                ]
+              }
+            },
+            "min3": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate3"
+                }
+              }
+            },
+            "subtract1": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "min3"
+                }
+              }
+            },
+            "multiply3": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract1"
+                },
+                "y": 0.5
+              }
+            },
+            "divide2": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply3"
+                },
+                "y": {
+                  "from_node": "multiply2"
+                }
+              }
+            },
+            "add2": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "min3"
+                },
+                "y": {
+                  "from_node": "divide2"
+                }
+              }
+            },
+            "multiply4": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": 4,
+                "y": {
+                  "from_node": "add2"
+                }
+              }
+            },
+            "divide3": {
+              "process_id": "divide",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "multiply4"
+                }
+              }
+            },
+            "arrayelement3": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 3
+              }
+            },
+            "divide4": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement3"
+                },
+                "y": 10000.0
+              }
+            },
+            "arraycreate4": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "divide4"
+                  },
+                  0.3
+                ]
+              }
+            },
+            "max4": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate4"
+                }
+              }
+            },
+            "arraycreate5": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max4"
+                  },
+                  0.9
+                ]
+              }
+            },
+            "min4": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate5"
+                }
+              }
+            },
+            "arraycreate6": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "min4"
+                  },
+                  0.3
+                ]
+              }
+            },
+            "max5": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate6"
+                }
+              }
+            },
+            "arraycreate7": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max5"
+                  },
+                  0.9
+                ]
+              }
+            },
+            "min5": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate7"
+                }
+              }
+            },
+            "add3": {
+              "process_id": "add",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "min5"
+                }
+              }
+            },
+            "subtract2": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": 1,
+                "y": {
+                  "from_node": "min5"
+                }
+              }
+            },
+            "arraycreate8": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "subtract2"
+                  },
+                  0.01
+                ]
+              }
+            },
+            "max6": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate8"
+                }
+              }
+            },
+            "divide5": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "add3"
+                },
+                "y": {
+                  "from_node": "max6"
+                }
+              }
+            },
+            "multiply5": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "divide3"
+                },
+                "y": {
+                  "from_node": "divide5"
+                }
+              }
+            },
+            "arraycreate9": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "multiply5"
+                  },
+                  2.0
+                ]
+              }
+            },
+            "min6": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate9"
+                }
+              }
+            },
+            "multiply6": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": -1,
+                "y": {
+                  "from_node": "min6"
+                }
+              }
+            },
+            "arrayelement4": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "divide6": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement4"
+                },
+                "y": 10000.0
+              }
+            },
+            "arraycreate10": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "divide6"
+                  },
+                  0.0
+                ]
+              }
+            },
+            "max7": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate10"
+                }
+              }
+            },
+            "arraycreate11": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max7"
+                  },
+                  1.0
+                ]
+              }
+            },
+            "min7": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate11"
+                }
+              }
+            },
+            "arrayelement5": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "divide7": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement5"
+                },
+                "y": 10000.0
+              }
+            },
+            "arraycreate12": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "divide7"
+                  },
+                  0.0
+                ]
+              }
+            },
+            "max8": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate12"
+                }
+              }
+            },
+            "arraycreate13": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max8"
+                  },
+                  1.0
+                ]
+              }
+            },
+            "min8": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate13"
+                }
+              }
+            },
+            "subtract3": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "min7"
+                },
+                "y": {
+                  "from_node": "min8"
+                }
+              }
+            },
+            "subtract4": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "min4"
+                },
+                "y": {
+                  "from_node": "subtract3"
+                }
+              }
+            },
+            "arrayelement6": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 4
+              }
+            },
+            "divide8": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement6"
+                },
+                "y": 10000.0
+              }
+            },
+            "arraycreate14": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "divide8"
+                  },
+                  0.05
+                ]
+              }
+            },
+            "max9": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate14"
+                }
+              }
+            },
+            "arraycreate15": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max9"
+                  },
+                  0.3
+                ]
+              }
+            },
+            "min9": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate15"
+                }
+              }
+            },
+            "multiply7": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "min4"
+                },
+                "y": 0.8
+              }
+            },
+            "arraycreate16": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "min9"
+                  },
+                  {
+                    "from_node": "multiply7"
+                  }
+                ]
+              }
+            },
+            "min10": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate16"
+                }
+              }
+            },
+            "subtract5": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "min4"
+                },
+                "y": {
+                  "from_node": "min10"
+                }
+              }
+            },
+            "arraycreate17": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "subtract5"
+                  },
+                  0.001
+                ]
+              }
+            },
+            "max10": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate17"
+                }
+              }
+            },
+            "divide9": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract4"
+                },
+                "y": {
+                  "from_node": "max10"
+                }
+              }
+            },
+            "arraycreate18": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "divide9"
+                  },
+                  0.001
+                ]
+              }
+            },
+            "max11": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate18"
+                }
+              }
+            },
+            "arraycreate19": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "max11"
+                  },
+                  0.999
+                ]
+              }
+            },
+            "min11": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_node": "arraycreate19"
+                }
+              }
+            },
+            "ln1": {
+              "process_id": "ln",
+              "arguments": {
+                "x": {
+                  "from_node": "min11"
+                }
+              }
+            },
+            "multiply8": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply6"
+                },
+                "y": {
+                  "from_node": "ln1"
+                }
+              }
+            },
+            "lt1": {
+              "process_id": "lt",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract3"
+                },
+                "y": {
+                  "from_node": "min10"
+                }
+              }
+            },
+            "if1": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 0,
+                "reject": {
+                  "from_node": "multiply8"
+                },
+                "value": {
+                  "from_node": "lt1"
+                }
+              }
+            },
+            "lte1": {
+              "process_id": "lte",
+              "arguments": {
+                "x": {
+                  "from_node": "min4"
+                },
+                "y": {
+                  "from_node": "subtract3"
+                }
+              }
+            },
+            "if2": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 3.0,
+                "reject": {
+                  "from_node": "if1"
+                },
+                "value": {
+                  "from_node": "lte1"
+                }
+              }
+            },
+            "clip1": {
+              "process_id": "clip",
+              "arguments": {
+                "max": 3.0,
+                "min": 0,
+                "x": {
+                  "from_node": "if2"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels3": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "bands",
+        "target": [
+          "PPI"
+        ]
+      },
+      "result": true
+    }
+  },
+  "id": "ppi",
+  "summary": "",
+  "description": "PPI\n",
+  "parameters": [
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "geometry",
+      "description": "Geometries specified as GeoJSON object.",
+      "schema": {
+        "type": "object",
+        "subtype": "geojson"
+      }
+    }
+  ],
+  "default_job_options": {
+    "logging-threshold": "info"
+  },
+  "default_synchronous_options": {
+    "logging-threshold": "warning"
+  }
+}
