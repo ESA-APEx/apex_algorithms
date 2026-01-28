@@ -1,5 +1,6 @@
 import logging
 import re
+import signal
 from pathlib import Path
 
 import openeo
@@ -65,9 +66,22 @@ def test_run_benchmark(
 
     with track_phase(phase="run-job"):
         # TODO: monitor timing and progress
-        # TODO: abort excessively long batch jobs? https://github.com/Open-EO/openeo-python-client/issues/589
-        job.start_and_wait()
         # TODO: separate "job started" and run phases?
+        max_minutes = request.config.getoption("--maximum-job-time-in-minutes")
+        if max_minutes:
+            def _timeout_handler(signum, frame):
+                raise TimeoutError(
+                    f"Batch job {job.job_id} exceeded maximum allowed time of {max_minutes} minutes"
+                )
+
+            old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
+            signal.alarm(max_minutes * 60)
+        try:
+            job.start_and_wait()
+        finally:
+            if max_minutes:
+                signal.alarm(0)
+                signal.signal(signal.SIGALRM, old_handler)
 
     with track_phase(phase="collect-metadata"):
         collect_metrics_from_job_metadata(job, track_metric=track_metric)

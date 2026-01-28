@@ -44,6 +44,13 @@ def pytest_addoption(parser):
         type=str,
         help="A regex patter to filter the available scenarios by backend.",
     )
+    parser.addoption(
+        "--maximum-job-time-in-minutes",
+        action="store",
+        default=None,
+        type=int,
+        help="Maximum time in minutes a batch job is allowed to run before the test fails due to timeout.",
+    )
 
 
 def pytest_ignore_collect(collection_path, config):

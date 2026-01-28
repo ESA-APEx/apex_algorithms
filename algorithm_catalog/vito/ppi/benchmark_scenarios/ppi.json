@@ -1,0 +1,49 @@
+[
+  {
+    "id": "ppi",
+    "type": "openeo",
+    "description": "ppi example",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "ppi1": {
+        "process_id": "ppi",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/02de9a6f5e6f99f16f686005de47dc34fc886516/algorithm_catalog/vito/ppi/openeo_udp/ppi.json",
+        "arguments": {
+          "temporal_extent": [
+            "2023-08-01",
+            "2023-09-30"
+          ],
+          "geom": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  4.22,
+                  51.16
+                ],
+                [
+                  4.377856,
+                  51.16
+                ],
+                [
+                  4.377856,
+                  51.26
+                ],
+                [
+                  4.22,
+                  51.26
+                ],
+                [
+                  4.22,
+                  51.16
+                ]
+              ]
+            ]
+          }
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  }
+]
