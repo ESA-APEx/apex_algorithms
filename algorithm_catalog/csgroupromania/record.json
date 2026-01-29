@@ -25,7 +25,9 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@cs-soprasteria.com"]
+            "admin": [
+                "@cs-soprasteria.com"
+            ]
         }
     },
     "linkTemplates": [],
@@ -46,7 +48,7 @@
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://www.c-s.ro/wp-content/uploads/logo/CS-GROUP.png"
+            "href": "https://www.c-s.ro/wp-content/uploads/logo/cs-logo-white.png"
         }
     ]
 }
