@@ -60,7 +60,7 @@
             "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/job-results.json"
         },
         "reference_options": {
-            "atol": 0.1
+            "rtol": 0.1
         }
     }
 ]
