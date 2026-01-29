@@ -1,9 +1,26 @@
 {
+  "id": "developmentseed",
   "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
   "properties": {
-    "type": "provider",
+    "created": "2026-01-21T00:00:00Z",
+    "updated": "2026-01-21T00:00:00Z",
+    "type": "algorithm_provider",
     "title": "Development Seed",
     "description": "Development Seed builds open source geospatial technology and data infrastructure.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
     "contacts": [
       {
         "name": "Development Seed",
@@ -15,15 +32,38 @@
         "links": [
           {
             "href": "https://developmentseed.org",
-            "rel": "about"
+            "type": "text/html",
+            "title": "Development Seed",
+            "rel": "website"
           }
         ]
       }
-    ]
+    ],
+    "themes": [],
+    "acl": {
+      "admin": [
+        "@developmentseed.org"
+      ]
+    }
   },
+  "linkTemplates": [],
   "links": [
     {
-      "rel": "icon",
+      "rel": "website",
+      "type": "text/html",
+      "title": "Development Seed",
+      "href": "https://developmentseed.org"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/svg",
+      "title": "Logo",
+      "href": "https://developmentseed.org/assets/graphics/devseed-logo.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg",
+      "title": "Logo",
       "href": "https://developmentseed.org/assets/graphics/devseed-logo.svg"
     }
   ]

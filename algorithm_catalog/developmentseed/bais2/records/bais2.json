@@ -13,13 +13,10 @@
     "title": "BAIS2 - Burned Area Index for Sentinel-2",
     "description": "Detects and maps burned areas using Sentinel-2 red-edge spectral bands. BAIS2 leverages the sensitivity of the red-edge region to chlorophyll content for discriminating burn severity at 20m resolution. Index values range from -1 to 1 for burn scars and 1 to 6 for active fires.",
     "keywords": [
-      "burned area",
-      "fire",
-      "wildfire",
-      "BAIS2",
+      "Natural Hazards",
+      "Wildfires",
       "Sentinel-2",
-      "disaster monitoring",
-      "red-edge"
+      "Data Analysis and Visualization"
     ],
     "language": {
       "code": "en-US",
@@ -85,6 +82,12 @@
       "type": "text/html",
       "title": "openeo-udp repository",
       "href": "https://github.com/developmentseed/openeo-udp"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.cloud"
     },
     {
       "rel": "about",
