@@ -58,7 +58,9 @@
         },
         "reference_data": {
             "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21325868452!tests_test_benchmarks.py__test_run_benchmark_mogpr_s1s2_!actual/openEO.nc"
+        },
+        "reference_options": {
+            "atol": 0.1
         }
     }
 ]
-

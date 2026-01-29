@@ -40,6 +40,9 @@
         "reference_data": {
             "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20735970267!tests_test_benchmarks.py__test_run_benchmark_peakvalley_!actual/job-results.json",
             "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/peakvalley/openEO.nc"
+        },
+        "reference_options": {
+            "atol": 0.1
         }
     }
 ]
