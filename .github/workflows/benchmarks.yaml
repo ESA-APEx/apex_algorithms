@@ -30,7 +30,7 @@ jobs:
           mkdir tmp_path_root
           pytest \
             -vv \
-            -k max_ndvi_stac308 \
+            -k max_ndvi_large_stac308 \
             --log-cli-level=INFO \
             --random-subset=1 \
             --html report/report.html --self-contained-html \
