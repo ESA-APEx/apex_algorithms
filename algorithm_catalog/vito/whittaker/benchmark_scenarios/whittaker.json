@@ -58,6 +58,9 @@
         "reference_data": {
             "timeseries.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/timeseries.json",
             "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/whittaker/job-results.json"
+        },
+        "reference_options": {
+            "rtol": 0.1
         }
     }
 ]

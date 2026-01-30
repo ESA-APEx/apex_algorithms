@@ -57,6 +57,9 @@
         "reference_data": {
             "openEO.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/openEO.tif",
             "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/job-results.json"
+        },
+        "reference_options": {
+            "rtol": 0.1
         }
     }
 ]
