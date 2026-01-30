@@ -39,13 +39,13 @@
             "href": "https://www.c-s.ro/"
         },
         {
-            "rel": "logo-light",
+            "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
             "href": "https://www.c-s.ro/wp-content/uploads/logo/CS-GROUP.png"
         },
         {
-            "rel": "logo-dark",
+            "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
             "href": "https://www.c-s.ro/wp-content/uploads/logo/cs-logo-white.png"
