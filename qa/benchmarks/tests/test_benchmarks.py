@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 import signal
@@ -55,6 +56,8 @@ def test_run_benchmark(
 
         connection: openeo.Connection = connection_factory(url=backend)
 
+    report_path = None
+
     with track_phase(phase="create-job"):
         # TODO #14 scenario option to use synchronous instead of batch job mode?
         job = connection.create_job(
@@ -63,6 +66,19 @@ def test_run_benchmark(
             additional=scenario.job_options,
         )
         track_metric("job_id", job.job_id)
+
+        if request.config.getoption("--upload-benchmark-report"):
+            report_path = tmp_path / "benchmark_report.json"
+            report_path.write_text(json.dumps({
+                "job_id": job.job_id,
+                "scenario_id": scenario.id,
+                "scenario_description": scenario.description,
+                "scenario_backend": scenario.backend,
+                "scenario_source": str(scenario.source) if scenario.source else None,
+                "reference_data": scenario.reference_data,
+                "reference_options": scenario.reference_options,
+            }, indent=2))
+            upload_assets_on_fail(report_path)
 
     with track_phase(phase="run-job"):
         # TODO: monitor timing and progress
@@ -101,6 +117,27 @@ def test_run_benchmark(
         reference_dir = download_reference_data(
             scenario=scenario, reference_dir=tmp_path / "reference"
         )
+
+    if report_path is not None:
+        report = json.loads(report_path.read_text())
+        report["actual_files"] = {
+            str(p.relative_to(actual_dir)): f"{p.stat().st_size / 1024:.1f} kb"
+            for p in sorted(actual_dir.rglob("*")) if p.is_file()
+        }
+        ref_files = {}
+        for p in sorted(reference_dir.rglob("*")):
+            if not p.is_file():
+                continue
+            rel = p.relative_to(reference_dir)
+            size_str = f"{p.stat().st_size / 1024:.1f} kb"
+            actual_counterpart = actual_dir / rel
+            if not actual_counterpart.exists():
+                size_str += " (missing in actual)"
+            elif actual_counterpart.stat().st_size != p.stat().st_size:
+                size_str += f" (actual: {actual_counterpart.stat().st_size / 1024:.1f} kb)"
+            ref_files[str(rel)] = size_str
+        report["reference_files"] = ref_files
+        report_path.write_text(json.dumps(report, indent=2))
 
     with track_phase(
         phase="compare", describe_exception=analyse_results_comparison_exception
