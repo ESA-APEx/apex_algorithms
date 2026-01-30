@@ -143,14 +143,11 @@ def test_run_benchmark(
         phase="compare", describe_exception=analyse_results_comparison_exception
     ):
         # Compare actual results with reference data
-        if scenario.reference_data:
-            assert_job_results_allclose(
-                actual=actual_dir,
-                expected=reference_dir,
-                tmp_path=tmp_path,
-                rtol=scenario.reference_options.get("rtol", 1e-6),
-                atol=scenario.reference_options.get("atol", 1e-6),
-                pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 0.0),
-            )
-        else:
-            _log.info(f"Reference data not provided for scenario {scenario.id}, skipping results comparison")
+        assert_job_results_allclose(
+            actual=actual_dir,
+            expected=reference_dir,
+            tmp_path=tmp_path,
+            rtol=scenario.reference_options.get("rtol", 1e-6),
+            atol=scenario.reference_options.get("atol", 1e-6),
+            pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 0.0),
+        )
