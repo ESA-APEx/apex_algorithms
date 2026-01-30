@@ -13,7 +13,7 @@
             "2023-08-01",
             "2023-09-30"
           ],
-          "geom": {
+          "geometry": {
             "type": "Polygon",
             "coordinates": [
               [
