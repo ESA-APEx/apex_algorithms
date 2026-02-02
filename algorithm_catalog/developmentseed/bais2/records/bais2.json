@@ -84,16 +84,22 @@
       "href": "https://github.com/developmentseed/openeo-udp"
     },
     {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=bais2&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json&server=openeo.cloud"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "openEO platform",
       "href": "https://openeo.cloud"
     },
     {
-      "rel": "about",
-      "type": "text/html",
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
       "title": "BAIS2 notebook",
-      "href": "https://github.com/developmentseed/openeo-udp/blob/main/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/bais2_burned_area.ipynb"
+      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/refs/heads/main/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/bais2_burned_area.ipynb"
     },
     {
       "rel": "platform",
