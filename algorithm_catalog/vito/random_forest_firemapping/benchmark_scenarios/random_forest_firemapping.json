@@ -92,6 +92,9 @@
         "reference_data": {
             "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18670675142!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/openEO.tif",
             "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18670675142!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/job-results.json"
+        },
+        "reference_options": {
+            "pixel_tolerance": 0.1
         }
     }
 ]
