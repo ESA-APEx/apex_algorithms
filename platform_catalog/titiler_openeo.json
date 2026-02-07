@@ -39,7 +39,8 @@
           {
             "href": "https://sentinel-hub.github.io/titiler-openeo/",
             "rel": "about",
-            "title": "TiTiler openEO"
+            "title": "TiTiler openEO",
+            "type": "text/html"
           }
         ],
         "contactInstructions": "Email for platform support",
@@ -58,6 +59,18 @@
       "type": "text/html",
       "title": "TiTiler openEO",
       "href": "https://sentinel-hub.github.io/titiler-openeo/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "TiTiler openEO Logo",
+      "href": "https://sentinel-hub.github.io/titiler-openeo/img/openeo-titiler-logo.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "TiTiler openEO Logo (B&W)",
+      "href": "https://sentinel-hub.github.io/titiler-openeo/img/openeo-titiler-logo-bnw.png"
     }
   ]
 }
