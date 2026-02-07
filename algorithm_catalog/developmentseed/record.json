@@ -56,15 +56,15 @@
     },
     {
       "rel": "logo-light",
-      "type": "image/svg",
+      "type": "image/png",
       "title": "Logo",
-      "href": "https://developmentseed.org/assets/graphics/devseed-logo.svg"
+      "href": "https://sentinel-hub.github.io/titiler-openeo/img/devseed-logo-250px-99.png"
     },
     {
       "rel": "logo-dark",
-      "type": "image/svg",
+      "type": "image/png",
       "title": "Logo",
-      "href": "https://developmentseed.org/assets/graphics/devseed-logo.svg"
+      "href": "https://sentinel-hub.github.io/titiler-openeo/img/devseed-logo-250px-99.png"
     }
   ]
 }
