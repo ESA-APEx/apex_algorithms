@@ -30,8 +30,9 @@
       }
     },
     "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14897213753!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/job-results.json",
-      "vectorcube.geojson": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-14897213753!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/vectorcube.geojson"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21517683654!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/job-results.json",
+      "vectorcube.geojson": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21517683654!tests_test_benchmarks.py__test_run_benchmark_wind_turbine-terrascope_!actual/vectorcube.geojson"
     }
   }
 ]
+
