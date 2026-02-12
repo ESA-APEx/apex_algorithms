@@ -1,0 +1,72 @@
+[
+  {
+    "id": "WorldAgriCommodities",
+    "type": "openeo",
+    "description": "openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data of the WorldAgriCommodities project",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "parcel_delineation1": {
+        "process_id": "wac_inference_africa",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c2d74e55afbc76ddb8eca9679196d1eab282e98c/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": 749000,
+            "south": -2378000,
+            "east": 750000,
+            "north": -2377000,
+            "crs": "EPSG:32638"
+          },
+          "temporal_extent": [
+            "2023-01-01",
+            "2024-01-01"
+          ],
+          "crs": "EPSG:32638",
+          "model_id": "WorldAgriCommodities_Africa_v1"
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-19588693309!tests_test_benchmarks.py__test_run_benchmark_WorldAgriCommodities_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-19588693309!tests_test_benchmarks.py__test_run_benchmark_WorldAgriCommodities_!actual/openEO.tif"
+    },
+    "reference_options": {
+      "pixel_tolerance": 0.1
+    }
+  },
+  {
+    "id": "WorldAgriCommodities_stac308",
+    "type": "openeo",
+    "description": "openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data of the WorldAgriCommodities project",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "parcel_delineation1": {
+        "process_id": "wac_inference_africa_stac308",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa_stac308.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": 749000,
+            "south": -2378000,
+            "east": 750000,
+            "north": -2377000,
+            "crs": "EPSG:32638"
+          },
+          "temporal_extent": [
+            "2023-01-01",
+            "2024-01-01"
+          ],
+          "crs": "EPSG:32638",
+          "model_id": "WorldAgriCommodities_Africa_v1"
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21850760486!tests_test_benchmarks.py__test_run_benchmark_WorldAgriCommodities_stac308_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21850760486!tests_test_benchmarks.py__test_run_benchmark_WorldAgriCommodities_stac308_!actual/openEO.nc"
+    },
+    "reference_options": {
+      "pixel_tolerance": 0.1
+    }
+  }
+]
