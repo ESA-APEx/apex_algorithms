@@ -1,5 +1,5 @@
 {
-    "id": "eodc",
+    "id": "csgroupromania",
     "type": "Feature",
     "conformsTo": [
         "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
@@ -8,7 +8,7 @@
         "created": "2025-12-03T13:00:00Z",
         "updated": "2025-12-03T13:00:00Z",
         "type": "algorithm_provider",
-        "title": "EODC",
+        "title": "CS GROUP - ROMANIA",
         "description": "",
         "keywords": [],
         "language": {
@@ -25,7 +25,9 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@eodc.eu", "@vito.be"]
+            "admin": [
+                "@cs-soprasteria.com"
+            ]
         }
     },
     "linkTemplates": [],
@@ -33,20 +35,20 @@
         {
             "rel": "website",
             "type": "text/html",
-            "title": "EODC",
-            "href": "https://eodc.eu/"
-        },
-        {
-            "rel": "logo-light",
-            "type": "image/png",
-            "title": "Logo",
-            "href": "https://eodc.eu/wp-content/uploads/2024/12/eodc_Logo_earth_white_400x400_rgb.png"  
+            "title": "CS GROUP - ROMANIA",
+            "href": "https://www.c-s.ro/"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://eodc.eu/wp-content/themes/eodc/assets/imgs/eodc_logo_marine.svg"
+            "href": "https://www.c-s.ro/wp-content/uploads/logo/CS-GROUP.png"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.c-s.ro/wp-content/uploads/logo/cs-logo-white.png"
         }
     ]
 }
