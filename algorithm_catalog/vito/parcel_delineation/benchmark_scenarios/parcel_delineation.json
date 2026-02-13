@@ -56,8 +56,9 @@
       "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21333132156!tests_test_benchmarks.py__test_run_benchmark_parcel_delineation_stac308_!actual/job-results.json",
       "openEO_1970-01-01Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21333132156!tests_test_benchmarks.py__test_run_benchmark_parcel_delineation_stac308_!actual/openEO_1970-01-01Z.tif"
     }
-  }, 
+  , 
   "reference_options": {
       "pixel_tolerance": 5 
     }
+  }
 ]
