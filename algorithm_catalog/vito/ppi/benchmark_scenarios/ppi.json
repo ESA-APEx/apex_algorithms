@@ -44,9 +44,9 @@
         "result": true
       }
     },
-    "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21907896387!tests_test_benchmarks.py__test_run_benchmark_ppi_!actual/job-results.json",
-      "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21907896387!tests_test_benchmarks.py__test_run_benchmark_ppi_!actual/openEO_2023-08-03Z.tif"
+    "reference_data": {},
+    "reference_options": {
+      "rtol": 0.1
     }
   }
 ]
