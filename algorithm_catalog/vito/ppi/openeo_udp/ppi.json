@@ -9,11 +9,20 @@
           "sunZenithAngles"
         ],
         "id": "SENTINEL2_L2A",
-        "spatial_extent": {
-          "from_parameter": "geometry"
-        },
+        "spatial_extent": null,
         "temporal_extent": {
           "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "filterspatial1": {
+      "process_id": "filter_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "geometries": {
+          "from_parameter": "geometry"
         }
       }
     },
@@ -24,11 +33,20 @@
           "SCL"
         ],
         "id": "SENTINEL2_L2A",
-        "spatial_extent": {
-          "from_parameter": "geometry"
-        },
+        "spatial_extent": null,
         "temporal_extent": {
           "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "filterspatial2": {
+      "process_id": "filter_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        },
+        "geometries": {
+          "from_parameter": "geometry"
         }
       }
     },
@@ -36,7 +54,7 @@
       "process_id": "reduce_dimension",
       "arguments": {
         "data": {
-          "from_node": "loadcollection2"
+          "from_node": "filterspatial2"
         },
         "dimension": "bands",
         "reducer": {
@@ -137,7 +155,7 @@
       "process_id": "mask",
       "arguments": {
         "data": {
-          "from_node": "loadcollection1"
+          "from_node": "filterspatial1"
         },
         "mask": {
           "from_node": "reducedimension1"
@@ -151,17 +169,25 @@
           "dvi_max",
           "dvi_soil"
         ],
-        "spatial_extent": {
-          "from_parameter": "geometry"
-        },
         "url": "https://stac.openeo.vito.be/collections/MDVI"
+      }
+    },
+    "filterspatial3": {
+      "process_id": "filter_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "geometries": {
+          "from_parameter": "geometry"
+        }
       }
     },
     "reducedimension2": {
       "process_id": "reduce_dimension",
       "arguments": {
         "data": {
-          "from_node": "loadstac1"
+          "from_node": "filterspatial3"
         },
         "dimension": "t",
         "reducer": {
@@ -283,8 +309,8 @@
         "dimension": "bands",
         "reducer": {
           "process_graph": {
-            "min1": {
-              "process_id": "min",
+            "max3": {
+              "process_id": "max",
               "arguments": {
                 "data": {
                   "from_parameter": "data"
@@ -337,51 +363,21 @@
                 "index": 2
               }
             },
-            "arraycreate1": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "arrayelement2"
-                  },
-                  0.01
-                ]
-              }
-            },
-            "max3": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate1"
-                }
-              }
-            },
-            "arraycreate2": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max3"
-                  },
-                  1.5
-                ]
-              }
-            },
-            "min2": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate2"
-                }
-              }
-            },
             "multiply2": {
               "process_id": "multiply",
               "arguments": {
                 "x": {
-                  "from_node": "min2"
+                  "from_node": "arrayelement2"
                 },
-                "y": 57.295827908797776
+                "y": 0.017453292500000002
+              }
+            },
+            "cos1": {
+              "process_id": "cos",
+              "arguments": {
+                "x": {
+                  "from_node": "multiply2"
+                }
               }
             },
             "divide1": {
@@ -389,7 +385,7 @@
               "arguments": {
                 "x": 0.0477,
                 "y": {
-                  "from_node": "multiply2"
+                  "from_node": "cos1"
                 }
               }
             },
@@ -402,7 +398,7 @@
                 }
               }
             },
-            "arraycreate3": {
+            "arraycreate1": {
               "process_id": "array_create",
               "arguments": {
                 "data": [
@@ -413,11 +409,11 @@
                 ]
               }
             },
-            "min3": {
+            "min1": {
               "process_id": "min",
               "arguments": {
                 "data": {
-                  "from_node": "arraycreate3"
+                  "from_node": "arraycreate1"
                 }
               }
             },
@@ -426,7 +422,7 @@
               "arguments": {
                 "x": 1,
                 "y": {
-                  "from_node": "min3"
+                  "from_node": "min1"
                 }
               }
             },
@@ -446,7 +442,7 @@
                   "from_node": "multiply3"
                 },
                 "y": {
-                  "from_node": "multiply2"
+                  "from_node": "cos1"
                 }
               }
             },
@@ -454,7 +450,7 @@
               "process_id": "add",
               "arguments": {
                 "x": {
-                  "from_node": "min3"
+                  "from_node": "min1"
                 },
                 "y": {
                   "from_node": "divide2"
@@ -497,80 +493,24 @@
                 "y": 10000.0
               }
             },
-            "arraycreate4": {
+            "arraycreate2": {
               "process_id": "array_create",
               "arguments": {
                 "data": [
                   {
                     "from_node": "divide4"
                   },
-                  0.3
+                  0.8
                 ]
               }
             },
-            "max4": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate4"
-                }
-              }
-            },
-            "arraycreate5": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max4"
-                  },
-                  0.9
-                ]
-              }
-            },
-            "min4": {
+            "min2": {
               "process_id": "min",
               "arguments": {
                 "data": {
-                  "from_node": "arraycreate5"
-                }
-              }
-            },
-            "arraycreate6": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "min4"
-                  },
-                  0.3
-                ]
-              }
-            },
-            "max5": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate6"
-                }
-              }
-            },
-            "arraycreate7": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max5"
-                  },
-                  0.9
-                ]
-              }
-            },
-            "min5": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate7"
-                }
+                  "from_node": "arraycreate2"
+                },
+                "ignore_nodata": true
               }
             },
             "add3": {
@@ -578,7 +518,7 @@
               "arguments": {
                 "x": 1,
                 "y": {
-                  "from_node": "min5"
+                  "from_node": "min2"
                 }
               }
             },
@@ -587,26 +527,7 @@
               "arguments": {
                 "x": 1,
                 "y": {
-                  "from_node": "min5"
-                }
-              }
-            },
-            "arraycreate8": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "subtract2"
-                  },
-                  0.01
-                ]
-              }
-            },
-            "max6": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate8"
+                  "from_node": "min2"
                 }
               }
             },
@@ -617,7 +538,7 @@
                   "from_node": "add3"
                 },
                 "y": {
-                  "from_node": "max6"
+                  "from_node": "subtract2"
                 }
               }
             },
@@ -632,31 +553,12 @@
                 }
               }
             },
-            "arraycreate9": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "multiply5"
-                  },
-                  2.0
-                ]
-              }
-            },
-            "min6": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate9"
-                }
-              }
-            },
             "multiply6": {
               "process_id": "multiply",
               "arguments": {
                 "x": -1,
                 "y": {
-                  "from_node": "min6"
+                  "from_node": "multiply5"
                 }
               }
             },
@@ -678,44 +580,6 @@
                 "y": 10000.0
               }
             },
-            "arraycreate10": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "divide6"
-                  },
-                  0.0
-                ]
-              }
-            },
-            "max7": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate10"
-                }
-              }
-            },
-            "arraycreate11": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max7"
-                  },
-                  1.0
-                ]
-              }
-            },
-            "min7": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate11"
-                }
-              }
-            },
             "arrayelement5": {
               "process_id": "array_element",
               "arguments": {
@@ -734,52 +598,14 @@
                 "y": 10000.0
               }
             },
-            "arraycreate12": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "divide7"
-                  },
-                  0.0
-                ]
-              }
-            },
-            "max8": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate12"
-                }
-              }
-            },
-            "arraycreate13": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max8"
-                  },
-                  1.0
-                ]
-              }
-            },
-            "min8": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate13"
-                }
-              }
-            },
             "subtract3": {
               "process_id": "subtract",
               "arguments": {
                 "x": {
-                  "from_node": "min7"
+                  "from_node": "divide6"
                 },
                 "y": {
-                  "from_node": "min8"
+                  "from_node": "divide7"
                 }
               }
             },
@@ -787,7 +613,7 @@
               "process_id": "subtract",
               "arguments": {
                 "x": {
-                  "from_node": "min4"
+                  "from_node": "min2"
                 },
                 "y": {
                   "from_node": "subtract3"
@@ -812,101 +638,14 @@
                 "y": 10000.0
               }
             },
-            "arraycreate14": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "divide8"
-                  },
-                  0.05
-                ]
-              }
-            },
-            "max9": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate14"
-                }
-              }
-            },
-            "arraycreate15": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max9"
-                  },
-                  0.3
-                ]
-              }
-            },
-            "min9": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate15"
-                }
-              }
-            },
-            "multiply7": {
-              "process_id": "multiply",
-              "arguments": {
-                "x": {
-                  "from_node": "min4"
-                },
-                "y": 0.8
-              }
-            },
-            "arraycreate16": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "min9"
-                  },
-                  {
-                    "from_node": "multiply7"
-                  }
-                ]
-              }
-            },
-            "min10": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate16"
-                }
-              }
-            },
             "subtract5": {
               "process_id": "subtract",
               "arguments": {
                 "x": {
-                  "from_node": "min4"
+                  "from_node": "min2"
                 },
                 "y": {
-                  "from_node": "min10"
-                }
-              }
-            },
-            "arraycreate17": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "subtract5"
-                  },
-                  0.001
-                ]
-              }
-            },
-            "max10": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate17"
+                  "from_node": "divide8"
                 }
               }
             },
@@ -917,45 +656,7 @@
                   "from_node": "subtract4"
                 },
                 "y": {
-                  "from_node": "max10"
-                }
-              }
-            },
-            "arraycreate18": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "divide9"
-                  },
-                  0.001
-                ]
-              }
-            },
-            "max11": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate18"
-                }
-              }
-            },
-            "arraycreate19": {
-              "process_id": "array_create",
-              "arguments": {
-                "data": [
-                  {
-                    "from_node": "max11"
-                  },
-                  0.999
-                ]
-              }
-            },
-            "min11": {
-              "process_id": "min",
-              "arguments": {
-                "data": {
-                  "from_node": "arraycreate19"
+                  "from_node": "subtract5"
                 }
               }
             },
@@ -963,11 +664,11 @@
               "process_id": "ln",
               "arguments": {
                 "x": {
-                  "from_node": "min11"
+                  "from_node": "divide9"
                 }
               }
             },
-            "multiply8": {
+            "multiply7": {
               "process_id": "multiply",
               "arguments": {
                 "x": {
@@ -985,7 +686,7 @@
                   "from_node": "subtract3"
                 },
                 "y": {
-                  "from_node": "min10"
+                  "from_node": "divide8"
                 }
               }
             },
@@ -994,7 +695,7 @@
               "arguments": {
                 "accept": 0,
                 "reject": {
-                  "from_node": "multiply8"
+                  "from_node": "multiply7"
                 },
                 "value": {
                   "from_node": "lt1"
@@ -1005,7 +706,7 @@
               "process_id": "lte",
               "arguments": {
                 "x": {
-                  "from_node": "min4"
+                  "from_node": "min2"
                 },
                 "y": {
                   "from_node": "subtract3"
