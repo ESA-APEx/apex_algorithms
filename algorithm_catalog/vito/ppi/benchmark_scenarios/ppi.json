@@ -7,7 +7,7 @@
     "process_graph": {
       "ppi1": {
         "process_id": "ppi",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/02de9a6f5e6f99f16f686005de47dc34fc886516/algorithm_catalog/vito/ppi/openeo_udp/ppi.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/ppi/openeo_udp/ppi.json",
         "arguments": {
           "temporal_extent": [
             "2022-06-11",
