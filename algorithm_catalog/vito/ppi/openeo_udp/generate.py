@@ -1,6 +1,5 @@
-#%%
+# %%
 import json
-import sys
 from pathlib import Path
 
 import openeo
@@ -13,23 +12,24 @@ def create_ppi_cube(connection: openeo.Connection, temporal_extent, geom):
     s2 = connection.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
-        spatial_extent=geom,
         bands=["B04", "B08", "sunZenithAngles"],
-    )
+    ).filter_spatial(geom)
 
     s2_scl = connection.load_collection(
         "SENTINEL2_L2A",
         temporal_extent=temporal_extent,
-        spatial_extent=geom,
         bands=["SCL"],
-    )
+    ).filter_spatial(geom)
     scl = s2_scl.band("SCL")
     cloudmask = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10)) * 1
     s2_masked = s2.mask(cloudmask)
 
-    mdvi = connection.load_stac(
-        "https://stac.openeo.vito.be/collections/MDVI", spatial_extent=geom, bands=["dvi_max", "dvi_soil"]
-    ).reduce_temporal(reducer=lambda x: eop.max(x, ignore_nodata=True)).rename_labels(dimension="bands", target=["dvi_max", "dvi_soil"])
+    mdvi = (
+        connection.load_stac("https://stac.openeo.vito.be/collections/MDVI", bands=["dvi_max", "dvi_soil"])
+        .filter_spatial(geom)
+        .reduce_temporal(reducer=lambda x: eop.max(x, ignore_nodata=True))
+        .rename_labels(dimension="bands", target=["dvi_max", "dvi_soil"])
+    )
 
     dvi_max = mdvi.filter_bands(["dvi_max"])
     dvi_soil = mdvi.filter_bands(["dvi_soil"])
@@ -40,7 +40,7 @@ def create_ppi_cube(connection: openeo.Connection, temporal_extent, geom):
         .rename_labels(dimension="bands", target=["dvi_soil_scalar"])
     )
 
-    dvi_max_clipped = dvi_max.merge_cubes(scalar_dvi).reduce_bands(reducer=lambda x: eop.min(x, ignore_nodata=True))
+    dvi_max_clipped = dvi_max.merge_cubes(scalar_dvi).reduce_bands(reducer=lambda x: eop.max(x, ignore_nodata=True))
 
     ppi_input = s2_masked.merge_cubes(dvi_max_clipped).merge_cubes(dvi_soil)
 
@@ -63,88 +63,52 @@ def _Qe(sza):
     Qe = dc + (1 - dc) * g / sza
     return Qe
 
+
 def _k(sza, dvi_max):
-    sza_rad = sza  # Assume radians for now
-    
-    # Safety: ensure reasonable values
-    sza_safe = eop.max(eop.array_create([sza_rad, 0.01]))  # > 0
-    sza_safe = eop.min(eop.array_create([sza_safe, 1.5]))   # < ~85°
-    
-    dvi_max_safe = eop.max(eop.array_create([dvi_max, 0.3]))
-    dvi_max_safe = eop.min(eop.array_create([dvi_max_safe, 0.9]))
-    
     # Calculate Qe
-    Qe_deg = _Qe(sza_safe * (180/3.14159))  # Convert rad to deg
-    
-    # Use whichever gives reasonable Qe (~0.05-0.5)
-    Qe = Qe_deg  #
-    
+    Qe = _Qe(sza)
+
     # Calculate k with safe denominator
-    k_num = 1 + dvi_max_safe
-    k_den = 1 - dvi_max_safe
-    k_den = eop.max(eop.array_create([k_den, 0.01]))
-    
+    k_num = 1 + dvi_max
+    k_den = 1 - dvi_max
+
     k = (1 / (4 * Qe)) * (k_num / k_den)
-    
-    # k should be 0.3-1.5 - if not, something's wrong
-    k = eop.min(eop.array_create([k, 2.0]))
-    
+
     return k
 
 
 def _ppi(input_bands):
     SCALE = 10000.0
-        
-    red_raw = input_bands[0] / SCALE
-    nir_raw = input_bands[1] / SCALE
-    sza = input_bands[2]
+
+    red = input_bands[0] / SCALE
+    nir = input_bands[1] / SCALE
+    sza_deg = input_bands[2]
     dvi_max = input_bands[3] / SCALE
     dvi_soil = input_bands[4] / SCALE
-    
-    # CLIP reflectance to physically possible range [0, 1]
-    red = eop.max(eop.array_create([red_raw, 0.0]))
-    red = eop.min(eop.array_create([red, 1.0]))
-    
-    nir = eop.max(eop.array_create([nir_raw, 0.0]))
-    nir = eop.min(eop.array_create([nir, 1.0]))
-    
+
+    sza_rad = sza_deg * (3.14159265 / 180)
+    sza = eop.cos(sza_rad)
+
+    dvi_max = eop.min(eop.array_create([dvi_max, 0.8]), ignore_nodata=True)
+
     dvi = nir - red
-    
-    # CLIP dvi_max to reasonable vegetation range
-    dvi_max = eop.max(eop.array_create([dvi_max, 0.3]))  # Minimum 0.3
-    dvi_max = eop.min(eop.array_create([dvi_max, 0.9]))  # Maximum 0.9
-    
-    # CLIP dvi_soil to reasonable soil range  
-    dvi_soil = eop.max(eop.array_create([dvi_soil, 0.05]))  # Minimum 0.05
-    dvi_soil = eop.min(eop.array_create([dvi_soil, 0.3]))   # Maximum 0.3
-    
-    # Ensure dvi_soil < dvi_max
-    dvi_soil = eop.min(eop.array_create([dvi_soil, dvi_max * 0.8]))
-    
+
     # Calculate ratio with SAFETY BOUNDS
     numerator = dvi_max - dvi
     denominator = dvi_max - dvi_soil
-    
-    # Prevent division by near-zero and extreme values
-    denominator = eop.max(eop.array_create([denominator, 0.001]))
     ratio = numerator / denominator
-    
-    # Clip ratio to valid log range
-    ratio = eop.max(eop.array_create([ratio, 0.001]))  # Avoid log(0)
-    ratio = eop.min(eop.array_create([ratio, 0.999]))  # Avoid log(1)
-    
-    # Calculate k with the corrected _k function below
+
+    # Calculate k with the corrected _k function
     k = _k(sza, dvi_max)
-    
+
     # Calculate PPI
     ppi = -1 * k * eop.ln(ratio)
-    
+
     # Apply PPI bounds
     ppi = eop.if_(dvi < dvi_soil, 0, ppi)
     ppi = eop.if_(dvi_max <= dvi, 3.0, ppi)
     ppi = ppi.clip(0, 3.0)
-    
-    # Return with debug bands
+
     return ppi
 
 
@@ -159,7 +123,6 @@ def generate() -> dict:
         temporal_extent=temporal_extent,
         geom=geom,
     )
-
 
     process = build_process_dict(
         process_graph=ppi_cube,
@@ -185,7 +148,7 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     # TODO: how to enforce a useful order of top-level keys?
-    OUTPUT_PATH = Path(r"./ppi.json")
+    OUTPUT_PATH = Path(__file__).parent / "ppi.json"
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
@@ -194,9 +157,8 @@ if __name__ == "__main__":
     print(f"Saved to {OUTPUT_PATH}")
 
 
-
 # Example usage in sandbox
-'''
+"""
 spatial_extent = {
     "west": 4.22,
     "south": 51.16,
@@ -221,4 +183,4 @@ ppi_cube = create_ppi_cube(
     geom=geom
 )
 job = ppi_cube.create_job(out_format="GTiff", title="ppi_example").start_and_wait()
-'''
+"""
