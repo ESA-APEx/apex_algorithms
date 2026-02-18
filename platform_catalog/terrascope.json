@@ -1,0 +1,66 @@
+{
+  "id": "terrascope",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2024-05-17T00:00:00Z",
+    "updated": "2024-05-17T00:00:00Z",
+    "type": "openeo_backend",
+    "title": "Terrascope openEO Processing Backend",
+    "short_title": "Terrascope",
+    "description": "Terrascope enables processing using openEO.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Terrascope",
+        "links": [
+          {
+            "href": "https://terrascope.be/",
+            "rel": "about",
+            "title": "Terrascope",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "operator"
+        ]
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "Terrascope",
+      "href": "https://terrascope.be/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/svg+xml",
+      "title": "Terrascope Logo",
+      "href": "https://terrascope.be/themes/custom/vito_terrascope/logo.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg+xml",
+      "title": "Terrascope Logo",
+      "href": "https://dataspace.copernicus.eu/sites/default/files/styles/logo_medium/public/media/logo/2024-11/terrascope_extra_logo_white-blue.png?itok=NPxA7JME"
+    }
+  ]
+}

@@ -15,8 +15,9 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "surface water extent",
-      "detection"
+      "Surface Water",
+      "Sentinel-1",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
@@ -99,6 +100,18 @@
       "type": "application/json",
       "title": "Terrascope openEO",
       "href": "https://openeo.vito.be"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "Terrascope openeEO",
+      "href": "../../../../platform_catalog/terrascope.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "DHI",
+      "href": "../../record.json"
     },
     {
       "rel": "webapp",
