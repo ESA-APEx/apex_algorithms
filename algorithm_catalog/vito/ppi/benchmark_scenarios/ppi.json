@@ -44,7 +44,10 @@
         "result": true
       }
     },
-    "reference_data": {},
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/442!tests_test_benchmarks.py__test_run_benchmark_ppi_!actual/job-results.json",
+      "openEO_2022-06-11Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/442!tests_test_benchmarks.py__test_run_benchmark_ppi_!actual/openEO_2022-06-11Z.tif"
+    },
     "reference_options": {
       "rtol": 0.1
     }
