@@ -1,5 +1,5 @@
 {
-  "id": "wac_inference",
+  "id": "world_agrocommodities",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
@@ -11,7 +11,7 @@
     "created": "2025-08-08T00:00:00Z",
     "updated": "2025-08-08T00:00:00Z",
     "type": "service",
-    "title": "WorldAgriCommodities (WAC) Processing Pipeline",
+    "title": "WorldAgroCommodities (WAC) Processing Pipeline",
     "description": "This repository implements an end-to-end openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data, a suite of preprocessing steps, vegetation indices, and a sliding-window ONNX model. The ML model was trained to classify agriculture activity for specific commodities in africa in the context of ESA's World Agro Commodities project",
     "cost_estimate": 0.125,
     "cost_unit": "platform credits per km²",
@@ -88,7 +88,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9a0622e87ed31f2034ce4a9beb4165d941dc09cd/algorithm_catalog/wur/worldagrocommodities/openeo_udp/wac_inference_africa.json"
+      "href": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.1/src/world_agrocommodities/udp/world_agrocommodities.json"
     },
     {
       "rel": "code",

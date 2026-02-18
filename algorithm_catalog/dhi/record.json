@@ -7,7 +7,7 @@
     "properties": {
         "created": "2025-12-03T13:00:00Z",
         "updated": "2025-12-03T13:00:00Z",
-        "type": "algoritm_provider",
+        "type": "algorithm_provider",
         "title": "DHI Group",
         "description": "",
         "keywords": [],
@@ -25,7 +25,7 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@dhigroup.com"]
+            "admin": ["@dhigroup.com", "@vito.be"]
         }
     },
     "linkTemplates": [],

@@ -163,7 +163,7 @@
             "rel": "example-output",
             "type": "application/netcdf",
             "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/openEO.tif"
+            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21791721873!tests_test_benchmarks.py__test_run_benchmark_phenology_!actual/openEO_2022-05-02Z.tif"
         },
         {
             "rel": "thumbnail",

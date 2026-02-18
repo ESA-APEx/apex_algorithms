@@ -65,7 +65,7 @@
           "type": "string",
           "description": "Type of the OGC API Record",
           "enum": [
-            "algoritm_provider"
+            "algorithm_provider"
           ]
         },
         "title": {
