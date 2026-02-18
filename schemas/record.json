@@ -125,7 +125,8 @@
               "Digital Elevation/Terrain Model (DEM)",
               "ECMWF ERA5",
               "Data Analysis and Visualization",
-              "Statistical Applications"
+              "Statistical Applications",
+              "Surface Water"
             ]
           },
           "minItems": 1,
