@@ -122,6 +122,12 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=[PROCESS_ID]&wizard~processUrl=[PROCESS_URL]&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "[THUMBNAIL_URL]"
     }
   ]
 }
