@@ -15,9 +15,8 @@
     "cost_estimate": 2,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "deforestation",
-      "detection",
-      "Amazon"
+      "Sentinel-1",
+      "Deforestation"
     ],
     "language": {
       "code": "en-US",
@@ -98,7 +97,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/..."
+      "href": "[PROCESS_URL]"
     },
     {
       "rel": "service",
@@ -106,11 +105,23 @@
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
+     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
     {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Eurac Research",
+      "href": "../../record.json"
+    },
+     {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=[PROCESS_ID]&wizard~processUrl=[PROCESS_URL]&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
