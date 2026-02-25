@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ramona_benin",
+    "type": "openeo",
+    "description": "extract for Benin",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "RAMONA-herbaceous_rangeland_biomass-country-mosaick": {
+        "process_id": "RAMONA-herbaceous_rangeland_biomass-country-mosaick",
+        "arguments": {
+          "year": "2022",
+          "month": "06",
+          "country": "benin"
+        },
+        "result": true,
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8efbe040499e0108a6ed7fce5ca92a3f08115a7f/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/openeo_udp/RAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20768689435!tests_test_benchmarks.py__test_run_benchmark_ramona_benin_!actual/job-results.json",
+      "ramona_hrb.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21250263635!tests_test_benchmarks.py__test_run_benchmark_ramona_benin_!actual/ramona_hrb.tif"
+    }
+  }
+]

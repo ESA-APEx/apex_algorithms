@@ -50,3 +50,9 @@ def collect_metrics_from_results_metadata(
         track_metric("results:proj:shape:area:megapixel", max(proj_shape_area_mpx))
     if proj_shape_area_km2:
         track_metric("results:proj:bbox:area:utm:km2", max(proj_shape_area_km2))
+
+
+def analyse_results_comparison_exception(exc: Exception) -> Union[str, None]:
+    if isinstance(exc, AssertionError):
+        if "Differing 'derived_from' links" in str(exc):
+            return "derived_from-change"

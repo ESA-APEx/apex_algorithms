@@ -1,2 +1,3 @@
 report/
 tmp_path_root/
+pytest_output.txt

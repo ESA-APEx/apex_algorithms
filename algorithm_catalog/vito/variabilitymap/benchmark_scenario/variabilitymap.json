@@ -66,6 +66,81 @@
         "reference_data": {
             "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/job-results.json",
             "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
+        },
+        "reference_options": {
+            "atol": 0.1
+        }
+    },
+    {
+        "id": "variabilitymap_stac308",
+        "type": "openeo",
+        "description": "Daily crop performance calculation",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "variabilitymap1": {
+                "process_id": "variabilitymap_stac308",
+                "arguments": {
+                    "spatial_extent": {
+                        "type": "FeatureCollection",
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+                            }
+                        },
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {
+                                    "id": 0
+                                },
+                                "geometry": {
+                                    "type": "MultiPolygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                [
+                                                    5.103273137658833,
+                                                    51.2644580376614
+                                                ],
+                                                [
+                                                    5.105770274251699,
+                                                    51.26289548617123
+                                                ],
+                                                [
+                                                    5.104640319943427,
+                                                    51.262395458475154
+                                                ],
+                                                [
+                                                    5.102249311655759,
+                                                    51.26381739797543
+                                                ],
+                                                [
+                                                    5.103273137658833,
+                                                    51.2644580376614
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "temporal_extent": [
+                        "2022-11-13",
+                        "2022-12-13"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/openeo_udp/variabilitymap/variabilitymap_stac308.json",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
+        },
+        "reference_options": {
+            "rtol": 0.1
         }
     }
 ]

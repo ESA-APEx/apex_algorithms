@@ -1,0 +1,118 @@
+{
+  "id": "wind_turbine_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-03-12T00:00:00Z",
+    "updated": "2025-03-12T00:00:00Z",
+    "type": "service",
+    "title": "Wind turbine detection",
+    "description": "Detects wind turbines in open landscapes using Sentinel-2 imagery and a pre-trained computer vision object detection model.",
+    "cost_estimate": 7,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "Energy Production/Use",
+      "Wind Energy Production/Use",
+      "Sentinel-2"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Alkiviadis Koukos",
+        "position": "Researcher",
+        "organization": "DHI",
+        "links": [
+          {
+            "href": "https://eo.dhigroup.com/",
+            "title": "DHI Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/alkiskk",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via DHI",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
+          },
+          {
+            "id": "WIND ENERGY PRODUCTION/USE",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/b3a95e10-1c1d-41cf-8802-8bb1d3a41353?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoJSON"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/dhi/wind_turbine/openeo_udp/wind_turbine.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.cloud"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/openeo_platform.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "DHI",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wind_turbine_detection&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2Fmain%2Falgorithm_catalog%2Fdhi%2Fwind_turbine%2Fopeneo_udp%2Fwind_turbine.json&server=https://openeo.cloud"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/wind_turbine/records/wind_turbine_example.png"
+    }
+  ]
+}

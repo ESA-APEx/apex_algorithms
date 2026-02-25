@@ -1,0 +1,141 @@
+{
+  "id": "gep_ost",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-08-14T00:00:00Z",
+    "updated": "2025-08-14T00:00:00Z",
+    "type": "service",
+    "title": "OpenSARToolkit (OST) by ESA-PhiLab",
+    "description": "The Open SAR Toolkit (OST) was initially developed at the Food and Agriculture Organization of the United Nations (FAO). It has now been completely re-factored and transferred into a simpler and less-dependency rich python3 version. OST lowers the entry barrier for pre-processing of Sentinel-1 data. OST supports the production of ARD products, either Radiometrically Terrain Corrected (RTC) products or Geometrically Terrain Corrected (GTC) products, along with option to automate the generation of small to large-scale Sentinel-1 time-series and timescan data.",
+    "cost_estimate": 1.5,
+    "cost_unit": "\u20ac per input product",
+    "keywords": [
+      "Sentinel-1"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Platform team",
+        "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
+        "links": [
+          {
+            "href": "https://geohazards-tep.eu",
+            "title": "Geohazards Exploitation Platform",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries on selecting Processing Services from the GEP Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at Terradue",
+        "email": "contact@geohazards-tep.eu"
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "DISASTER MANAGEMENT"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JPEG"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "order",
+      "type": "text/html",
+      "title": "Request Access",
+      "href": "https://geohazards-tep.eu/#!web_store"
+    },
+    {
+      "rel": "license",
+      "type": "application/pdf",
+      "title": "End-User License Agreement",
+      "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://ades.gep.terradue.com/gep/wps3/processes/opensartoolkit-1_0_24"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://github.com/ESA-PhiLab/OpenSarToolkit"
+    },
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/opensartoolkit-1_0_24.cwl"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "Web App",
+      "href": "https://geohazards-tep.eu/geobrowser/?id=ost-app"
+    },
+    {
+      "rel": "preview",
+      "type": "image/png",
+      "title": "Preview of the Burned Area Severity service result on the Disaster Charter Platform",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/gep_ost/records/preview_OST_v1.0.24_GTC.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/gep_ost/records/thumbnail.png"
+    }
+  ]
+}

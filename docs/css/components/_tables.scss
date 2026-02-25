@@ -1,0 +1,27 @@
+colgroup, thead, tbody, tr, th {
+  border: none !important;
+}
+
+table {
+  border: 1px solid var(--greylight) !important;
+  border-spacing: 0 !important;
+  border-collapse: separate !important;
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+}
+
+td {
+  border-top: 1px solid var(--greylight) !important;
+  border-bottom: none !important;
+  opacity: var(--opacity) !important;
+  line-height: var(--lineheight) !important;
+
+  li, p {
+    opacity: 1.0 !important;
+  }
+}
+
+th {
+  background-color: var(--greylight) !important;
+  color: var(--darkblue) !important;
+}

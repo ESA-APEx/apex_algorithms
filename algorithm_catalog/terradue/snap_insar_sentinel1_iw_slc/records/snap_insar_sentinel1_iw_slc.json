@@ -15,13 +15,8 @@
     "cost_estimate": 6.0,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "InSAR",
-      "interferometry",
-      "Sentinel-1",
-      "displacement",
-      "coherence",
-      "phase",
-      "remote sensing"
+      "Natural Hazards",
+      "Sentinel-1"
     ],
     "language": {
       "code": "en-US",
@@ -35,9 +30,14 @@
     ],
     "contacts": [
       {
-        "name": "GEP Support Team",
-        "position": "Support Team",
-        "organization": "Geohazards Exploitation Platform (GEP)",
+        "name": "Platform team",
+        "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
         "links": [
           {
             "href": "https://geohazards-tep.eu",
@@ -46,12 +46,8 @@
             "type": "text/html"
           }
         ],
-        "contactInstructions": "For inquiries, please email the GEP support team.",
-        "email": "contact@geohazards-tep.eu",
-        "roles": [
-          "processor",
-          "service provider"
-        ]
+        "contactInstructions": "For inquiries on selecting Processing Services from the GEP Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at Terradue",
+        "email": "contact@geohazards-tep.eu"
       }
     ],
     "themes": [
@@ -69,7 +65,7 @@
     ],
     "formats": [
       {
-        "name": "GeoTiff"
+        "name": "GeoTIFF"
       },
       {
         "name": "PNG"
@@ -93,6 +89,18 @@
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
     },
     {
       "rel": "service",
@@ -135,6 +143,12 @@
       "type": "image/png",
       "title": "Preview of the  displacement product that contains the terrain height variation in the Line Of Sight direction in the selected AOI computed between the primary and secondary products with the DinSar Service in the Geohazards Exploitation Platform",
       "href": "https://docs.terradue.com/geohazards-tep/_images/tuto_rss_snap_s1_insar_10.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/snap_insar_sentinel1_iw_slc/records/thumbnail.png"
     }
   ]
 }

@@ -7,7 +7,7 @@
     "process_graph": {
       "worldcerealcropextent1": {
         "process_id": "worldcereal_crop_extent",
-        "namespace": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.1/src/worldcereal/udp/worldcereal_crop_extent.json",
+        "namespace": "https://worldcereal.github.io/worldcereal-classification/udp/worldcereal_crop_extent.json",
         "arguments": {
           "spatial_extent": {
             "west": 622694.5968575787,
@@ -25,20 +25,9 @@
         "result": true
       }
     },
-    "job_options": {
-      "driver-memory": "4g",
-      "executor-memory": "2g",
-      "executor-memoryOverhead": "1g",
-      "python-memory": "3g",
-      "soft-errors": "true",
-      "udf-dependency-archives": [
-        "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps"
-      ]
-    },
     "reference_data": {
-      "worldcereal-cropland-extent.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent.tif",
       "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/job-results.json",
-      "worldcereal-cropland-extent-postprocessed.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal-cropland-extent-postprocessed.tif"
+      "worldcereal_crop_extent_postprocessed.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_extent/worldcereal_crop_extent_postprocessed.tif"
     },
     "reference_options": {
       "atol": 10

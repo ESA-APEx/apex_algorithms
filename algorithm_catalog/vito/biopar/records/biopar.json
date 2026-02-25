@@ -15,8 +15,12 @@
         "cost_estimate": 0.1,
         "cost_unit": "platform credits per km² per observation",
         "keywords": [
-            "agriculture",
-            "crops"
+            "Agriculture",
+            "Vegetation",
+            "Leaf Area Index (LAI)",
+            "Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)",
+            "Fraction of Vegetation Coverage (fCOVER)",
+            "Sentinel-2"
         ],
         "language": {
             "code": "en-US",
@@ -95,7 +99,7 @@
         ],
         "formats": [
             {
-               "name": "GeoTiff"
+                "name": "GeoTiff"
             }
         ],
         "license": "other"
@@ -115,16 +119,34 @@
             "href": "https://openeofed.dataspace.copernicus.eu"
         },
         {
-          "rel": "example-output",
-          "type": "image/tif",
-          "title": "Example output",
-          "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/biopar/biopar-example.tif"
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "example-output",
+            "type": "image/tif",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/biopar/biopar-example.tif"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
             "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=biopar&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/biopar/openeo_udp/biopar.json&server=https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/biopar/records/thumbnail.png"
         }
     ]
 }

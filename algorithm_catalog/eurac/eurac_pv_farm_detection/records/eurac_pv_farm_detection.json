@@ -1,0 +1,143 @@
+{
+  "id": "eurac_pv_farm_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2024-10-16T00:00:00Z",
+    "updated": "2024-10-16T00:00:00Z",
+    "type": "service",
+    "title": "Photovoltaic farms mapping",
+    "description": "Demonstrator service for the detection of photovoltaic farms. Photovoltaic farms (PV farms) mapping is essential for establishing valid policies regarding natural resources management and clean energy. ",
+    "cost_estimate": 0.001,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "Energy Production/Use",
+      "Solar Energy Production/Use",
+      "Sentinel-2"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Michele Claus",
+        "position": "Researcher",
+        "organization": "Eurac Research",
+        "links": [
+          {
+            "href": "https://www.eurac.edu/",
+            "title": "EURAC Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/clausmichele",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via EURAC",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/eurac_pv_farm_detection/openeo_udp/eurac_pv_farm_detection.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/clausmichele/openEO_photovoltaic"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Eurac Research",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=eurac_pv_farm_detection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/eurac_pv_farm_detection/openeo_udp/eurac_pv_farm_detection.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Alasawedah, M., Claus, M., Jacob, A., Griffiths, P., Dries, J., and Lippens, S.: Photovoltaic Farms Mapping using openEO Platform, EGU General Assembly 2024, Vienna, Austria, 14–19 Apr 2024, EGU24-16841",
+      "href": "https://doi.org/10.5194/egusphere-egu24-16841"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/eurac_pv_farm_detection/records/thumbnail.png"
+    }
+  ]
+}

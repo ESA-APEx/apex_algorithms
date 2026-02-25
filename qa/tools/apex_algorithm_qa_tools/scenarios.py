@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import glob
 import json
 import logging
 import re
@@ -36,9 +37,12 @@ class BenchmarkScenario:
     job_options: dict | None = None
     reference_data: dict = dataclasses.field(default_factory=dict)
     reference_options: dict = dataclasses.field(default_factory=dict)
+    source: str | Path | None = None
 
     @classmethod
-    def from_dict(cls, data: dict) -> BenchmarkScenario:
+    def from_dict(
+        cls, data: dict, *, source: str | Path | None = None
+    ) -> BenchmarkScenario:
         jsonschema.validate(instance=data, schema=_get_benchmark_scenario_schema())
         # TODO: also include the `lint_benchmark_scenario` stuff here (maybe with option to toggle deep URL inspection)?
 
@@ -52,19 +56,33 @@ class BenchmarkScenario:
             reference_data=data.get("reference_data", {}),
             job_options=data.get("job_options"),
             reference_options=data.get("reference_options", {}),
+            source=source,
         )
 
-
-def get_benchmark_scenarios() -> List[BenchmarkScenario]:
-    # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
-    # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
-    scenarios = []
-    for path in (get_project_root() / "algorithm_catalog").glob("**/benchmark_scenarios/*.json"):
-        with open(path) as f:
+    @classmethod
+    def read_scenarios_file(cls, path: str | Path) -> List[BenchmarkScenario]:
+        """
+        Load list of benchmark scenarios from a JSON file.
+        """
+        path = Path(path)
+        with path.open("r", encoding="utf8") as f:
             data = json.load(f)
         # TODO: support single scenario files in addition to listings?
         assert isinstance(data, list)
-        scenarios.extend(BenchmarkScenario.from_dict(item) for item in data)
+        return [cls.from_dict(item, source=path) for item in data]
+
+
+def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
+    # TODO: instead of flat list, keep original grouping/structure of benchmark scenario files?
+    # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
+    scenarios = []
+    # old style glob is used to support symlinks
+    for path in glob.glob(
+        str((root or get_project_root()) / "algorithm_catalog")
+        + "/**/*benchmark_scenarios*/*.json",
+        recursive=True,
+    ):
+        scenarios.extend(BenchmarkScenario.read_scenarios_file(path))
     return scenarios
 
 
@@ -78,12 +96,19 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
     # TODO #17 raise descriptive exceptions instead of asserts?
     assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
     # TODO proper allow-list of backends or leave this freeform?
-    assert scenario.backend in ["openeofed.dataspace.copernicus.eu"]
+    backend_patterns = [
+        r"^(https:\/\/)?openeo\.dataspace\.copernicus\.eu(\/.*)?$",
+        r"^(https:\/\/)?openeofed\.dataspace\.copernicus\.eu(\/.*)?$",
+        r"^(https:\/\/)?openeo\.cloud(\/.*)?$",
+        r"^(https:\/\/)?openeo\.vito\.be(\/.*)?$",
+        r"^(https:\/\/)?openeo\.eodc\.eu(\/.*)?$",
+    ]
+    assert any(re.fullmatch(p, scenario.backend) for p in backend_patterns), f"Unsupported backend: {scenario.backend!r}"
     # TODO: more advanced process graph validation?
     assert isinstance(scenario.process_graph, dict)
     for node_id, node in scenario.process_graph.items():
         assert isinstance(node, dict)
-        assert re.match(r"^[a-z0-9_-]+$", node["process_id"])
+        assert re.match(r"^[a-zA-Z0-9_-]+$", node["process_id"])
         assert "arguments" in node
         assert isinstance(node["arguments"], dict)
 

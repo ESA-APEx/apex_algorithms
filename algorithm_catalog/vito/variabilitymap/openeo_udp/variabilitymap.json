@@ -71,7 +71,7 @@
                   "from_parameter": "data"
                 },
                 "runtime": "Python",
-                "udf": "\"\"\"\nImport the biopar library and the BioParNp class to calculate the FAPAR index.\nIt is the Python implementation of biophyscial parameter computation, \nas described here: http://step.esa.int/docs/extra/ATBD_S2ToolBox_L2B_V1.1.pdf\n\"\"\"\nfrom functools import lru_cache\nimport numpy as np\nfrom typing import Dict\nfrom numpy import cos, radians\n\nfrom openeo.udf.xarraydatacube import XarrayDataCube\nfrom biopar.bioparnp import BioParNp\n\n\n@lru_cache(maxsize=6)\ndef get_bioparrun(biopar) -> BioParNp:\n    return BioParNp(version='3band', parameter=biopar, singleConfig = True)\n \n\ndef apply_datacube(cube: XarrayDataCube, context: Dict) -> XarrayDataCube:\n    ds_date = cube.get_array()\n\n    ### LOAD THE DIFFERENT REQUIRED BANDS FOR THE 8-BAND FAPAR\n    scaling_bands = 0.0001\n\n    saa = ds_date.sel(bands='sunAzimuthAngles')\n    sza = ds_date.sel(bands=\"sunZenithAngles\")\n    vaa = ds_date.sel(bands=\"viewAzimuthMean\")\n    vza = ds_date.sel(bands=\"viewZenithMean\")\n\n    B03 = ds_date.sel(bands='B03') * scaling_bands\n    B04 = ds_date.sel(bands='B04') * scaling_bands\n    B8 = ds_date.sel(bands='B08') * scaling_bands\n\n    g1 = cos(radians(vza))\n    g2 = cos(radians(sza))\n    g3 = cos(radians(saa - vaa))\n\n    #### FLATTEN THE ARRAY ####\n    flat = list(map(lambda arr: arr.flatten(),\n                    [B03.values, B04.values, B8.values, g1.values, g2.values, g3.values]))\n    bands = np.array(flat)\n\n    #### CALCULATE THE BIOPAR BASED ON THE BANDS #####\n    \n    image = get_bioparrun('FAPAR').run(bands,\n                                       output_scale=1,\n                                       output_dtype=np.float32,\n                                       minmax_flagging=False)  # netcdf algorithm\n    as_image = image.reshape((g1.shape))\n\n    ## SET NOTDATA TO NAN\n    as_image[np.where(np.isnan(B03))] = np.nan\n    xr_biopar = vza.copy()\n    xr_biopar.values = as_image\n    return XarrayDataCube(xr_biopar)"
+                "udf": "\"\"\"\nImport the biopar library and the BioParNp class to calculate the FAPAR index.\nIt is the Python implementation of biophysical parameter computation, \nas described here: http://step.esa.int/docs/extra/ATBD_S2ToolBox_L2B_V1.1.pdf\n\"\"\"\nfrom functools import lru_cache\nimport numpy as np\nfrom typing import Dict\nfrom numpy import cos, radians\n\nfrom openeo.udf.xarraydatacube import XarrayDataCube\nfrom biopar.bioparnp import BioParNp\n\n\n@lru_cache(maxsize=6)\ndef get_bioparrun(biopar) -> BioParNp:\n    return BioParNp(version='3band', parameter=biopar, singleConfig = True)\n \n\ndef apply_datacube(cube: XarrayDataCube, context: Dict) -> XarrayDataCube:\n    ds_date = cube.get_array()\n\n    ### LOAD THE DIFFERENT REQUIRED BANDS FOR THE 8-BAND FAPAR\n    scaling_bands = 0.0001\n\n    saa = ds_date.sel(bands='sunAzimuthAngles')\n    sza = ds_date.sel(bands=\"sunZenithAngles\")\n    vaa = ds_date.sel(bands=\"viewAzimuthMean\")\n    vza = ds_date.sel(bands=\"viewZenithMean\")\n\n    B03 = ds_date.sel(bands='B03') * scaling_bands\n    B04 = ds_date.sel(bands='B04') * scaling_bands\n    B8 = ds_date.sel(bands='B08') * scaling_bands\n\n    g1 = cos(radians(vza))\n    g2 = cos(radians(sza))\n    g3 = cos(radians(saa - vaa))\n\n    #### FLATTEN THE ARRAY ####\n    flat = list(map(lambda arr: arr.flatten(),\n                    [B03.values, B04.values, B8.values, g1.values, g2.values, g3.values]))\n    bands = np.array(flat)\n\n    #### CALCULATE THE BIOPAR BASED ON THE BANDS #####\n    \n    image = get_bioparrun('FAPAR').run(bands,\n                                       output_scale=1,\n                                       output_dtype=np.float32,\n                                       minmax_flagging=False)  # netcdf algorithm\n    as_image = image.reshape((g1.shape))\n\n    ## SET NOTDATA TO NAN\n    as_image[np.where(np.isnan(B03))] = np.nan\n    xr_biopar = vza.copy()\n    xr_biopar.values = as_image\n    return XarrayDataCube(xr_biopar)"
               },
               "result": true
             }
@@ -86,7 +86,7 @@
           "from_node": "reducedimension1"
         },
         "label": "FAPAR",
-        "name": "FAPAR",
+        "name": "bands",
         "type": "bands"
       }
     },
@@ -122,6 +122,43 @@
             }
           }
         }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "applypolygon1"
+        },
+        "process": {
+          "process_graph": {
+            "linearscalerange1": {
+              "process_id": "linear_scale_range",
+              "arguments": {
+                "inputMax": 100,
+                "inputMin": 0,
+                "outputMax": 100,
+                "outputMin": 0,
+                "x": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "bands",
+        "target": [
+          "variability"
+        ]
       },
       "result": true
     }
@@ -160,90 +197,11 @@
     },
     {
       "name": "spatial_extent",
-      "description": "Limits the data to process to the specified bounding box or polygons.\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\nEmpty geometries are ignored.\nSet this parameter to null to set no limit for the spatial extent.",
-      "schema": [
-        {
-          "title": "Bounding Box",
-          "type": "object",
-          "subtype": "bounding-box",
-          "required": [
-            "west",
-            "south",
-            "east",
-            "north"
-          ],
-          "properties": {
-            "west": {
-              "description": "West (lower left corner, coordinate axis 1).",
-              "type": "number"
-            },
-            "south": {
-              "description": "South (lower left corner, coordinate axis 2).",
-              "type": "number"
-            },
-            "east": {
-              "description": "East (upper right corner, coordinate axis 1).",
-              "type": "number"
-            },
-            "north": {
-              "description": "North (upper right corner, coordinate axis 2).",
-              "type": "number"
-            },
-            "base": {
-              "description": "Base (optional, lower left corner, coordinate axis 3).",
-              "type": [
-                "number",
-                "null"
-              ],
-              "default": null
-            },
-            "height": {
-              "description": "Height (optional, upper right corner, coordinate axis 3).",
-              "type": [
-                "number",
-                "null"
-              ],
-              "default": null
-            },
-            "crs": {
-              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
-              "anyOf": [
-                {
-                  "title": "EPSG Code",
-                  "type": "integer",
-                  "subtype": "epsg-code",
-                  "minimum": 1000,
-                  "examples": [
-                    3857
-                  ]
-                },
-                {
-                  "title": "WKT2",
-                  "type": "string",
-                  "subtype": "wkt2-definition"
-                }
-              ],
-              "default": 4326
-            }
-          }
-        },
-        {
-          "title": "Vector data cube",
-          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
-          "type": "object",
-          "subtype": "datacube",
-          "dimensions": [
-            {
-              "type": "geometry"
-            }
-          ]
-        },
-        {
-          "title": "No filter",
-          "description": "Don't filter spatially. All data is included in the data cube.",
-          "type": "null"
-        }
-      ]
+      "description": "Limits the data to process to the specified polygons.\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with any of the polygons (as defined in the Simple Features standard by the OGC).\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\nEmpty geometries are ignored.\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": {
+        "type": "object",
+        "subtype": "geojson"
+      }
     },
     {
       "name": "raw",

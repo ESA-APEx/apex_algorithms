@@ -1,0 +1,151 @@
+{
+  "id": "parcel_delineation",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-06-02T00:00:00Z",
+    "updated": "2025-06-02T00:00:00Z",
+    "type": "service",
+    "title": "Parcel Delineation based on ML using Sentinel-2",
+    "description": "An openEO process example for delineating agricultural parcels based on ML using Sentinel-2 data.",
+    "cost_estimate": 0.11,
+    "cost_unit": "platform credits per km²",
+    "keywords": [
+      "Agriculture",
+      "Sentinel-2"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Kristof Van Tricht",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/kvantricht",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/ParcelDelineation/"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=parceldelination&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json&server=https://openeo.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/header.png"
+    },
+    {
+      "rel": "preview",
+      "type": "image/jpeg",
+      "title": "Parcel Delineation",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_1.jpg"
+    },
+    {
+      "rel": "preview",
+      "type": "image/jpeg",
+      "title": "Parcel Delineation - Filtered",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/parcel_delineation/images/preview_2.jpg"
+    },
+    {
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
+      "title": "Parcel Delineation",
+      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/Parcel%20delineation.ipynb"
+    }
+  ]
+}

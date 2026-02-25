@@ -15,7 +15,7 @@
     "cost_estimate": 0.2,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "composite"
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
@@ -102,6 +102,18 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
+    },
+    {
       "rel": "example-output",
       "type": "application/json",
       "title": "Example output",
@@ -112,6 +124,12 @@
       "type": "text/html",
       "title": "OpenEO Web Editor",
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=bap_composite&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/bap_composite/openeo_udp/bap_composite.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/bap_composite/records/thumbnail.png"
     }
   ]
 }

@@ -15,12 +15,8 @@
     "cost_estimate": 2.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "SAR",
-      "coherence",
-      "backscatter",
-      "Sentinel-1",
-      "disaster management",
-      "remote sensing"
+      "Natural Hazards",
+      "Sentinel-1"
     ],
     "language": {
       "code": "en-US",
@@ -35,8 +31,13 @@
     "contacts": [
       {
         "name": "Platform team",
-        "position": "Platform Operations",
         "organization": "Geohazards Exploitation Platform (GEP) by Terradue",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
         "links": [
           {
             "href": "https://geohazards-tep.eu",
@@ -45,12 +46,8 @@
             "type": "text/html"
           }
         ],
-        "contactInstructions": "For inquiries, please email the Platform team",
-        "email": "contact@geohazards-tep.eu",
-        "roles": [
-          "processor",
-          "service provider"
-        ]
+        "contactInstructions": "For inquiries on selecting Processing Services from the GEP Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at Terradue",
+        "email": "contact@geohazards-tep.eu"
       }
     ],
     "themes": [
@@ -68,7 +65,7 @@
     ],
     "formats": [
       {
-        "name": "GeoTiff"
+        "name": "GeoTIFF"
       },
       {
         "name": "PNG"
@@ -92,6 +89,18 @@
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
     },
     {
       "rel": "service",
@@ -122,6 +131,12 @@
       "type": "image/png",
       "title": "Preview of the Coherence and Intensity RBG of the SAR-COIN service service result on the Geohazards Exploitation Platform",
       "href": "https://geohazards-tep.gitlab.io/gep-docs/services/coin/media/cover.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terradue/sar_coin/records/thumbnail.png"
     }
   ]
 }

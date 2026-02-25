@@ -1,0 +1,48 @@
+[
+    {
+        "id": "peakvalley",
+        "type": "openeo",
+        "description": "Detects peaks and valleys in a time series by analysing amplitude changes and slope patterns",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "peakvalley1": {
+                "arguments": {
+                    "drop_threshold": 0.15,
+                    "recovery_ratio": 1,
+                    "slope_threshold": 0.007,
+                    "spatial_extent": {
+                        "crs": 4326,
+                        "east": 15.185336903822831,
+                        "north": 45.81302555710934,
+                        "south": 45.80924633589998,
+                        "west": 15.179421073198585
+                    },
+                    "temporal_extent": [
+                        "2021-01-01",
+                        "2021-12-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/peakvalley/openeo_udp/peakvalley.json",
+                "process_id": "peakvalley"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "peakvalley1"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20735970267!tests_test_benchmarks.py__test_run_benchmark_peakvalley_!actual/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/peakvalley/openEO.nc"
+        },
+        "reference_options": {
+            "rtol": 0.1
+        }
+    }
+]

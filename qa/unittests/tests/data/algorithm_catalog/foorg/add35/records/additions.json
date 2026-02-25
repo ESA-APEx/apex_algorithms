@@ -1,0 +1,52 @@
+{
+  "id": "additions",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-07-09T12:00:00Z",
+    "updated": "2025-07-09T12:00:00Z",
+    "type": "service",
+    "title": "What is 3 + 5?",
+    "description": "Doing additions like 3 + 5.",
+    "cost_estimate": 8,
+    "cost_unit": "platform credits",
+    "keywords": [
+      "math"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "John Doe",
+        "position": "Mathematician",
+        "organization": "Foorg",
+        "links": [
+          {
+            "href": "https://www.foorg.test/",
+            "title": "Foorg Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Pigeon post is preferred.",
+        "roles": [
+          "calculator"
+        ]
+      }
+    ]
+  },
+  "linkTemplates": [],
+  "links": []
+}
