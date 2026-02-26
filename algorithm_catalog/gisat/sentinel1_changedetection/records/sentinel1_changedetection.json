@@ -15,9 +15,10 @@
     "cost_estimate": 0.01,
     "cost_unit": "platform credits per km²",
     "keywords": [
-      "change detection services",
+      "Change Detection Services",
       "Sentinel-1",
-      "LAND USE/LAND COVER CHANGE"
+      "Land Use/Land Cover Change",
+      "Deforestation"
     ],
     "language": {
       "code": "en-US",
