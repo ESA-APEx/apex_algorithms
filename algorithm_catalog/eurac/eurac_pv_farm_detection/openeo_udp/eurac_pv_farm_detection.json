@@ -319,7 +319,7 @@
     "executor-memory": "1g",
     "python-memory": "3g",
     "udf-dependency-archives": [
-      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps",
+      "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps",
       "https://artifactory.vgt.vito.be/artifactory/auxdata-public/photovoltaic/rf_1_median_depth_15.zip#onnx_models"
     ]
   },

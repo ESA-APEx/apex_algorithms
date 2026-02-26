@@ -15,13 +15,8 @@
     "cost_estimate": 6.0,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "InSAR",
-      "interferometry",
-      "Sentinel-1",
-      "displacement",
-      "coherence",
-      "phase",
-      "remote sensing"
+      "Natural Hazards",
+      "Sentinel-1"
     ],
     "language": {
       "code": "en-US",
@@ -94,6 +89,18 @@
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
     },
     {
       "rel": "service",

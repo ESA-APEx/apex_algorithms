@@ -57,9 +57,7 @@ def generate() -> dict:
     # Run ML inference to get the classification output
     udf = openeo.UDF.from_file(
         Path(__file__).parent / "udf_eurac_pvfarm_onnx.py",
-        
     )
-
 
     prediction = s2_cube.reduce_bands(reducer=udf)
 
@@ -83,7 +81,7 @@ def generate() -> dict:
         "executor-memory": "1g",
         "python-memory": "3g",
         "udf-dependency-archives": [
-            "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/onnx_dependencies_1.16.3.zip#onnx_deps",
+            "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps",
             "https://artifactory.vgt.vito.be/artifactory/auxdata-public/photovoltaic/rf_1_median_depth_15.zip#onnx_models"
         ]
     }
@@ -112,4 +110,3 @@ if __name__ == "__main__":
         json.dump(generate(), f, indent=2)
 
 
-#%%

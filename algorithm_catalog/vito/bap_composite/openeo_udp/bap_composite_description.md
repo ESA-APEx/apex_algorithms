@@ -12,7 +12,7 @@ The BAP score is a weighted average of three scores:
 - **Coverage Score**: Per date, the percentage of all pixels that are classified as a cloud over the entire spatial extent is calculated. The Coverage Score is then equal to 1 - the cloud percentage.
 - **Date Score**: In order to favor pixels that are observed in the middle of a month, a date score is calculated, which follows a Gaussian shape. I.e. the largest scores are given for days in the middle of the month, the lowest scores are given for days at the beginning and end of the month. 
 
-The final BAP score is a weighted average of the three aforementioned scores. The weights are 1, 0.5 and 0.8 for the Distance-to-Cloud, Coverage and Date Score respectively.
+The final BAP score is a weighted average of the three aforementioned scores. The weights are 1, 0.5 and 0.1 for the Distance-to-Cloud, Coverage and Date Score respectively.
 
 
 

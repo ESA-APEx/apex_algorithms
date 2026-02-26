@@ -15,12 +15,8 @@
     "cost_estimate": 2.5,
     "cost_unit": "\u20ac per input product",
     "keywords": [
-      "SAR",
-      "coherence",
-      "backscatter",
-      "Sentinel-1",
-      "disaster management",
-      "remote sensing"
+      "Natural Hazards",
+      "Sentinel-1"
     ],
     "language": {
       "code": "en-US",
@@ -93,6 +89,18 @@
       "type": "application/pdf",
       "title": "End-User License Agreement",
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
     },
     {
       "rel": "service",

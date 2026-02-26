@@ -15,8 +15,9 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "agriculture",
-      "crops"
+      "Agriculture",
+      "Sentinel-2",
+      "Sentinel-1"
     ],
     "language": {
       "code": "en-US",
@@ -94,7 +95,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v1.0.0/src/worldcereal/udp/worldcereal_crop_type.json"
+      "href": "https://worldcereal.github.io/worldcereal-classification/udp/worldcereal_crop_type.json"
     },
     {
       "rel": "code",
@@ -107,6 +108,18 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
     },
     {
       "rel": "about",
@@ -124,7 +137,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=worldcereal_crop_type&wizard~processUrl=https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_type_v1.0.0/src/worldcereal/udp/worldcereal_crop_type.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://hub.esa-worldcereal.org/generate-custom-products"
     },
     {
       "rel": "thumbnail",
@@ -132,6 +145,5 @@
       "title": "Thumbnail image",
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/worldcereal_crop_type/records/thumbnail.png"
     }
-
   ]
 }

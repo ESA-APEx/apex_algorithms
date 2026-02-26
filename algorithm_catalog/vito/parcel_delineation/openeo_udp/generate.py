@@ -53,7 +53,7 @@ def generate() -> dict:
 
     # Apply ML algorithm
     # apply a neural network, requires 128x128 pixel 'chunks' as input.
-    segment_udf = openeo.UDF.from_file("udf_segmentation.py")
+    segment_udf = openeo.UDF.from_file("udf_segmentation.py", version="3.11")
     segmentationband = ndviband.apply_neighborhood(
         process=segment_udf,
         size=[{"dimension": "x", "value": 64, "unit": "px"}, {"dimension": "y", "value": 64, "unit": "px"}],
@@ -62,7 +62,7 @@ def generate() -> dict:
 
     # Postprocess the output from the neural network using a sobel filter and
     # Felzenszwalb's algorithm, which are then merged.
-    segment_postprocess_udf = openeo.UDF.from_file("udf_sobel_felzenszwalb.py")
+    segment_postprocess_udf = openeo.UDF.from_file("udf_sobel_felzenszwalb.py", version="3.11")
     sobel_felzenszwalb = segmentationband.apply_neighborhood(
         process=segment_postprocess_udf,
         size=[{"dimension": "x", "value": 2048, "unit": "px"}, {"dimension": "y", "value": 2048, "unit": "px"}],
@@ -70,7 +70,7 @@ def generate() -> dict:
     )
     job_options = {
         "udf-dependency-archives": [
-            "https://artifactory.vgt.vito.be/auxdata-public/openeo/onnx_dependencies.zip#onnx_deps",
+            "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps",
             "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/parcelDelination/BelgiumCropMap_unet_3BandsGenerator_Models.zip#onnx_models",
         ],
         "driver-memory": "500m",

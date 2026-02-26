@@ -15,8 +15,11 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "agriculture",
-      "crops"
+      "Agriculture",
+      "Sentinel-2",
+      "Sentinel-1",
+      "Digital Elevation/Terrain Model (DEM)",
+      "ECMWF ERA5"
     ],
     "language": {
       "code": "en-US",
@@ -94,7 +97,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v1.0.2/src/worldcereal/udp/worldcereal_crop_extent.json"
+      "href": "https://worldcereal.github.io/worldcereal-classification/udp/worldcereal_crop_extent.json"
     },
     {
       "rel": "code",
@@ -107,6 +110,18 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
     },
     {
       "rel": "about",

@@ -15,7 +15,9 @@
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2 and observation.",
     "keywords": [
-      "vegetation"
+      "Vegetation",
+      "Normalized Difference Vegetation Index (NDVI)",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
@@ -103,6 +105,18 @@
       "type": "application/json",
       "title": "CDSE openEO federation",
       "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
     },
     {
       "rel": "example-output",
