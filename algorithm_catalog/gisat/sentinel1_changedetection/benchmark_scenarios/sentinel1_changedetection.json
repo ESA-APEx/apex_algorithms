@@ -10,16 +10,12 @@
         "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json",
         "arguments": {
           "spatial_extent": {
-            "east": 8.92,
-            "north": 44.45,
-            "south": 44.4,
-            "west": 8.82
+            "east": -54.59,
+            "north": -12.08,
+            "south": -12.26,
+            "west": -54.81
           },
-          "temporal_extent":  [
-                            ["2023-05-01", "2023-05-15"],
-                            ["2023-06-01", "2023-06-10"],
-                            ["2023-07-01", "2023-07-05"]
-                        ]
+          "temporal_extent":["2020-03-11", "2020-03-23"]
         },
         "result": true
       }
