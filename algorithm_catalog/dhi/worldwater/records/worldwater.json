@@ -93,7 +93,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/19d0a99f081877c4ba2dc89eb0f550a4fa170192/world_water_toolbox/single_month_extent_udp.json"
+      "href": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/new-udp/world_water_toolbox/single_month_extent_udp.json"
     },
     {
       "rel": "service",
@@ -117,7 +117,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=worldwater_water_extent&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FDHI-GRAS%2Fworldwater-toolbox%2F19d0a99f081877c4ba2dc89eb0f550a4fa170192%2Fworld_water_toolbox%2Fsingle_month_extent_udp.json&server=openeo.vito.be"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=worldwater_water_extent&wizard%7EprocessUrl=https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/new-udp/world_water_toolbox/single_month_extent_udp.json&server=openeo.vito.be"
     },
     {
       "rel": "about",
@@ -136,6 +136,12 @@
       "type": "text/html",
       "title": "Druce, D.; Tong, X.; Lei, X.; Guo, T.; Kittel, C.M.M.; Grogan, K.; Tottrup, C. An Optical and SAR Based Fusion Approach for Mapping Surface Water Dynamics over Mainland China. Remote Sens. 2021, 13, 1663",
       "href": "https://doi.org/10.3390/rs13091663"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "[THUMBNAIL_URL]"
     }
   ]
 }
