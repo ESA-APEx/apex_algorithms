@@ -223,7 +223,7 @@
       "result": true
     }
   },
-  "id": "sentinel1_mcd",
+  "id": "sentinel1_changedetection",
   "summary": "Sentinel-1 change detection 20m resolution.",
   "description": "Description: A guide on using Sentinel-1 data for change detection in remote sensing applications.",
   "returns": {

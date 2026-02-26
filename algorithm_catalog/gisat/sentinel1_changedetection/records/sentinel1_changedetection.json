@@ -15,9 +15,9 @@
     "cost_estimate": 0.01,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "change detection",
-      "statistics",
-      "tree cover change"
+      "change detection services",
+      "Sentinel-1",
+      "land cover change"
     ],
     "language": {
       "code": "en-US",
@@ -61,7 +61,7 @@
             "id": "LAND COVER CHANGE"
           }
         ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/concept_scheme/science_keywords",
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/concept_scheme/science_keywords"
       }
     ],
     "formats": [
@@ -73,6 +73,18 @@
   },
   "linkTemplates": [],
   "links": [
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "GISAT",
+      "href": "../../record.json"
+    },
     {
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
@@ -89,7 +101,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": ""
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_changedetection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "thumbnail",
