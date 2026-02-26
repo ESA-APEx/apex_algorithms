@@ -8,15 +8,16 @@
   "geometry": null,
   "properties": {
     "created": "2025-09-09T00:00:00Z",
-    "updated": "2025-09-09T00:00:00Z",
+    "updated": "2026-02-01T00:00:00Z",
     "type": "service",
     "title": "Change detection using Sentinel-1 data",
-    "description": "For a given geometry or set of geometries, detects changes in land cover using Sentinel-1 data.",
+    "description": "For a given geometry or set of geometries, detects changes in land cover using Sentinel-1 data. This algorithm implements a scalable workflow for Sentinel-1 SAR time-series change detection, based on the StatCubes design used in the Sentinel-1 for Science Amazonas project. It computes multi-temporal statistical descriptors on harmonised C-band backscatter series and applies robust change-detection logic to identify potential forest-disturbance events across large spatial domains.",
     "cost_estimate": 0.01,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
-      "CHANGE DETECTION",
-      "statistics"
+      "change detection",
+      "statistics",
+      "tree cover change"
     ],
     "language": {
       "code": "en-US",
@@ -51,16 +52,16 @@
       {
         "concepts": [
           {
-            "id": "Tree cover change"
+            "id": "CHANGE DETECTION SERVICES"
           },
           {
-            "id": "Active Remote Sensing"
+            "id": "RADAR BACKSCATTER"
           },
           {
-            "id": "Sentinel-1 GRD"
+            "id": "LAND COVER CHANGE"
           }
         ],
-        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/concept_scheme/science_keywords",
       }
     ],
     "formats": [
