@@ -1,0 +1,35 @@
+[
+  {
+    "id": "world_agrocommodities",
+    "type": "openeo",
+    "description": "openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data of the WorldAgroCommodities project",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "worldagrocommodities1": {
+        "process_id": "world_agrocommodities",
+        "namespace": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.1/src/world_agrocommodities/udp/world_agrocommodities.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": 817475.0741295104,
+            "south": -522776.47462956805,
+            "east": 817838.336850123,
+            "north": -522493.8634415434,
+            "crs": "EPSG:32634"
+          },
+          "temporal_extent": [
+            "2025-01-01",
+            "2025-12-31"
+          ],
+          "crs": "EPSG:32634",
+          "model_id": "WorldAgriCommodities_Africa_v1"
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/world-agrocommodities/job-results.json",
+      "openEO.nc": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/world-agrocommodities/openEO.nc"
+    },
+    "reference_options": {}
+  }
+]

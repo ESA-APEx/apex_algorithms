@@ -90,6 +90,18 @@
       "href": "https://geohazards-tep.eu/downloadFiles/EULA-GEP.pdf"
     },
     {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/gep.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Terradue",
+      "href": "../../record.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
