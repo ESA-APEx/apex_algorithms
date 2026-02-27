@@ -111,7 +111,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/s14amazonas_preview/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json"
     },
     {
       "rel": "service",
@@ -123,7 +123,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_changedetection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_changedetection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/s14amazonas_preview/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "thumbnail",
