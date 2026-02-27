@@ -1,0 +1,28 @@
+[
+  {
+    "id": "sentinel1_changedetection",
+    "type": "openeo",
+    "description": "Sentinel 1 change detection example",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "s1stats1": {
+        "process_id": "sentinel1_changedetection",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/s14amazonas_preview/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json",
+        "arguments": {
+          "spatial_extent": {
+            "east": -54.59,
+            "north": -12.08,
+            "south": -12.26,
+            "west": -54.81
+          },
+          "temporal_extent":["2020-03-11", "2020-03-23"]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-11743427213!tests_test_benchmarks.py__test_run_benchmark_sentinel1_stats_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-11743427213!tests_test_benchmarks.py__test_run_benchmark_sentinel1_stats_!actual/openEO.tif"
+    }
+  }
+]

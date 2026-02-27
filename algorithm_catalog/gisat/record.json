@@ -1,0 +1,63 @@
+{
+    "id": "gisat",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-01-01T13:00:00Z",
+        "updated": "2025-02-01T13:00:00Z",
+        "type": "algorithm_provider",
+        "title": "Gisat s.r.o.",
+        "description": "GISAT s.r.o. is a Czech Earth Observation and geospatial analytics company delivering advanced remote sensing solutions and satellite-based analytics.",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+        {
+            "name": "GISAT s.r.o.",
+            "organization": "GISAT s.r.o.",
+            "roles": ["provider"],
+            "emails": [
+            {
+                "value": "gisat@gisat.cz"
+            }
+            ]
+        }
+        ],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@gisat.cz","@vito.be"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "Gisat s.r.o.",
+            "href": "https://www.gisat.cz/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/svg+xml",
+            "title": "GISAT Logo",
+            "href": "https://www.gisat.cz/assets/img/symbol.svg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/svg+xml",
+            "title": "GISAT Logo",
+            "href": "https://www.gisat.cz/assets/img/symbol.svg"
+        }
+    ]
+}
