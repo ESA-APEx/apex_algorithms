@@ -7,7 +7,7 @@
     "process_graph": {
       "s1stats1": {
         "process_id": "sentinel1_changedetection",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/s14amazonas_preview/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json",
         "arguments": {
           "spatial_extent": {
             "east": -54.59,
