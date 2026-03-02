@@ -97,10 +97,7 @@
             {
                 "concepts": [
                     {
-                        "id": "EARTH SCIENCE > LAND SURFACE > SOILS > SOIL MOISTURE/WATER CONTENT"
-                    },
-                    {
-                        "id": "EARTH SCIENCE > SPECTRAL/ENGINEERING > RADAR > RADAR BACKSCATTER"
+                        "id": "SOIL MOISTURE"
                     },
                     {
                         "id": "SENTINEL-1"
@@ -126,7 +123,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "TODO"
+            "href": "https://github.com/ESA-APEx/apex_algorithms/blob/8ad2bccf3d7534f0743a9cf73911080abc32f74c/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json"
         },
         {
             "rel": "service",
@@ -162,7 +159,7 @@
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor (with wizard)",
-            "href": "TODO"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_soil_moisture&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json&server=https://openeofed.dataspace.copernicus.eu"
         },
         {
             "rel": "example-output",
