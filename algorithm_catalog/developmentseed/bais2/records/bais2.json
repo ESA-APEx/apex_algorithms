@@ -99,7 +99,7 @@
       "rel": "notebook",
       "type": "application/x-ipynb+json",
       "title": "BAIS2 notebook",
-      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/refs/heads/ds_bias_preview/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/bais2_burned_area.ipynb"
+      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/refs/heads/main/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/bais2_burned_area.ipynb"
     },
     {
       "rel": "platform",
