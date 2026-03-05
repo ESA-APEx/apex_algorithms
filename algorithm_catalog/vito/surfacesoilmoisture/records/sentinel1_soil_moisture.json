@@ -16,9 +16,7 @@
         "cost_unit": "platform credits per km²",
         "keywords": [
             "Sentinel-1",
-            "SAR",
-            "Agriculture",
-            "Water"
+            "Agriculture"
         ],
         "language": {
             "code": "en-US",
