@@ -57,7 +57,9 @@
             }
         },
         "reference_data": {
-            "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/mogpr_s1s2/openEO.nc"
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22335178748!tests_test_benchmarks.py__test_run_benchmark_mogpr_s1s2_!actual/openEO.nc",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22335178748!tests_test_benchmarks.py__test_run_benchmark_mogpr_s1s2_!actual/job-results.json"
         }
+
     }
 ]
