@@ -87,13 +87,13 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=bais2&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/ds_bias_preview/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json&server=openeo.cloud"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=bais2&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/ds_bias_preview/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json&server=openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "openEO platform",
-      "href": "https://openeo.cloud"
+      "title": "CDSE openEO Federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "notebook",
