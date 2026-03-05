@@ -43,7 +43,7 @@
                         "2020-02-28"
                     ]
                 },
-                "namespace": "https://github.com/ESA-APEx/apex_algorithms/blob/8ad2bccf3d7534f0743a9cf73911080abc32f74c/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8ad2bccf3d7534f0743a9cf73911080abc32f74c/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json",
                 "process_id": "sentinel1_soil_moisture"
             },
             "saveresult1": {
