@@ -163,13 +163,13 @@
             "rel": "example-output",
             "type": "application/gtiff",
             "title": "Example output",
-            "href": "TODO"
+            "href": "https://github.com/ESA-APEx/apex_algorithms/blob/12a78f335a3600c93003bc6e18ee1d6068613518/algorithm_catalog/vito/surfacesoilmoisture/records/thumbnail.png"
         },
         {
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "TODO"
+            "href": "https://github.com/ESA-APEx/apex_algorithms/blob/12a78f335a3600c93003bc6e18ee1d6068613518/algorithm_catalog/vito/surfacesoilmoisture/records/thumbnail.png"
         }
     ]
 }
