@@ -1,0 +1,135 @@
+{
+  "id": "sentinel1_changedetection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2025-09-09T00:00:00Z",
+    "updated": "2026-02-01T00:00:00Z",
+    "type": "service",
+    "title": "Change detection using Sentinel-1 data",
+    "description": "For a given geometry or set of geometries, detects changes in land cover using Sentinel-1 data. This algorithm implements a scalable workflow for Sentinel-1 SAR time-series change detection, based on the StatCubes design used in the Sentinel-1 for Science Amazonas project. It computes multi-temporal statistical descriptors on harmonised C-band backscatter series and applies robust change-detection logic to identify potential forest-disturbance events across large spatial domains.",
+    "cost_estimate": 0.01,
+    "cost_unit": "platform credits per km²",
+    "keywords": [
+      "Change Detection Services",
+      "Sentinel-1",
+      "Land Use/Land Cover Change",
+      "Deforestation"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Sivasankar Arul",
+        "position": "Data Scientist",
+        "organization": "Gisat s.r.o.",
+        "links": [
+          {
+            "href": "https://www.gisat.cz/",
+            "title": "GISAT Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/sivasanarul",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Gisat",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "GISAT",
+        "links": [
+          {
+            "href": "https://www.gisat.cz/",
+            "title": "GISAT Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "CHANGE DETECTION SERVICES"
+          },
+          {
+            "id": "SENTINEL-1"
+          },
+          {
+            "id": "LAND COVER CHANGE"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/concept_scheme/science_keywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "GISAT",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeo.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_changedetection&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/gisat/sentinel1_changedetection/records/S1_changedetection_20200311.png"
+    }
+  ]
+}
