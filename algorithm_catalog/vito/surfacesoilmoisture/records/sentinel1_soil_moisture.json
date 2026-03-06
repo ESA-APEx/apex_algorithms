@@ -1,0 +1,175 @@
+{
+    "id": "sentinel1_soil_moisture",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-03-02T00:00:00Z",
+        "updated": "2026-03-02T00:00:00Z",
+        "type": "service",
+        "title": "Surface Soil Moisture from Sentinel‑1 using Change Detection",
+        "description": "Estimates surface soil moisture (SSM) from Sentinel‑1 GRD data (VV polarisation) based on a change detection method. The algorithm computes the minimum, maximum and mean backscatter over a reference period (e.g., three years), takes the last image of a current observation interval, and applies the formula SSM = (σ⁰_current - σ⁰_min) / (σ⁰_max - σ⁰_min). Urban and permanent water areas are masked out using thresholds on the long‑term mean backscatter in decibels (>‑6 dB or <‑17 dB). The output is a single‑band raster cube with values between 0 (dry) and 1 (wet).",
+        "cost_estimate": 4,
+        "cost_unit": "platform credits per km²",
+        "keywords": [
+            "Sentinel-1",
+            "Agriculture"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Hans Vanrompay",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/HansVRP",
+                        "title": "GitHub",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "service provider"
+                ]
+            },
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    },
+                    {
+                        "href": "https://github.com/Pratichhya",
+                        "title": "GitHub",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "SEE WEBSITE",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "SOIL MOISTURE"
+                    },
+                    {
+                        "id": "SENTINEL-1"
+                    },
+                    {
+                        "id": "CHANGE DETECTION"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+  
+            {
+                "name": "GeoTIFF"
+            }
+        ],
+        "license": "other"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/surfacesoilmoisute/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "about",
+            "type": "text/html",
+            "title": "Method Reference (Sentinel Hub Custom Script)",
+            "href": "https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-1/soil_moisture_estimation/"
+        },
+        {
+            "rel": "code",
+            "type": "text/html",
+            "title": "Git source repository (algorithm catalog)",
+            "href": "https://github.com/VITObelgium/openeo_algorithm_catalog"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor (with wizard)",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_soil_moisture&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/surfacesoilmoisute/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json&server=https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "example-output",
+            "type": "application/gtiff",
+            "title": "Example output",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/surfacesoilmoisute/algorithm_catalog/vito/surfacesoilmoisture/records/thumbnail.png"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/surfacesoilmoisute/algorithm_catalog/vito/surfacesoilmoisture/records/thumbnail.png"
+        }
+    ]
+}
