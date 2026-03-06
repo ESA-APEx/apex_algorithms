@@ -751,13 +751,13 @@
     "scale": {
       "process_id": "linear_scale_range",
       "arguments": {
-        "data": {
+        "x": {
           "from_node": "bais2_rgb"
         },
-        "input_min": 0,
-        "input_max": 1,
-        "output_min": 0,
-        "output_max": 255
+        "inputMin": 0,
+        "inputMax": 1,
+        "outputMin": 0,
+        "outputMax": 255
       }
     },
     "save": {
