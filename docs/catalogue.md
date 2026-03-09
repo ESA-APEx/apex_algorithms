@@ -21,9 +21,10 @@ Before you begin, ensure your algorithm is hosted on an APEx-compliant platform.
 
 Onboarding your service to the APEx Algorithm Catalogue is a straightforward process. Follow these steps to get started:
 
-1. Start by creating an OGC API Record for your algorithm. You can use one of the existing records in the repository as a template to guide you. Make sure to fill in all the required fields and provide accurate information about your service. More details about the record structure can be found in the [Record Mapping](#record-mapping) section below.
-2. Fork the current repository and add your record file to `algorithm_catalog/<provider>/<service>/records/<service>.json`. You can create the necessary subdirectories if they do not already exist.
-3. Once your record is ready, submit a pull request to this repository. The APEx team will review your submission and, upon approval, your service will be added to the APEx Algorithm Catalogue.
+1. Create a new branch based on the `main` branch of the [APEx Algorithm Repo](https://github.com/ESA-APEx/apex_algorithms).
+2. Start by creating an OGC API Record for your algorithm. You can use one of the existing records in the repository as a template to guide you. Make sure to fill in all the required fields and provide accurate information about your service. More details about the record structure can be found in the [Record Mapping](#record-mapping) section below.
+3. Fork the current repository and add your record file to `algorithm_catalog/<provider>/<service>/records/<service>.json`. You can create the necessary subdirectories if they do not already exist.
+4. Once your record is ready, submit a pull request to this repository. The APEx team will review your submission and, upon approval, your service will be added to the APEx Algorithm Catalogue.
 
 # Providers and Platforms
 
@@ -98,3 +99,36 @@ The following tables illustrate how the various sections from the record are con
 | Request Access | Button to redirect users to the page to request access to the service | Entry in the `properties.links` section where `rel` is set to `order`|
 | Execute Service | Button to redirect users to the page to execute the service | Entry in the `properties.links` section where `rel` is set to `webapp`|
 : APEx Algorithm Service Catalogue - Details Main Content Mapping {#tbl-details-main-mapping}
+
+## FAQ
+
+### How can I execute the unit tests locally?
+
+Whenever you push changes to the remote repository in a pull request (PR), automated tests are executed to verify whether the provided records comply with the expected schemas.
+
+However, it can sometimes be useful to run these tests locally first. This allows you to iterate more quickly and makes debugging easier.
+
+To run the tests locally, execute the `test_records.py` test file by following these steps:
+
+1. **Create a Python environment.** It is recommended to use a virtual environment or a Conda environment to isolate dependencies. For example:
+
+```shell
+conda create --name apex_algorithms_qa python pytest
+conda activate apex_algorithms_qa
+```
+2. **Install the APEx QA toolbox** by running:
+```shell
+pip install qa/tools
+```
+3. **Run the tests** using:
+```shell
+pytest qa/unittests/tests/test_records.py
+```
+
+### The record validation fails because of the keywords I used. What can I do?
+
+To ensure consistency across the [APEx Algorithm Catalogue](https://algorithm-catalogue.apex.esa.int/), APEx restricts the set of keywords that can be used. If the current list does not include keywords relevant to your service, the list can be extended through a pull request (PR).
+
+However, **all keywords must match the [EarthData taxonomy](https://gcmd.earthdata.nasa.gov/KeywordViewer)**. Any keyword you add must already exist in this taxonomy to be accepted by APEx.
+
+To add a new keyword, include it in the `keywords` section of the `schemas/record.json` file.
