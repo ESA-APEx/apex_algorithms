@@ -75,7 +75,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/ds_bias_preview/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json"
     },
     {
       "rel": "code",
@@ -87,7 +87,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=bais2&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/ds_bias_preview/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json&server=openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=bais2&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/openeo_udp/bais2.json&server=openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "service",
@@ -117,13 +117,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Burned area preview (Gran Canaria, 2019-08-19)",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/ds_bias_preview/algorithm_catalog/developmentseed/bais2/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/ds_bias_preview/algorithm_catalog/developmentseed/bais2/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/bais2/records/thumbnail.png"
     }
   ]
 }
