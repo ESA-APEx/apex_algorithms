@@ -121,7 +121,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/sentinel1_soil_moisture/openeo_udp/sentinel1_soil_moisture.json"
         },
         {
             "rel": "service",
@@ -157,19 +157,19 @@
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor (with wizard)",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_soil_moisture&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json&server=https://openeofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=sentinel1_soil_moisture&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/sentinel1_soil_moisture/openeo_udp/sentinel1_soil_moisture.json&server=https://openeofed.dataspace.copernicus.eu"
         },
         {
             "rel": "example-output",
             "type": "application/gtiff",
             "title": "Example output",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/surfacesoilmoisture/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/sentinel1_soil_moisture/records/thumbnail.png"
         },
         {
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/surfacesoilmoisture/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/sentinel1_soil_moisture/records/thumbnail.png"
         }
     ]
 }
