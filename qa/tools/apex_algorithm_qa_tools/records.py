@@ -31,7 +31,7 @@ def _get_ogc_records(folder: str, glob: str) -> List[Any]:
     for path in (get_project_root() / folder).glob(glob):
         with open(path) as f:
             data = json.load(f)
-            records.append(data)
+            records.append({'path': str(path), 'data': data})
     return records
 
 
