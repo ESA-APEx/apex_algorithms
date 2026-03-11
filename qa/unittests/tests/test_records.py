@@ -30,24 +30,28 @@ def test_get_platform_ogc_records():
     "record",
     [
         # Use scenario id as parameterization id to give nicer test names.
-        pytest.param(record, id=record["id"])
+        pytest.param(record, id=record["data"]["id"])
         for record in get_service_ogc_records()
     ],
 )
 def test_service_record_validation(record):
-    jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())
+    record_name = Path(record["path"]).name
+    assert record_name == f"{record['data']['id']}.json", f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    jsonschema.validate(instance=record["data"], schema=get_service_ogc_record_schema())
 
 
 @pytest.mark.parametrize(
     "record",
     [
         # Use scenario id as parameterization id to give nicer test names.
-        pytest.param(record, id=record["id"])
+        pytest.param(record, id=record["data"]["id"])
         for record in get_platform_ogc_records()
     ],
 )
 def test_platform_record_validation(record):
-    jsonschema.validate(instance=record, schema=get_platform_ogc_record_schema())
+    record_name = Path(record["path"]).name
+    assert record_name == f"{record['data']['id']}.json", f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    jsonschema.validate(instance=record["data"], schema=get_platform_ogc_record_schema())
 
 
 def test_algorithm_provider_records_():
@@ -65,9 +69,9 @@ def test_algorithm_provider_records_():
     "record",
     [
         # Use scenario id as parameterization id to give nicer test names.
-        pytest.param(record, id=record["id"])
+        pytest.param(record, id=record["data"]["id"])
         for record in get_provider_ogc_records()
     ],
 )
 def test_provider_record_validation(record):
-    jsonschema.validate(instance=record, schema=get_provider_ogc_record_schema())
+    jsonschema.validate(instance=record["data"], schema=get_provider_ogc_record_schema())
