@@ -1,4 +1,5 @@
 import jsonschema
+import requests
 
 import pytest
 from apex_algorithm_qa_tools.common import get_project_root
@@ -35,9 +36,19 @@ def test_get_platform_ogc_records():
     ],
 )
 def test_service_record_validation(record):
-    record_name = Path(record["path"]).name
+    ## Validate if record file is located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'
     assert record["path"].endswith(f"{record["data"]["id"]}/records/{record['data']['id']}.json"), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
+    
+    ## Validate record against the service OGC record schema.
     jsonschema.validate(instance=record["data"], schema=get_service_ogc_record_schema())
+
+    ## Validate if the links in the record is returning a 200 OK response.
+    for link in record["data"].get("links", []):
+        assert "href" in link, f"Link in record '{record['data']['id']}' is missing 'href' field"
+        href = link["href"]
+        if href.startswith("http"):
+            response = requests.head(href)
+            assert response.status_code in [200, 301, 302, 308, 401, 403], f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
 
 
 @pytest.mark.parametrize(
