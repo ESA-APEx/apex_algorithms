@@ -38,7 +38,7 @@ UDP_ID     = "UHI_per_pixel"
 #     # To change it, update CCI_YEAR in uhi_udp_register.py and re-register.
 # }
 
-OUTPUT_FILE = r"C:\Users\adriaan.keurhorst\Documents\GTIF\uhi_jja_result_torino.tif"
+OUTPUT_FILE = r".\uhi_jja_result_torino.tif"
 JOB_TITLE   = "UHI_JJA_torino"
 
 # Uncomment for other cities:
