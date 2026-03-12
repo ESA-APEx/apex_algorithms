@@ -60,12 +60,14 @@
     {
       "rel": "thumbnail",
       "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/preview/london_thumbnail.png",
-      "type": "image/png"
+      "type": "image/png",
+      "title": "Thumbnail preview of UHI Intensity in London"
     },
     {
       "rel": "preview",
       "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/preview/london_thumbnail.png",
-      "type": "image/png"
+      "type": "image/png",
+      "title": "Preview of UHI Intensity in London"
     },
     {
       "rel": "application",
@@ -82,17 +84,20 @@
     {
       "rel": "about",
       "href": "https://github.com/adriaanzico/gtif-urban-heat-island",
-      "title": "Algorithm Documentation"
+      "title": "Algorithm Documentation",
+      "type": "text/html"
     },
     {
       "rel": "code",
       "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/udp/UHI_udp.py",
-      "title": "Source Code"
+      "title": "Source Code",
+      "type": "text/html"
     },
     {
       "rel": "license",
       "href": "https://opensource.org/licenses/Apache-2.0",
-      "title": "License"
+      "title": "License",
+      "type": "text/html"
     },
     {
       "rel": "webapp",
