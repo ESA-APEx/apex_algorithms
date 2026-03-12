@@ -1,0 +1,88 @@
+{
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "id": "UHI_per_pixel",
+  "conformsTo": [
+    "https://api.openeo.org/1.2"
+  ],
+  "properties": {
+    "title": "Urban Heat Island Intensity (JJA)",
+    "description": "This openEO User Defined Process (UDP) computes Urban Heat Island (UHI) intensity during the summer months (June–August). It processes satellite-derived Land Surface Temperature data and compares urban pixels with surrounding rural reference areas using a configurable kernel size.",
+    "keywords": [
+      "urban heat island",
+      "LST",
+      "climate",
+      "openEO",
+      "copernicus",
+      "urban climate",
+      "satellite"
+    ],
+    "visibility": "public",
+    "license": "Apache-2.0",
+    "cost_estimate": 1,
+    "cost_units": "credits",
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Adriaan Keurhorst",
+        "email": "adriaan.keurhorst@compass.ie",
+        "role": "author"
+      }
+    ],
+    "updates": "2026-03-06T00:00:00Z"
+  },
+  "links": [
+    {
+      "rel": "platform",
+      "href": "../../../../platform_catalog/copernicus_dataspace.json",
+      "type": "application/json",
+      "title": "Copernicus Data Space openEO Backend"
+    },
+    {
+      "rel": "thumbnail",
+      "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/preview/london_thumbnail.png",
+      "type": "image/png"
+    },
+    {
+      "rel": "preview",
+      "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/preview/london_thumbnail.png",
+      "type": "image/png"
+    },
+    {
+      "rel": "application",
+      "href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/processes/u:776bee94-53de-49f5-88d6-c3660d927048/UHI_per_pixel",
+      "type": "application/json",
+      "title": "openEO UDP definition"
+    },
+    {
+      "rel": "service",
+      "href": "https://openeo.dataspace.copernicus.eu/openeo/1.2",
+      "type": "application/json",
+      "title": "openEO Backend"
+    },
+    {
+      "rel": "about",
+      "href": "https://github.com/adriaanzico/gtif-urban-heat-island",
+      "title": "Algorithm Documentation"
+    },
+    {
+      "rel": "code",
+      "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/udp/UHI_udp.py",
+      "title": "Source Code"
+    },
+    {
+      "rel": "license",
+      "href": "https://opensource.org/licenses/Apache-2.0",
+      "title": "License"
+    },
+    {
+      "rel": "webapp",
+      "href": "https://openeo.dataspace.copernicus.eu",
+      "title": "Execute via openEO"
+    }
+  ]
+}
