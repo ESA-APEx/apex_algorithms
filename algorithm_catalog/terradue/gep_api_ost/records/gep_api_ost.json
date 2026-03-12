@@ -10,7 +10,7 @@
     "created": "2026-03-11T00:00:00Z",
     "updated": "2026-03-11T00:00:00Z",
     "type": "service",
-    "title": "OpenSARToolkit (OST) by ESA-PhiLab",
+    "title": "OpenSARToolkit (OST) by ESA-PhiLab as EOAP",
     "description": "The Open SAR Toolkit (OST) was initially developed at the Food and Agriculture Organization of the United Nations (FAO). It has now been completely re-factored and transferred into a simpler and less-dependency rich python3 version (https://github.com/ESA-PhiLab/OpenSarToolkit). OST lowers the entry barrier for pre-processing of Sentinel-1 data. OST supports the production of ARD products, either Radiometrically Terrain Corrected (RTC) products or Geometrically Terrain Corrected (GTC) products, along with option to automate the generation of small to large-scale Sentinel-1 time-series and timescan data.",
     "cost_estimate": 1.5,
     "cost_unit": "\u20ac per input product",
