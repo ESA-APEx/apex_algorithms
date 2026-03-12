@@ -3,19 +3,19 @@
   "stac_version": "1.0.0",
   "id": "UHI_per_pixel",
   "conformsTo": [
-    "https://api.openeo.org/1.2"
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
   ],
   "properties": {
+    "created": "2026-03-06T00:00:00Z",
+    "updated": "2026-03-06T00:00:00Z",
+    "type": "service",
     "title": "Urban Heat Island Intensity (JJA)",
     "description": "This openEO User Defined Process (UDP) computes Urban Heat Island (UHI) intensity during the summer months (June–August). It processes satellite-derived Land Surface Temperature data and compares urban pixels with surrounding rural reference areas using a configurable kernel size.",
     "keywords": [
-      "urban heat island",
-      "LST",
-      "climate",
-      "openEO",
-      "copernicus",
-      "urban climate",
-      "satellite"
+      "Urban Heat Island",
+      "Land Surface Temperature",
+      "Climate"
     ],
     "visibility": "public",
     "license": "Apache-2.0",
@@ -33,14 +33,29 @@
         "role": "author"
       }
     ],
-    "updates": "2026-03-06T00:00:00Z"
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Urban Heat Island"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ]
   },
   "links": [
     {
       "rel": "platform",
-      "href": "../../../../platform_catalog/copernicus_dataspace.json",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json",
       "type": "application/json",
       "title": "Copernicus Data Space openEO Backend"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Eurac Research",
+      "href": "../../record.json"
     },
     {
       "rel": "thumbnail",
@@ -54,13 +69,13 @@
     },
     {
       "rel": "application",
-      "href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/processes/u:776bee94-53de-49f5-88d6-c3660d927048/UHI_per_pixel",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/urban_heat_preview/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json",
       "type": "application/json",
       "title": "openEO UDP definition"
     },
     {
       "rel": "service",
-      "href": "https://openeo.dataspace.copernicus.eu/openeo/1.2",
+      "href": "https://openeofed.dataspace.copernicus.eu/",
       "type": "application/json",
       "title": "openEO Backend"
     },
@@ -81,8 +96,9 @@
     },
     {
       "rel": "webapp",
-      "href": "https://openeo.dataspace.copernicus.eu",
-      "title": "Execute via openEO"
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=bap_composite&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/urban_heat_preview/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
