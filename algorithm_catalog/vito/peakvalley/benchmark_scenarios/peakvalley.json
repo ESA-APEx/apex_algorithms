@@ -11,11 +11,10 @@
                     "recovery_ratio": 1,
                     "slope_threshold": 0.007,
                     "spatial_extent": {
-                        "crs": 4326,
-                        "east": 15.185336903822831,
-                        "north": 45.81302555710934,
-                        "south": 45.80924633589998,
-                        "west": 15.179421073198585
+                        "east": 5.191124815592899,
+                        "north": 51.28741356639361,
+                        "south": 51.247344715539725,
+                        "west": 5.097060072906645
                     },
                     "temporal_extent": [
                         "2021-01-01",
@@ -38,7 +37,7 @@
             }
         },
         "reference_data": {
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20735970267!tests_test_benchmarks.py__test_run_benchmark_peakvalley_!actual/job-results.json",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/peakvalley/job-results.json",
             "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/peakvalley/openEO.nc"
         },
         "reference_options": {
