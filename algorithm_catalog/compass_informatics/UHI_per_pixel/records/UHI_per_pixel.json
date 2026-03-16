@@ -72,7 +72,7 @@
     {
       "rel": "application",
       "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/openeo_udp/uhi_jja_udp.json",
-      "type": "application/json",
+      "type": "application/vnd.openeo+json;type=process",
       "title": "openEO UDP definition"
     },
     {
