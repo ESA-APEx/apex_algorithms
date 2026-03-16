@@ -71,7 +71,7 @@
     },
     {
       "rel": "application",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/urban_heat_preview/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json",
+      "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/openeo_udp/uhi_jja_udp.json",
       "type": "application/json",
       "title": "openEO UDP definition"
     },
@@ -103,7 +103,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=bap_composite&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/urban_heat_preview/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=bap_composite&wizard~processUrl=https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/openeo_udp/uhi_jja_udp.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
