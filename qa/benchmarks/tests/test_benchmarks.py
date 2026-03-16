@@ -113,6 +113,13 @@ def test_run_benchmark(
         # Upload assets on failure
         upload_assets_on_fail(*paths)
 
+    # Pre-compute S3 URLs for actual files (used in error messages and benchmark reports)
+    actual_s3_urls = {
+        str(p.relative_to(actual_dir)): upload_assets_on_fail.get_url(p)
+        for p in sorted(actual_dir.rglob("*")) if p.is_file()
+    }
+    actual_s3_urls = {k: v for k, v in actual_s3_urls.items() if v is not None}
+
     with track_phase(phase="download-reference"):
         reference_dir = download_reference_data(
             scenario=scenario, reference_dir=tmp_path / "reference"
@@ -137,17 +144,37 @@ def test_run_benchmark(
                 size_str += f" (actual: {actual_counterpart.stat().st_size / 1024:.1f} kb)"
             ref_files[str(rel)] = size_str
         report["reference_files"] = ref_files
+        if actual_s3_urls:
+            report["actual_data"] = actual_s3_urls
         report_path.write_text(json.dumps(report, indent=2))
+        # Also write to CWD so the report is accessible on Jenkins workspace
+        cwd_report_dir = Path("benchmark_reports")
+        cwd_report_dir.mkdir(exist_ok=True)
+        (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
+            json.dumps(report, indent=2)
+        )
 
     with track_phase(
         phase="compare", describe_exception=analyse_results_comparison_exception
     ):
         # Compare actual results with reference data
-        assert_job_results_allclose(
-            actual=actual_dir,
-            expected=reference_dir,
-            tmp_path=tmp_path,
-            rtol=scenario.reference_options.get("rtol", 1e-3),
-            atol=scenario.reference_options.get("atol", 1),
-            pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 1),
-        )
+        try:
+            assert_job_results_allclose(
+                actual=actual_dir,
+                expected=reference_dir,
+                tmp_path=tmp_path,
+                rtol=scenario.reference_options.get("rtol", 1e-3),
+                atol=scenario.reference_options.get("atol", 1),
+                pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 1),
+            )
+        except AssertionError as e:
+            msg = str(e)
+            if scenario.reference_data:
+                msg += "\n\nReference data URLs:"
+                for name, url in scenario.reference_data.items():
+                    msg += f"\n  {name}: {url}"
+            if actual_s3_urls:
+                msg += "\n\nActual data S3 URLs (uploaded on failure):"
+                for name, url in actual_s3_urls.items():
+                    msg += f"\n  {name}: {url}"
+            raise AssertionError(msg) from None
