@@ -177,4 +177,14 @@ def test_run_benchmark(
                 msg += "\n\nActual data S3 URLs (uploaded on failure):"
                 for name, url in actual_s3_urls.items():
                     msg += f"\n  {name}: {url}"
+            if report_path is not None:
+                report = json.loads(report_path.read_text())
+                report["test_failed"] = True
+                report["test_error_message"] = msg
+                report_path.write_text(json.dumps(report, indent=2))
+                cwd_report_dir = Path("benchmark_reports")
+                cwd_report_dir.mkdir(exist_ok=True)
+                (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
+                    json.dumps(report, indent=2)
+                )
             raise AssertionError(msg) from None
