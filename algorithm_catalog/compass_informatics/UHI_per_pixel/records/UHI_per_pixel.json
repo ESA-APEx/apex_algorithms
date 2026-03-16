@@ -59,13 +59,13 @@
     },
     {
       "rel": "thumbnail",
-      "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/preview/london_thumbnail.png",
+      "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/preview/london_thumbnail.png",
       "type": "image/png",
       "title": "Thumbnail preview of UHI Intensity in London"
     },
     {
       "rel": "preview",
-      "href": "https://github.com/adriaanzico/gtif-urban-heat-island/blob/main/preview/london_thumbnail.png",
+      "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/preview/london_thumbnail.png",
       "type": "image/png",
       "title": "Preview of UHI Intensity in London"
     },
