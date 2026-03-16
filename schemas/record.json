@@ -181,6 +181,10 @@
           "items": {
             "type": "object",
             "description": "Identification of, and means of communication with, person responsible\nfor the APEx service.",
+            "required": [
+              "name",
+              "roles"
+            ],
             "properties": {
               "name": {
                 "type": "string",
