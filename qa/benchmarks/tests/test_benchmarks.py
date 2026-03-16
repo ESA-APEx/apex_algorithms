@@ -57,6 +57,32 @@ def test_run_benchmark(
         connection: openeo.Connection = connection_factory(url=backend)
 
     report_path = None
+    if request.config.getoption("--upload-benchmark-report"):
+        report_path = tmp_path / "benchmark_report.json"
+        report_path.write_text(json.dumps({
+            "scenario_id": scenario.id,
+            "scenario_description": scenario.description,
+            "scenario_backend": scenario.backend,
+            "scenario_source": str(scenario.source) if scenario.source else None,
+            "reference_data": scenario.reference_data,
+            "reference_options": scenario.reference_options,
+        }, indent=2))
+        upload_assets_on_fail(report_path)
+
+    def _on_phase_exception(phase: str, exc: Exception):
+        if report_path is not None:
+            report = json.loads(report_path.read_text())
+            report["test_failed"] = True
+            report["test_failed_phase"] = phase
+            report["test_error_message"] = str(exc)
+            report_path.write_text(json.dumps(report, indent=2))
+            cwd_report_dir = Path("benchmark_reports")
+            cwd_report_dir.mkdir(exist_ok=True)
+            (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
+                json.dumps(report, indent=2)
+            )
+
+    track_phase.on_exception = _on_phase_exception
 
     with track_phase(phase="create-job"):
         # TODO #14 scenario option to use synchronous instead of batch job mode?
@@ -67,18 +93,10 @@ def test_run_benchmark(
         )
         track_metric("job_id", job.job_id)
 
-        if request.config.getoption("--upload-benchmark-report"):
-            report_path = tmp_path / "benchmark_report.json"
-            report_path.write_text(json.dumps({
-                "job_id": job.job_id,
-                "scenario_id": scenario.id,
-                "scenario_description": scenario.description,
-                "scenario_backend": scenario.backend,
-                "scenario_source": str(scenario.source) if scenario.source else None,
-                "reference_data": scenario.reference_data,
-                "reference_options": scenario.reference_options,
-            }, indent=2))
-            upload_assets_on_fail(report_path)
+        if report_path is not None:
+            report = json.loads(report_path.read_text())
+            report["job_id"] = job.job_id
+            report_path.write_text(json.dumps(report, indent=2))
 
     with track_phase(phase="run-job"):
         # TODO: monitor timing and progress
@@ -177,14 +195,4 @@ def test_run_benchmark(
                 msg += "\n\nActual data S3 URLs (uploaded on failure):"
                 for name, url in actual_s3_urls.items():
                     msg += f"\n  {name}: {url}"
-            if report_path is not None:
-                report = json.loads(report_path.read_text())
-                report["test_failed"] = True
-                report["test_error_message"] = msg
-                report_path.write_text(json.dumps(report, indent=2))
-                cwd_report_dir = Path("benchmark_reports")
-                cwd_report_dir.mkdir(exist_ok=True)
-                (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
-                    json.dumps(report, indent=2)
-                )
             raise AssertionError(msg) from None
