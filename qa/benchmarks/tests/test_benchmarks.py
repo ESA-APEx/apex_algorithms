@@ -81,6 +81,9 @@ def test_run_benchmark(
             (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
                 json.dumps(report, indent=2)
             )
+            report_url = upload_assets_on_fail.get_url(report_path)
+            if report_url:
+                exc.add_note(f"Benchmark report: {report_url}")
 
     track_phase.on_exception = _on_phase_exception
 
