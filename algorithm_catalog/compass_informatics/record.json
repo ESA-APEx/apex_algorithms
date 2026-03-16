@@ -42,13 +42,13 @@
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/logo/Compass%20Informatics_white.png"
+            "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/logo/Compass%20Informatics_transparent.png"
         },
         {
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/logo/Compass%20Informatics_transparent.png"
+            "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/logo/Compass%20Informatics_white.png"
         }
     ]
 }
