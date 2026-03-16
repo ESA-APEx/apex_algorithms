@@ -30,7 +30,7 @@
       {
         "name": "Adriaan Keurhorst",
         "email": "adriaan.keurhorst@compass.ie",
-        "role": "author"
+        "role": ["author"]
       }
     ],
     "themes": [
