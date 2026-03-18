@@ -125,7 +125,10 @@
               "Digital Elevation/Terrain Model (DEM)",
               "ECMWF ERA5",
               "Data Analysis and Visualization",
-              "Statistical Applications"
+              "Statistical Applications",
+              "Urban Heat Island",
+              "Land Surface Temperature",
+              "Climate"
             ]
           },
           "minItems": 1,
@@ -178,6 +181,10 @@
           "items": {
             "type": "object",
             "description": "Identification of, and means of communication with, person responsible\nfor the APEx service.",
+            "required": [
+              "name",
+              "roles"
+            ],
             "properties": {
               "name": {
                 "type": "string",
@@ -541,7 +548,9 @@
                 "type": {
                   "type": "string",
                   "description": "Must use the correct mimetype",
-                  "enum": ["application/x-ipynb+json"]
+                  "enum": [
+                    "application/x-ipynb+json"
+                  ]
                 }
               },
               "required": [

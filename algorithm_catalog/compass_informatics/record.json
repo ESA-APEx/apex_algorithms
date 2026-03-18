@@ -1,5 +1,5 @@
 {
-    "id": "eurac",
+    "id": "compass_informatics",
     "type": "Feature",
     "conformsTo": [
         "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
@@ -8,7 +8,7 @@
         "created": "2025-12-03T13:00:00Z",
         "updated": "2025-12-03T13:00:00Z",
         "type": "algorithm_provider",
-        "title": "Eurac Research",
+        "title": "Compass Informatics",
         "description": "",
         "keywords": [],
         "language": {
@@ -25,7 +25,9 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@eurac.edu", "@vito.be"]
+            "admin": [
+                "@compass.ie"
+            ]
         }
     },
     "linkTemplates": [],
@@ -33,20 +35,20 @@
         {
             "rel": "website",
             "type": "text/html",
-            "title": "EURAC",
-            "href": "https://www.eurac.edu"
-        },
-        {
-            "rel": "logo-light",
-            "type": "image/png",
-            "title": "Logo",
-            "href": "https://webassets.eurac.edu/31538/1596156835-logo-vertical.svg"
+            "title": "Compass Informatics",
+            "href": "https://www.compass.ie/"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Eurac_Research_logo.svg/1280px-Eurac_Research_logo.svg.png"
+            "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/logo/Compass%20Informatics_transparent.png"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://raw.githubusercontent.com/adriaanzico/gtif-urban-heat-island/refs/heads/main/logo/Compass%20Informatics_white.png"
         }
     ]
 }

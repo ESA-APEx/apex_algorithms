@@ -37,7 +37,7 @@ import os
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict
+from typing import Dict
 
 import boto3
 import botocore.config
@@ -91,6 +91,16 @@ class S3UploadPlugin:
         self.upload_stats = collections.defaultdict(int, uploaded=0)
         self.upload_reports: Dict[str, dict] = {}
 
+    def _build_key(self, nodeid: str, name: str) -> str:
+        safe_nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", nodeid)
+        return f"{self.run_id}!{safe_nodeid}!{name}"
+
+    def get_upload_url(self, nodeid: str, name: str) -> str:
+        """Pre-compute the S3 URL for an asset (before uploading)."""
+        key = self._build_key(nodeid=nodeid, name=name)
+        # TODO: is this manual URL building correct? And isn't there a boto utility for that?
+        return f"{self.s3_client.meta.endpoint_url.rstrip('/')}/{self.bucket}/{key}"
+
     def collect(self, path: Path, name: str):
         """Collect assets to upload"""
         assert self.collected_assets is not None, "No active collection of assets"
@@ -143,10 +153,8 @@ class S3UploadPlugin:
         report.user_properties.append([_USER_PROPERTY, upload_info])
 
     def _upload_asset(self, nodeid: str, name: str, path: Path) -> str:
-        safe_nodeid = re.sub(r"[^a-zA-Z0-9_.-]", "_", nodeid)
-        key = f"{self.run_id}!{safe_nodeid}!{name}"
-        # TODO: is this manual URL building correct? And isn't there a boto utility for that?
-        url = f"{self.s3_client.meta.endpoint_url.rstrip('/')}/{self.bucket}/{key}"
+        key = self._build_key(nodeid=nodeid, name=name)
+        url = self.get_upload_url(nodeid=nodeid, name=name)
         _log.info(f"Uploading asset {name=} from {path=} to {url=}")
         self.s3_client.upload_file(
             Filename=str(path),
@@ -177,11 +185,16 @@ class S3UploadPlugin:
 
 
 @pytest.fixture
-def upload_assets_on_fail(pytestconfig: pytest.Config, tmp_path) -> Callable:
+def upload_assets_on_fail(
+    pytestconfig: pytest.Config, request: pytest.FixtureRequest, tmp_path
+):
     """
     Fixture to register a file (under `tmp_path`) for S3 upload
-    after the test failed. The fixture is a function that
-    can be called with one or more `Path` objects to upload.
+    after the test failed.
+
+    The fixture is a callable object that accepts one or more `Path` objects
+    to register for upload on test failure. It also exposes a `get_url(path)`
+    method to pre-compute the S3 URL for a given path before uploading.
     """
     uploader: S3UploadPlugin | None = pytestconfig.pluginmanager.get_plugin(
         _UPLOAD_ASSETS_PLUGIN_NAME
@@ -189,18 +202,30 @@ def upload_assets_on_fail(pytestconfig: pytest.Config, tmp_path) -> Callable:
 
     if uploader:
 
-        def collect(*paths: Path):
-            for path in paths:
-                # TODO: option to make relative from other root
-                #       (e.g. when test uses an `actual` folder for actual results)
-                assert path.is_relative_to(tmp_path)
+        class _Collector:
+            def __call__(self, *paths: Path):
+                for path in paths:
+                    # TODO: option to make relative from other root
+                    #       (e.g. when test uses an `actual` folder for actual results)
+                    assert path.is_relative_to(tmp_path)
+                    name = str(path.relative_to(tmp_path))
+                    uploader.collect(path=path, name=name)
+
+            def get_url(self, path: Path) -> str:
+                """Pre-compute the S3 URL for a given path (without uploading)."""
                 name = str(path.relative_to(tmp_path))
-                uploader.collect(path=path, name=name)
+                return uploader.get_upload_url(nodeid=request.node.nodeid, name=name)
+
+        return _Collector()
 
     else:
         warnings.warn("Fixture `upload_assets` is a no-op (incomplete set up).")
 
-        def collect(*paths: Path):
-            pass
+        class _NoopCollector:
+            def __call__(self, *paths: Path):
+                pass
 
-    return collect
+            def get_url(self, path: Path) -> None:
+                return None
+
+        return _NoopCollector()
