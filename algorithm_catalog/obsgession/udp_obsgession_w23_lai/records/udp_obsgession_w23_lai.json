@@ -12,8 +12,6 @@
     "type": "service",
     "title": "Temperate forests optimized Leaf-Area-Index (LAI) product based on Sentinel-2",
     "description": "Provides leaf area index (LAI) at 10m resolution from 2015 onwards for temperate forests.",
-    "cost_estimate": null,
-    "cost_unit": "platform credits per km\u00b2",
     "keywords": [
       "Vegetation",
       "Leaf Area Index (LAI)",
