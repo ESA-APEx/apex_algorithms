@@ -1,0 +1,109 @@
+{
+  "id": "udp_obsgession_w23_lai",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-03-17T13:00:00Z",
+    "updated": "2026-03-17T13:00:00Z",
+    "type": "service",
+    "title": "Temperate forests optimized Leaf-Area-Index (LAI) product based on Sentinel-2",
+    "description": "Provides leaf area index (LAI) at 10m resolution from 2015 onwards for temperate forests.",
+    "cost_estimate": null,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "Vegetation",
+      "Leaf Area Index (LAI)",
+      "Sentinel-2",
+      "Forests"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Marcel Buchhorn",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI",
+            "url": "https://gcmd.earthdata.nasa.gov/kms/concept/fc57a9a0-a287-4bcf-a517-20811b55596b?format=json"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTiff"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/openeo_udp/udp_obsgession_w23_lai.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "openEO platform",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "OBSGESSION",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://openeofed.dataspace.copernicus.eu/?wizard=UDP&wizard~process=udp_obsgession_w23_lai&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/openeo_udp/udp_obsgession_w23_lai.json"
+    },
+    {
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
+      "title": "Example Jupyter Notebook to calculate the LAI products",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/notebooks/execute-udp.ipynb"
+    }
+  ]
+}
