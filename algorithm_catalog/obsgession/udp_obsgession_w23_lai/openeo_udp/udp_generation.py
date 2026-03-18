@@ -222,14 +222,10 @@ saved_result = LAI_cube.save_result(
     "filename_prefix":f"_concat_"}
 )
 
-description = """
-EO4Diversity EVI-LAI algorithm to produce the Leaf Area Index product.
-"""
-
 spec = build_process_dict(
     process_id="udp_obsgession_w23_lai",
     summary="calculates the LAI datasets for wa certain temporal spatial domain, aggregated to a specific temporal binning period and temporal aggregation function.",
-    description=description.strip(),
+    description=(pathlib.Path(__file__).parent / "README.md").read_text(),
     parameters=[
         param_start_date,
         param_end_date,
