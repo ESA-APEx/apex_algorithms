@@ -21,7 +21,7 @@
                     "end_date": "2023-08-11",
                     "start_date": "2023-08-01"
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/vici_ethiopia/openeo_udp/vici_ethiopia.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/vici_ethiopia/algorithm_catalog/vito/vici_ethiopia/openeo_udp/vici_ethiopia.json",
                 "process_id": "vici_ethiopia"
             }
         },
