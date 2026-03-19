@@ -7,7 +7,7 @@
     "process_graph": {
       "ardsen2like": {
         "process_id": "sen2like_processing",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eodc/sen2like/openeo_udp/sen2like_processing.json",
+        "namespace": "https://raw.githubusercontent.com/ValentinaHutter/apex_algorithms/refs/heads/sen2like-rename/algorithm_catalog/eodc/sen2like/openeo_udp/sen2like_processing.json",
         "arguments": {
           "spatial_extent": {
               "east": 16.414,
