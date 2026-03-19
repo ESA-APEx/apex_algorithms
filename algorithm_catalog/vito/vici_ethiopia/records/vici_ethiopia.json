@@ -31,19 +31,13 @@
         ],
         "contacts": [
             {
-                "name": "Kristof Van Tricht",
+                "name": "Jeroen Degerickx",
                 "position": "Researcher",
                 "organization": "VITO",
                 "links": [
                     {
                         "href": "https://www.vito.be/",
                         "title": "VITO Website",
-                        "rel": "about",
-                        "type": "text/html"
-                    },
-                    {
-                        "href": "https://github.com/kvantricht",
-                        "title": "GitHub",
                         "rel": "about",
                         "type": "text/html"
                     }
