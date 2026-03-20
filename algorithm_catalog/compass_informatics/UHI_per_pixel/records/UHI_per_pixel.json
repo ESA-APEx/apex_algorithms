@@ -77,7 +77,7 @@
     },
     {
       "rel": "service",
-      "href": "https://openeofed.dataspace.copernicus.eu/",
+      "href": "https://openeofed.dataspace.copernicus.eu",
       "type": "application/json",
       "title": "openEO Backend"
     },
