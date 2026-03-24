@@ -1,0 +1,943 @@
+{
+    "process_graph": {
+        "loadcollection1": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "B02",
+                    "B04",
+                    "B08"
+                ],
+                "featureflags": {
+                    "tilesize": 128
+                },
+                "id": "SENTINEL2_L2A",
+                "properties": {
+                    "eo:cloud_cover": {
+                        "process_graph": {
+                            "lte1": {
+                                "process_id": "lte",
+                                "arguments": {
+                                    "x": {
+                                        "from_parameter": "value"
+                                    },
+                                    "y": 95
+                                },
+                                "result": true
+                            }
+                        }
+                    }
+                },
+                "spatial_extent": {
+                    "from_parameter": "aoi"
+                },
+                "temporal_extent": [
+                    {
+                        "from_parameter": "start_date"
+                    },
+                    {
+                        "from_parameter": "end_date"
+                    }
+                ]
+            }
+        },
+        "resamplespatial1": {
+            "process_id": "resample_spatial",
+            "arguments": {
+                "align": "upper-left",
+                "data": {
+                    "from_node": "loadcollection1"
+                },
+                "method": "near",
+                "projection": {
+                    "from_parameter": "epsg"
+                },
+                "resolution": {
+                    "from_parameter": "resolution"
+                }
+            }
+        },
+        "loadcollection2": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "SCL"
+                ],
+                "featureflags": {
+                    "tilesize": 128
+                },
+                "id": "SENTINEL2_L2A",
+                "properties": {
+                    "eo:cloud_cover": {
+                        "process_graph": {
+                            "lte2": {
+                                "process_id": "lte",
+                                "arguments": {
+                                    "x": {
+                                        "from_parameter": "value"
+                                    },
+                                    "y": 95
+                                },
+                                "result": true
+                            }
+                        }
+                    }
+                },
+                "spatial_extent": {
+                    "from_parameter": "aoi"
+                },
+                "temporal_extent": [
+                    {
+                        "from_parameter": "start_date"
+                    },
+                    {
+                        "from_parameter": "end_date"
+                    }
+                ]
+            }
+        },
+        "resamplespatial2": {
+            "process_id": "resample_spatial",
+            "arguments": {
+                "align": "upper-left",
+                "data": {
+                    "from_node": "loadcollection2"
+                },
+                "method": "near",
+                "projection": {
+                    "from_parameter": "epsg"
+                },
+                "resolution": 10
+            }
+        },
+        "toscldilationmask1": {
+            "process_id": "to_scl_dilation_mask",
+            "arguments": {
+                "data": {
+                    "from_node": "resamplespatial2"
+                },
+                "erosion_kernel_size": 3,
+                "kernel1_size": 17,
+                "kernel2_size": 77,
+                "mask1_values": [
+                    2,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                "mask2_values": [
+                    3,
+                    8,
+                    9,
+                    10,
+                    11
+                ],
+                "scl_band_name": "SCL"
+            }
+        },
+        "renamelabels1": {
+            "process_id": "rename_labels",
+            "arguments": {
+                "data": {
+                    "from_node": "toscldilationmask1"
+                },
+                "dimension": "bands",
+                "target": [
+                    "S2-CLOUD-MASK"
+                ]
+            }
+        },
+        "mask1": {
+            "process_id": "mask",
+            "arguments": {
+                "data": {
+                    "from_node": "resamplespatial1"
+                },
+                "mask": {
+                    "from_node": "renamelabels1"
+                }
+            }
+        },
+        "apply1": {
+            "process_id": "apply",
+            "arguments": {
+                "data": {
+                    "from_node": "mask1"
+                },
+                "process": {
+                    "process_graph": {
+                        "linearscalerange1": {
+                            "process_id": "linear_scale_range",
+                            "arguments": {
+                                "inputMax": 65534,
+                                "inputMin": 0,
+                                "outputMax": 65534,
+                                "outputMin": 0,
+                                "x": {
+                                    "from_parameter": "x"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "applydimension1": {
+            "process_id": "apply_dimension",
+            "arguments": {
+                "context": {
+                    "parallel": true,
+                    "TileSize": 128
+                },
+                "data": {
+                    "from_node": "apply1"
+                },
+                "dimension": "bands",
+                "process": {
+                    "process_graph": {
+                        "arrayelement1": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "label": "B08"
+                            }
+                        },
+                        "multiply1": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement1"
+                                },
+                                "y": 0.0001
+                            }
+                        },
+                        "arrayelement2": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "label": "B04"
+                            }
+                        },
+                        "multiply2": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement2"
+                                },
+                                "y": 0.0001
+                            }
+                        },
+                        "subtract1": {
+                            "process_id": "subtract",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "multiply1"
+                                },
+                                "y": {
+                                    "from_node": "multiply2"
+                                }
+                            }
+                        },
+                        "multiply3": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 2.5,
+                                "y": {
+                                    "from_node": "subtract1"
+                                }
+                            }
+                        },
+                        "multiply4": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 6,
+                                "y": {
+                                    "from_node": "multiply2"
+                                }
+                            }
+                        },
+                        "add1": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "multiply1"
+                                },
+                                "y": {
+                                    "from_node": "multiply4"
+                                }
+                            }
+                        },
+                        "arrayelement3": {
+                            "process_id": "array_element",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                },
+                                "label": "B02"
+                            }
+                        },
+                        "multiply5": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "arrayelement3"
+                                },
+                                "y": 0.0001
+                            }
+                        },
+                        "multiply6": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 7.5,
+                                "y": {
+                                    "from_node": "multiply5"
+                                }
+                            }
+                        },
+                        "subtract2": {
+                            "process_id": "subtract",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "add1"
+                                },
+                                "y": {
+                                    "from_node": "multiply6"
+                                }
+                            }
+                        },
+                        "add2": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "subtract2"
+                                },
+                                "y": 1
+                            }
+                        },
+                        "divide1": {
+                            "process_id": "divide",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "multiply3"
+                                },
+                                "y": {
+                                    "from_node": "add2"
+                                }
+                            }
+                        },
+                        "multiply7": {
+                            "process_id": "multiply",
+                            "arguments": {
+                                "x": 4.0543,
+                                "y": {
+                                    "from_node": "divide1"
+                                }
+                            }
+                        },
+                        "add3": {
+                            "process_id": "add",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "multiply7"
+                                },
+                                "y": 1.7901
+                            }
+                        },
+                        "arraycreate1": {
+                            "process_id": "array_create",
+                            "arguments": {
+                                "data": [
+                                    {
+                                        "from_node": "add3"
+                                    }
+                                ]
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "renamelabels2": {
+            "process_id": "rename_labels",
+            "arguments": {
+                "data": {
+                    "from_node": "applydimension1"
+                },
+                "dimension": "bands",
+                "target": [
+                    "LAI"
+                ]
+            }
+        },
+        "apply2": {
+            "process_id": "apply",
+            "arguments": {
+                "data": {
+                    "from_node": "renamelabels2"
+                },
+                "process": {
+                    "process_graph": {
+                        "lt1": {
+                            "process_id": "lt",
+                            "arguments": {
+                                "x": {
+                                    "from_parameter": "x"
+                                },
+                                "y": 0
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "apply3": {
+            "process_id": "apply",
+            "arguments": {
+                "data": {
+                    "from_node": "renamelabels2"
+                },
+                "process": {
+                    "process_graph": {
+                        "gt1": {
+                            "process_id": "gt",
+                            "arguments": {
+                                "x": {
+                                    "from_parameter": "x"
+                                },
+                                "y": 7.5
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "mergecubes1": {
+            "process_id": "merge_cubes",
+            "arguments": {
+                "cube1": {
+                    "from_node": "apply2"
+                },
+                "cube2": {
+                    "from_node": "apply3"
+                },
+                "overlap_resolver": {
+                    "process_graph": {
+                        "or1": {
+                            "process_id": "or",
+                            "arguments": {
+                                "x": {
+                                    "from_parameter": "x"
+                                },
+                                "y": {
+                                    "from_parameter": "y"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "mask2": {
+            "process_id": "mask",
+            "arguments": {
+                "data": {
+                    "from_node": "renamelabels2"
+                },
+                "mask": {
+                    "from_node": "mergecubes1"
+                }
+            }
+        },
+        "aggregatetemporalperiod1": {
+            "process_id": "aggregate_temporal_period",
+            "arguments": {
+                "data": {
+                    "from_node": "mask2"
+                },
+                "period": {
+                    "from_parameter": "binning_period"
+                },
+                "reducer": {
+                    "process_graph": {
+                        "median1": {
+                            "process_id": "median",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "eq1": {
+            "process_id": "eq",
+            "arguments": {
+                "x": {
+                    "from_parameter": "temp_aggregator"
+                },
+                "y": "median"
+            }
+        },
+        "aggregatetemporalperiod2": {
+            "process_id": "aggregate_temporal_period",
+            "arguments": {
+                "data": {
+                    "from_node": "mask2"
+                },
+                "period": {
+                    "from_parameter": "binning_period"
+                },
+                "reducer": {
+                    "process_graph": {
+                        "mean1": {
+                            "process_id": "mean",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "eq2": {
+            "process_id": "eq",
+            "arguments": {
+                "x": {
+                    "from_parameter": "temp_aggregator"
+                },
+                "y": "mean"
+            }
+        },
+        "aggregatetemporalperiod3": {
+            "process_id": "aggregate_temporal_period",
+            "arguments": {
+                "data": {
+                    "from_node": "mask2"
+                },
+                "period": {
+                    "from_parameter": "binning_period"
+                },
+                "reducer": {
+                    "process_graph": {
+                        "max1": {
+                            "process_id": "max",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "eq3": {
+            "process_id": "eq",
+            "arguments": {
+                "x": {
+                    "from_parameter": "temp_aggregator"
+                },
+                "y": "max"
+            }
+        },
+        "aggregatetemporalperiod4": {
+            "process_id": "aggregate_temporal_period",
+            "arguments": {
+                "data": {
+                    "from_node": "mask2"
+                },
+                "period": {
+                    "from_parameter": "binning_period"
+                },
+                "reducer": {
+                    "process_graph": {
+                        "min1": {
+                            "process_id": "min",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "eq4": {
+            "process_id": "eq",
+            "arguments": {
+                "x": {
+                    "from_parameter": "temp_aggregator"
+                },
+                "y": "min"
+            }
+        },
+        "if1": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "aggregatetemporalperiod4"
+                },
+                "value": {
+                    "from_node": "eq4"
+                }
+            }
+        },
+        "if2": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "aggregatetemporalperiod3"
+                },
+                "reject": {
+                    "from_node": "if1"
+                },
+                "value": {
+                    "from_node": "eq3"
+                }
+            }
+        },
+        "if3": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "aggregatetemporalperiod2"
+                },
+                "reject": {
+                    "from_node": "if2"
+                },
+                "value": {
+                    "from_node": "eq2"
+                }
+            }
+        },
+        "if4": {
+            "process_id": "if",
+            "arguments": {
+                "accept": {
+                    "from_node": "aggregatetemporalperiod1"
+                },
+                "reject": {
+                    "from_node": "if3"
+                },
+                "value": {
+                    "from_node": "eq1"
+                }
+            }
+        },
+        "loadcollection3": {
+            "process_id": "load_collection",
+            "arguments": {
+                "bands": [
+                    "MAP"
+                ],
+                "id": "ESA_WORLDCOVER_10M_2021_V2",
+                "spatial_extent": {
+                    "from_parameter": "aoi"
+                },
+                "temporal_extent": null
+            }
+        },
+        "resamplespatial3": {
+            "process_id": "resample_spatial",
+            "arguments": {
+                "align": "upper-left",
+                "data": {
+                    "from_node": "loadcollection3"
+                },
+                "method": "near",
+                "projection": {
+                    "from_parameter": "epsg"
+                },
+                "resolution": {
+                    "from_parameter": "resolution"
+                }
+            }
+        },
+        "dropdimension1": {
+            "process_id": "drop_dimension",
+            "arguments": {
+                "data": {
+                    "from_node": "resamplespatial3"
+                },
+                "name": "t"
+            }
+        },
+        "apply4": {
+            "process_id": "apply",
+            "arguments": {
+                "data": {
+                    "from_node": "dropdimension1"
+                },
+                "process": {
+                    "process_graph": {
+                        "eq1": {
+                            "process_id": "eq",
+                            "arguments": {
+                                "x": {
+                                    "from_parameter": "x"
+                                },
+                                "y": 10
+                            }
+                        },
+                        "not1": {
+                            "process_id": "not",
+                            "arguments": {
+                                "x": {
+                                    "from_node": "eq1"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "mask3": {
+            "process_id": "mask",
+            "arguments": {
+                "data": {
+                    "from_node": "if4"
+                },
+                "mask": {
+                    "from_node": "apply4"
+                }
+            }
+        },
+        "loadurl1": {
+            "process_id": "load_url",
+            "arguments": {
+                "format": "Parquet",
+                "url": "https://s3.waw4-1.cloudferro.com/swift/v1/obsgession-waw4-1-b2rm8flkntfkatia3zzm7av6pzt3dsmrd2uc87dbvhnml/udp_data/EU_temperate_forests_distribution.parquet"
+            }
+        },
+        "maskpolygon1": {
+            "process_id": "mask_polygon",
+            "arguments": {
+                "data": {
+                    "from_node": "mask3"
+                },
+                "mask": {
+                    "from_node": "loadurl1"
+                }
+            }
+        },
+        "apply5": {
+            "process_id": "apply",
+            "arguments": {
+                "data": {
+                    "from_node": "maskpolygon1"
+                },
+                "process": {
+                    "process_graph": {
+                        "linearscalerange2": {
+                            "process_id": "linear_scale_range",
+                            "arguments": {
+                                "inputMax": 7.5,
+                                "inputMin": 0,
+                                "outputMax": 240,
+                                "outputMin": 0,
+                                "x": {
+                                    "from_parameter": "x"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "textconcat1": {
+            "process_id": "text_concat",
+            "arguments": {
+                "data": [
+                    "EO4Diversity_LAI_",
+                    {
+                        "from_parameter": "binning_period"
+                    },
+                    "_",
+                    {
+                        "from_parameter": "temp_aggregator"
+                    },
+                    "_"
+                ]
+            }
+        },
+        "saveresult1": {
+            "process_id": "save_result",
+            "arguments": {
+                "data": {
+                    "from_node": "apply5"
+                },
+                "format": "GTiff",
+                "options": {
+                    "file_metadata": {
+                        "copyright": "OBSGESSION project 2025 / Contains modified Copernicus Sentinel data processed by VITO",
+                        "creation_time": "2026-03-11T15:34:07Z",
+                        "processing_platform": "openEO platform, {'client': 0.48.0}",
+                        "EO_PROCESSING_SOFTWARE": "eo_processing, version 0.5.0",
+                        "producer": "VITO NV",
+                        "references": "https://obsgession.eu/",
+                        "Brain-Box": "Dr. Marcel Buchhorn",
+                        "description": "Generation of EO4Diversity conform high-resolution temperate forests optimized LAI products based on Sentinel-2 following the OBSGESSION W2.3 benchmarking.",
+                        "tiling_grid": "LAEA",
+                        "time_start": {
+                            "from_parameter": "start_date"
+                        },
+                        "time_end": {
+                            "from_parameter": "end_date"
+                        }
+                    },
+                    "bands_metadata": {
+                        "LAI": {
+                            "description": "LAI",
+                            "unit": "m2*m-2",
+                            "valid_range": "[0, 240]",
+                            "scale": 0.03125,
+                            "offset": 0,
+                            "nodata_value": 255
+                        }
+                    },
+                    "filename_prefix": {
+                        "from_node": "textconcat1"
+                    }
+                }
+            },
+            "result": true
+        }
+    },
+    "id": "udp_obsgession_w23_lai",
+    "summary": "calculates the LAI datasets for wa certain temporal spatial domain, aggregated to a specific temporal binning period and temporal aggregation function.",
+    "description": "EO4Diversity EVI-LAI algorithm to produce the Leaf Area Index product.",
+    "default_job_options": {
+        "driver-memory": "8G",
+        "driver-memoryOverhead": "5G",
+        "driver-cores": 1,
+        "executor-memory": "2000m",
+        "executor-memoryOverhead": "256m",
+        "executor-cores": 1,
+        "max-executors": 25,
+        "soft-errors": "true",
+        "python-memory": "2500m",
+        "logging-threshold": "info"
+    },
+    "parameters": [
+        {
+            "name": "start_date",
+            "description": "Start date of the observation period in format YYYY-MM-DD.",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "end_date",
+            "description": "End date of the observation period in format YYYY-MM-DD.",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "binning_period",
+            "description": "The temporal binning period. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
+            "schema": {
+                "type": "string"
+            },
+            "default": "monthly",
+            "optional": true
+        },
+        {
+            "name": "temp_aggregator",
+            "description": "The temporal aggregation function. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
+            "schema": {
+                "type": "string"
+            },
+            "default": "mean",
+            "optional": true
+        },
+        {
+            "name": "aoi",
+            "description": "the AOI should be stet as an openEO BBOX dict. It defines the boundaries of the area of interest.\n    The coordinates are given in the order of west, south, east, north.",
+            "schema": {
+                "title": "Bounding Box",
+                "type": "object",
+                "subtype": "bounding-box",
+                "required": [
+                    "west",
+                    "south",
+                    "east",
+                    "north"
+                ],
+                "properties": {
+                    "west": {
+                        "description": "West (lower left corner, coordinate axis 1).",
+                        "type": "number"
+                    },
+                    "south": {
+                        "description": "South (lower left corner, coordinate axis 2).",
+                        "type": "number"
+                    },
+                    "east": {
+                        "description": "East (upper right corner, coordinate axis 1).",
+                        "type": "number"
+                    },
+                    "north": {
+                        "description": "North (upper right corner, coordinate axis 2).",
+                        "type": "number"
+                    },
+                    "crs": {
+                        "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html).",
+                        "anyOf": [
+                            {
+                                "title": "EPSG Code",
+                                "type": "integer",
+                                "subtype": "epsg-code",
+                                "minimum": 1000,
+                                "examples": [
+                                    3035
+                                ]
+                            },
+                            {
+                                "title": "WKT2",
+                                "type": "string",
+                                "subtype": "wkt2-definition"
+                            }
+                        ],
+                        "default": 3035
+                    }
+                }
+            }
+        },
+        {
+            "name": "epsg",
+            "description": "The desired output projection system.",
+            "schema": {
+                "type": "number"
+            }
+        },
+        {
+            "name": "resolution",
+            "description": "The desired output resolution, specified in units of the projection system.",
+            "schema": {
+                "type": "number"
+            }
+        }
+    ]
+}
