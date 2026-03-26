@@ -178,10 +178,10 @@ def composite(con: Connection,
         spatial_extent=spatial_extent,
         bands=['SCL'],
         max_cloud_cover=max_cloud_cover,
-    )#.resample_cube_spatial(s2_cube, method="near")
+    ).resample_cube_spatial(s2_cube, method="near")
 
     s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first")
-    s2_cube = s2_cube.resample_spatial(resolution=20, method="average")
+    # s2_cube = s2_cube.resample_spatial(resolution=20, method="average")
     
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
     # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
@@ -199,10 +199,11 @@ def composite(con: Connection,
 
     # kernel = [[1] * 11 for _ in range(11)]
 
-    b02_original = s2_cube
-    return b02_original
+    # b02_original = s2_cube
+    # return b02_original
     b02_0 = s2_cube.mask(cond_scl_cloud)
-    b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first")
+    # b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first")
+    return b02_0
     dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
     dilated_mask = (dilated_mask > 0.001)
     b02_1 = s2_cube.mask(dilated_mask)
