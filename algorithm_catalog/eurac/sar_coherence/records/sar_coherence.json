@@ -10,7 +10,7 @@
     "created": "2026-03-26T00:00:00Z",
     "updated": "2026-03-26T00:00:00Z",
     "type": "service",
-    "title": "sar_coherence",
+    "title": "CLOUDInSAR Coherence",
     "description": "sar_coherence",
     "cost_estimate": 0,
     "cost_unit": "platform credits per km² per observation",
