@@ -209,7 +209,7 @@ def composite(con: Connection,
     dilated_mask = (dilated_mask > 0.001)
     b02_1 = s2_cube.mask(dilated_mask)
     ret = b02_0.merge_cubes(b02_1)
-    return ret
+    return dilated_mask.reduce_dimension(dimension='t', reducer="first")
     b02_1 = b02_1.reduce_dimension(dimension='t', reducer="first")
     b02_1 = b02_1.add_dimension(name="bands", label="B02_d")
     ret = b02_0.merge_cubes(b02_1)
