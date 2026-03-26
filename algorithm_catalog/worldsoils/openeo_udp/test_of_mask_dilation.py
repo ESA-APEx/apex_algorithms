@@ -180,8 +180,8 @@ def composite(con: Connection,
         max_cloud_cover=max_cloud_cover,
     ).resample_cube_spatial(s2_cube, method="near")
 
-    s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first")
-    scl = scl.reduce_dimension(dimension='t', reducer="first")
+    # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first")
+    # scl = scl.reduce_dimension(dimension='t', reducer="first")
     # s2_cube = s2_cube.resample_spatial(resolution=20, method="average")
     
     # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
