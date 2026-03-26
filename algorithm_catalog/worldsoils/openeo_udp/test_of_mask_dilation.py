@@ -200,7 +200,7 @@ def composite(con: Connection,
     b02_0 = s2_cube.mask(cond_scl_cloud)
     b02_0 = b02_0.reduce_dimension(dimension='t', reducer="first")
     dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
-    dilated_mask = (dilated_mask > 0)
+    dilated_mask = (dilated_mask > 0.001)
     b02_1 = s2_cube.mask(dilated_mask)
     b02_1 = b02_1.reduce_dimension(dimension='t', reducer="first")
     b02_1 = b02_1.add_dimension(name="bands", label="B02_d")
