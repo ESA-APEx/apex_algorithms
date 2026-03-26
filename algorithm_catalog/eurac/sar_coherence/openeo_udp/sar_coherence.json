@@ -35,6 +35,7 @@
     }
   },
   "id": "sar_coherence",
+  "description": "Parallel InSAR coherence workflow:\n1. Generate InSAR pairs from input date range and burst parameters\n2. Process each pair in parallel (scatter)\n2. STAC results (removed for now)\n",
   "parameters": [
     {
       "name": "burst_id",
@@ -46,14 +47,12 @@
     },
     {
       "name": "polarization",
-      "description": "Polarization (vv or vh)",
+      "description": "polarization",
       "schema": {
         "type": "string",
         "enum": [
           "VV",
-          "VH",
-          "HH",
-          "HV"
+          "VH"
         ]
       }
     },
