@@ -111,7 +111,9 @@ def composite(con: Connection,
               max_cloud_cover: int|Parameter, 
               nmad_sigma: float|Parameter, 
               max_sun_zenith_angle: float=70, 
-              compute_ci: bool|Parameter=True) -> openeo.DataCube:
+              compute_ci: bool|Parameter=True, 
+              compute_mref: bool|Parameter=False, 
+              compute_mask: bool|Parameter=False) -> openeo.DataCube:
     """
     Generate a Bare Surface Composite (SRC) and additional derived products.
 
@@ -140,8 +142,11 @@ def composite(con: Connection,
     max_sun_zenith_angle : float, optional
         Upper limit for the sun zenith angle filter, by default 70 degrees.
     compute_ci : bool, optional
-        Can be disabled if Confidence Interval is not needed. Speeds up computation
-
+        Can be disabled if Confidence Interval is not needed. Speeds up computation and saves credits
+    compute_mref : bool, optional
+        Can be disabled if Mean Reflectance Computation is not needed. Speeds up computation and saves credits
+    compute_mask : bool, optional
+        Can be disabled to save compuation time and credits
     Returns
     -------
     openeo.DataCube
@@ -222,15 +227,16 @@ def composite(con: Connection,
     s2_merged = s2_cube
 
     #### MREF ####
-    s2_cube = nmad(s2_cube, 4.0)
-    mref = s2_cube.reduce_dimension(dimension="t", reducer="mean").filter_bands(S2_BANDS)
-    mref_std = s2_cube.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
+    if compute_mref:
+        s2_cube = nmad(s2_cube, 4.0)
+        mref = s2_cube.reduce_dimension(dimension="t", reducer="mean").filter_bands(S2_BANDS)
+        mref_std = s2_cube.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
 
-    mref = mref.rename_labels(dimension="bands", target=RES_BANDS["MREF"], source=S2_BANDS)
-    mref_std = mref_std.rename_labels(dimension="bands", target=RES_BANDS["MREF-STD"], source=S2_BANDS)
+        mref = mref.rename_labels(dimension="bands", target=RES_BANDS["MREF"], source=S2_BANDS)
+        mref_std = mref_std.rename_labels(dimension="bands", target=RES_BANDS["MREF-STD"], source=S2_BANDS)
     
     # sfreq_valid.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-VALID"], source=S2_BANDS[0])
-    ################
+    ######## SRC ########
 
     b_04 = s2_merged.band("B04")
     b_08 = s2_merged.band("B08")
@@ -286,10 +292,11 @@ def composite(con: Connection,
     
     combined_output = src \
             .merge_cubes(src_std) \
-            .merge_cubes(mref) \
-            .merge_cubes(mref_std) \
             .merge_cubes(sfreq_valid) \
             .merge_cubes(sfreq_count)
+    
+    if compute_mref:
+        combined_output = combined_output.merge_cubes(mref).merge_cubes(mref_std)
 
     # inner math
     if compute_ci:
@@ -303,28 +310,29 @@ def composite(con: Connection,
 
     ### MASK ###
     # TODO (paul) this works (but maybe slow????)
-    masked = s2_merged.band("pvir2") < th
-    is_perm_veg = masked.reduce_dimension(dimension="t", reducer="any")
-    is_perm_veg = is_perm_veg.apply(process=openeo.processes.not_)
-    is_perm_veg = is_perm_veg.apply(process=openeo.processes.round)
-    is_perm_veg = is_perm_veg.add(2)
+    if compute_mask:
+        masked = s2_merged.band("pvir2") < th
+        is_perm_veg = masked.reduce_dimension(dimension="t", reducer="any")
+        is_perm_veg = is_perm_veg.apply(process=openeo.processes.not_)
+        is_perm_veg = is_perm_veg.apply(process=openeo.processes.round)
+        is_perm_veg = is_perm_veg.add(2)
 
-    # TODO test
-    # masked = s2_merged.band("pvir2") > th
-    # is_perm_veg = masked.reduce_dimension(dimension="t", reducer="all")     # TODO doesn't work because of nans (but should work with ignore_nodata=true)
-    
-    worldcover = worldcover.band("MAP")
-    is_other = (worldcover == 0) | (worldcover == 50) | (worldcover == 70) | (worldcover == 80) | (worldcover == 90) | (worldcover == 95)
-    
-    bspc = combined_output.band(RES_BANDS["SFREQ-COUNT"])   # (x,y) or (x,y,t)
+        # TODO test
+        # masked = s2_merged.band("pvir2") > th
+        # is_perm_veg = masked.reduce_dimension(dimension="t", reducer="all")     # TODO doesn't work because of nans (but should work with ignore_nodata=true)
+        
+        worldcover = worldcover.band("MAP")
+        is_other = (worldcover == 0) | (worldcover == 50) | (worldcover == 70) | (worldcover == 80) | (worldcover == 90) | (worldcover == 95)
+        
+        bspc = combined_output.band(RES_BANDS["SFREQ-COUNT"])   # (x,y) or (x,y,t)
 
-    z = is_perm_veg.multiply(0)
-    z = z.mask(is_perm_veg, replacement=2)
-    z = z.mask((bspc > 2), replacement=1)       
-    z = z.mask(is_other, replacement=3)
-    z = z.mask((z==0))
-    z = z.add_dimension("bands", "MASK", "bands")
-    combined_output = combined_output.merge_cubes(z)
+        z = is_perm_veg.multiply(0)
+        z = z.mask(is_perm_veg, replacement=2)
+        z = z.mask((bspc > 2), replacement=1)       
+        z = z.mask(is_other, replacement=3)
+        z = z.mask((z==0))
+        z = z.add_dimension("bands", "MASK", "bands")
+        combined_output = combined_output.merge_cubes(z)
 
 
     return combined_output
