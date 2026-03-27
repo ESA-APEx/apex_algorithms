@@ -200,7 +200,17 @@ def composite(con: Connection,
     
     # s2_cube = s2_cube.resample_cube_spatial(scl.band('SCL'), method="near")
 
-    cond_scl = scl.band('SCL').apply(process=scl_to_masks)
+    scl = scl.band('SCL')
+    cond_scl = scl.apply(process=scl_to_masks)
+    
+    # cloud mask dilation
+    k = 11
+    kernel = array_create([[int(1)] * k for _ in range(k)])
+    cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
+    dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
+    dilated_mask = (dilated_mask > 0.01)
+
+
     cond_sza = sza > max_sun_zenith_angle
 
     s2_cube = s2_cube.mask(cond_sza)
