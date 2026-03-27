@@ -88,17 +88,26 @@
       "name": "polarization",
       "description": "polarization",
       "schema": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "VV",
+          "VH"
+        ]
       }
     },
     {
       "name": "sub_swath",
-      "description": "sub_swath",
+      "description": "Sub-swath identifier",
       "schema": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "IW1",
+          "IW2",
+          "IW3"
+        ]
       },
-      "optional": true,
-      "default": null
+      "default": "IW2",
+      "optional": true
     }
   ]
 }
