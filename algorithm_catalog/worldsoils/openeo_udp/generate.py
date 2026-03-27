@@ -215,6 +215,7 @@ def composite(con: Connection,
 
     s2_cube = s2_cube.mask(cond_sza)
     s2_cube = s2_cube.mask(cond_scl)
+    s2_cube = s2_cube.mask(dilated_mask)
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     
 
@@ -443,7 +444,7 @@ def test_run(d_test_setup=test_setup_small, path_out=Path("./result/")):
         max_cloud_cover=80,
         nmad_sigma=nmad_sigma,
         max_sun_zenith_angle=max_sun_zenith_angle,
-        compute_ci=True
+        compute_ci=False
     )
 
     job = scmap_composite.create_job(title="scmap_composite")
