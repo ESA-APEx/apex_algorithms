@@ -1,0 +1,35 @@
+[
+    {
+        "id": "vici_ethiopia",
+        "type": "openeo",
+        "description": "Vegetation Index Crop Insurance (VICI) for Ethiopia",
+        "backend": "openeo.vito.be",
+        "process_graph": {
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "viciethiopia1"
+                    },
+                    "format": "GTiff",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            },
+            "viciethiopia1": {
+                "arguments": {
+                    "end_date": "2023-08-11",
+                    "start_date": "2023-08-01"
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/vici_ethiopia/algorithm_catalog/vito/vici_ethiopia/openeo_udp/vici_ethiopia.json",
+                "process_id": "vici_ethiopia"
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/vici_ethiopia/job-results.json",
+            "NDVI_adjusted_2023-08-01Z.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/vici_ethiopia/NDVI_adjusted_2023-08-01Z.tif",
+            "Quality_flag_2023-08-01Z.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/vici_ethiopia/Quality_flag_2023-08-01Z.tif",
+            "VICI_2023-08-01Z.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/vici_ethiopia/VICI_2023-08-01Z.tif"
+        }
+    }
+]
