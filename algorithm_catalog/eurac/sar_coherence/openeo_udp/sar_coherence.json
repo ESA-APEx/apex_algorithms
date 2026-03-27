@@ -29,7 +29,7 @@
             "from_parameter": "coherence_window_az"
           }
         },
-        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/udp/cwl/sar_coherence_parallel_temporal_extent.cwl"
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_coherence_parallel_temporal_extent.cwl"
       },
       "result": true
     }

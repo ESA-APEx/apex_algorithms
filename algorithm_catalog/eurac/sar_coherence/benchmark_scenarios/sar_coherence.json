@@ -7,7 +7,7 @@
     "process_graph": {
       "sar_coherence1": {
         "process_id": "sar_coherence",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sar_coherence/openeo_udp/sar_coherence.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/main/sar_coherence/openeo_udp/sar_coherence.json",
         "arguments": {
           "temporal_extent": [
             "2018-01-28",
