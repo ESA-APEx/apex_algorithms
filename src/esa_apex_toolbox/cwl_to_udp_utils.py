@@ -84,7 +84,7 @@ def cwl_input_to_parameter(name, cwl_input_yaml):
             schema=schema,
         )
     else:
-        print(f"input_type not found: {input_type}")
+        print(f"input_type not found for {name}: {input_type}")
         return Parameter(**arguments)
 
 

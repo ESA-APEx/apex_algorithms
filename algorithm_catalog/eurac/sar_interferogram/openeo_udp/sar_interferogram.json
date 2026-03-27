@@ -1,0 +1,104 @@
+{
+  "process_graph": {
+    "runcwltostac1": {
+      "process_id": "run_cwl_to_stac",
+      "arguments": {
+        "context": {
+          "InSAR_pairs": {
+            "from_parameter": "InSAR_pairs"
+          },
+          "burst_id": {
+            "from_parameter": "burst_id"
+          },
+          "coherence_window_az": {
+            "from_parameter": "coherence_window_az"
+          },
+          "coherence_window_rg": {
+            "from_parameter": "coherence_window_rg"
+          },
+          "n_az_looks": {
+            "from_parameter": "n_az_looks"
+          },
+          "n_rg_looks": {
+            "from_parameter": "n_rg_looks"
+          },
+          "polarization": {
+            "from_parameter": "polarization"
+          },
+          "sub_swath": {
+            "from_parameter": "sub_swath"
+          }
+        },
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/udp/cwl/sar_interferogram.cwl"
+      },
+      "result": true
+    }
+  },
+  "id": "sar_interferogram",
+  "parameters": [
+    {
+      "name": "InSAR_pairs",
+      "description": "InSAR_pairs",
+      "schema": {}
+    },
+    {
+      "name": "burst_id",
+      "description": "burst_id",
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "name": "coherence_window_az",
+      "description": "coherence_window_az",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "coherence_window_rg",
+      "description": "coherence_window_rg",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "n_az_looks",
+      "description": "n_az_looks",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "n_rg_looks",
+      "description": "n_rg_looks",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "polarization",
+      "description": "polarization",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "sub_swath",
+      "description": "sub_swath",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": null
+    }
+  ]
+}
