@@ -1,0 +1,114 @@
+{
+  "process_graph": {
+    "runcwltostac1": {
+      "process_id": "run_cwl_to_stac",
+      "arguments": {
+        "context": {
+          "InSAR_pairs": {
+            "from_parameter": "InSAR_pairs"
+          },
+          "burst_id": {
+            "from_parameter": "burst_id"
+          },
+          "coherence_window_rg": {
+            "from_parameter": "coherence_window_rg"
+          },
+          "coherence_window_az": {
+            "from_parameter": "coherence_window_az"
+          },
+          "n_az_looks": {
+            "from_parameter": "n_az_looks"
+          },
+          "n_rg_looks": {
+            "from_parameter": "n_rg_looks"
+          },
+          "polarization": {
+            "from_parameter": "polarization"
+          },
+          "sub_swath": {
+            "from_parameter": "sub_swath"
+          }
+        },
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+      },
+      "result": true
+    }
+  },
+  "id": "sar_interferogram",
+  "description": "An example on how to use it:\n\n```python\nimport openeo\n\nconnection = openeo.connect(\"openeo.dataspace.copernicus.eu/\").authenticate_oidc()\nstac_resource = connection.datacube_from_process(\n  \"sar_interferogram\",\n  namespace=\"https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sar_interferogram/openeo_udp/sar_interferogram.json\",\n  **{\n      \"InSAR_pairs\": [\n          [\n              \"2018-01-28\",\n              \"2018-02-03\"\n          ]\n      ],\n      \"burst_id\": 329488,\n      \"coherence_window_az\": 2,\n      \"coherence_window_rg\": 10,\n      \"n_az_looks\": 1,\n      \"n_rg_looks\": 4,\n      \"polarization\": \"VH\",\n      \"sub_swath\": \"IW2\"\n  }\n)\n\njob = stac_resource.create_job(title=\"sar_interferogram test\")\njob.start_and_wait()\njob.get_results().download_files()\n```\n",
+  "parameters": [
+    {
+      "name": "InSAR_pairs",
+      "description": "InSAR_pairs",
+      "schema": {}
+    },
+    {
+      "name": "burst_id",
+      "description": "burst_id",
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "name": "coherence_window_rg",
+      "description": "Coherence window size in range direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 10
+    },
+    {
+      "name": "coherence_window_az",
+      "description": "Coherence window size in azimuth direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 2
+    },
+    {
+      "name": "n_az_looks",
+      "description": "n_az_looks",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "n_rg_looks",
+      "description": "n_rg_looks",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "polarization",
+      "description": "polarization",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "VV",
+          "VH"
+        ]
+      }
+    },
+    {
+      "name": "sub_swath",
+      "description": "Sub-swath identifier",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "IW1",
+          "IW2",
+          "IW3"
+        ]
+      },
+      "default": "IW2",
+      "optional": true
+    }
+  ]
+}
