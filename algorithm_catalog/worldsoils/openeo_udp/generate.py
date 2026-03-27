@@ -437,7 +437,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.test:
-        test_run(d_test_setup=test_setup_large)
+        test_run(d_test_setup=test_setup_small)
     else:
         # save process to json
         with open(Path(__file__).parent / "scmap_composite.json", "w") as fp:
