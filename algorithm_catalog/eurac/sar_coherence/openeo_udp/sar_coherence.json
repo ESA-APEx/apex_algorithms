@@ -29,7 +29,7 @@
             "from_parameter": "coherence_window_az"
           }
         },
-        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_coherence_parallel_temporal_extent.cwl"
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/udp/cwl/sar_coherence_parallel_temporal_extent.cwl"
       },
       "result": true
     }
@@ -43,7 +43,8 @@
       "schema": {
         "type": "integer"
       },
-      "optional": true
+      "optional": true,
+      "default": null
     },
     {
       "name": "polarization",
@@ -58,18 +59,13 @@
     },
     {
       "name": "sub_swath",
-      "description": "Sub-swath identifier (IW1, IW2, or IW3)",
+      "description": "Sub-swath identifier",
       "schema": {
         "type": "string",
         "enum": [
           "IW1",
           "IW2",
-          "IW3",
-          "EW1",
-          "EW2",
-          "EW3",
-          "EW4",
-          "EW5"
+          "IW3"
         ]
       },
       "default": "IW2",
@@ -189,7 +185,8 @@
           "type": "null"
         }
       ],
-      "optional": true
+      "optional": true,
+      "default": null
     },
     {
       "name": "temporal_baseline",
