@@ -299,7 +299,7 @@ def composite(con: Connection,
     worldcover = worldcover.band("MAP")
     is_other = (worldcover == 0) | (worldcover == 50) | (worldcover == 70) | (worldcover == 80) | (worldcover == 90) | (worldcover == 95)
     
-    bspc = combined_output.band("BareSoilPixelsCount")   # (x,y) or (x,y,t)
+    bspc = combined_output.band(RES_BANDS["SFREQ-COUNT"])   # (x,y) or (x,y,t)
 
     z = is_perm_veg.multiply(0)
     z = z.mask(is_perm_veg, replacement=2)
