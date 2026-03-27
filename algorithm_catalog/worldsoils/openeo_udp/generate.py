@@ -4,7 +4,7 @@ from pathlib import Path
 
 import openeo
 from openeo.api.process import Parameter
-from openeo.processes import array_create, and_, if_, inspect, array_element, not_, logical_or
+from openeo.processes import array_create, and_, if_, inspect, array_element, not_, or_
 from openeo.processes import sqrt as sqrt_, add, multiply, subtract
 from openeo.rest.udp import build_process_dict
 from openeo.rest.connection import Connection
@@ -182,7 +182,7 @@ def composite(con: Connection,
     cond_sza = sza > max_sun_zenith_angle
 
     # combined_mask = cond_sza | cond_scl | dilated_mask
-    combined_mask = logical_or(logical_or(cond_sza, cond_scl),dilated_mask)
+    combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
     s2_cube = s2_cube.mask(combined_mask)
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     
