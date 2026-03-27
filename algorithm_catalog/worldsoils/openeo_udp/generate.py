@@ -416,9 +416,16 @@ def generate() -> dict:
         categories=["sentinel-2", "composites", "bare surface"]
     )
 
-test_setup_small = {
+test_setup_tiny = {
     "bbox": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
     "temporal_extent": ["2025-04-01", "2025-05-07"],
+    "nmad_sigma": 3.0,
+    "max_sun_zenith_angle": 70.0,
+}
+
+test_setup_small = {
+    "bbox": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
+    "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
 }
@@ -430,7 +437,7 @@ test_setup_large = {
     "max_sun_zenith_angle": 70.0,
 }
 
-def test_run(d_test_setup=test_setup_small, path_out=Path("./result/")):
+def test_run(d_test_setup=None, path_out=Path("./result/")):
     con = auth()
     bbox = d_test_setup["bbox"]
     temporal_extent = d_test_setup["temporal_extent"]
