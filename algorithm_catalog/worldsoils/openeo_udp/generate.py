@@ -182,21 +182,24 @@ def composite(con: Connection,
             (scl == SCL_LEGEND["snow"])
         )
     # cloud mask dilation
-    k = 9
-    kernel = array_create([[int(1)] * k for _ in range(k)])
-    cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
-    dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
-    dilated_mask = (dilated_mask > 0.01)
-
-
+    k = 1
+    if k > 1:
+        kernel = array_create([[int(1)] * k for _ in range(k)])
+        cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
+        dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
+        dilated_mask = (dilated_mask > 0.01)
     cond_sza = sza > max_sun_zenith_angle
 
+
+    
+    # dilated_mask = dilated_mask * 1 > 0     # Force it to boolean ??
     # combined_mask = cond_sza | cond_scl | dilated_mask
     # combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
     # s2_cube = s2_cube.mask(combined_mask)
     s2_cube = s2_cube.mask(cond_sza)
     s2_cube = s2_cube.mask(cond_scl)
-    s2_cube = s2_cube.mask(dilated_mask)
+    if k > 1:
+        s2_cube = s2_cube.mask(dilated_mask)
     
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     
@@ -255,7 +258,7 @@ def composite(con: Connection,
     s2_masked = nmad(s2_masked, nmad_sigma)
 
     sfreq_count = s2_masked.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count")
-    sfc = sfreq_count
+    # sfc = sfreq_count
     sfreq_count = sfreq_count.add_dimension(name="bands", label=RES_BANDS["SFREQ-COUNT"], type="bands")
 
     cond_count = sfreq_count < 3
@@ -439,6 +442,7 @@ def test_run(d_test_setup=test_setup_small, path_out=Path("./result/")):
     job = scmap_composite.create_job(title="scmap_composite")
     job.start_and_wait()
     path_out.mkdir(parents=True, exist_ok=True)
+    job.describe()
     job.get_results().download_files(path_out.as_posix())
 
 
