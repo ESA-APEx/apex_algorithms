@@ -41,6 +41,7 @@ def assert_no_github_feature_branch_refs(href: str) -> None:
     """
     # TODO: automatically suggest commit hash based fix?
     allowed_branches = {"main", "master"}
+    # TODO: Allow current checked out branch too?
 
     # Check for feature branches with explicit "refs/heads" prefix in the URL
     if match := re.search("//raw.githubusercontent.com/.*/refs/heads/(.*?)/", href):
