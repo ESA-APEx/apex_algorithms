@@ -192,8 +192,12 @@ def composite(con: Connection,
     cond_sza = sza > max_sun_zenith_angle
 
     # combined_mask = cond_sza | cond_scl | dilated_mask
-    combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
-    s2_cube = s2_cube.mask(combined_mask)
+    # combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
+    # s2_cube = s2_cube.mask(combined_mask)
+    s2_cube = s2_cube.maks(cond_sza)
+    s2_cube = s2_cube.maks(cond_scl)
+    s2_cube = s2_cube.maks(dilated_mask)
+    
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     
 
