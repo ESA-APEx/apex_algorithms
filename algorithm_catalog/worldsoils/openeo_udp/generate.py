@@ -27,9 +27,9 @@ RES_BANDS = {
     "MREF": [f"MREF_{b}" for b in S2_BANDS],
     "MREF-STD": [f"MREF-STD_{b}" for b in S2_BANDS],
     "SRC-CI": [f"SRC-CI95_{b}" for b in S2_BANDS],
-    "SFREQ-VALID": "ValidPixels",
-    "SFREQ-COUNT": "BareSoilPixelsCount",
-    "SFREQ-FREQ": "BareSoilFrequency"
+    "SFREQ-VALID": "VPC",
+    "SFREQ-COUNT": "BSC",
+    "SFREQ-FREQ": "BSF"
 }
 
 SCL_LEGEND = {
@@ -88,19 +88,6 @@ def _ci95(combined_cube: openeo.DataCube, sd_bands: List[str], n: str) -> openeo
     z = 1.96
     cubes = []
     n_sqrt = combined_cube.band(n).apply("sqrt")
-    # FIXME Broadcasting to avoid loop
-    # sd_cube = combined_cube.filter_bands(sd_bands)
-    # n_sqrt = n_sqrt.add_dimension(name="bands", label=sd_bands[0])
-    # n_sqrt = n_sqrt.rename_labels(
-    #     dimension="bands",
-    #     source=[sd_bands[0]],
-    #     target=sd_bands
-    # )
-    # ci = sd_cube.divide(n_sqrt)
-    # ci = ci * z
-    # ci = ci.rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=sd_bands)
-    # return ci
-
     
     for b in sd_bands:
         sd_cube = combined_cube.filter_bands(b)
@@ -115,8 +102,8 @@ def _ci95(combined_cube: openeo.DataCube, sd_bands: List[str], n: str) -> openeo
     cubes[0] = cubes[0].rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=sd_bands)
     return cubes[0]
 
-def check_tile(x):
-    return x.eq("32UPU")
+# def check_tile(x):
+#     return x.eq("32UPU")
 
 def composite(con: Connection,
               temporal_extent: List[str]|Parameter,
@@ -162,33 +149,17 @@ def composite(con: Connection,
     """
 
     ### Input Data ###
-    s2_cube = con.load_collection(
-        collection_id="SENTINEL2_L2A",
-        bands=S2_BANDS,
+    cube = con.load_collection(
+        "SENTINEL2_L2A",
+        bands=S2_BANDS + ["SCL", "sunZenithAngles"],
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
         max_cloud_cover=max_cloud_cover,
-        # properties={"tileId": check_tile}     # works
-        # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
     ).resample_spatial(resolution=20, method="average")
 
-    
-    scl = con.load_collection(
-        collection_id="SENTINEL2_L2A",
-        temporal_extent=temporal_extent,
-        spatial_extent=spatial_extent,
-        bands=['SCL', 'sunZenithAngles'],
-        max_cloud_cover=max_cloud_cover,
-    ).resample_cube_spatial(s2_cube, method="mode")
-    # scl = scl.band('SCL').to_scl_dilation_mask(erosion_kernel_size=10)
-
-    sza = con.load_collection(
-        collection_id="SENTINEL2_L2A",
-        temporal_extent=temporal_extent,
-        spatial_extent=spatial_extent,
-        bands=['SCL', 'sunZenithAngles'],
-        max_cloud_cover=max_cloud_cover,
-    ).resample_cube_spatial(s2_cube, method="near")
+    s2_cube = cube.filter_bands(S2_BANDS)
+    scl = cube.band("SCL")
+    sza = cube.band("sunZenithAngles")
 
     worldcover = con.load_collection(
         "ESA_WORLDCOVER_10M_2021_V2",
@@ -204,7 +175,7 @@ def composite(con: Connection,
     cond_scl = scl.apply(process=scl_to_masks)
     
     # cloud mask dilation
-    k = 11
+    k = 9
     kernel = array_create([[int(1)] * k for _ in range(k)])
     cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
     dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
@@ -213,9 +184,8 @@ def composite(con: Connection,
 
     cond_sza = sza > max_sun_zenith_angle
 
-    s2_cube = s2_cube.mask(cond_sza)
-    s2_cube = s2_cube.mask(cond_scl)
-    s2_cube = s2_cube.mask(dilated_mask)
+    combined_mask = cond_sza | cond_scl | dilated_mask
+    s2_cube = s2_cube.mask(combined_mask)
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     
 
@@ -292,13 +262,20 @@ def composite(con: Connection,
     # src_ci = _ci95(src_std, sfreq_count).filter_bands(RES_BANDS["SRC-STD"])
     # src_ci = src_ci.rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=RES_BANDS["SRC-STD"])
 
-    combined_output = src.merge_cubes(src_std)
-    # combined_output = combined_output.merge_cubes(src_ci)
-    combined_output = combined_output.merge_cubes(mref)
-    combined_output = combined_output.merge_cubes(mref_std)
-    combined_output = combined_output.merge_cubes(sfreq_valid)
-    combined_output = combined_output.merge_cubes(sfreq_count)
+    ##  combined_output = src.merge_cubes(src_std)
+    ##  # combined_output = combined_output.merge_cubes(src_ci)
+    ##  combined_output = combined_output.merge_cubes(mref)
+    ##  combined_output = combined_output.merge_cubes(mref_std)
+    ##  combined_output = combined_output.merge_cubes(sfreq_valid)
+    ##  combined_output = combined_output.merge_cubes(sfreq_count)
     
+    combined_output = src \
+            .merge_cubes(src_std) \
+            .merge_cubes(mref) \
+            .merge_cubes(mref_std) \
+            .merge_cubes(sfreq_valid) \
+            .merge_cubes(sfreq_count)
+
     # inner math
     if compute_ci:
         ci = _ci95(combined_output, RES_BANDS["SRC-STD"], RES_BANDS["SFREQ-COUNT"])   # works but slow
