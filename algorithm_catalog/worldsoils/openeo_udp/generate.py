@@ -169,8 +169,18 @@ def composite(con: Connection,
     )
     worldcover = worldcover.reduce_dimension(dimension="t", reducer="first")
     
-    cond_scl = scl.apply(process=scl_to_masks)
-    
+    # cond_scl = scl.apply(process=scl_to_masks)
+    cond_scl = (
+            (scl == SCL_LEGEND["no_data"]) |
+            (scl == SCL_LEGEND["saturated_or_defective"]) |
+            (scl == SCL_LEGEND["dark_area_pixels"]) |
+            (scl == SCL_LEGEND["cloud_shadows"]) |
+            (scl == SCL_LEGEND["unclassified"]) |
+            (scl == SCL_LEGEND["cloud_medium_probability"]) |
+            (scl == SCL_LEGEND["cloud_high_probability"]) |
+            (scl == SCL_LEGEND["thin_cirrus"]) |
+            (scl == SCL_LEGEND["snow"])
+        )
     # cloud mask dilation
     k = 9
     kernel = array_create([[int(1)] * k for _ in range(k)])
