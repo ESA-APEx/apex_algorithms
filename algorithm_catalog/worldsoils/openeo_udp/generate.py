@@ -169,9 +169,6 @@ def composite(con: Connection,
     )
     worldcover = worldcover.reduce_dimension(dimension="t", reducer="first")
     
-    # s2_cube = s2_cube.resample_cube_spatial(scl.band('SCL'), method="near")
-
-    scl = scl.band('SCL')
     cond_scl = scl.apply(process=scl_to_masks)
     
     # cloud mask dilation
