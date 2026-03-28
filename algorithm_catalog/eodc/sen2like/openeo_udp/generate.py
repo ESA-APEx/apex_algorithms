@@ -55,7 +55,7 @@ def generate():
 
     return build_process_dict(
         process_graph=sen2like,
-        process_id="sen2like",
+        process_id="sen2like_processing",
         summary="Computes a harmonzed Sentinel-2 and Landsat timeseries.",
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[
@@ -68,5 +68,5 @@ def generate():
 
 
 if __name__ == "__main__":
-    with open("sen2like.json", "w") as f:
+    with open("sen2like_processing.json", "w") as f:
         json.dump(generate(), f, indent=2)
