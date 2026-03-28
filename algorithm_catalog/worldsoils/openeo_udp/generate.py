@@ -187,7 +187,7 @@ def composite(con: Connection,
             (scl == SCL_LEGEND["snow"])
         )
     # cloud mask dilation
-    k = 1
+    k = 9
     if k > 1:
         kernel = array_create([[int(1)] * k for _ in range(k)])
         cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
@@ -468,7 +468,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.test:
-        test_run(d_test_setup=test_setup_small)
+        test_run(d_test_setup=test_setup_tiny)
     else:
         # save process to json
         with open(Path(__file__).parent / "scmap_composite.json", "w") as fp:
