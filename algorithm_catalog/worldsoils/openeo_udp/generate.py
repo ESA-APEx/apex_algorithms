@@ -112,8 +112,8 @@ def composite(con: Connection,
               nmad_sigma: float|Parameter, 
               max_sun_zenith_angle: float=70, 
               compute_ci: bool|Parameter=True, 
-              compute_mref: bool|Parameter=True, 
-              compute_mask: bool|Parameter=True) -> openeo.DataCube:
+              compute_mref: bool|Parameter=False, 
+              compute_mask: bool|Parameter=False) -> openeo.DataCube:
     """
     Generate a Bare Surface Composite (SRC) and additional derived products.
 
@@ -257,7 +257,8 @@ def composite(con: Connection,
 
     mask = s2_merged.band("pvir2") > th
     s2_masked = s2_merged.mask(mask)
-    
+    s2_masked = s2_masked.filter_bands(S2_BANDS)        # opt
+
     cond_wc = (worldcover == 50) | (worldcover == 80)
     s2_masked = s2_masked.mask(cond_wc)
 
