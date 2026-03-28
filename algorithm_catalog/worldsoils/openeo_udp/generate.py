@@ -187,7 +187,7 @@ def composite(con: Connection,
             (scl == SCL_LEGEND["snow"])
         )
     # cloud mask dilation
-    k = 9
+    k = 11
     if k > 1:
         kernel = array_create([[int(1)] * k for _ in range(k)])
         cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
