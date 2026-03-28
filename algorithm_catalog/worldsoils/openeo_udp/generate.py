@@ -112,8 +112,8 @@ def composite(con: Connection,
               nmad_sigma: float|Parameter, 
               max_sun_zenith_angle: float=70, 
               compute_ci: bool|Parameter=True, 
-              compute_mref: bool|Parameter=False, 
-              compute_mask: bool|Parameter=False) -> openeo.DataCube:
+              compute_mref: bool|Parameter=True, 
+              compute_mask: bool|Parameter=True) -> openeo.DataCube:
     """
     Generate a Bare Surface Composite (SRC) and additional derived products.
 
