@@ -210,9 +210,6 @@ def composite(con: Connection,
     
 
     ### Threshold image ###
-    # stac_url_th_img = "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/scmap-pvir2%2Bnbr-sen2cor-thresholds-eu-v1.json"
-    # stac_url_th_img = "https://github.com/Schiggebam/dlr_scmap_resources/raw/main/th_S2_s2cr_buffered_stac_yflip_timerange.json"
-    # stac_url_th_img = "https://raw.githubusercontent.com/EmileSonneveld/dlr_scmap_resources/refs/heads/main/th_S2_s2cr_buffered_stac_yflip.json"
     stac_url_th_img = "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/th_S2_s2cr_buffered_stac_yflip_no_t.json"
     th_item = con.load_stac(stac_url_th_img, bands=["S2_s2cr_pvir2_threshold_img"], spatial_extent=spatial_extent)
     thresholds = th_item.resample_cube_spatial(s2_cube, method="bilinear").reduce_dimension(dimension="bands", reducer="first")
@@ -257,7 +254,7 @@ def composite(con: Connection,
 
     mask = s2_merged.band("pvir2") > th
     s2_masked = s2_merged.mask(mask)
-    s2_masked = s2_masked.filter_bands(S2_BANDS)        # opt
+    # s2_masked = s2_masked.filter_bands(S2_BANDS)        # opt
 
     cond_wc = (worldcover == 50) | (worldcover == 80)
     s2_masked = s2_masked.mask(cond_wc)
@@ -272,8 +269,8 @@ def composite(con: Connection,
     s2_masked = s2_masked.mask(cond_count)
     sfreq_count = sfreq_count.mask(cond_count)
 
-    src = s2_masked.reduce_dimension(dimension="t", reducer="mean")
-    src_std = s2_masked.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
+    src = s2_masked.filter_bands(S2_BANDS).reduce_dimension(dimension="t", reducer="mean")
+    src_std = s2_masked.filter_bands(S2_BANDS).reduce_dimension(dimension="t", reducer="sd")
 
     src = src.rename_labels(dimension="bands", target=RES_BANDS["SRC"], source=S2_BANDS)
     src_std = src_std.rename_labels(dimension="bands", target=RES_BANDS["SRC-STD"], source=S2_BANDS)
@@ -283,13 +280,6 @@ def composite(con: Connection,
 
     # src_ci = _ci95(src_std, sfreq_count).filter_bands(RES_BANDS["SRC-STD"])
     # src_ci = src_ci.rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=RES_BANDS["SRC-STD"])
-
-    ##  combined_output = src.merge_cubes(src_std)
-    ##  # combined_output = combined_output.merge_cubes(src_ci)
-    ##  combined_output = combined_output.merge_cubes(mref)
-    ##  combined_output = combined_output.merge_cubes(mref_std)
-    ##  combined_output = combined_output.merge_cubes(sfreq_valid)
-    ##  combined_output = combined_output.merge_cubes(sfreq_count)
     
     combined_output = src \
             .merge_cubes(src_std) \
@@ -310,7 +300,6 @@ def composite(con: Connection,
     combined_output = combined_output.merge_cubes(sfreq_freq)
 
     ### MASK ###
-    # TODO (paul) this works (but maybe slow????)
     if compute_mask:
         masked = s2_merged.band("pvir2") < th
         is_perm_veg = masked.reduce_dimension(dimension="t", reducer="any")
