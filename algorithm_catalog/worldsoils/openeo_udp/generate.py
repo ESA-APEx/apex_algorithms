@@ -112,8 +112,8 @@ def composite(con: Connection,
               nmad_sigma: float|Parameter, 
               max_sun_zenith_angle: float=70, 
               compute_ci: bool|Parameter=True, 
-              compute_mref: bool|Parameter=True, 
-              compute_mask: bool|Parameter=True) -> openeo.DataCube:
+              compute_mref: bool|Parameter=False, 
+              compute_mask: bool|Parameter=False) -> openeo.DataCube:
     """
     Generate a Bare Surface Composite (SRC) and additional derived products.
 
@@ -421,8 +421,8 @@ test_setup_small = {
 }
 
 test_setup_large = {
-    "bbox": { "west": 11.60, "south": 48.50, "east": 12.0, "north": 48.9, "crs": "EPSG:4326"},
-    "temporal_extent": ["2023-02-01", "2024-11-30"],
+    "bbox": { "west": 10.8, "south": 48.0, "east": 11.3, "north": 48.5, "crs": "EPSG:4326"},
+    "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
 }
@@ -458,7 +458,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.test:
-        test_run(d_test_setup=test_setup_small)
+        test_run(d_test_setup=test_setup_large)
     else:
         # save process to json
         with open(Path(__file__).parent / "scmap_composite.json", "w") as fp:
