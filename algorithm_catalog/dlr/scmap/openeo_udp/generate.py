@@ -5,7 +5,7 @@ from pathlib import Path
 import openeo
 from openeo.api.process import Parameter
 from openeo.processes import array_create, and_, if_, inspect, array_element, not_, or_
-from openeo.processes import sqrt as sqrt_, add, multiply, subtract
+# from openeo.processes import sqrt as sqrt_, add, multiply, subtract
 from openeo.rest.udp import build_process_dict
 from openeo.rest.connection import Connection
 
@@ -17,7 +17,9 @@ d_description = {
     "cc": "Maximum allowed scene-wide cloud cover for the scene to be considered in the composite",
     "sigma": "Sigma for median absolute deviation outlier detection in Band B02, default=3.0",
     "sza": "Maximum sun zenith angle (at pixel level) for a pixel to be considered in the composite. Default value (70.0) derived from Sen2Cor recommendation.",
-    "ci": "Computes the 95-Confidence interval for each band. Will increase credit consumption"
+    "do_ci": "Computes the 95-Confidence interval for each band. Will increase credit consumption and execution time significantly",
+    "do_mref": "Computes the mean reflectance for each band. Will increase credit consumption and execution time",
+    "do_mask": "Computes the mask. Will increase credit consumption and execution time"
 }
 
 S2_BANDS = "B02 B03 B04 B05 B06 B07 B08 B8A B11 B12".split()
@@ -46,24 +48,24 @@ SCL_LEGEND = {
         "thin_cirrus": 10,
         "snow": 11}
 
-def scl_to_masks(scl_layer):
-        to_mask = openeo.processes.any(
-            array_create(
-                [
-                    scl_layer == SCL_LEGEND["cloud_shadows"],
-                    scl_layer == SCL_LEGEND["cloud_medium_probability"],
-                    scl_layer == SCL_LEGEND["cloud_high_probability"],
-                    scl_layer == SCL_LEGEND["thin_cirrus"],
-                    scl_layer == SCL_LEGEND["saturated_or_defective"],
-                    scl_layer == SCL_LEGEND["snow"],
-                    scl_layer == SCL_LEGEND["no_data"],
-                    scl_layer == SCL_LEGEND["dark_area_pixels"],
-                    scl_layer == SCL_LEGEND["unclassified"],
-                ]
-            ),
-        )
-
-        return to_mask
+# def scl_to_masks(scl_layer):
+#         to_mask = openeo.processes.any(
+#             array_create(
+#                 [
+#                     scl_layer == SCL_LEGEND["cloud_shadows"],
+#                     scl_layer == SCL_LEGEND["cloud_medium_probability"],
+#                     scl_layer == SCL_LEGEND["cloud_high_probability"],
+#                     scl_layer == SCL_LEGEND["thin_cirrus"],
+#                     scl_layer == SCL_LEGEND["saturated_or_defective"],
+#                     scl_layer == SCL_LEGEND["snow"],
+#                     scl_layer == SCL_LEGEND["no_data"],
+#                     scl_layer == SCL_LEGEND["dark_area_pixels"],
+#                     scl_layer == SCL_LEGEND["unclassified"],
+#                 ]
+#             ),
+#         )
+# 
+#         return to_mask
 
 def nmad(cube: openeo.DataCube, nmad_sigma: float|Parameter, min_offset=80.0) -> openeo.DataCube:
     def _nmad(ts):
@@ -362,7 +364,19 @@ def generate() -> dict:
 
     compute_ci = Parameter.boolean(
         name = "compute_ci",
-        description=d_description["ci"],
+        description=d_description["do_ci"],
+        default=False
+    )
+
+    compute_mref = Parameter.boolean(
+        name = "compute_mref",
+        description=d_description["do_mref"],
+        default=False
+    )
+
+    compute_mask = Parameter.boolean(
+        name = "compute_mask",
+        description=d_description["do_mask"],
         default=False
     )
 
@@ -372,7 +386,9 @@ def generate() -> dict:
         spatial_extent=spatial_extent,
         max_cloud_cover=max_scene_cloud_cover,
         nmad_sigma=nmad_sigma, 
-        compute_ci=compute_ci
+        compute_ci=compute_ci,
+        compute_mref=compute_mref,
+        compute_mask=compute_mask
         # max_sun_zenith_angle=max_sun_zenith_angle
     )
 
