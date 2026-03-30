@@ -195,8 +195,6 @@ def composite(con: Connection,
         dilated_mask = (dilated_mask > 0.01)
     cond_sza = sza > max_sun_zenith_angle
 
-
-    
     # dilated_mask = dilated_mask * 1 > 0     # Force it to boolean ??
     # combined_mask = cond_sza | cond_scl | dilated_mask
     # combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
@@ -208,7 +206,6 @@ def composite(con: Connection,
     
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
     
-
     ### Threshold image ###
     stac_url_th_img = "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/th_S2_s2cr_buffered_stac_yflip_no_t.json"
     th_item = con.load_stac(stac_url_th_img, bands=["S2_s2cr_pvir2_threshold_img"], spatial_extent=spatial_extent)
@@ -424,6 +421,9 @@ test_setup_tiny = {
     "temporal_extent": ["2025-04-01", "2025-05-07"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
+    "compute_ci": False,
+    "compute_mref": False,
+    "compute_mask": False
 }
 
 test_setup_small = {
@@ -431,6 +431,9 @@ test_setup_small = {
     "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
+    "compute_ci": False,
+    "compute_mref": False,
+    "compute_mask": False
 }
 
 test_setup_large = {
@@ -438,6 +441,9 @@ test_setup_large = {
     "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
+    "compute_ci": False,
+    "compute_mref": False,
+    "compute_mask": False
 }
 
 def test_run(d_test_setup=None, path_out=Path("./result/")):
@@ -454,7 +460,9 @@ def test_run(d_test_setup=None, path_out=Path("./result/")):
         max_cloud_cover=80,
         nmad_sigma=nmad_sigma,
         max_sun_zenith_angle=max_sun_zenith_angle,
-        compute_ci=False
+        compute_ci=d_test_setup['compute_ci'],
+        compute_mref=d_test_setup['compute_mref'],
+        compute_mask=d_test_setup['compute_mask']
     )
 
     job = scmap_composite.create_job(title="scmap_composite")
@@ -471,7 +479,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.test:
-        test_run(d_test_setup=test_setup_large)
+        test_run(d_test_setup=test_setup_tiny)
     else:
         # save process to json
         with open(Path(__file__).parent / "scmap_composite.json", "w") as fp:
