@@ -16,11 +16,11 @@
           "coherence_window_az": {
             "from_parameter": "coherence_window_az"
           },
-          "n_az_looks": {
-            "from_parameter": "n_az_looks"
-          },
           "n_rg_looks": {
             "from_parameter": "n_rg_looks"
+          },
+          "n_az_looks": {
+            "from_parameter": "n_az_looks"
           },
           "polarization": {
             "from_parameter": "polarization"
@@ -29,22 +29,22 @@
             "from_parameter": "sub_swath"
           }
         },
-        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+        "cwl": "/home/emile/openeo/s1-workflows/cwl/sar_interferogram.cwl"
       },
       "result": true
     }
   },
   "id": "sar_interferogram",
-  "description": "An example on how to use it:\n\n```python\nimport openeo\n\nconnection = openeo.connect(\"openeo.dataspace.copernicus.eu/\").authenticate_oidc()\nstac_resource = connection.datacube_from_process(\n  \"sar_interferogram\",\n  namespace=\"https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sar_interferogram/openeo_udp/sar_interferogram.json\",\n  **{\n      \"InSAR_pairs\": [\n          [\n              \"2018-01-28\",\n              \"2018-02-03\"\n          ]\n      ],\n      \"burst_id\": 329488,\n      \"coherence_window_az\": 2,\n      \"coherence_window_rg\": 10,\n      \"n_az_looks\": 1,\n      \"n_rg_looks\": 4,\n      \"polarization\": \"VH\",\n      \"sub_swath\": \"IW2\"\n  }\n)\n\njob = stac_resource.create_job(title=\"sar_interferogram test\")\njob.start_and_wait()\njob.get_results().download_files()\n```\n",
+  "description": "This process computes a time series of Interferometric Coherence, Wrapped Interferograms and Unwrapped Interferograms for a Sentinel-1 burst of interest.\nThe interferometric pairs to be processed must be specified in the InSAR_pair list. The burst of interest must be selected by providing the burst_id and sub_swath.\nThe implementation is based on SNAP and defined as a CWL (Common Workflow Language) available here: [sar_interferogram.cwl](https://github.com/cloudinsar/s1-workflows/blob/main/cwl/sar_interferogram.cwl)\n<https://www.eurac.edu/en/projects/cloudinsar>.\n\nAn example on how to use it:\n\n```python\nimport openeo\n\nconnection = openeo.connect(\"openeo.dataspace.copernicus.eu/\").authenticate_oidc()\nstac_resource = connection.datacube_from_process(\n  \"sar_interferogram\",\n  namespace=\"https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sar_interferogram/openeo_udp/sar_interferogram.json\",\n  **{\n      \"InSAR_pairs\": [\n          [\n              \"2018-01-28\",\n              \"2018-02-03\"\n          ]\n      ],\n      \"burst_id\": 329488,\n      \"coherence_window_az\": 2,\n      \"coherence_window_rg\": 10,\n      \"n_az_looks\": 1,\n      \"n_rg_looks\": 4,\n      \"polarization\": \"VH\",\n      \"sub_swath\": \"IW2\"\n  }\n)\n\njob = stac_resource.create_job(title=\"sar_interferogram test\")\njob.start_and_wait()\njob.get_results().download_files()\n```\n",
   "parameters": [
     {
       "name": "InSAR_pairs",
-      "description": "InSAR_pairs",
+      "description": "The list of [primary date, secondary date] pairs used to compute the interferogram. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/notebooks/LPS_DEMO/Input_selection.ipynb) to create the list of insar pairs based on your requirements.",
       "schema": {}
     },
     {
       "name": "burst_id",
-      "description": "burst_id",
+      "description": "The Sentinel-1 burst identifier. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/notebooks/LPS_DEMO/Input_selection.ipynb) to find a fitting `burst_id`.\nAlternatively, the burst id map can be downloaded here: [Burst ID Maps 2022-05-30](https://sar-mpc.eu/files/S1_burstid_20220530.zip).\"\n",
       "schema": {
         "type": "integer"
       }
@@ -68,22 +68,22 @@
       "default": 2
     },
     {
-      "name": "n_az_looks",
-      "description": "n_az_looks",
+      "name": "n_rg_looks",
+      "description": "Multi-look window size in range direction",
       "schema": {
         "type": "integer"
       },
       "optional": true,
-      "default": null
+      "default": 4
     },
     {
-      "name": "n_rg_looks",
-      "description": "n_rg_looks",
+      "name": "n_az_looks",
+      "description": "Multi-look window size in azimuth direction",
       "schema": {
         "type": "integer"
       },
       "optional": true,
-      "default": null
+      "default": 1
     },
     {
       "name": "polarization",
