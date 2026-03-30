@@ -28,7 +28,11 @@ For a more detailed description of the algorithm and its by-products, please ref
 | BSF | Bare Surface Frequency | It provides the number of bare soil occurrences over the total number of valid observations |
 | Mask | Mask | The band aggregates simple landcover classes: Pixel may either contain *bare soil* (1), is *permaenently vegetated* (2) or is *another surface* (3) (e.g. water bodies, built-up areas, ..) | 
 
+The computation of MREF and MASK is switched of by default to reduce the consummption of platform credits and speed up computation.
+It can be enabled through the parameters. 
+
 ## Usage
+
 Please refer to the APEx Documentation [Documentation](https://esa-apex.github.io/apex_documentation/guides/udp_writer_guide.html) and the [GitHub](https://github.com/ESA-APEx/apex_algorithms)
 
 ## Literature references
@@ -58,3 +62,4 @@ The project received funding under the ESA WORLDSOILS project (Contract No. 4001
 - The spatial resolution is limited by the B12 band of Sentinel, which is available at 20m ground sampling distance.
 - The algorihtm requires threshold image that is loaded via *from_stac(...)*. It is currently available for the European continent.
 - To obtain stable soil reflectance values, users should integrate observations across multiple seasons or, ideally, several years. As a reference point, SoilSuite Europe employed a five-year time range, while SoilSuite Africa used four years.
+- For large areas (> 1000km^2) and long time series (> 2 years), the process might be terminated by the platform. Please consider smaller spatial chunks in that case.
