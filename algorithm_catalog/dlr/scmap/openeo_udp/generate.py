@@ -4,7 +4,7 @@ from pathlib import Path
 
 import openeo
 from openeo.api.process import Parameter
-from openeo.processes import array_create, and_, if_, inspect, array_element, not_
+from openeo.processes import array_create, and_, if_, inspect, array_element, not_, or_
 from openeo.processes import sqrt as sqrt_, add, multiply, subtract
 from openeo.rest.udp import build_process_dict
 from openeo.rest.connection import Connection
@@ -27,9 +27,9 @@ RES_BANDS = {
     "MREF": [f"MREF_{b}" for b in S2_BANDS],
     "MREF-STD": [f"MREF-STD_{b}" for b in S2_BANDS],
     "SRC-CI": [f"SRC-CI95_{b}" for b in S2_BANDS],
-    "SFREQ-VALID": "ValidPixels",
-    "SFREQ-COUNT": "BareSoilPixelsCount",
-    "SFREQ-FREQ": "BareSoilFrequency"
+    "SFREQ-VALID": "VPC",
+    "SFREQ-COUNT": "BSC",
+    "SFREQ-FREQ": "BSF"
 }
 
 SCL_LEGEND = {
@@ -88,19 +88,6 @@ def _ci95(combined_cube: openeo.DataCube, sd_bands: List[str], n: str) -> openeo
     z = 1.96
     cubes = []
     n_sqrt = combined_cube.band(n).apply("sqrt")
-    # FIXME Broadcasting to avoid loop
-    # sd_cube = combined_cube.filter_bands(sd_bands)
-    # n_sqrt = n_sqrt.add_dimension(name="bands", label=sd_bands[0])
-    # n_sqrt = n_sqrt.rename_labels(
-    #     dimension="bands",
-    #     source=[sd_bands[0]],
-    #     target=sd_bands
-    # )
-    # ci = sd_cube.divide(n_sqrt)
-    # ci = ci * z
-    # ci = ci.rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=sd_bands)
-    # return ci
-
     
     for b in sd_bands:
         sd_cube = combined_cube.filter_bands(b)
@@ -115,8 +102,6 @@ def _ci95(combined_cube: openeo.DataCube, sd_bands: List[str], n: str) -> openeo
     cubes[0] = cubes[0].rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=sd_bands)
     return cubes[0]
 
-def check_tile(x):
-    return x.eq("32UPU")
 
 def composite(con: Connection,
               temporal_extent: List[str]|Parameter,
@@ -124,7 +109,9 @@ def composite(con: Connection,
               max_cloud_cover: int|Parameter, 
               nmad_sigma: float|Parameter, 
               max_sun_zenith_angle: float=70, 
-              compute_ci: bool|Parameter=True) -> openeo.DataCube:
+              compute_ci: bool|Parameter=True, 
+              compute_mref: bool|Parameter=True, 
+              compute_mask: bool|Parameter=True) -> openeo.DataCube:
     """
     Generate a Bare Surface Composite (SRC) and additional derived products.
 
@@ -153,8 +140,11 @@ def composite(con: Connection,
     max_sun_zenith_angle : float, optional
         Upper limit for the sun zenith angle filter, by default 70 degrees.
     compute_ci : bool, optional
-        Can be disabled if Confidence Interval is not needed. Speeds up computation
-
+        Can be disabled if Confidence Interval is not needed. Speeds up computation and saves credits
+    compute_mref : bool, optional
+        Can be disabled if Mean Reflectance Computation is not needed. Speeds up computation and saves credits
+    compute_mask : bool, optional
+        Can be disabled to save compuation time and credits
     Returns
     -------
     openeo.DataCube
@@ -162,64 +152,177 @@ def composite(con: Connection,
     """
 
     ### Input Data ###
-    s2_cube = con.load_collection(
-        collection_id="SENTINEL2_L2A",
-        bands=["B02", "SCL"],
+    cube = con.load_collection(
+        "SENTINEL2_L2A",
+        bands=S2_BANDS + ["SCL", "sunZenithAngles"],
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
         max_cloud_cover=max_cloud_cover,
-        # properties={"tileId": check_tile}     # works
-        # properties={"tileId": {"process_id": "eq","arguments": {"x":{"from_parameter":"value"},"y":"32UPU","case_sensitive":False},"result":True}}
-    )#.resample_spatial(resolution=20, method="average")
+    ).resample_spatial(resolution=20, method="average")
 
-    scl = con.load_collection(
-        collection_id="SENTINEL2_L2A",
-        temporal_extent=temporal_extent,
+    s2_cube = cube.filter_bands(S2_BANDS)
+    scl = cube.band("SCL")
+    sza = cube.band("sunZenithAngles")
+
+    worldcover = con.load_collection(
+        "ESA_WORLDCOVER_10M_2021_V2",
         spatial_extent=spatial_extent,
-        bands=['SCL'],
-        max_cloud_cover=max_cloud_cover,
-    ).resample_cube_spatial(s2_cube, method="near")
-
-    # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first")
-    # scl = scl.reduce_dimension(dimension='t', reducer="first")
-    # s2_cube = s2_cube.resample_spatial(resolution=20, method="average")
+        # temporal_extent=["2021-01-01", "2021-12-31"],
+        bands=["MAP"]
+    )
+    worldcover = worldcover.reduce_dimension(dimension="t", reducer="first")
     
-    # s2_cube = s2_cube.reduce_dimension(dimension='t', reducer="first").band("B02").multiply(1.0)
-    # scl = scl.reduce_dimension(dimension='t', reducer="first").multiply(1.0)
-    # scl = s2_cube.band("SCL")
-    s2_cube = s2_cube.band("B02")
-    
+    # cond_scl = scl.apply(process=scl_to_masks)
+    cond_scl = (
+            (scl == SCL_LEGEND["no_data"]) |
+            (scl == SCL_LEGEND["saturated_or_defective"]) |
+            (scl == SCL_LEGEND["dark_area_pixels"]) |
+            (scl == SCL_LEGEND["cloud_shadows"]) |
+            (scl == SCL_LEGEND["unclassified"]) |
+            (scl == SCL_LEGEND["cloud_medium_probability"]) |
+            (scl == SCL_LEGEND["cloud_high_probability"]) |
+            (scl == SCL_LEGEND["thin_cirrus"]) |
+            (scl == SCL_LEGEND["snow"])
+        )
+    # cloud mask dilation
     k = 11
-    kernel_1D = array_create([[int(1)] * k for _ in range(k)])
-    # kernel = array_create(kernel_1D, repeat=k)
-    kernel = kernel_1D
+    if k > 1:
+        kernel = array_create([[int(1)] * k for _ in range(k)])
+        cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
+        dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
+        dilated_mask = (dilated_mask > 0.01)
+    cond_sza = sza > max_sun_zenith_angle
 
 
-    cond_scl_cloud = ((scl == 3) | (scl == 8) | (scl == 9) | (scl == 10))
-    cond_scl = scl.apply(process=scl_to_masks)
-
-    # kernel = [[1] * 11 for _ in range(11)]
-
-    # b02_original = s2_cube
-    # return b02_original
-    b02_0 = s2_cube.mask(cond_scl_cloud)
-    b02_0 = b02_0.reduce_dimension(dimension='t', reducer=lambda data: data.first(ignore_nodata=False))
-    # return b02_0
-    dilated_mask = cond_scl_cloud.apply_kernel(kernel=kernel)
-    dilated_mask = (dilated_mask > 0)
-    b02_1 = s2_cube.mask(dilated_mask)
-    # ret = b02_0.merge_cubes(b02_1)
-    # return ret.reduce_dimension(dimension='t', reducer="first")
-    b02_1 = b02_1.reduce_dimension(dimension='t', reducer=lambda data: data.first(ignore_nodata=False))
-    b02_1 = b02_1.add_dimension(name="bands", label="B02_d")
-    ret = b02_0.merge_cubes(b02_1)
     
-    #cond_scl = cond_scl.add_dimension(name="bands", label="scl")
-    #dilated_mask = dilated_mask.add_dimension(name="bands", label="dilated_scl")
-    # ret = ret.merge_cubes(cond_scl)
-    # ret = cond_scl.merge_cubes(dilated_mask)
-    return ret
-     #return ret
+    # dilated_mask = dilated_mask * 1 > 0     # Force it to boolean ??
+    # combined_mask = cond_sza | cond_scl | dilated_mask
+    # combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
+    # s2_cube = s2_cube.mask(combined_mask)
+    s2_cube = s2_cube.mask(cond_sza)
+    s2_cube = s2_cube.mask(cond_scl)
+    if k > 1:
+        s2_cube = s2_cube.mask(dilated_mask)
+    
+    sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
+    
+
+    ### Threshold image ###
+    stac_url_th_img = "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/th_S2_s2cr_buffered_stac_yflip_no_t.json"
+    th_item = con.load_stac(stac_url_th_img, bands=["S2_s2cr_pvir2_threshold_img"], spatial_extent=spatial_extent)
+    thresholds = th_item.resample_cube_spatial(s2_cube, method="bilinear").reduce_dimension(dimension="bands", reducer="first")
+    worldcover = worldcover.resample_cube_spatial(s2_cube, method="near")
+
+    # s2_cube = s2_cube.merge_cubes(thresholds)
+
+    # b_scl = s2_cube.band("SCL")
+    # cond_scl = ~((b_scl == SCL_LEGEND['vegetation']) | (b_scl == SCL_LEGEND['not_vegetated']) | (b_scl == SCL_LEGEND['water']))
+    # s2_cube = s2_cube.mask(cond_scl)
+
+    s2_merged = s2_cube
+
+    #### MREF ####
+    if compute_mref:
+        s2_cube = nmad(s2_cube, 4.0)
+        mref = s2_cube.reduce_dimension(dimension="t", reducer="mean").filter_bands(S2_BANDS)
+        mref_std = s2_cube.reduce_dimension(dimension="t", reducer="sd").filter_bands(S2_BANDS)
+
+        mref = mref.rename_labels(dimension="bands", target=RES_BANDS["MREF"], source=S2_BANDS)
+        mref_std = mref_std.rename_labels(dimension="bands", target=RES_BANDS["MREF-STD"], source=S2_BANDS)
+    
+    # sfreq_valid.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-VALID"], source=S2_BANDS[0])
+    ######## SRC ########
+
+    b_04 = s2_merged.band("B04")
+    b_08 = s2_merged.band("B08")
+    b_12 = s2_merged.band("B12")
+
+    ndvi  = (b_08 - b_04) / (b_08 + b_04)
+    nbr   = (b_08 - b_12) / (b_08 + b_12)
+    pvir2 = ndvi + nbr
+    
+    pvir2_named = pvir2.add_dimension(name="bands", label="pvir2", type="bands")
+    th_named = thresholds.add_dimension(name="bands", label="th_img", type="bands")
+    th_named = th_named.reduce_dimension(dimension="t", reducer="mean")
+
+    s2_merged = s2_merged.merge_cubes(pvir2_named)
+    s2_merged = s2_merged.merge_cubes(th_named)
+    
+    th = s2_merged.band("th_img") 
+
+    mask = s2_merged.band("pvir2") > th
+    s2_masked = s2_merged.mask(mask)
+    # s2_masked = s2_masked.filter_bands(S2_BANDS)        # opt
+
+    cond_wc = (worldcover == 50) | (worldcover == 80)
+    s2_masked = s2_masked.mask(cond_wc)
+
+    s2_masked = nmad(s2_masked, nmad_sigma)
+
+    sfreq_count = s2_masked.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count")
+    # sfc = sfreq_count
+    sfreq_count = sfreq_count.add_dimension(name="bands", label=RES_BANDS["SFREQ-COUNT"], type="bands")
+
+    cond_count = sfreq_count < 3
+    s2_masked = s2_masked.mask(cond_count)
+    sfreq_count = sfreq_count.mask(cond_count)
+
+    src = s2_masked.filter_bands(S2_BANDS).reduce_dimension(dimension="t", reducer="mean")
+    src_std = s2_masked.filter_bands(S2_BANDS).reduce_dimension(dimension="t", reducer="sd")
+
+    src = src.rename_labels(dimension="bands", target=RES_BANDS["SRC"], source=S2_BANDS)
+    src_std = src_std.rename_labels(dimension="bands", target=RES_BANDS["SRC-STD"], source=S2_BANDS)
+
+
+    # sfreq_count.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-COUNT"], source=S2_BANDS[0])
+
+    # src_ci = _ci95(src_std, sfreq_count).filter_bands(RES_BANDS["SRC-STD"])
+    # src_ci = src_ci.rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=RES_BANDS["SRC-STD"])
+    
+    combined_output = src.merge_cubes(src_std)
+    
+    if compute_mref:
+        combined_output = combined_output.merge_cubes(mref).merge_cubes(mref_std)
+
+    combined_output = combined_output.merge_cubes(sfreq_count).merge_cubes(sfreq_valid)
+
+    # inner math
+    if compute_ci:
+        ci = _ci95(combined_output, RES_BANDS["SRC-STD"], RES_BANDS["SFREQ-COUNT"])   # works but slow
+        combined_output = combined_output.merge_cubes(ci)
+    sfreq_freq = combined_output.band(RES_BANDS["SFREQ-COUNT"]) / combined_output.band(RES_BANDS["SFREQ-VALID"])
+    sfreq_freq = sfreq_freq.add_dimension(name="bands", label=RES_BANDS["SFREQ-FREQ"], type="bands")
+    # sfreq_freq = sfreq_freq.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-FREQ"], source=[RES_BANDS["SFREQ-COUNT"]])
+    
+    combined_output = combined_output.merge_cubes(sfreq_freq)
+
+    ### MASK ###
+    if compute_mask:
+        masked = s2_merged.band("pvir2") < th
+        is_perm_veg = masked.reduce_dimension(dimension="t", reducer="any")
+        is_perm_veg = is_perm_veg.apply(process=openeo.processes.not_)
+        is_perm_veg = is_perm_veg.apply(process=openeo.processes.round)
+        is_perm_veg = is_perm_veg.add(2)
+
+        # TODO test
+        # masked = s2_merged.band("pvir2") > th
+        # is_perm_veg = masked.reduce_dimension(dimension="t", reducer="all")     # TODO doesn't work because of nans (but should work with ignore_nodata=true)
+        
+        worldcover = worldcover.band("MAP")
+        is_other = (worldcover == 0) | (worldcover == 50) | (worldcover == 70) | (worldcover == 80) | (worldcover == 90) | (worldcover == 95)
+        
+        bspc = combined_output.band(RES_BANDS["SFREQ-COUNT"])   # (x,y) or (x,y,t)
+
+        z = is_perm_veg.multiply(0)
+        z = z.mask(is_perm_veg, replacement=2)
+        z = z.mask((bspc > 2), replacement=1)       
+        z = z.mask(is_other, replacement=3)
+        z = z.mask((z==0))
+        z = z.add_dimension("bands", "MASK", "bands")
+        combined_output = combined_output.merge_cubes(z)
+
+
+    return combined_output
 
 
 def auth(url: str="openeo.dataspace.copernicus.eu") -> Connection:
@@ -300,21 +403,28 @@ def generate() -> dict:
         categories=["sentinel-2", "composites", "bare surface"]
     )
 
-test_setup_small = {
+test_setup_tiny = {
     "bbox": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
     "temporal_extent": ["2025-04-01", "2025-05-07"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
 }
 
-test_setup_large = {
-    "bbox": { "west": 11.60, "south": 48.50, "east": 12.0, "north": 48.9, "crs": "EPSG:4326"},
-    "temporal_extent": ["2023-02-06", "2023-02-20"],
+test_setup_small = {
+    "bbox": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
+    "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
 }
 
-def test_run(d_test_setup=test_setup_small, path_out=Path("./result/")):
+test_setup_large = {
+    "bbox": { "west": 10.8, "south": 48.0, "east": 11.3, "north": 48.5, "crs": "EPSG:4326"},
+    "temporal_extent": ["2025-01-01", "2025-12-31"],
+    "nmad_sigma": 3.0,
+    "max_sun_zenith_angle": 70.0,
+}
+
+def test_run(d_test_setup=None, path_out=Path("./result/")):
     con = auth()
     bbox = d_test_setup["bbox"]
     temporal_extent = d_test_setup["temporal_extent"]
@@ -328,12 +438,13 @@ def test_run(d_test_setup=test_setup_small, path_out=Path("./result/")):
         max_cloud_cover=80,
         nmad_sigma=nmad_sigma,
         max_sun_zenith_angle=max_sun_zenith_angle,
-        compute_ci=True
+        compute_ci=False
     )
 
     job = scmap_composite.create_job(title="scmap_composite")
     job.start_and_wait()
     path_out.mkdir(parents=True, exist_ok=True)
+    job.describe()
     job.get_results().download_files(path_out.as_posix())
 
 
@@ -349,6 +460,4 @@ if __name__ == "__main__":
         # save process to json
         with open(Path(__file__).parent / "scmap_composite.json", "w") as fp:
             json.dump(generate(), fp, indent=2)
-
-
 

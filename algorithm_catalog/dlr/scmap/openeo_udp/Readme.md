@@ -21,12 +21,11 @@ For a more detailed description of the algorithm and its by-products, please ref
 | -------- | ------- | ------- |
 | SRC_B*XX*  | Bare Surface Reflectance Composite - Mean | It provides the spectral properties of soils that vary due to different soil organic carbon (SOC) content, soil moisture and soil minerology. This product is often used for spectral and digital soil mapping approaches |
 | SRC_STD_B*XX* | Bare Surface Reflectance Composite - Standard deviation |It informs about the spectral dynamic of bare surfaces and soils |
-| SRC_CI95_B*XX* | Bare Surface Reflectance Composite - 95th Confidence Interval | Similar to the standard deviation, it informs about the spectral dynamic of bare surfaces and soils |
 | MREF_B*XX* | Reflectance Composite - Mean | It represents the mean reflectance of all valid Sentinel-2 observations including vegetation, bare and other surfaces |
 | MREF_STD_B*XX* | Reflectance Composite - Standard deviation | It contains the standard deviation for all valid Sentinel-2 observations |
-| Valid_Pixel_Count | Valid Count | It provides the total number of valid observations at this pixel |
-| Bare_Surface_Count | Bare Surface Count | It provides the number of bare soil occurrences at this pixel |
-| Bare_Surface_Frequency | Bare Surface Frequency | It provides the number of bare soil occurrences over the total number of valid observations |
+| VPC | Valid Pixel Count | It provides the total number of valid observations at this pixel |
+| BSC | Bare Surface Count | It provides the number of bare soil occurrences at this pixel |
+| BSF | Bare Surface Frequency | It provides the number of bare soil occurrences over the total number of valid observations |
 | Mask | Mask | The band aggregates simple landcover classes: Pixel may either contain *bare soil* (1), is *permaenently vegetated* (2) or is *another surface* (3) (e.g. water bodies, built-up areas, ..) | 
 
 ## Usage

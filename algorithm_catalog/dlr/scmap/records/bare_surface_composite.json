@@ -1,24 +1,24 @@
 
 {
-    "id": "bare_surface_composite",
+    "id": "scmap",
     "type": "Feature",
     "conformsTo": [
       "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
       "https://apex.esa.int/core/openeo-udp"
     ],
     "properties": {
-      "created": "2025-11-25T00:00:00Z",
-      "updated": "2025-11-25T00:00:00Z",
+      "created": "2026-03-27T00:00:00Z",
+      "updated": "2026-03-27T00:00:00Z",
       "type": "service",
       "title": "Bare surface composite (SCMap)",
       "description": "SCMaP is a specialised processing chain for detecting and analysing spectra of bare soils/surfaces. Bare surface and soil pixels are selected using a combined NDVI and NBR index (PVIR2) that optimises the exclusion of photosynthetically active and non-active vegetation. The index is calculated and applied for each individual pixel combined with a regional threshold map. The result is described in here: https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf",
-      "cost_estimate": 0.2,
+      "cost_estimate": 0.4,
       "cost_unit": "platform credits per km\u00b2 per month",
       "keywords": [
         "bare surface",
         "soil",
         "temporal composite",
-        "SCMap"
+        "SCMap", "Sentinel-2"
       ],
       "language": {
         "code": "en-US",
@@ -56,7 +56,7 @@
           "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
         }],
       "formats": [
-        "GeoTiff", "netCDF"
+        "GeoTiff"
       ],
       "license": "CC-BY-NC"
     },
@@ -64,9 +64,9 @@
     "links": [
       {
         "rel": "application",
-        "type": "application/json",
+        "type": "application/vnd.openeo+json;type=process",
         "title": "openEO Process Definition",
-        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/max_ndvi_composite/openeo_udp/examples/max_ndvi_composite/max_ndvi_composite.json"
+        "href": ""
       },
       {
         "rel": "service",
@@ -75,16 +75,10 @@
         "href": "https://openeofed.dataspace.copernicus.eu"
       },
       {
-        "rel": "example-output",
+        "rel": "platform",
         "type": "application/json",
-        "title": "Example output",
-        "href": "https://radiantearth.github.io/stac-browser/#/external/s3.waw3-1.cloudferro.com/swift/v1/APEx-examples/max_ndvi_denmark/collection.json"
-      },
-      {
-        "rel": "webapp",
-        "type": "text/html",
-        "title": "OpenEO Web Editor",
-        "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=max_ndvi_composite&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/max_ndvi_composite/openeo_udp/max_ndvi_composite.json&server=https://openeofed.dataspace.copernicus.eu"
+        "title": "CDSE openEO federation",
+        "href": "../../../../platform_catalog/cdse_openeo_federation.json"
       }
     ]
   }
