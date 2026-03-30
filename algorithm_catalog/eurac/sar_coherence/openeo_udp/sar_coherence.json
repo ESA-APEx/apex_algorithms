@@ -27,6 +27,12 @@
           },
           "coherence_window_az": {
             "from_parameter": "coherence_window_az"
+          },
+          "n_az_looks": {
+            "from_parameter": "n_az_looks"
+          },
+          "n_rg_looks": {
+            "from_parameter": "n_rg_looks"
           }
         },
         "data": null,
@@ -212,6 +218,24 @@
       },
       "optional": true,
       "default": 2
+    },
+    {
+      "name": "n_az_looks",
+      "description": "Number of looks in azimuth direction for multi-looking",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 1
+    },
+    {
+      "name": "n_rg_looks",
+      "description": "Number of looks in range direction for multi-looking",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 4
     }
   ]
 }
