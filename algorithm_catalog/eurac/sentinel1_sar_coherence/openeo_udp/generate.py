@@ -58,13 +58,17 @@ def generate() -> dict:
         parameters=parameters,
     )
 
+def write_json(json_object, file_path):
+    with open(Path(file_path), "w") as f:
+        s_record = json.dumps(json_object, indent=2)
+        if not s_record.endswith("\n"):
+            s_record += "\n"
+        f.write(s_record)
 
 if __name__ == "__main__":
-    j = generate()
-    with open("sentinel1_sar_coherence.json", "w") as f:
-        json.dump(j, f, indent=2)
+    write_json(generate(), "sentinel1_sar_coherence.json")
 
-    j_record = json.loads(Path("../records/sentinel1_sar_coherence.json").read_text())
+    udp_path = Path("../records/sentinel1_sar_coherence.json")
+    j_record = json.loads(udp_path.read_text())
     j_record["properties"]["description"] = j["description"]
-    with open(Path("../records/sentinel1_sar_coherence.json"), "w") as f:
-        json.dump(j_record, f, indent=2)
+    write_json(j_record, udp_path)
