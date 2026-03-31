@@ -75,6 +75,9 @@
     "formats": [
       {
         "name": "GeoTiff"
+      },
+      {
+        "name": "netCDF"
       }
     ],
     "license": "other"
