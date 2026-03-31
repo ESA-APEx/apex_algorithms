@@ -1,0 +1,76 @@
+{
+  "id": "titiler_openeo",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-01-28T00:00:00Z",
+    "updated": "2026-01-28T00:00:00Z",
+    "type": "openeo_backend",
+    "title": "TiTiler openEO backend",
+    "short_title": "TiTiler openEO",
+    "description": "Lightweight openEO backend built on TiTiler, focused on on-the-fly raster processing and tile or dynamic raw data delivery.",
+    "keywords": [
+      "openEO",
+      "TiTiler",
+      "raster",
+      "tiles"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Emmanuel Mathot",
+        "emails": [
+          {
+            "value": "emmanuel@developmentseed.org"
+          }
+        ],
+        "links": [
+          {
+            "href": "https://sentinel-hub.github.io/titiler-openeo/",
+            "rel": "about",
+            "title": "TiTiler openEO",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Email for platform support",
+        "roles": [
+          "operator"
+        ]
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "TiTiler openEO",
+      "href": "https://sentinel-hub.github.io/titiler-openeo/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "TiTiler openEO Logo",
+      "href": "https://sentinel-hub.github.io/titiler-openeo/img/openeo-titiler-logo.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "TiTiler openEO Logo (B&W)",
+      "href": "https://sentinel-hub.github.io/titiler-openeo/img/openeo-titiler-logo-bnw.png"
+    }
+  ]
+}

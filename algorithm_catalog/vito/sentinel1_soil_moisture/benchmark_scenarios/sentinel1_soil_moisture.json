@@ -1,0 +1,67 @@
+[
+    {
+        "id": "sentinel1_soil_moisture",
+        "type": "openeo",
+        "description": "Estimates surface soil moisture from Sentinel-1 GRD data using change detection over a reference period (min/max backscatter) with urban/water masking.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "soil_moisture1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "coordinates": [
+                            [
+                                [
+                                    139.194,
+                                    -35.516
+                                ],
+                                [
+                                    139.535,
+                                    -35.516
+                                ],
+                                [
+                                    139.535,
+                                    -35.284
+                                ],
+                                [
+                                    139.194,
+                                    -35.284
+                                ],
+                                [
+                                    139.194,
+                                    -35.516
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "reference_temporal_extent": [
+                        "2017-02-02",
+                        "2020-02-02"
+                    ],
+                    "current_temporal_extent": [
+                        "2020-02-02",
+                        "2020-02-28"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8ad2bccf3d7534f0743a9cf73911080abc32f74c/algorithm_catalog/vito/surfacesoilmoisture/openeo_udp/sentinel1_soil_moisture.json",
+                "process_id": "sentinel1_soil_moisture"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "soil_moisture1"
+                    },
+                    "format": "GTiff",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "openEO.tif": "",
+            "job-results.json": ""
+        }
+
+    }
+]
