@@ -1,13 +1,13 @@
 [
   {
-    "id": "sar_coherence",
+    "id": "sar_coherence_udp",
     "type": "openeo",
-    "description": "Calculating sar_coherence.",
+    "description": "Calculating sar_coherence_udp.",
     "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
-      "sar_coherence1": {
-        "process_id": "sar_coherence",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/358e16c1be44994695dda5b61236fa42df189146/algorithm_catalog/eurac/sar_coherence/openeo_udp/sar_coherence.json",
+      "sar_coherence_udp1": {
+        "process_id": "sar_coherence_udp",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/358e16c1be44994695dda5b61236fa42df189146/algorithm_catalog/eurac/sar_coherence_udp/openeo_udp/sar_coherence_udp.json",
         "arguments": {
           "temporal_extent": [
             "2018-01-28",

@@ -53,7 +53,7 @@ def generate() -> dict:
 
     return build_process_dict(
         process_graph=datacube,
-        process_id="sar_coherence",
+        process_id="sar_coherence_udp",
         description=get_cwl_main(cwl_yaml).get("doc"),
         parameters=parameters,
     )
@@ -61,10 +61,10 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     j = generate()
-    with open("sar_coherence.json", "w") as f:
+    with open("sar_coherence_udp.json", "w") as f:
         json.dump(j, f, indent=2)
 
-    j_record = json.loads(Path("../records/sar_coherence.json").read_text())
+    j_record = json.loads(Path("../records/sar_coherence_udp.json").read_text())
     j_record["properties"]["description"] = j["description"]
-    with open(Path("../records/sar_coherence.json"), "w") as f:
+    with open(Path("../records/sar_coherence_udp.json"), "w") as f:
         json.dump(j_record, f, indent=2)
