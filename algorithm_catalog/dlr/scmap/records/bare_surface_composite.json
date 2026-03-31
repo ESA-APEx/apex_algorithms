@@ -66,7 +66,7 @@
         "rel": "application",
         "type": "application/vnd.openeo+json;type=process",
         "title": "openEO Process Definition",
-        "href": ""
+        "href": "../openeo_udp/"
       },
       {
         "rel": "service",
@@ -79,6 +79,24 @@
         "type": "application/json",
         "title": "CDSE openEO federation",
         "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+      },
+      {
+          "rel": "provider",
+          "type": "application/json",
+          "title": "DLR",
+          "href": "../../record.json"
+      },
+      {
+          "rel": "webapp",
+          "type": "text/html",
+          "title": "OpenEO Web Editor",
+          "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=biopar&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json&server=https://openeofed.dataspace.copernicus.eu"
+      },
+      {
+          "rel": "thumbnail",
+          "type": "image/png",
+          "title": "Thumbnail image",
+          "href": "./thumbnail_2.png"
       }
     ]
   }
