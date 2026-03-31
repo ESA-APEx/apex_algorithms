@@ -13,7 +13,6 @@ env:
 
 jobs:
   notify-catalogue-web:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Generate a token for gh cli
