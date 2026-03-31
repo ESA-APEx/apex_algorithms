@@ -25,7 +25,10 @@
       "anyOf": [
         {
           "contains": {
-            "const": "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+            "enum": [
+              "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+              "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+            ]
           }
         }
       ],
