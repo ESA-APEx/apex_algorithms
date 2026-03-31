@@ -1,0 +1,55 @@
+[
+  {
+    "id": "ppi",
+    "type": "openeo",
+    "description": "ppi example",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "ppi1": {
+        "process_id": "ppi",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/ppi/openeo_udp/ppi.json",
+        "arguments": {
+          "temporal_extent": [
+            "2022-06-11",
+            "2022-06-12"
+          ],
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  4.4387,
+                  50.42624
+                ],
+                [
+                  5.9539,
+                  50.42624
+                ],
+                [
+                  5.9539,
+                  51.4424
+                ],
+                [
+                  4.4387,
+                  51.4424
+                ],
+                [
+                  4.4387,
+                  50.42624
+                ]
+              ]
+            ]
+          }
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/442!tests_test_benchmarks.py__test_run_benchmark_ppi_!actual/job-results.json",
+      "openEO_2022-06-11Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/442!tests_test_benchmarks.py__test_run_benchmark_ppi_!actual/openEO_2022-06-11Z.tif"
+    },
+    "reference_options": {
+      "rtol": 0.1
+    }
+  }
+]

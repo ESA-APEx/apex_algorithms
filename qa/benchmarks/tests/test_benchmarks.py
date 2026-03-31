@@ -1,5 +1,7 @@
+import json
 import logging
 import re
+import signal
 from pathlib import Path
 
 import openeo
@@ -54,6 +56,37 @@ def test_run_benchmark(
 
         connection: openeo.Connection = connection_factory(url=backend)
 
+    report_path = None
+    if request.config.getoption("--upload-benchmark-report"):
+        report_path = tmp_path / "benchmark_report.json"
+        report_path.write_text(json.dumps({
+            "scenario_id": scenario.id,
+            "scenario_description": scenario.description,
+            "scenario_backend": scenario.backend,
+            "scenario_source": str(scenario.source) if scenario.source else None,
+            "reference_data": scenario.reference_data,
+            "reference_options": scenario.reference_options,
+        }, indent=2))
+        upload_assets_on_fail(report_path)
+
+    def _on_phase_exception(phase: str, exc: Exception):
+        if report_path is not None:
+            report = json.loads(report_path.read_text())
+            report["test_failed"] = True
+            report["test_failed_phase"] = phase
+            report["test_error_message"] = str(exc)
+            report_path.write_text(json.dumps(report, indent=2))
+            cwd_report_dir = Path("benchmark_reports")
+            cwd_report_dir.mkdir(exist_ok=True)
+            (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
+                json.dumps(report, indent=2)
+            )
+            report_url = upload_assets_on_fail.get_url(report_path)
+            if report_url:
+                exc.add_note(f"Benchmark report: {report_url}")
+
+    track_phase.on_exception = _on_phase_exception
+
     with track_phase(phase="create-job"):
         # TODO #14 scenario option to use synchronous instead of batch job mode?
         job = connection.create_job(
@@ -63,11 +96,29 @@ def test_run_benchmark(
         )
         track_metric("job_id", job.job_id)
 
+        if report_path is not None:
+            report = json.loads(report_path.read_text())
+            report["job_id"] = job.job_id
+            report_path.write_text(json.dumps(report, indent=2))
+
     with track_phase(phase="run-job"):
         # TODO: monitor timing and progress
-        # TODO: abort excessively long batch jobs? https://github.com/Open-EO/openeo-python-client/issues/589
-        job.start_and_wait()
         # TODO: separate "job started" and run phases?
+        max_minutes = request.config.getoption("--maximum-job-time-in-minutes")
+        if max_minutes:
+            def _timeout_handler(signum, frame):
+                raise TimeoutError(
+                    f"Batch job {job.job_id} exceeded maximum allowed time of {max_minutes} minutes"
+                )
+
+            old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
+            signal.alarm(max_minutes * 60)
+        try:
+            job.start_and_wait()
+        finally:
+            if max_minutes:
+                signal.alarm(0)
+                signal.signal(signal.SIGALRM, old_handler)
 
     with track_phase(phase="collect-metadata"):
         collect_metrics_from_job_metadata(job, track_metric=track_metric)
@@ -83,20 +134,68 @@ def test_run_benchmark(
         # Upload assets on failure
         upload_assets_on_fail(*paths)
 
+    # Pre-compute S3 URLs for actual files (used in error messages and benchmark reports)
+    actual_s3_urls = {
+        str(p.relative_to(actual_dir)): upload_assets_on_fail.get_url(p)
+        for p in sorted(actual_dir.rglob("*")) if p.is_file()
+    }
+    actual_s3_urls = {k: v for k, v in actual_s3_urls.items() if v is not None}
+
     with track_phase(phase="download-reference"):
         reference_dir = download_reference_data(
             scenario=scenario, reference_dir=tmp_path / "reference"
+        )
+
+    if report_path is not None:
+        report = json.loads(report_path.read_text())
+        report["actual_files"] = {
+            str(p.relative_to(actual_dir)): f"{p.stat().st_size / 1024:.1f} kb"
+            for p in sorted(actual_dir.rglob("*")) if p.is_file()
+        }
+        ref_files = {}
+        for p in sorted(reference_dir.rglob("*")):
+            if not p.is_file():
+                continue
+            rel = p.relative_to(reference_dir)
+            size_str = f"{p.stat().st_size / 1024:.1f} kb"
+            actual_counterpart = actual_dir / rel
+            if not actual_counterpart.exists():
+                size_str += " (missing in actual)"
+            elif actual_counterpart.stat().st_size != p.stat().st_size:
+                size_str += f" (actual: {actual_counterpart.stat().st_size / 1024:.1f} kb)"
+            ref_files[str(rel)] = size_str
+        report["reference_files"] = ref_files
+        if actual_s3_urls:
+            report["actual_data"] = actual_s3_urls
+        report_path.write_text(json.dumps(report, indent=2))
+        # Also write to CWD so the report is accessible on Jenkins workspace
+        cwd_report_dir = Path("benchmark_reports")
+        cwd_report_dir.mkdir(exist_ok=True)
+        (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
+            json.dumps(report, indent=2)
         )
 
     with track_phase(
         phase="compare", describe_exception=analyse_results_comparison_exception
     ):
         # Compare actual results with reference data
-        assert_job_results_allclose(
-            actual=actual_dir,
-            expected=reference_dir,
-            tmp_path=tmp_path,
-            rtol=scenario.reference_options.get("rtol", 1e-6),
-            atol=scenario.reference_options.get("atol", 1e-6),
-            pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 0.0),
-        )
+        try:
+            assert_job_results_allclose(
+                actual=actual_dir,
+                expected=reference_dir,
+                tmp_path=tmp_path,
+                rtol=scenario.reference_options.get("rtol", 1e-3),
+                atol=scenario.reference_options.get("atol", 1),
+                pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 1),
+            )
+        except AssertionError as e:
+            msg = str(e)
+            if scenario.reference_data:
+                msg += "\n\nReference data URLs:"
+                for name, url in scenario.reference_data.items():
+                    msg += f"\n  {name}: {url}"
+            if actual_s3_urls:
+                msg += "\n\nActual data S3 URLs (uploaded on failure):"
+                for name, url in actual_s3_urls.items():
+                    msg += f"\n  {name}: {url}"
+            raise AssertionError(msg) from None

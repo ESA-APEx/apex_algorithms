@@ -1,0 +1,109 @@
+{
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "id": "UHI_per_pixel",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "properties": {
+    "created": "2026-03-06T00:00:00Z",
+    "updated": "2026-03-06T00:00:00Z",
+    "type": "service",
+    "title": "Urban Heat Island Intensity (JJA)",
+    "description": "This openEO User Defined Process (UDP) computes Urban Heat Island (UHI) intensity during the summer months (June–August). It processes satellite-derived Land Surface Temperature data and compares urban pixels with surrounding rural reference areas using a configurable kernel size.",
+    "keywords": [
+      "Urban Heat Island",
+      "Land Surface Temperature",
+      "Climate"
+    ],
+    "visibility": "public",
+    "license": "Apache-2.0",
+    "cost_estimate": 1,
+    "cost_units": "credits",
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Adriaan Keurhorst",
+        "email": "adriaan.keurhorst@compass.ie",
+        "roles": ["Author"]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Urban Heat Island"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ]
+  },
+  "links": [
+    {
+      "rel": "platform",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json",
+      "type": "application/json",
+      "title": "Copernicus Data Space openEO Backend"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Eurac Research",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "thumbnail",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/london_thumbnail.png",
+      "type": "image/png",
+      "title": "Thumbnail preview of UHI Intensity in London"
+    },
+    {
+      "rel": "preview",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/london_thumbnail.png",
+      "type": "image/png",
+      "title": "Preview of UHI Intensity in London"
+    },
+    {
+      "rel": "application",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO UDP definition"
+    },
+    {
+      "rel": "service",
+      "href": "https://openeofed.dataspace.copernicus.eu",
+      "type": "application/json",
+      "title": "openEO Backend"
+    },
+    {
+      "rel": "about",
+      "href": "https://github.com/adriaanzico/gtif-urban-heat-island",
+      "title": "Algorithm Documentation",
+      "type": "text/html"
+    },
+    {
+      "rel": "code",
+      "href": "https://github.com/ESA-APEx/apex_algorithms/blob/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_udp.py",
+      "title": "Source Code",
+      "type": "text/html"
+    },
+    {
+      "rel": "license",
+      "href": "https://opensource.org/licenses/Apache-2.0",
+      "title": "License",
+      "type": "text/html"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=UHI_per_pixel&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json&server=https://openeofed.dataspace.copernicus.eu"
+    }
+  ]
+}

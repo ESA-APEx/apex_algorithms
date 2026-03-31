@@ -1,0 +1,148 @@
+{
+  "id": "sen4cap_s1_pre_processing",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-01-16T00:00:00Z",
+    "updated": "2026-01-16T00:00:00Z",
+    "type": "service",
+    "title": "Sen4CAP S1 Pre-Processor",
+    "description": "# Description \n\nThe purpose of the Sen4CAP S1 pre-processing module is to obtain the Amplitude and Coherence products from a pair of two S1 SLC products.",
+    "cost_estimate": 1,
+    "cost_unit": "\u20ac per input product (Amplitude or Coherence)",
+    "keywords": ["Sentinel-1"],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Platform team",
+        "organization": "CS GROUP - ROMANIA",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
+        "links": [
+          {
+            "href": "https://tao-c-s.ro",
+            "title": "Tool Augmentation by user Enhancements and Orchestration (TAO)",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://esa-sen4cap.org",
+            "title": "Sentinels for Common Agricultural Policy (Sen4CAP)",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries on selecting Processing Services from the CS GROUP - ROMANIA Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at CS GROUP - ROMANIA",
+        "email": "cs.ro.eosupport@soprasteria.com"
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "AGRICULTURE"
+          },
+          {
+            "id": "LAND USE"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JPEG"
+      },
+      {
+        "name": "ESRI Shapefile"
+      },
+      {
+        "name": "CSV"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "order",
+      "type": "text/html",
+      "title": "Request Access",
+      "href": "https://tao.c-s.ro/contact/"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "Tool Augmentation by user enhancements and Orchestration (TAO)",
+      "href": "../../../../platform_catalog/tao.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "CS GROUP - ROMANIA",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://sen4x.tao.c-s.ro/process/processes/206"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://www.esa-sen4cap.org/wp-content/uploads/files/Sen4CAP_SUM_v4.0.pdf"
+    },
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://sen4x.tao.c-s.ro/cwl/sen4cap_s1_pre_processing.cwl"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "Web App",
+      "href": "https://sen4x.tao.c-s.ro"
+    },
+    {
+      "rel": "preview",
+      "type": "image/png",
+      "title": "Bare Soil Preview",
+      "href": "https://sen4x.tao.c-s.ro/media/previews/preview_sen4cap_s1_pre_processing.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://sen4x.tao.c-s.ro/media/thumbnails/thumbnail_sen4cap_s1_pre_processing.png"
+    }
+  ]
+}

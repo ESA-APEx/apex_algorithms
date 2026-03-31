@@ -421,15 +421,42 @@ def track_phase(track_metric: MetricsTracker):
 
     Which will produce this exception metric/event:
     - `("test:phase:exception", "math:division-by-zero")`
+
+    An ``on_exception`` callback can be set on the returned tracker object
+    to be notified of phase failures with ``(phase, exception)`` arguments:
+
+    ```python
+    def test_example(track_phase):
+        track_phase.on_exception = lambda phase, exc: print(f"Failed in {phase}")
+        with track_phase("math"):
+            y = 1 / 0
+    ```
     """
 
+    tracker = _PhaseTracker(track_metric=track_metric)
+    return tracker
+
+
+class _PhaseTracker:
+    """
+    Callable that acts as a context manager factory for tracking test phases.
+
+    Supports an optional ``on_exception`` callback that is called
+    with ``(phase, exception)`` when an exception occurs in a phase.
+    """
+
+    def __init__(self, track_metric):
+        self._track_metric = track_metric
+        self.on_exception: Union[Callable[[str, Exception], None], None] = None
+
     @contextlib.contextmanager
-    def track(
+    def __call__(
+        self,
         phase: str,
         *,
         describe_exception: Callable[[Exception], Union[str, None]] = lambda e: None,
     ):
-        track_metric("test:phase:start", phase, update=True)
+        self._track_metric("test:phase:start", phase, update=True)
         try:
             yield
         except Exception as exc:
@@ -441,8 +468,8 @@ def track_phase(track_metric: MetricsTracker):
                 value = f"{phase}:{desc}"
             else:
                 value = phase
-            track_metric("test:phase:exception", value, update=True)
+            self._track_metric("test:phase:exception", value, update=True)
+            if self.on_exception:
+                self.on_exception(phase, exc)
             raise
-        track_metric("test:phase:end", phase, update=True)
-
-    return track
+        self._track_metric("test:phase:end", phase, update=True)
