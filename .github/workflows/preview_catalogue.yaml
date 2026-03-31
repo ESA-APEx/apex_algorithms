@@ -5,7 +5,6 @@ on:
     types: [opened, synchronize, reopened, closed]
     paths:
       - 'algorithm_catalog/**'
-
 permissions:
   contents: read
 

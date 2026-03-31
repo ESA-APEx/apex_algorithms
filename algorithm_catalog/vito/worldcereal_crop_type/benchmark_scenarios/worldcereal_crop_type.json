@@ -27,8 +27,8 @@
       }
     },
     "reference_data": {
-      "worldcereal_crop_type_postprocessed.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_type/worldcereal_crop_type_postprocessed.tif",
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/APEx-benchmarks/worldcereal_crop_type/job-results.json"
+      "worldcereal_crop_type_postprocessed.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22353750758!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_type_!actual/worldcereal_crop_type_postprocessed.tif",
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/512!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_type_!actual/job-results.json"
     },
     "reference_options": {
       "atol": 10

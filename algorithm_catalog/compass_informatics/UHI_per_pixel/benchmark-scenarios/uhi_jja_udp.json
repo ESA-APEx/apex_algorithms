@@ -1,0 +1,26 @@
+[
+  {
+    "id": "UHI_per_pixel",
+    "type": "openeo",
+    "description": "UHI_per_pixel test",
+    "backend": "https://openeo.dataspace.copernicus.eu/openeo/1.2",
+    "process_graph": {
+      "urban_heat_island": {
+        "process_id": "UHI_per_pixel",
+        "namespace": "https://openeo.dataspace.copernicus.eu/openeo/1.2/processes/u:776bee94-53de-49f5-88d6-c3660d927048/UHI_per_pixel",
+        "arguments": {
+          "spatial_extent": ["west": 7.546, "south": 44.989, "east": 7.781, "north": 45.145]
+          },
+          "temporal_extent": [
+            "2020-01-01", "2021-12-31"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+    },
+    "reference_options": {
+    }
+  }
+]

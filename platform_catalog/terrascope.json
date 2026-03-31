@@ -5,12 +5,12 @@
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "properties": {
-    "created": "2024-05-17T00:00:00Z",
-    "updated": "2024-05-17T00:00:00Z",
+    "created": "2026-03-27T00:00:00Z",
+    "updated": "2026-03-27T00:00:00Z",
     "type": "openeo_backend",
-    "title": "Terrascope openEO Processing Backend",
+    "title": "Terrascope",
     "short_title": "Terrascope",
-    "description": "Terrascope enables processing using openEO.",
+    "description": "The Terrascope Platform enables processing using openEO.",
     "keywords": [],
     "language": {
       "code": "en-US",
