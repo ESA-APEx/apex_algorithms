@@ -1,5 +1,5 @@
 {
-  "id": "sar_coherence_udp",
+  "id": "sentinel1_sar_coherence",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
@@ -88,7 +88,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sar_coherence_udp/openeo_udp/sar_coherence_udp.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json"
     },
     {
       "rel": "service",
@@ -112,13 +112,13 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sar_coherence_udp/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sentinel1_sar_coherence/records/thumbnail.png"
     },
     {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sar_coherence_udp&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sar_coherence_udp/openeo_udp/sar_coherence_udp.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sentinel1_sar_coherence&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
