@@ -1,10 +1,10 @@
 name: Preview catalogue web from data PR
 
 on:
-  workflow_run:
-    workflows: ["Unit Tests"]
-    types:
-      - completed
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - 'algorithm_catalog/**'
 permissions:
   contents: read
 
