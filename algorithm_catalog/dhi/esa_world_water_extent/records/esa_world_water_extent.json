@@ -99,7 +99,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Terrascope openEO",
-      "href": "https://openeo.vito.be"
+      "href": "https://openeo.vito.be/openeo"
     },
     {
       "rel": "platform",
