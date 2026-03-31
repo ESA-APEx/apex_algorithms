@@ -84,6 +84,11 @@
           "anyOf": [
             {
               "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
               "subtype": "date",
               "format": "date"
             },
