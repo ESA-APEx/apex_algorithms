@@ -107,7 +107,7 @@ class Algorithm:
 
         if not data.get("type") == "Feature":
             raise InvalidMetadataError(f"Expected a GeoJSON 'Feature' object, but got type {data.get('type')!r}.")
-        if "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data.get("conformsTo", []):
+        if "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data.get("conformsTo", []):
             raise InvalidMetadataError(
                 f"Expected an 'OGC API - Records' record object, but got {data.get('conformsTo')!r}."
             )
