@@ -51,13 +51,13 @@
             "rel": "logo-light",
             "type": "image/svg+xml",
             "title": "GISAT Logo",
-            "href": "https://www.gisat.cz/assets/img/symbol.svg"
+            "href": "https://gisat-data.eu-central-1.linodeobjects.com/Sentinel4Amazonas_GST-12/prod/v1/assets/gisat_logo_RGB.svg"
         },
         {
             "rel": "logo-dark",
             "type": "image/svg+xml",
             "title": "GISAT Logo",
-            "href": "https://www.gisat.cz/assets/img/symbol.svg"
+            "href": "https://gisat-data.eu-central-1.linodeobjects.com/Sentinel4Amazonas_GST-12/prod/v1/assets/gisat_logo_black_RGB.svg"
         }
     ]
 }
