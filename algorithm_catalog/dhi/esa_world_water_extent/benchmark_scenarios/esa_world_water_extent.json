@@ -1,0 +1,35 @@
+[
+  {
+    "id": "esa_world_water_extent",
+    "type": "openeo",
+    "description": "benchmark scenario for ESA World Water extent",
+    "backend": "openeo.vito.be",
+    "process_graph": {
+      "esa_world_water_extent": {
+        "process_id": "worldwater_water_extent",
+        "arguments": {
+          "spatial_extent": {
+            "west": -9.328873376713767,
+            "east": -9.205921388808221,
+            "south": 53.623510495414074,
+            "north": 53.71533891769306,
+            "crs": 4326
+          },
+          "start_date": "2024-01-01",
+          "only_s1": false,
+          "use_sentinelhub": true,
+          "rgb_processing": false,
+          "cloud_cover": 80,
+          "water_threshold": 75,
+          "region": "Temperate grassland"
+        },
+        "result": true,
+        "namespace": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/new-udp/world_water_toolbox/single_month_extent_udp.json"
+      }
+    },
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20768689435!tests_test_benchmarks.py__test_run_benchmark_esa_world_water_extent_!actual/job-results.json",
+      "openeo.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21250263635!tests_test_benchmarks.py__test_run_benchmark_esa_world_water_extent_!actual/openeo.tif"
+    }
+  }
+]
