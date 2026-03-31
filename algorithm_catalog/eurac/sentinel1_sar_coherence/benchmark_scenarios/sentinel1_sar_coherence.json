@@ -7,7 +7,7 @@
     "process_graph": {
       "sentinel1_sar_coherence1": {
         "process_id": "sentinel1_sar_coherence",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b16249e9817cafc049836ec273d2c04e08d6969/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/504eba537cbc8666165bc5245725cb1fb91dc139/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json",
         "arguments": {
           "temporal_extent": [
             "2018-01-28",
