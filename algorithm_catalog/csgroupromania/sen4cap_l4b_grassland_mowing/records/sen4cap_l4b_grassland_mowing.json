@@ -1,0 +1,148 @@
+{
+  "id": "sen4cap_l4b_grassland_mowing",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-01-16T00:00:00Z",
+    "updated": "2026-01-16T00:00:00Z",
+    "type": "service",
+    "title": "Sen4CAP L4B Grassland Mowing Processor",
+    "description": "# Description \n\nThe Sen4CAP L4B Grassland Mowing Processor aims to provide products that contain information about grassland mowing events over the parcels declared by the farmers as permanent grassland in a given region or country. \n The output of this processor is an ESRI shapefile which includes, for each parcel, the following attributes\n\n- Data representing the input for the analysis:\n  - Unique identifier of the parcel (parcel_id)\n  - Declared agriculture practice and its type (crop_code)\n- Results of the analysis:\n  - number of mowing events detected on the whole period analyzed (mow_n), where n can vary from 0 to a maximum of 4 mowing events:\n    - temporal interval in which the mowing event occurred: start date of each possible n mowing period (mn_dstart) and end date of each possible mowing period (mn_end);\n    - reliability flag given in terms of probability of right mowing (mn_conf);\n    - satellite mission data used for detection of mowing (mn_mis);\n  - flag (compl), providing the results about compliancy or not with country regulations and reasons (e.g.: no mowing occurred in the mandatory temporal window)",
+    "cost_estimate": 18,
+    "cost_unit": "\u20ac per region corresponding to a S2 tile extent, per month",
+    "keywords": ["Agriculture", "Sentinel-1", "Sentinel-2"],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Platform team",
+        "organization": "CS GROUP - ROMANIA",
+        "position": "Customer Relations",
+        "roles": [
+          "user on-boarding",
+          "platform operations",
+          "stakeholder engagement"
+        ],
+        "links": [
+          {
+            "href": "https://tao-c-s.ro",
+            "title": "Tool Augmentation by user Enhancements and Orchestration (TAO)",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://esa-sen4cap.org",
+            "title": "Sentinels for Common Agricultural Policy (Sen4CAP)",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries on selecting Processing Services from the CS GROUP - ROMANIA Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at CS GROUP - ROMANIA",
+        "email": "cs.ro.eosupport@soprasteria.com"
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "AGRICULTURE"
+          },
+          {
+            "id": "GRASSLANDS"
+          },
+          {
+            "id": "LAND USE"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JPEG"
+      },
+      {
+        "name": "ESRI Shapefile"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "order",
+      "type": "text/html",
+      "title": "Request Access",
+      "href": "https://tao.c-s.ro/contact/"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "Tool Augmentation by user enhancements and Orchestration (TAO)",
+      "href": "../../../../platform_catalog/tao.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "CS GROUP - ROMANIA",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Service Endpoint",
+      "href": "https://sen4x.tao.c-s.ro/process/processes/196"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Service Documentation",
+      "href": "https://www.esa-sen4cap.org/wp-content/uploads/files/Sen4CAP_UserGuide_GrasslandMowing_V1.1.pdf"
+    },
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "Service Application Package",
+      "href": "https://sen4x.tao.c-s.ro/cwl/grassland_mowing.cwl"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "Web App",
+      "href": "https://sen4x.tao.c-s.ro"
+    },
+    {
+      "rel": "preview",
+      "type": "image/png",
+      "title": "Grassland Mowing Preview",
+      "href": "https://sen4x.tao.c-s.ro/media/previews/preview_grassland_mowing.png"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://sen4x.tao.c-s.ro/media/thumbnails/thumbnail_grassland_mowing.png"
+    }
+  ]
+}

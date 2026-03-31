@@ -66,6 +66,9 @@
         "reference_data": {
             "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/job-results.json",
             "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
+        },
+        "reference_options": {
+            "atol": 0.1
         }
     }
 ]

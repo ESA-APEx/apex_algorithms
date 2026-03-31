@@ -123,6 +123,18 @@
             "href": "https://openeofed.dataspace.copernicus.eu"
         },
         {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
             "rel": "example-output",
             "type": "application/netcdf",
             "title": "Example output",

@@ -96,17 +96,19 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
     # TODO #17 raise descriptive exceptions instead of asserts?
     assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
     # TODO proper allow-list of backends or leave this freeform?
-    assert scenario.backend in [
-        "openeo.dataspace.copernicus.eu",
-        "openeofed.dataspace.copernicus.eu",
-        "openeo.cloud",
-        "openeo.vito.be",
+    backend_patterns = [
+        r"^(https:\/\/)?openeo\.dataspace\.copernicus\.eu(\/.*)?$",
+        r"^(https:\/\/)?openeofed\.dataspace\.copernicus\.eu(\/.*)?$",
+        r"^(https:\/\/)?openeo\.cloud(\/.*)?$",
+        r"^(https:\/\/)?openeo\.vito\.be(\/.*)?$",
+        r"^(https:\/\/)?openeo\.eodc\.eu(\/.*)?$",
     ]
+    assert any(re.fullmatch(p, scenario.backend) for p in backend_patterns), f"Unsupported backend: {scenario.backend!r}"
     # TODO: more advanced process graph validation?
     assert isinstance(scenario.process_graph, dict)
     for node_id, node in scenario.process_graph.items():
         assert isinstance(node, dict)
-        assert re.match(r"^[a-z0-9_-]+$", node["process_id"])
+        assert re.match(r"^[a-zA-Z0-9_-]+$", node["process_id"])
         assert "arguments" in node
         assert isinstance(node["arguments"], dict)
 

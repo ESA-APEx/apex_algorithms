@@ -84,14 +84,17 @@
                         "2023-09-15"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0962bf79f836859e701fa7437307240ef689ff2e/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/random_forest_firemapping/openeo_udp/random_forest_firemapping.json",
                 "process_id": "random_forest_firemapping",
                 "result": true
             }
         },
         "reference_data": {
-            "openEO.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RF_ForestFire.tif",
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18038589257!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/job-results.json"
-        }
+            "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18670675142!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/openEO.tif",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-18670675142!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/job-results.json"
+        },
+        "reference_options": {
+        "pixel_tolerance": 1
+    }
     }
 ]

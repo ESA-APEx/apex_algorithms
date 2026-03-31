@@ -210,7 +210,7 @@ class TestGithubAlgorithmRepository:
     def test_list_algorithms(self, repo):
         listing = repo.list_algorithms()
         assert listing
-        assert all(re.fullmatch(r"[a-z0-9_]+", item) for item in listing)
+        assert all(re.fullmatch(r"[a-zA-Z0-9_-]+", item) for item in listing)
 
     def test_get_algorithm(self, repo):
         algorithm = repo.get_algorithm("max_ndvi_composite")
