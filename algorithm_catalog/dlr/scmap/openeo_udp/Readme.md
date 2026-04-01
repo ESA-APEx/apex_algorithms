@@ -37,9 +37,9 @@ Please refer to the APEx Documentation [Documentation](https://esa-apex.github.i
 
 ## Literature references
 [SoilSuite Europe](https://geoservice.dlr.de/web/datasets/soilsuite_eur_5y)
-- Rogge, D., Bauer, A, Zeidler, J., Müller, A., Esch, T. and Heiden, U. (2018). Building an exposed soil composite processor (SCMaP) for mapping spatial and temporal characteristics of soils with Landsat imagery (1984-2014). Remote Sensing of Environment, 205, 1-17. ISSN 0034-4257 DOI: 10.3390/rs14184526
-- Heiden, U., d’Angelo, P., Schwind, P., Karlshöfer, P., Müller, R., Zepp, S., Wiesmeier, M., & Reinartz, P. (2022). Soil Reflectance Composites—Improved Thresholding and Performance Evaluation. Remote Sensing, 14(18), 4526. DOI: 10.1016/j.rse.2017.11.004
-- Karlshoefer, P., d’Angelo, P., Eberle, J., & Heiden, U. (2025). Evaluation framework for the generation of continental bare surface reflectance composites. Geoderma, 459. DOI: 10.1016/j.geoderma.2025.117340
+- Rogge, D., Bauer, A, Zeidler, J., Müller, A., Esch, T. and Heiden, U. (2018). Building an exposed soil composite processor (SCMaP) for mapping spatial and temporal characteristics of soils with Landsat imagery (1984-2014). Remote Sensing of Environment, 205, 1-17. ISSN 0034-4257 DOI: [https://doi.org/10.1016/j.rse.2017.11.004](https://doi.org/10.1016/j.rse.2017.11.004)
+- Heiden, U., d’Angelo, P., Schwind, P., Karlshöfer, P., Müller, R., Zepp, S., Wiesmeier, M., & Reinartz, P. (2022). Soil Reflectance Composites—Improved Thresholding and Performance Evaluation. Remote Sensing, 14(18), 4526. DOI: [https://doi.org/10.3390/rs14184526](https://doi.org/10.3390/rs14184526)
+- Karlshoefer, P., d’Angelo, P., Eberle, J., & Heiden, U. (2025). Evaluation framework for the generation of continental bare surface reflectance composites. Geoderma, 459. DOI: [https://doi.org/10.1016/j.geoderma.2025.117340](https://doi.org/10.1016/j.geoderma.2025.117340)
 
 ## License
 CC-BY-NC
