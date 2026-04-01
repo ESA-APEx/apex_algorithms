@@ -1,0 +1,54 @@
+{
+    "id": "argans",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-04-01T11:00:00Z",
+        "updated": "2026-04-01T11:00:00Z",
+        "type": "algorithm_provider",
+        "title": "Argans Ltd.",
+        "description": "Argans specializes in EO applications and services. ",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": [
+                "@argans.co.uk"
+            ]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "Argans Ltd.",
+            "href": "https://argans.co.uk/"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": ""
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": ""
+        }
+    ]
+}
