@@ -66,7 +66,8 @@ def write_json(json_object, file_path):
         f.write(s_record)
 
 if __name__ == "__main__":
-    write_json(generate(), "sentinel1_sar_coherence.json")
+    j = generate()
+    write_json(j, "sentinel1_sar_coherence.json")
 
     udp_path = Path("../records/sentinel1_sar_coherence.json")
     j_record = json.loads(udp_path.read_text())
