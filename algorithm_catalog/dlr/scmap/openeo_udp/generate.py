@@ -353,25 +353,25 @@ def generate() -> dict:
     #     default=70
     # )
     nmad_sigma = Parameter.number(
-        name = "nmad_sigma",
+        name="nmad_sigma",
         description=d_description["sigma"],
         default=3.0
     )
 
     compute_ci = Parameter.boolean(
-        name = "compute_ci",
+        name="compute_ci",
         description=d_description["do_ci"],
         default=False
     )
 
     compute_mref = Parameter.boolean(
-        name = "compute_mref",
+        name="compute_mref",
         description=d_description["do_mref"],
         default=False
     )
 
     compute_mask = Parameter.boolean(
-        name = "compute_mask",
+        name="compute_mask",
         description=d_description["do_mask"],
         default=False
     )
@@ -409,6 +409,8 @@ def generate() -> dict:
             max_scene_cloud_cover,
             nmad_sigma, 
             compute_ci,
+            compute_mask,
+            compute_mref
             # max_sun_zenith_angle
         ],
         returns=schema,
