@@ -128,7 +128,8 @@
               "Statistical Applications",
               "Urban Heat Island",
               "Land Surface Temperature",
-              "Climate"
+              "Climate",
+              "Soils"
             ]
           },
           "minItems": 1,
