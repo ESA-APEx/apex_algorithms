@@ -6,7 +6,7 @@
       "process_graph": {
         "scmap1": {
           "process_id": "scmap_composite",
-          "namespace": "https://raw.githubusercontent.com/Schiggebam/apex_algorithms/refs/heads/main/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json",
+          "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0ee4e61414232512c590d3c9cdf6d79f44fe1174/algorithm_catalog/dlr/scmap/records/bare_surface_composite.json",
           "arguments": {
             "temporal_extent": ["2025-04-01", "2025-05-07"],
             "spatial_extent": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
