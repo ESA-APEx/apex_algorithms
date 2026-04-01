@@ -23,7 +23,6 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          tinytex: true
           version: '1.6.31'
       - name: Render documentation pages
         run: quarto render --output-dir _build
