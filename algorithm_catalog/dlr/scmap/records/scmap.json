@@ -9,7 +9,7 @@
     "created": "2026-03-27T00:00:00Z",
     "updated": "2026-03-27T00:00:00Z",
     "type": "service",
-    "title": "Bare surface composite (SCMap)",
+    "title": "Bare surface composite (SCMaP)",
     "description": "SCMaP is a specialised processing chain for detecting and analysing spectra of bare soils/surfaces. Bare surface and soil pixels are selected using a combined NDVI and NBR index (PVIR2) that optimises the exclusion of photosynthetically active and non-active vegetation. The index is calculated and applied for each individual pixel combined with a regional threshold map. The result is described in here: https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf",
     "cost_estimate": 0.2,
     "cost_unit": "platform credits per km\u00b2 per year",
