@@ -1,100 +1,110 @@
-
 {
-    "id": "scmap",
-    "type": "Feature",
-    "conformsTo": [
-      "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
-      "https://apex.esa.int/core/openeo-udp"
+  "id": "scmap",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "properties": {
+    "created": "2026-03-27T00:00:00Z",
+    "updated": "2026-03-27T00:00:00Z",
+    "type": "service",
+    "title": "Bare surface composite (SCMap)",
+    "description": "SCMaP is a specialised processing chain for detecting and analysing spectra of bare soils/surfaces. Bare surface and soil pixels are selected using a combined NDVI and NBR index (PVIR2) that optimises the exclusion of photosynthetically active and non-active vegetation. The index is calculated and applied for each individual pixel combined with a regional threshold map. The result is described in here: https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf",
+    "cost_estimate": 0.2,
+    "cost_unit": "platform credits per km\u00b2 per year",
+    "keywords": [
+      "Soils",
+      "Sentinel-2"
     ],
-    "properties": {
-      "created": "2026-03-27T00:00:00Z",
-      "updated": "2026-03-27T00:00:00Z",
-      "type": "service",
-      "title": "Bare surface composite (SCMap)",
-      "description": "SCMaP is a specialised processing chain for detecting and analysing spectra of bare soils/surfaces. Bare surface and soil pixels are selected using a combined NDVI and NBR index (PVIR2) that optimises the exclusion of photosynthetically active and non-active vegetation. The index is calculated and applied for each individual pixel combined with a regional threshold map. The result is described in here: https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf",
-      "cost_estimate": 0.2,
-      "cost_unit": "platform credits per km\u00b2 per year",
-      "keywords": [
-        "Soils",
-        "Sentinel-2"
-      ],
-      "language": {
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
         "code": "en-US",
         "name": "English (United States)"
-      },
-      "languages": [
-        {
-          "code": "en-US",
-          "name": "English (United States)"
-        }
-      ],
-      "contacts": [
-        {
-          "name": "Earth Observation Center - Remote Sensing Institute",
-          "position": "Research",
-          "organization": "German Aerospace Center - Earth Observation Center",
-          "links": [
-            {
-              "href": "https://www.dlr.de/de/eoc/ueber-uns/institut-fuer-methodik-der-fernerkundung",
-              "rel": "about",
-              "type": "text/html"
-            }
-          ],
-          "contactInstructions": "Contact via the German Aerospace Center",
-          "roles": [
-            "developer"
-          ]
-        }
-      ],
-      "themes": [ {
-          "concepts": [
-            { "id": "SCMap",  "url": "https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf" },
-            { "id": "Sentinel-2",  "url": "https://dataspace.copernicus.eu/data-collections/copernicus-sentinel-data/sentinel-2" }
-          ],
-          "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
-        }],
-      "formats": [
-        "GeoTiff"
-      ],
-      "license": "CC-BY-NC"
-    },
-    "linkTemplates": [],
-    "links": [
-      {
-        "rel": "application",
-        "type": "application/vnd.openeo+json;type=process",
-        "title": "openEO Process Definition",
-        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldsoils_scmap/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json"
-      },
-      {
-        "rel": "service",
-        "type": "application/json",
-        "title": "CDSE openEO federation",
-        "href": "https://openeofed.dataspace.copernicus.eu"
-      },
-      {
-        "rel": "platform",
-        "type": "application/json",
-        "title": "CDSE openEO federation",
-        "href": "../../../../platform_catalog/cdse_openeo_federation.json"
-      },
-      {
-          "rel": "provider",
-          "type": "application/json",
-          "title": "DLR",
-          "href": "../../record.json"
-      },
-      {
-          "rel": "webapp",
-          "type": "text/html",
-          "title": "OpenEO Web Editor",
-          "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=biopar&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldsoils_scmap/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json&server=https://openeofed.dataspace.copernicus.eu"
-      },
-      {
-          "rel": "thumbnail",
-          "type": "image/png",
-          "title": "Thumbnail image",
-          "href": "./thumbnail_2.png"
       }
-    ]
-  }
+    ],
+    "contacts": [
+      {
+        "name": "Earth Observation Center - Remote Sensing Institute",
+        "position": "Research",
+        "organization": "German Aerospace Center - Earth Observation Center",
+        "links": [
+          {
+            "href": "https://www.dlr.de/de/eoc/ueber-uns/institut-fuer-methodik-der-fernerkundung",
+            "title": "DLR Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via the German Aerospace Center",
+        "roles": [
+          "developer"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "SCMap",
+            "url": "https://download.geoservice.dlr.de/SOILSUITE/files/EUROPE_5Y/000_Data_Overview/SoilSuite_Data_Description_Europe_V1.pdf"
+          },
+          {
+            "id": "Sentinel-2",
+            "url": "https://dataspace.copernicus.eu/data-collections/copernicus-sentinel-data/sentinel-2"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "CC-BY-NC"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldsoils_scmap/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "DLR",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=biopar&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/worldsoils_scmap/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "./thumbnail_2.png"
+    }
+  ]
+}
