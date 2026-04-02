@@ -110,9 +110,9 @@ def composite(con: Connection,
               max_cloud_cover: int|Parameter, 
               nmad_sigma: float|Parameter, 
               max_sun_zenith_angle: float=70, 
-              compute_ci: bool|Parameter=True, 
-              compute_mref: bool|Parameter=True, 
-              compute_mask: bool|Parameter=True) -> openeo.DataCube:
+              # compute_ci: bool|Parameter=False, 
+              compute_mref: bool|Parameter=False, 
+              compute_mask: bool|Parameter=False) -> openeo.DataCube:
     """
     Generate a Bare Surface Composite (SRC) and additional derived products.
 
@@ -140,8 +140,6 @@ def composite(con: Connection,
         compositing.
     max_sun_zenith_angle : float, optional
         Upper limit for the sun zenith angle filter, by default 70 degrees.
-    compute_ci : bool, optional
-        Can be disabled if Confidence Interval is not needed. Speeds up computation and saves credits
     compute_mref : bool, optional
         Can be disabled if Mean Reflectance Computation is not needed. Speeds up computation and saves credits
     compute_mask : bool, optional
@@ -172,7 +170,7 @@ def composite(con: Connection,
         bands=["MAP"]
     )
     worldcover = worldcover.reduce_dimension(dimension="t", reducer="first")
-    
+
     # cond_scl = scl.apply(process=scl_to_masks)
     cond_scl = (
             (scl == SCL_LEGEND["no_data"]) |
@@ -194,6 +192,8 @@ def composite(con: Connection,
         dilated_mask = (dilated_mask > 0.01)
     cond_sza = sza > max_sun_zenith_angle
 
+
+
     # dilated_mask = dilated_mask * 1 > 0     # Force it to boolean ??
     # combined_mask = cond_sza | cond_scl | dilated_mask
     # combined_mask = or_(or_(cond_sza, cond_scl),dilated_mask)
@@ -202,9 +202,10 @@ def composite(con: Connection,
     s2_cube = s2_cube.mask(cond_scl)
     if k > 1:
         s2_cube = s2_cube.mask(dilated_mask)
-    
+
     sfreq_valid = s2_cube.band(S2_BANDS[0]).reduce_dimension(dimension="t", reducer="count").add_dimension(name="bands", label=RES_BANDS["SFREQ-VALID"], type="bands")
-    
+
+
     ### Threshold image ###
     stac_url_th_img = "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/th_S2_s2cr_buffered_stac_yflip_no_t.json"
     th_item = con.load_stac(stac_url_th_img, bands=["S2_s2cr_pvir2_threshold_img"], spatial_extent=spatial_extent)
@@ -227,7 +228,7 @@ def composite(con: Connection,
 
         mref = mref.rename_labels(dimension="bands", target=RES_BANDS["MREF"], source=S2_BANDS)
         mref_std = mref_std.rename_labels(dimension="bands", target=RES_BANDS["MREF-STD"], source=S2_BANDS)
-    
+
     # sfreq_valid.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-VALID"], source=S2_BANDS[0])
     ######## SRC ########
 
@@ -238,14 +239,14 @@ def composite(con: Connection,
     ndvi  = (b_08 - b_04) / (b_08 + b_04)
     nbr   = (b_08 - b_12) / (b_08 + b_12)
     pvir2 = ndvi + nbr
-    
+
     pvir2_named = pvir2.add_dimension(name="bands", label="pvir2", type="bands")
     th_named = thresholds.add_dimension(name="bands", label="th_img", type="bands")
     th_named = th_named.reduce_dimension(dimension="t", reducer="mean")
 
     s2_merged = s2_merged.merge_cubes(pvir2_named)
     s2_merged = s2_merged.merge_cubes(th_named)
-    
+
     th = s2_merged.band("th_img") 
 
     mask = s2_merged.band("pvir2") > th
@@ -276,22 +277,23 @@ def composite(con: Connection,
 
     # src_ci = _ci95(src_std, sfreq_count).filter_bands(RES_BANDS["SRC-STD"])
     # src_ci = src_ci.rename_labels(dimension="bands", target=RES_BANDS["SRC-CI"], source=RES_BANDS["SRC-STD"])
-    
-    combined_output = src.merge_cubes(src_std)
-    
+
+    combined_output = src \
+            .merge_cubes(src_std) \
+            .merge_cubes(sfreq_valid) \
+            .merge_cubes(sfreq_count)
+
     if compute_mref:
         combined_output = combined_output.merge_cubes(mref).merge_cubes(mref_std)
 
-    combined_output = combined_output.merge_cubes(sfreq_count).merge_cubes(sfreq_valid)
-
     # inner math
-    if compute_ci:
-        ci = _ci95(combined_output, RES_BANDS["SRC-STD"], RES_BANDS["SFREQ-COUNT"])   # works but slow
-        combined_output = combined_output.merge_cubes(ci)
+    # if False:
+    #     ci = _ci95(combined_output, RES_BANDS["SRC-STD"], RES_BANDS["SFREQ-COUNT"])   # works but slow
+    #     combined_output = combined_output.merge_cubes(ci)
     sfreq_freq = combined_output.band(RES_BANDS["SFREQ-COUNT"]) / combined_output.band(RES_BANDS["SFREQ-VALID"])
     sfreq_freq = sfreq_freq.add_dimension(name="bands", label=RES_BANDS["SFREQ-FREQ"], type="bands")
     # sfreq_freq = sfreq_freq.rename_labels(dimension="bands", target=RES_BANDS["SFREQ-FREQ"], source=[RES_BANDS["SFREQ-COUNT"]])
-    
+
     combined_output = combined_output.merge_cubes(sfreq_freq)
 
     ### MASK ###
@@ -305,11 +307,11 @@ def composite(con: Connection,
         # TODO test
         # masked = s2_merged.band("pvir2") > th
         # is_perm_veg = masked.reduce_dimension(dimension="t", reducer="all")     # TODO doesn't work because of nans (but should work with ignore_nodata=true)
-        
+
         worldcover = worldcover.band("MAP")
         is_other = (worldcover == 0) | (worldcover == 50) | (worldcover == 70) | (worldcover == 80) | (worldcover == 90) | (worldcover == 95)
-        
-        bspc = combined_output.band(RES_BANDS["SFREQ-COUNT"])   # (x,y) or (x,y,t)
+
+        bspc = combined_output.band(RES_BANDS["SFREQ-COUNT"])   # (x,y)
 
         z = is_perm_veg.multiply(0)
         z = z.mask(is_perm_veg, replacement=2)
@@ -353,25 +355,25 @@ def generate() -> dict:
     #     default=70
     # )
     nmad_sigma = Parameter.number(
-        name="nmad_sigma",
+        name = "nmad_sigma",
         description=d_description["sigma"],
         default=3.0
     )
 
-    compute_ci = Parameter.boolean(
-        name="compute_ci",
-        description=d_description["do_ci"],
-        default=False
-    )
+    # compute_ci = Parameter.boolean(
+    #     name = "compute_ci",
+    #     description=d_description["do_ci"],
+    #     default=False
+    # )
 
     compute_mref = Parameter.boolean(
-        name="compute_mref",
+        name = "compute_mref",
         description=d_description["do_mref"],
         default=False
     )
 
     compute_mask = Parameter.boolean(
-        name="compute_mask",
+        name = "compute_mask",
         description=d_description["do_mask"],
         default=False
     )
@@ -382,7 +384,7 @@ def generate() -> dict:
         spatial_extent=spatial_extent,
         max_cloud_cover=max_scene_cloud_cover,
         nmad_sigma=nmad_sigma, 
-        compute_ci=compute_ci,
+        # compute_ci=compute_ci,
         compute_mref=compute_mref,
         compute_mask=compute_mask
         # max_sun_zenith_angle=max_sun_zenith_angle
@@ -408,9 +410,9 @@ def generate() -> dict:
             spatial_extent,
             max_scene_cloud_cover,
             nmad_sigma, 
-            compute_ci,
-            compute_mask,
-            compute_mref
+            # compute_ci,
+            compute_mref,
+            compute_mask
             # max_sun_zenith_angle
         ],
         returns=schema,
@@ -422,9 +424,19 @@ test_setup_tiny = {
     "temporal_extent": ["2025-04-01", "2025-05-07"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
-    "compute_ci": False,
+    # "compute_ci": False,
+    "compute_mref": True,
+    "compute_mask": True
+}
+
+test_setup_git = {
+    "bbox": { "west": 11.05, "south": 48.0, "east": 11.3, "north": 48.2, "crs": "EPSG:4326"},
+    "temporal_extent": ["2025-04-01", "2025-05-07"],
+    "nmad_sigma": 3.0,
+    "max_sun_zenith_angle": 70.0,
+    # "compute_ci": False,
     "compute_mref": False,
-    "compute_mask": False
+    "compute_mask": True
 }
 
 test_setup_small = {
@@ -432,7 +444,7 @@ test_setup_small = {
     "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
-    "compute_ci": False,
+    # "compute_ci": False,
     "compute_mref": False,
     "compute_mask": False
 }
@@ -442,7 +454,7 @@ test_setup_large = {
     "temporal_extent": ["2025-01-01", "2025-12-31"],
     "nmad_sigma": 3.0,
     "max_sun_zenith_angle": 70.0,
-    "compute_ci": False,
+    # "compute_ci": False,
     "compute_mref": False,
     "compute_mask": False
 }
@@ -461,7 +473,7 @@ def test_run(d_test_setup=None, path_out=Path("./result/")):
         max_cloud_cover=80,
         nmad_sigma=nmad_sigma,
         max_sun_zenith_angle=max_sun_zenith_angle,
-        compute_ci=d_test_setup['compute_ci'],
+        # compute_ci=d_test_setup['compute_ci'],
         compute_mref=d_test_setup['compute_mref'],
         compute_mask=d_test_setup['compute_mask']
     )
