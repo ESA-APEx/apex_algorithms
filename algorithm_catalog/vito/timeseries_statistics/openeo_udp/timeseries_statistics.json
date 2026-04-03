@@ -1,0 +1,269 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": {
+          "from_parameter": "bands"
+        },
+        "id": {
+          "from_parameter": "collection_id"
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "method": "near",
+        "resolution": {
+          "from_parameter": "resolution"
+        }
+      }
+    },
+    "isvalid1": {
+      "process_id": "is_valid",
+      "arguments": {
+        "x": {
+          "from_parameter": "resolution"
+        }
+      }
+    },
+    "if1": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "resamplespatial1"
+        },
+        "reject": {
+          "from_node": "loadcollection1"
+        },
+        "value": {
+          "from_node": "isvalid1"
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "if1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "min1": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "max1": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "sd1": {
+              "process_id": "sd",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "arraycreate1": {
+              "process_id": "array_create",
+              "arguments": {
+                "data": [
+                  {
+                    "from_node": "min1"
+                  },
+                  {
+                    "from_node": "max1"
+                  },
+                  {
+                    "from_node": "mean1"
+                  },
+                  {
+                    "from_node": "sd1"
+                  }
+                ]
+              }
+            },
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.1,
+                  0.5,
+                  0.9
+                ]
+              }
+            },
+            "arrayconcat1": {
+              "process_id": "array_concat",
+              "arguments": {
+                "array1": {
+                  "from_node": "arraycreate1"
+                },
+                "array2": {
+                  "from_node": "quantiles1"
+                }
+              },
+              "result": true
+            }
+          }
+        },
+        "target_dimension": "bands"
+      },
+      "result": true
+    }
+  },
+  "id": "timeseries_statistics",
+  "summary": "Calculate temporal statistics for any EO collection",
+  "description": "# Timeseries Statistics\n\n## Description\n\nThis algorithm computes temporal statistics from any EO collection for a user-specified spatial and temporal extent. It is designed as a flexible, generic utility targeted at advanced APEx users who are familiar with the available collections and band names on the underlying platform.\n\nFor each requested band, the following statistics are computed along the temporal dimension:\n\n| Statistic | Description |\n|-----------|-------------|\n| **min**   | Minimum value over the temporal extent |\n| **max**   | Maximum value over the temporal extent |\n| **mean**  | Arithmetic mean over the temporal extent |\n| **sd**    | Standard deviation over the temporal extent |\n| **q10**   | 10th percentile over the temporal extent |\n| **q50**   | Median (50th percentile) over the temporal extent |\n| **q90**   | 90th percentile over the temporal extent |\n\nThe output is a single raster with `n_bands \u00d7 7` layers, where the stats for each band are stacked in the order: min, max, mean, sd, q10, q50, q90.\n\n## Parameters\n\n| Parameter         | Description |\n|-------------------|-------------|\n| `collection_id`   | The identifier of the EO collection to use (e.g. `SENTINEL2_L2A`, `SENTINEL1_GRD`). The collection must be available on the target backend. |\n| `bands`           | *(optional)* Band names to process (e.g. `[\"B04\", \"B08\"]` for Sentinel-2 Red and NIR). When `null` (the default) all bands of the collection are loaded. Specifying bands is recommended to reduce data volume and cost. |\n| `spatial_extent`  | Bounding box (`west`, `south`, `east`, `north`) in WGS84. |\n| `temporal_extent` | Two-element array specifying the start and end date (e.g. `[\"2023-05-01\", \"2023-07-31\"]`). |\n| `resolution`      | *(optional)* Target spatial resolution in the units of the collection's native CRS (metres for projected CRS, degrees for WGS84). When `null` (the default) the native collection resolution is preserved. |\n\n## Usage Notes\n\n- This UDP does **not** apply any pre-processing (e.g. cloud masking or SAR backscatter calibration). Users are responsible for selecting an appropriate collection and temporal window.\n- The output band order follows the input bands order. For example, with `bands = [\"B04\", \"B08\"]` the output will contain 14 bands ordered as: B04_min, B04_max, B04_mean, B04_sd, B04_q10, B04_q50, B04_q90, B08_min, ...\n- Cloud-affected observations in optical collections (e.g. Sentinel-2) will influence the statistics unless a cloud-masked collection variant is used.\n\n## Performance Characteristics\n\nThe processing cost depends on the selected collection, number of bands, spatial extent, and temporal range. As a reference point, computing statistics over a 10\u00d710 km area for two Sentinel-2 L2A bands over a 3-month period costs approximately 1\u20132 platform credits.\n\n## Example\n\nThe example below shows the derived mean and standard deviation for Sentinel-2 L2A bands B04 (Red) and B08 (NIR) calculated for a 10\u00d710 km area of interest near Mol, Belgium, for the summer of 2023.\n",
+  "parameters": [
+    {
+      "name": "collection_id",
+      "description": "The identifier of the EO collection to load (e.g. 'SENTINEL2_L2A', 'SENTINEL1_GRD'). The collection must be available on the target backend.",
+      "schema": {},
+      "optional": true,
+      "default": "SENTINEL2_L2A"
+    },
+    {
+      "name": "bands",
+      "description": "Band names to include in the statistics (e.g. ['B04', 'B08'] for Sentinel-2 L2A Red and NIR). When set to null (the default) all bands of the collection are loaded.",
+      "schema": {},
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "spatial_extent",
+      "description": "Spatial extent as a bounding box with 'west', 'south', 'east' and 'north' fields in WGS84.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      },
+      "default": {
+        "west": 4.97,
+        "south": 51.19,
+        "east": 5.07,
+        "north": 51.28
+      },
+      "optional": true
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent as a two-element array [start, end] using ISO-8601 date or date-time strings.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2025-05-01",
+        "2025-07-31"
+      ],
+      "optional": true
+    },
+    {
+      "name": "resolution",
+      "description": "Target spatial resolution in the units of the collection's native CRS (e.g. metres for a projected CRS). When set to null (the default) the collection's native resolution is kept.",
+      "schema": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "optional": true,
+      "default": null
+    }
+  ]
+}

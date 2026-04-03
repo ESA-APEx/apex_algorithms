@@ -1,0 +1,33 @@
+[
+  {
+    "id": "timeseries_statistics",
+    "type": "openeo",
+    "description": "Timeseries statistics example using Sentinel-2 L2A Red and NIR bands over a 10x10 km area near Mol, Belgium.",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "tsstats1": {
+        "process_id": "timeseries_statistics",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
+        "arguments": {
+          "collection_id": "SENTINEL2_L2A",
+          "bands": [
+            "B04",
+            "B08"
+          ],
+          "spatial_extent": {
+            "west": 4.97,
+            "south": 51.19,
+            "east": 5.07,
+            "north": 51.28
+          },
+          "temporal_extent": [
+            "2023-05-01",
+            "2023-07-31"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  }
+]
