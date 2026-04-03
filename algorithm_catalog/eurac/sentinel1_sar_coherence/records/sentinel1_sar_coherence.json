@@ -88,7 +88,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/a7f7cf592aa9a8acc8440f798c66669fb38af2d4/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json"
     },
     {
       "rel": "service",
@@ -112,13 +112,13 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/a7f7cf592aa9a8acc8440f798c66669fb38af2d4/algorithm_catalog/eurac/sentinel1_sar_coherence/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/eurac/sentinel1_sar_coherence/records/thumbnail.png"
     },
     {
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sentinel1_sar_coherence&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/a7f7cf592aa9a8acc8440f798c66669fb38af2d4/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sentinel1_sar_coherence&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
