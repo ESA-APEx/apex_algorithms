@@ -1,8 +1,8 @@
 [
   {
-    "id": "timeseries_statistics",
+    "id": "timeseries_statistics_s2",
     "type": "openeo",
-    "description": "Timeseries statistics example using Sentinel-2 L2A Red and NIR bands over a 10x10 km area near Mol, Belgium.",
+    "description": "Timeseries statistics using Sentinel-2 L2A Red and NIR bands over a 10x10 km area near Mol, Belgium.",
     "backend": "openeo.dataspace.copernicus.eu",
     "process_graph": {
       "tsstats1": {
@@ -29,5 +29,65 @@
       }
     },
     "reference_data": {}
+  },
+  {
+    "id": "timeseries_statistics_s1",
+    "type": "openeo",
+    "description": "Timeseries statistics using Sentinel-1 GRD VV and VH bands over a 10x10 km area near Mol, Belgium.",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "tsstats1": {
+        "process_id": "timeseries_statistics",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
+        "arguments": {
+          "collection_id": "SENTINEL1_GRD",
+          "bands": [
+            "VV",
+            "VH"
+          ],
+          "spatial_extent": {
+            "west": 4.97,
+            "south": 51.19,
+            "east": 5.07,
+            "north": 51.28
+          },
+          "temporal_extent": [
+            "2023-05-01",
+            "2023-07-31"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  },
+  {
+    "id": "timeseries_statistics_s2_resampled",
+    "type": "openeo",
+    "description": "Timeseries statistics using Sentinel-2 L2A all bands over a 10x10 km area near Mol, Belgium, resampled to 60m resolution.",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "tsstats1": {
+        "process_id": "timeseries_statistics",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
+        "arguments": {
+          "collection_id": "SENTINEL2_L2A",
+          "spatial_extent": {
+            "west": 4.97,
+            "south": 51.19,
+            "east": 5.07,
+            "north": 51.28
+          },
+          "temporal_extent": [
+            "2023-05-01",
+            "2023-07-31"
+          ],
+          "resolution": 60
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
   }
 ]
+
