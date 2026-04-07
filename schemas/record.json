@@ -131,7 +131,8 @@
               "Change Detection Services"
               "Urban Heat Island",
               "Land Surface Temperature",
-              "Climate"
+              "Climate",
+              "Radar"
             ]
           },
           "minItems": 1,
