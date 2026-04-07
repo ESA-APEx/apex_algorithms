@@ -6,7 +6,7 @@
       "process_graph": {
         "scmap1": {
           "process_id": "scmap_composite",
-          "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/798bb7369205d8a0480ff2bfd2bc4f0a566388f9/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json",
+          "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json",
           "arguments": {
             "temporal_extent": ["2025-04-01", "2025-05-07"],
             "bounding_box": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
