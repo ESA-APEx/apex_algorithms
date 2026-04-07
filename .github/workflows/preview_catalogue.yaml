@@ -1,13 +1,10 @@
 name: Preview catalogue web from data PR
 
 on:
-  workflow_run:
-    workflows: ["Unit Tests"]
-    types:
-      - completed
-    branches:
-      - main
-
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - 'algorithm_catalog/**'
 permissions:
   contents: read
 
@@ -16,7 +13,6 @@ env:
 
 jobs:
   notify-catalogue-web:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Generate a token for gh cli
@@ -33,17 +29,16 @@ jobs:
           REPOSITORY_OWNER: ${{ github.repository_owner }}
           WEB_REPOSITORY: ${{ env.WEB_REPO }}
           EVENT_TYPE: ${{ github.event.action == 'closed' && 'catalogue-pr-closed' || 'catalogue-pr-updated' }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CATALOGUE_REPO: ${{ github.repository }}
         run: |
-          pr_number='${{ github.event.pull_request.number }}'
-          head_ref='${{ github.event.pull_request.head.ref }}'
-          head_sha='${{ github.event.pull_request.head.sha }}'
-          head_repo='${{ github.event.pull_request.head.repo.full_name }}'
-          catalogue_repo='${{ github.repository }}'
-
           gh api repos/$REPOSITORY_OWNER/$WEB_REPOSITORY/dispatches \
             -f event_type="$EVENT_TYPE" \
-            -F client_payload[pr_number]="$pr_number" \
-            -F client_payload[head_ref]="$head_ref" \
-            -F client_payload[head_sha]="$head_sha" \
-            -F client_payload[head_repo]="$head_repo" \
-            -F client_payload[catalogue_repo]="$catalogue_repo"
+            -F client_payload[pr_number]="$PR_NUMBER" \
+            -F client_payload[head_ref]="$HEAD_REF" \
+            -F client_payload[head_sha]="$HEAD_SHA" \
+            -F client_payload[head_repo]="$HEAD_REPO" \
+            -F client_payload[catalogue_repo]="$CATALOGUE_REPO"
