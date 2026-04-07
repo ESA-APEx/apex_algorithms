@@ -8,6 +8,7 @@ from openeo.internal.graph_building import PGNode
 from openeo.rest.stac_resource import StacResource
 from openeo.rest.udp import build_process_dict
 
+from esa_apex_toolbox.algorithms import write_json
 from esa_apex_toolbox.cwl_to_udp_utils import (
     get_cwl_main,
     get_cwl_inputs,
@@ -57,13 +58,6 @@ def generate() -> dict:
         description=get_cwl_main(cwl_yaml).get("doc"),
         parameters=parameters,
     )
-
-def write_json(json_object, file_path):
-    with open(Path(file_path), "w") as f:
-        s_record = json.dumps(json_object, indent=2)
-        if not s_record.endswith("\n"):
-            s_record += "\n"
-        f.write(s_record)
 
 if __name__ == "__main__":
     j = generate()

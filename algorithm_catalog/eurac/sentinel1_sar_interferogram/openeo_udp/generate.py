@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import openeo
 import yaml
@@ -7,6 +8,7 @@ from openeo.internal.graph_building import PGNode
 from openeo.rest.stac_resource import StacResource
 from openeo.rest.udp import build_process_dict
 
+from esa_apex_toolbox.algorithms import write_json
 from esa_apex_toolbox.cwl_to_udp_utils import (
     get_cwl_main,
     get_cwl_inputs,
@@ -52,5 +54,9 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     j = generate()
-    with open("sentinel1_sar_interferogram.json", "w") as f:
-        json.dump(j, f, indent=2)
+    write_json(j, "sentinel1_sar_interferogram.json")
+
+    udp_path = Path("../records/sentinel1_sar_interferogram.json")
+    j_record = json.loads(udp_path.read_text())
+    j_record["properties"]["description"] = j["description"]
+    write_json(j_record, udp_path)

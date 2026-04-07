@@ -1,18 +1,18 @@
 [
   {
-    "id": "sar_interferogram",
+    "id": "sentinel1_sar_interferogram",
     "type": "openeo",
-    "description": "Calculating sar_interferogram.",
+    "description": "Calculating sentinel1_sar_interferogram.",
     "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
-      "sar_interferogram1": {
-        "process_id": "sar_interferogram",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sar_interferogram/openeo_udp/sar_interferogram.json",
+      "sentinel1_sar_interferogram1": {
+        "process_id": "sentinel1_sar_interferogram",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sentinel1_sar_interferogram/openeo_udp/sentinel1_sar_interferogram.json",
         "arguments": {
           "InSAR_pairs": [
             [
               "2018-01-28",
-              "2018-02-03"
+              "2018-02-04"
             ]
           ],
           "burst_id": 329488,

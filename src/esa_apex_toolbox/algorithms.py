@@ -37,6 +37,14 @@ def _load_json_resource(src: Union[dict, str, Path]) -> dict:
         raise ValueError(f"Unsupported JSON resource type {type(src)}")
 
 
+def write_json(json_object, file_path):
+    with open(Path(file_path), "w") as f:
+        s_record = json.dumps(json_object, indent=2)
+        if not s_record.endswith("\n"):
+            s_record += "\n"
+        f.write(s_record)
+
+
 class InvalidMetadataError(ValueError):
     pass
 
