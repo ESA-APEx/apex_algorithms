@@ -16,13 +16,11 @@ from esa_apex_toolbox.cwl_to_udp_utils import (
     load_string_from_any,
 )
 
-# cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
-cwl_url = "/home/emile/openeo/s1-workflows/cwl/sar_interferogram.cwl"
+cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+# cwl_url = "/home/emile/openeo/s1-workflows/cwl/sar_interferogram.cwl"
 
 
 def generate() -> dict:
-    from urllib.request import urlopen
-
     cwl_yaml = yaml.safe_load(load_string_from_any(cwl_url))
     cwl_inputs = get_cwl_inputs(cwl_yaml)
     parameters = cwl_input_to_parameters(cwl_inputs)

@@ -7,7 +7,7 @@
     "process_graph": {
       "sentinel1_sar_interferogram1": {
         "process_id": "sentinel1_sar_interferogram",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/insar/algorithm_catalog/eurac/sentinel1_sar_interferogram/openeo_udp/sentinel1_sar_interferogram.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/483744b77acb8f4cf57db38fc5f31beb95f26e7e/algorithm_catalog/eurac/sentinel1_sar_coherence/openeo_udp/sentinel1_sar_coherence.json",
         "arguments": {
           "InSAR_pairs": [
             [

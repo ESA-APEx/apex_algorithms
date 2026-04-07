@@ -21,8 +21,6 @@ cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/
 
 
 def generate() -> dict:
-    from urllib.request import urlopen
-
     cwl_yaml = yaml.safe_load(load_string_from_any(cwl_url))
     cwl_inputs = get_cwl_inputs(cwl_yaml)
     parameters = cwl_input_to_parameters(cwl_inputs)
