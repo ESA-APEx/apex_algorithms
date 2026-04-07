@@ -37,12 +37,12 @@ def _load_json_resource(src: Union[dict, str, Path]) -> dict:
         raise ValueError(f"Unsupported JSON resource type {type(src)}")
 
 
-def write_json(json_object, file_path):
+def write_json(json_object: object, file_path: Union[str, Path]) -> None:
     with open(Path(file_path), "w") as f:
-        s_record = json.dumps(json_object, indent=2)
-        if not s_record.endswith("\n"):
-            s_record += "\n"
-        f.write(s_record)
+        j_str = json.dumps(json_object, indent=2)
+        if not j_str.endswith("\n"):
+            j_str += "\n"
+        f.write(j_str)
 
 
 class InvalidMetadataError(ValueError):
@@ -166,7 +166,7 @@ class GithubAlgorithmRepository:
         self.branch = branch
         self._session = requests.Session()
         self._organizations = list(self._list_organizations())
-        self._algorithms = None
+        self._algorithms: Optional[dict] = None
 
 
     def _list_organizations(self):
