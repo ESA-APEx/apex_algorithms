@@ -44,7 +44,7 @@ def generate() -> dict:
 
     return build_process_dict(
         process_graph=stac_resource,
-        process_id="sar_interferogram",
+        process_id="sentinel1_sar_interferogram",
         description=get_cwl_main(cwl_yaml).get("doc"),
         parameters=parameters,
     )
@@ -52,5 +52,5 @@ def generate() -> dict:
 
 if __name__ == "__main__":
     j = generate()
-    with open("sar_interferogram.json", "w") as f:
+    with open("sentinel1_sar_interferogram.json", "w") as f:
         json.dump(j, f, indent=2)
