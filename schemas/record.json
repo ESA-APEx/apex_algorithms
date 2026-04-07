@@ -129,7 +129,8 @@
               "Urban Heat Island",
               "Land Surface Temperature",
               "Climate",
-              "Soils"
+              "Soils",
+              "Radar"
             ]
           },
           "minItems": 1,
