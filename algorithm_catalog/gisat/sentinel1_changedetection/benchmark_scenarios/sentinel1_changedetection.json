@@ -6,7 +6,7 @@
     "backend": "openeo.dataspace.copernicus.eu",
     "process_graph": {
       "s1stats1": {
-        "process_id": "sentinel1_changedetection",
+        "process_id": "sentinel1_mcd",
         "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/6861935ed0b7e8a4eb13fe3823f8776053159684/algorithm_catalog/gisat/sentinel1_changedetection/openeo_udp/sentinel1_changedetection.json",
         "arguments": {
           "spatial_extent": {
