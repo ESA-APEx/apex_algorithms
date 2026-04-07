@@ -15,11 +15,8 @@
     "cost_estimate": 0,
     "cost_unit": "platform credits per km\u00b2 per observation",
     "keywords": [
-      "esa",
-      "sentinel",
-      "sentinel1",
-      "s1",
-      "radar"
+      "Sentinel-1",
+      "Radar"
     ],
     "language": {
       "code": "en-US",
