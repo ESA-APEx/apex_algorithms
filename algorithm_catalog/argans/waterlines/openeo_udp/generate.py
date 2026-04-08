@@ -19,11 +19,11 @@ from s2_index import (
 
 def build_water_land_mask_cube(
     con: Connection,
-    bbox,
-    time_range,
-    method,
-    threshold,
-    iterations,
+    bbox: Parameter,
+    time_range: Parameter,
+    method: Parameter,
+    threshold: Parameter,
+    iterations: Parameter,
 ) -> DataCube:
     """Build an openEO processing cube for the given water/land mask run specification."""
     spec = WATERLAND_THRESHOLDS.get(method)
@@ -32,9 +32,7 @@ def build_water_land_mask_cube(
         raise ValueError(f"Unsupported water/land mask method: {method}")
 
     if method == "S2_SCL":
-        _, water_land_mask_cube = s2_scl(
-            con, DEFAULT_S2_COLLECTION, bbox, time_range, Reducer.NONE
-        )
+        _, water_land_mask_cube = s2_scl(con, DEFAULT_S2_COLLECTION, bbox, time_range, Reducer.NONE)
 
     else:
         # If user doesn't specify, always take the default.
@@ -65,33 +63,57 @@ def build_water_land_mask_cube(
 
 def generate() -> dict:
 
-    # 1. Connection
+    ### 1. Connection
     conn = openeo.connect(url="openeo.dataspace.copernicus.eu")
 
-    # 2. Define parameters
+    ### 2. Define parameters
     spatial_extent = Parameter.bounding_box(
         name="spatial_extent",
-        default={"west": 5.0, "south": 51.2, "east": 5.1, "north": 51.3},
+        description=(
+            "Bounding box of the area of interest to extract waterlines for. "
+            "Defined as 'west', 'south', 'east', 'north' keys (EPSG:4326)."
+        ),
     )
     temporal_extent = Parameter.temporal_interval(
-        name="temporal_extent", default=["2025-01-01", "2025-12-31"]
+        name="temporal_extent",
+        default=["2015-06-23", "2025-12-31"],
+        description=("Date range over which to extract waterlines. "),
     )
-    
-    #method = Parameter.string(name="s2_method", default="S2_NDWI")
 
-    #threshold = Parameter.number(name="threshold", default=None)
+    # TODO: How user can set these?
+    method = Parameter.string(
+        name="s2_method",
+        default="S2_NDWI",
+        values=["S2_NDWI", "S2_MNDWI", "S2_SCL", "S2_NDVI", "S2_BNDVI", "S2_GNDVI"],
+        description=(
+            "Method name to create water/land mask from Sentinel-2 imagery."
+            "Water/land mask is an immediate step to extract waterlines."
+        ),
+    )
+    # threshold = Parameter.number(name="threshold", default=None)
 
-    iterations = Parameter.integer(name="iterations", default=2)
+    iterations = Parameter.integer(
+        name="iterations",
+        default=2,
+        description=(
+            "Number of iterations for morphological operations on water/land raster."
+            "Morphological operations help to remove small objects and holes as "
+            "well as bridges and estuaries leaving more proper mask for coastline "
+            "waterlines extraction"
+        ),
+    )
 
+    ### 3. Generate water/land mask from Sentinel-2 using selected method.
     water_land_mask = build_water_land_mask_cube(
         con=conn,
         bbox=spatial_extent,
         time_range=temporal_extent,
-        method="S2_NDWI",
+        method="S2_NDWI",  # this doesn't work with Parameter
         threshold=None,
         iterations=iterations,
     )
 
+    ### 4. Extract waterlines from water/land mask using UDF.
     udf = UDF.from_file(
         Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
         context={"from_parameter": "context"},
@@ -112,6 +134,7 @@ def generate() -> dict:
         ],
         categories=["sentinel-2", "coastline", "waterlines"],
     )
+
 
 if __name__ == "__main__":
     json.dump(generate(), sys.stdout, indent=2)
