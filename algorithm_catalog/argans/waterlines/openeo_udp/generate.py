@@ -1,5 +1,4 @@
 import json
-import sys
 from pathlib import Path
 
 import openeo
@@ -282,4 +281,5 @@ def generate() -> dict:
 
 
 if __name__ == "__main__":
-    json.dump(generate(), sys.stdout, indent=2)
+    with open(Path(__file__).parent / "waterlines.json", "w") as f:
+        json.dump(generate(), f, indent=2)

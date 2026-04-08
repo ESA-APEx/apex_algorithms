@@ -83,25 +83,6 @@ WATERLAND_THRESHOLDS: dict[str, ThresholdSpec] = {
 # endregion
 
 
-@dataclass(frozen=True)
-class SpatialExtent:
-    """Spatial extent."""
-
-    west: float
-    south: float
-    east: float
-    north: float
-
-    def to_openeo(self) -> dict[str, float]:
-        """Converts spatial extent to openeo format."""
-        return {
-            "west": self.west,
-            "south": self.south,
-            "east": self.east,
-            "north": self.north,
-        }
-
-
 _NORMDIFF_S2: dict[str, tuple[str, str]] = {
     # index_name: (band_pos, band_neg) used in (pos - neg) / (pos + neg)
     "ndwi": ("B03", "B08"),
@@ -115,7 +96,7 @@ _NORMDIFF_S2: dict[str, tuple[str, str]] = {
 def load_collection(
     con: Connection,
     collection_id: str,
-    bbox: SpatialExtent,
+    bbox: dict,
     time_range: list[str] | None,
     bands: list[str] | None = None,
     max_cloud_cover: float | None = None,
@@ -177,7 +158,7 @@ def s2_clear_mask_from_scl(cube: DataCube) -> DataCube:
 def load_s2(
     con: Connection,
     collection_id: str,
-    bbox: SpatialExtent,
+    bbox: dict,
     time_range: list[str],
     bands: list[str],
     max_cloud_coverage: float | None = DEFAULT_MAX_CLOUD_COVER,
@@ -224,7 +205,7 @@ def _bin(cube: DataCube) -> DataCube:
 def s2_scl(
     con: Connection,
     collection_id: str,
-    bbox: SpatialExtent,
+    bbox: dict,
     time_range: list[str],
     max_cloud_coverage: float,
 ) -> tuple[DataCube, DataCube]:
@@ -248,7 +229,7 @@ def s2_scl(
 def s2_index_mask(
     con: Connection,
     collection_id: str,
-    bbox: SpatialExtent,
+    bbox: dict,
     time_range: list[str],
     index_name: str,
     threshold: float | None,

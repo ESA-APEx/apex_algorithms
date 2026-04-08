@@ -1,0 +1,34 @@
+[
+  {
+    "id": "waterlines_s2_ndwi",
+    "type": "openeo",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "waterlines1": {
+        "process_id": "waterlines",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json",
+        "arguments": {
+          "temporal_extent": ["2024-06-01", "2024-06-30"],
+          "spatial_extent": {
+            "west": -95.13,
+            "south": 29.078,
+            "east": -95.12,
+            "north": 29.082,
+            "crs": "EPSG:4326"
+          },
+          "s2_method": "S2_NDWI",
+          "iterations": 2,
+          "max_cloud_coverage": 5,
+          "ndwi_threshold": 0.01,
+          "mndwi_threshold": 0.1,
+          "ndvi_threshold": 0.03,
+          "bndvi_threshold": 0.03,
+          "gndvi_threshold": 0.03
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+    }
+  }
+]

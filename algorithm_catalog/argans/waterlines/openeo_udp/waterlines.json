@@ -1,0 +1,1934 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": -997
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": -992
+              }
+            },
+            "or1": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq1"
+                },
+                "y": {
+                  "from_node": "eq2"
+                }
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": -991
+              }
+            },
+            "or2": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or1"
+                },
+                "y": {
+                  "from_node": "eq3"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "mask": {
+          "from_node": "reducedimension1"
+        }
+      }
+    },
+    "filterbands1": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "SCL"
+        ],
+        "data": {
+          "from_node": "mask1"
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement2": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "eq4": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement2"
+                },
+                "y": 6
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadcollection2": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B11",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte2": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial2": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection2"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial2"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement3": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "eq5": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement3"
+                },
+                "y": -997
+              }
+            },
+            "eq6": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement3"
+                },
+                "y": -992
+              }
+            },
+            "or3": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq5"
+                },
+                "y": {
+                  "from_node": "eq6"
+                }
+              }
+            },
+            "eq7": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement3"
+                },
+                "y": -991
+              }
+            },
+            "or4": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or3"
+                },
+                "y": {
+                  "from_node": "eq7"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask2": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial2"
+        },
+        "mask": {
+          "from_node": "reducedimension3"
+        }
+      }
+    },
+    "filterbands2": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B11"
+        ],
+        "data": {
+          "from_node": "mask2"
+        }
+      }
+    },
+    "reducedimension4": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands2"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement4": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "arrayelement5": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "subtract1": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement4"
+                },
+                "y": {
+                  "from_node": "arrayelement5"
+                }
+              }
+            },
+            "add1": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement4"
+                },
+                "y": {
+                  "from_node": "arrayelement5"
+                }
+              }
+            },
+            "divide1": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract1"
+                },
+                "y": {
+                  "from_node": "add1"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask3": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension4"
+        },
+        "mask": {
+          "from_node": "reducedimension3"
+        }
+      }
+    },
+    "gt1": {
+      "process_id": "gt",
+      "arguments": {
+        "x": {
+          "from_node": "mask3"
+        },
+        "y": {
+          "from_parameter": "mndwi_threshold"
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "gt1"
+        },
+        "process": {
+          "process_graph": {
+            "if1": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 1,
+                "reject": 0,
+                "value": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension2": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf2": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadcollection3": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B08",
+          "B04",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte3": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial3": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection3"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension5": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial3"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement6": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "eq8": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement6"
+                },
+                "y": -997
+              }
+            },
+            "eq9": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement6"
+                },
+                "y": -992
+              }
+            },
+            "or5": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq8"
+                },
+                "y": {
+                  "from_node": "eq9"
+                }
+              }
+            },
+            "eq10": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement6"
+                },
+                "y": -991
+              }
+            },
+            "or6": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or5"
+                },
+                "y": {
+                  "from_node": "eq10"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask4": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial3"
+        },
+        "mask": {
+          "from_node": "reducedimension5"
+        }
+      }
+    },
+    "filterbands3": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "B08",
+          "B04"
+        ],
+        "data": {
+          "from_node": "mask4"
+        }
+      }
+    },
+    "reducedimension6": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands3"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement7": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "arrayelement8": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "subtract2": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement7"
+                },
+                "y": {
+                  "from_node": "arrayelement8"
+                }
+              }
+            },
+            "add2": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement7"
+                },
+                "y": {
+                  "from_node": "arrayelement8"
+                }
+              }
+            },
+            "divide2": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract2"
+                },
+                "y": {
+                  "from_node": "add2"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask5": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension6"
+        },
+        "mask": {
+          "from_node": "reducedimension5"
+        }
+      }
+    },
+    "lt1": {
+      "process_id": "lt",
+      "arguments": {
+        "x": {
+          "from_node": "mask5"
+        },
+        "y": {
+          "from_parameter": "ndvi_threshold"
+        }
+      }
+    },
+    "apply2": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "lt1"
+        },
+        "process": {
+          "process_graph": {
+            "if2": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 1,
+                "reject": 0,
+                "value": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension3": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "apply2"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf3": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadcollection4": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B08",
+          "B02",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte4": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial4": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection4"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension7": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial4"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement9": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "eq11": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement9"
+                },
+                "y": -997
+              }
+            },
+            "eq12": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement9"
+                },
+                "y": -992
+              }
+            },
+            "or7": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq11"
+                },
+                "y": {
+                  "from_node": "eq12"
+                }
+              }
+            },
+            "eq13": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement9"
+                },
+                "y": -991
+              }
+            },
+            "or8": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or7"
+                },
+                "y": {
+                  "from_node": "eq13"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask6": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial4"
+        },
+        "mask": {
+          "from_node": "reducedimension7"
+        }
+      }
+    },
+    "filterbands4": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "B08",
+          "B02"
+        ],
+        "data": {
+          "from_node": "mask6"
+        }
+      }
+    },
+    "reducedimension8": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands4"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement10": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "arrayelement11": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "subtract3": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement10"
+                },
+                "y": {
+                  "from_node": "arrayelement11"
+                }
+              }
+            },
+            "add3": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement10"
+                },
+                "y": {
+                  "from_node": "arrayelement11"
+                }
+              }
+            },
+            "divide3": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract3"
+                },
+                "y": {
+                  "from_node": "add3"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask7": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension8"
+        },
+        "mask": {
+          "from_node": "reducedimension7"
+        }
+      }
+    },
+    "lt2": {
+      "process_id": "lt",
+      "arguments": {
+        "x": {
+          "from_node": "mask7"
+        },
+        "y": {
+          "from_parameter": "bndvi_threshold"
+        }
+      }
+    },
+    "apply3": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "lt2"
+        },
+        "process": {
+          "process_graph": {
+            "if3": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 1,
+                "reject": 0,
+                "value": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension4": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "apply3"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf4": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadcollection5": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B08",
+          "B03",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte5": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial5": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection5"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension9": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial5"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement12": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "eq14": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement12"
+                },
+                "y": -997
+              }
+            },
+            "eq15": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement12"
+                },
+                "y": -992
+              }
+            },
+            "or9": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq14"
+                },
+                "y": {
+                  "from_node": "eq15"
+                }
+              }
+            },
+            "eq16": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement12"
+                },
+                "y": -991
+              }
+            },
+            "or10": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or9"
+                },
+                "y": {
+                  "from_node": "eq16"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask8": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial5"
+        },
+        "mask": {
+          "from_node": "reducedimension9"
+        }
+      }
+    },
+    "filterbands5": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "B08",
+          "B03"
+        ],
+        "data": {
+          "from_node": "mask8"
+        }
+      }
+    },
+    "reducedimension10": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands5"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement13": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "arrayelement14": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "subtract4": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement13"
+                },
+                "y": {
+                  "from_node": "arrayelement14"
+                }
+              }
+            },
+            "add4": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement13"
+                },
+                "y": {
+                  "from_node": "arrayelement14"
+                }
+              }
+            },
+            "divide4": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract4"
+                },
+                "y": {
+                  "from_node": "add4"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask9": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension10"
+        },
+        "mask": {
+          "from_node": "reducedimension9"
+        }
+      }
+    },
+    "lt3": {
+      "process_id": "lt",
+      "arguments": {
+        "x": {
+          "from_node": "mask9"
+        },
+        "y": {
+          "from_parameter": "gndvi_threshold"
+        }
+      }
+    },
+    "apply4": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "lt3"
+        },
+        "process": {
+          "process_graph": {
+            "if4": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 1,
+                "reject": 0,
+                "value": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension5": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "apply4"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf5": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadcollection6": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B08",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte6": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial6": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection6"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension11": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial6"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement15": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "eq17": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement15"
+                },
+                "y": -997
+              }
+            },
+            "eq18": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement15"
+                },
+                "y": -992
+              }
+            },
+            "or11": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq17"
+                },
+                "y": {
+                  "from_node": "eq18"
+                }
+              }
+            },
+            "eq19": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement15"
+                },
+                "y": -991
+              }
+            },
+            "or12": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or11"
+                },
+                "y": {
+                  "from_node": "eq19"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask10": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial6"
+        },
+        "mask": {
+          "from_node": "reducedimension11"
+        }
+      }
+    },
+    "filterbands6": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B08"
+        ],
+        "data": {
+          "from_node": "mask10"
+        }
+      }
+    },
+    "reducedimension12": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands6"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement16": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "arrayelement17": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "subtract5": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement16"
+                },
+                "y": {
+                  "from_node": "arrayelement17"
+                }
+              }
+            },
+            "add5": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement16"
+                },
+                "y": {
+                  "from_node": "arrayelement17"
+                }
+              }
+            },
+            "divide5": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract5"
+                },
+                "y": {
+                  "from_node": "add5"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask11": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension12"
+        },
+        "mask": {
+          "from_node": "reducedimension11"
+        }
+      }
+    },
+    "gt2": {
+      "process_id": "gt",
+      "arguments": {
+        "x": {
+          "from_node": "mask11"
+        },
+        "y": {
+          "from_parameter": "ndwi_threshold"
+        }
+      }
+    },
+    "apply5": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "gt2"
+        },
+        "process": {
+          "process_graph": {
+            "if5": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 1,
+                "reject": 0,
+                "value": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension6": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "apply5"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf6": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "eq20": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "s2_method"
+        },
+        "y": "S2_GNDVI"
+      }
+    },
+    "if6": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "applydimension5"
+        },
+        "reject": {
+          "from_node": "applydimension6"
+        },
+        "value": {
+          "from_node": "eq20"
+        }
+      }
+    },
+    "eq21": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "s2_method"
+        },
+        "y": "S2_BNDVI"
+      }
+    },
+    "if7": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "applydimension4"
+        },
+        "reject": {
+          "from_node": "if6"
+        },
+        "value": {
+          "from_node": "eq21"
+        }
+      }
+    },
+    "eq22": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "s2_method"
+        },
+        "y": "S2_NDVI"
+      }
+    },
+    "if8": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "applydimension3"
+        },
+        "reject": {
+          "from_node": "if7"
+        },
+        "value": {
+          "from_node": "eq22"
+        }
+      }
+    },
+    "eq23": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "s2_method"
+        },
+        "y": "S2_MNDWI"
+      }
+    },
+    "if9": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "applydimension2"
+        },
+        "reject": {
+          "from_node": "if8"
+        },
+        "value": {
+          "from_node": "eq23"
+        }
+      }
+    },
+    "eq24": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "s2_method"
+        },
+        "y": "S2_SCL"
+      }
+    },
+    "if10": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "applydimension1"
+        },
+        "reject": {
+          "from_node": "if9"
+        },
+        "value": {
+          "from_node": "eq24"
+        }
+      }
+    },
+    "applydimension7": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "crs": "EPSG:3857",
+          "time_dim": "t"
+        },
+        "data": {
+          "from_node": "if10"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf7": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"rioxarray\",\n# ]\n# ///\n\nfrom typing import Iterable, Union, Any\nimport numpy as np\nimport xarray as xr\nimport geopandas as gpd\nfrom rasterio.features import shapes, Affine\nfrom shapely.geometry import (\n    box,\n    shape,\n    LineString,\n    MultiLineString,\n    Polygon,\n    Point,\n    GeometryCollection,\n)\nimport json\nfrom shapely.ops import unary_union\nfrom openeo.udf import inspect\nimport rioxarray\nfrom openeo.udf.feature_collection import FeatureCollection\nfrom openeo.udf.udf_data import UdfData\n\nGeometryLike = Union[LineString, MultiLineString, GeometryCollection]\n\nDEFAULT_OUT_LAYER = \"waterline\"\nDEFAULT_TIME_DIM = \"time\"\nDEFAULT_VAR_NAME = \"var\"\nDEFAULT_SEA_DIRECTION_8_COLUMN = \"sea_direction_8\"\nDEFAULT_SEA_AZIMUTH_DEG_COLUMN = \"sea_azimuth_deg\"\nDEFAULT_MIN_DANGLING_LENGTH = 10000\nDEFAULT_MIN_HOLE_AREA = 1000000\n\n\ndef _iter_lines(geom: GeometryLike) -> Iterable[LineString]:\n    \"\"\"Recursively yield all LineString objects contained in a geometry.\"\"\"\n    if geom.is_empty:\n        return\n\n    if isinstance(geom, LineString):\n        yield geom\n    elif isinstance(geom, (MultiLineString, GeometryCollection)):\n        for subgeom in geom.geoms:\n            yield from _iter_lines(subgeom)\n\n\ndef split_into_segments(geom: GeometryLike) -> list[LineString]:\n    \"\"\"\n    Split a geometry into 2-point LineStrings representing individual segments\n    between consecutive vertices.\n\n    Args:\n        geom: Input geometry.\n\n    Returns: List of non-zero-length segments.\n    \"\"\"\n    segments: list[LineString] = []\n\n    for line in _iter_lines(geom):\n        coords = list(line.coords)\n        for start, end in zip(coords[:-1], coords[1:]):\n            if start != end:  # Avoid zero-length segments\n                segments.append(LineString([start, end]))\n\n    return segments\n\n\ndef _remove_small_interiors(\n    geom: Polygon, min_hole_area: float = DEFAULT_MIN_HOLE_AREA\n) -> Polygon:\n    \"\"\"Remove small interior rings from polygon.\"\"\"\n    if geom.is_empty:\n        return geom\n\n    kept_holes = []\n    for ring in geom.interiors:\n        if Polygon(ring).area >= min_hole_area:\n            kept_holes.append(ring)\n\n    return Polygon(geom.exterior, holes=kept_holes)\n\n\ndef _vectorize_water_polygons(\n    water_mask: np.ndarray,\n    transform: Affine,\n    water_value: int = 1,\n) -> list[Polygon]:\n    \"\"\"Create water polygons from a 0/1 coastal-water mask.\"\"\"\n    polys: list[Polygon] = []\n    mask = water_mask.astype(bool)\n\n    for geom, val in shapes(water_mask, mask=mask, transform=transform):\n        if int(val) == int(water_value):\n            shp = shape(geom)\n            shp = _remove_small_interiors(shp)\n            polys.append(shp)\n\n    return polys\n\n\ndef _remove_extent_intersections(\n    waterline: LineString, bounds, buffer: float = 0.0001\n) -> list[LineString]:\n    \"\"\"Return 2-point segments that do NOT intersect the raster extent boundary.\"\"\"\n    extent_edge = box(*bounds).boundary\n    edges = split_into_segments(waterline)\n    return [e for e in edges if not e.buffer(buffer).intersects(extent_edge)]\n\n\ndef _remove_short_dangling_segments(\n    segments: list[LineString],\n    min_dangling_length: float = 0.0,\n) -> list[LineString]:\n    \"\"\"Remove short isolated segments (both endpoints occur only once).\"\"\"\n    if not segments or min_dangling_length <= 0:\n        return segments\n\n    endpoint_counts: dict[Any, int] = {}\n    for seg in segments:\n        a, b = seg.coords[0], seg.coords[-1]\n        endpoint_counts[a] = endpoint_counts.get(a, 0) + 1\n        endpoint_counts[b] = endpoint_counts.get(b, 0) + 1\n\n    kept: list[LineString] = []\n    for seg in segments:\n        if seg.length >= min_dangling_length:\n            kept.append(seg)\n            continue\n\n        a, b = seg.coords[0], seg.coords[-1]\n        if endpoint_counts.get(a, 0) > 1 or endpoint_counts.get(b, 0) > 1:\n            kept.append(seg)\n\n    return kept\n\n\ndef _clean_waterline_segments(\n    waterline: LineString,\n    bounds,\n    min_dangling_length: float = DEFAULT_MIN_DANGLING_LENGTH,\n) -> list[LineString]:\n    \"\"\"\n    Clean waterline and return as a *list of 2-point segments* (one per edge).\n    \"\"\"\n    segments = _remove_extent_intersections(waterline, bounds)\n    if not segments:\n        return []\n\n    segments = _remove_short_dangling_segments(\n        segments,\n        min_dangling_length=min_dangling_length,\n    )\n    if not segments:\n        return []\n\n    return segments\n\n\ndef _get_sea_direction_for_segment(\n    water_poly: Polygon, seg: LineString\n) -> tuple[str, float | None]:\n    \"\"\"\n    Determine where the sea (water polygon side) lies relative to a segment.\n\n    Returns:\n        sea_dir: General sea direction (N, S, NS etc) and detailed sea dir in degrees.\n    \"\"\"\n    if seg.is_empty or seg.length == 0:\n        return \"unknown\", None\n\n    # Get first and last coordinates of the segment\n    a = np.asarray(seg.coords[0], dtype=float)\n    b = np.asarray(seg.coords[-1], dtype=float)\n\n    # Compute direction vector and length\n    v = b - a\n    norm = np.linalg.norm(v)\n    if norm == 0:\n        return \"unknown\", None\n\n    # Unit tangent and left normal vector\n    t = v / norm\n    n_left = np.array([-t[1], t[0]], dtype=float)\n\n    # Segment midpoint\n    mid = (a + b) / 2.0\n\n    # How far to step away from the segment (1 perc of segment len.)\n    eps = max(0.5, min(5.0, float(seg.length) * 0.01))\n\n    # Probe points\n    left_pt = mid + eps * n_left\n    right_pt = mid - eps * n_left\n\n    left_in = water_poly.contains(Point(left_pt))\n    right_in = water_poly.contains(Point(right_pt))\n\n    if left_in and not right_in:\n        sea_vec = n_left\n    elif right_in and not left_in:\n        sea_vec = -n_left\n    else:\n        return \"unknown\", None\n\n    # Map-based 8-way direction from sea_vec (x=east, y=north)\n    x, y = float(sea_vec[0]), float(sea_vec[1])\n\n    # Compute angle\n    angle = np.degrees(np.arctan2(y, x))\n    angle = (angle + 360.0) % 360.0\n\n    # 8-sector compass, centered on E=0\u00b0, NE=45\u00b0, N=90\u00b0, ...\n    dirs = [\"E\", \"NE\", \"N\", \"NW\", \"W\", \"SW\", \"S\", \"SE\"]\n    idx = int(((angle + 22.5) % 360) // 45)\n\n    return dirs[idx], float(angle)\n\n\ndef _segments_for_water_mask(\n    water_mask_2d: np.ndarray,\n    transform: Affine,\n    bounds,\n    simplify_tolerance: float | None = None,\n) -> tuple[list[LineString], Polygon] | None:\n    \"\"\"Converts water land mask for single timestamp to cleaned waterline segments.\"\"\"\n\n    # Here water_value is 1 because _build_coastal_water_mask returns 0/1\n    water_polys = _vectorize_water_polygons(water_mask_2d, transform, water_value=1)\n    if not water_polys:\n        return None\n\n    water_poly = unary_union(water_polys)\n\n    if simplify_tolerance is not None:\n        water_poly = water_poly.simplify(simplify_tolerance, preserve_topology=True)\n\n    boundary = water_poly.boundary\n\n    # boundary can be MultiLineString/LineString -> convert to a single multilinestring-ish\n    if isinstance(boundary, LineString):\n        cleaned_segments = _clean_waterline_segments(boundary, bounds=bounds)\n    elif isinstance(boundary, MultiLineString):\n        cleaned_segments = []\n        for part in boundary.geoms:\n            cleaned_segments.extend(_clean_waterline_segments(part, bounds=bounds))\n    else:\n        return None\n\n    return cleaned_segments, water_poly\n\n\ndef waterline_from_land_water_raster(\n    da: xr.DataArray,\n    crs: str | None = None,\n    simplify_tolerance: float | None = None,\n    time_dim: str = DEFAULT_TIME_DIM,\n) -> gpd.GeoDataFrame:\n    \"\"\"\n    Generate waterline segments for each time step from a land/water mask raster.\n\n    Args:\n        da: DataArray containing a land/water mask with a time dimension.\n        crs: DataArray projection. If None it will be read from da. However in some\n            situations this information might not be stored in da (for example when\n            reading dataset from netCDF) so option to provide it is given.\n        simplify_tolerance: Optional tolerance for geometry simplification.\n            If provided, resulting geometries will be simplified.\n        time_dim: Name of the time dimension in the raster dataset.\n\n    Returns:\n        A GeoDataFrame with columns:\n            - time: Time step associated with each geometry.\n            - type: Feature classification.\n            - sea_direction_8: Direction toward the sea expressed as one of\n              eight cardinal/inter-cardinal directions (N, NE, E, SE, S, SW, W, NW).\n            - sea_azimuth_deg: Direction toward the sea in degrees (azimuth,\n              typically measured clockwise from north).\n            - geometry: Waterline geometry (LineString or MultiLineString).\n    \"\"\"\n\n    if crs is None:\n        if da.rio.crs is not None:\n            crs = da.rio.crs\n        elif \"crs\" in da.attrs:\n            crs = da.attrs[\"crs\"]\n    if crs is None:\n        raise ValueError(\"CRS needed to perform vectorization.\")\n\n    records: list[dict[str, Any]] = []\n\n    if time_dim not in da.dims:\n        raise KeyError(\n            f\"No {time_dim} in input array. Use one of the following: {da.dims}\"\n        )\n\n    transform = da.rio.transform()\n    bounds = da.rio.bounds()\n\n    for i in range(da.sizes[time_dim]):\n        slice2d = da.isel({time_dim: i})\n        tval = slice2d[time_dim].values\n        inspect(data=[tval], message=\"Extracting waterlines for timestamp\")\n        res = _segments_for_water_mask(\n            slice2d.values,\n            transform=transform,\n            bounds=bounds,\n            simplify_tolerance=simplify_tolerance,\n        )\n        if res is None:\n            continue\n\n        segments, water_poly = res\n        inspect(data=[tval], message=\"Calculating sea direction for timestamp\")\n        for seg in segments:\n            sea_direction = _get_sea_direction_for_segment(water_poly, seg)\n            records.append(\n                {\n                    \"time\": tval,\n                    \"type\": \"waterline_segment\",\n                    DEFAULT_SEA_DIRECTION_8_COLUMN: sea_direction[0],\n                    DEFAULT_SEA_AZIMUTH_DEG_COLUMN: sea_direction[1],\n                    \"geometry\": seg,\n                }\n            )\n    inspect(data=[records], message=\"Converting records to geodataframe\")\n    gdf = gpd.GeoDataFrame(records, geometry=\"geometry\", crs=crs)\n    gdf = gdf[~gdf.geometry.isna() & ~gdf.geometry.is_empty].reset_index(drop=True)\n    return gdf\n\n\n# def apply_datacube(cube: xr.DataArray, context: dict) -> xr.DataArray:\n#     inspect(data=[cube.shape], message=\"Input UDF cube shape\")\n#     gdf = waterline_from_land_water_raster(\n#         da=cube,\n#         crs=context.get(\"crs\"),\n#         simplify_tolerance=context.get(\"simplify_tolerance\"),\n#         time_dim=context.get(\"time_dim\", \"time\"),\n#     )\n#     inspect(data=[len(gdf)], message=\"Output gdf len\")\n\n#     geojson = json.dumps(gdf.__geo_interface__, default=str)\n#     inspect(data=[geojson], message=\"Output geojson\")\n#     #return xr.DataArray(geojson)\n#     return xr.DataArray.from_series(gdf.geometry)\n\n# def apply_vectorcube(geometries: gpd.geodataframe.GeoDataFrame,\n#                      cube: xr.DataArray,\n#                      context: dict) -> tuple[gpd.GeoDataFrame, xr.DataArray]:\n#     inspect(data=[geometries], message=\"Input UDF geometries\")\n#     inspect(data=[cube.shape], message=\"Input UDF cube shape\")\n#     gdf = waterline_from_land_water_raster(\n#         da=cube,\n#         crs=context.get(\"crs\"),\n#         simplify_tolerance=context.get(\"simplify_tolerance\"),\n#         time_dim=context.get(\"time_dim\", \"time\"),\n#     )\n#     inspect(data=[gdf], message=\"Output geojson\")\n\n#     return gdf, cube\n\ndef apply_udf_data(data: UdfData) -> UdfData:\n\n    inspect(data=[data], message=\"Input UDFData inspection\")\n\n    cube = data.get_datacube_list()[0].get_array()\n    inspect(data=[list(cube.dims), list(cube.shape)], message=\"Input UDF cube dims/shape\")\n\n    gdf = waterline_from_land_water_raster(\n        da=cube,\n        crs=data.user_context.get(\"crs\"),\n        simplify_tolerance=data.user_context.get(\"simplify_tolerance\"),\n        time_dim=data.user_context.get(\"time_dim\", \"time\"),\n    )\n\n    inspect(data=[gdf], message=\"Output gdf\")\n\n    feature_collection = FeatureCollection(\n        id=DEFAULT_OUT_LAYER,\n        data=gdf,\n    )\n\n    data.set_feature_collection_list([feature_collection])\n\n    inspect(data=[data], message=\"Output UDFData inspection\")\n\n    return data\n"
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "waterlines",
+  "summary": "Waterlines extracted from Sentinel-2.",
+  "description": "# Waterlines extraction from Sentinel-2\n\nExtracts waterlines from Sentinel-2 imagery using a selectable water/land classification method, morphological cleaning, and UDF-based vectorisation.\n",
+  "categories": [
+    "sentinel-2",
+    "coastline",
+    "waterlines"
+  ],
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Bounding box of the area of interest. Defined as west, south, east, north in EPSG:4326.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      }
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Date range over which to extract waterlines.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2015-06-23",
+        "2025-12-31"
+      ],
+      "optional": true
+    },
+    {
+      "name": "max_cloud_coverage",
+      "description": "Maximum allowed cloud coverage.",
+      "schema": {
+        "type": "number"
+      },
+      "default": 10,
+      "optional": true
+    },
+    {
+      "name": "s2_method",
+      "description": "Method used to create the water/land mask from Sentinel-2 imagery.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "S2_NDWI",
+          "S2_MNDWI",
+          "S2_SCL",
+          "S2_NDVI",
+          "S2_BNDVI",
+          "S2_GNDVI"
+        ]
+      },
+      "default": "S2_NDWI",
+      "optional": true
+    },
+    {
+      "name": "iterations",
+      "description": "Number of iterations for morphological operations.",
+      "schema": {
+        "type": "integer"
+      },
+      "default": 2,
+      "optional": true
+    },
+    {
+      "name": "ndwi_threshold",
+      "description": "NDWI threshold (water if NDWI > threshold).",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.01,
+      "optional": true
+    },
+    {
+      "name": "mndwi_threshold",
+      "description": "MNDWI threshold (water if MNDWI > threshold).",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.1,
+      "optional": true
+    },
+    {
+      "name": "ndvi_threshold",
+      "description": "NDVI threshold (water if NDVI < threshold).",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.03,
+      "optional": true
+    },
+    {
+      "name": "bndvi_threshold",
+      "description": "BNDVI threshold (water if BNDVI < threshold).",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.03,
+      "optional": true
+    },
+    {
+      "name": "gndvi_threshold",
+      "description": "GNDVI threshold (water if GNDVI < threshold).",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.03,
+      "optional": true
+    }
+  ]
+}
