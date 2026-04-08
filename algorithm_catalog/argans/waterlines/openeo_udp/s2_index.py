@@ -10,6 +10,7 @@ from openeo import collection_property
 
 from openeo.rest.connection import Connection
 from openeo.rest.datacube import DataCube
+from openeo.processes import gt, lt
 
 
 # region defaults
@@ -35,9 +36,7 @@ class ThresholdMode(str, Enum):
 class ThresholdSpec:
     """Default threshold(s) and help text for UI/CLI usage."""
 
-    defaults: Mapping[
-        str, Optional[float]
-    ]  # keys are method-arg names, e.g. {"threshold": 0.1}
+    defaults: Mapping[str, Optional[float]]  # keys are method-arg names, e.g. {"threshold": 0.1}
     mode: ThresholdMode
     description: str
 
@@ -101,17 +100,6 @@ class SpatialExtent:
             "east": self.east,
             "north": self.north,
         }
-
-
-class Reducer(str, Enum):
-    """Reducer method for cubes' temporal composites."""
-
-    MEDIAN = "median"
-    MEAN = "mean"
-    MIN = "min"
-    MAX = "max"
-    NONE = "none"
-    SUM = "sum"
 
 
 _NORMDIFF_S2: dict[str, tuple[str, str]] = {
@@ -179,38 +167,6 @@ def load_collection(
     return cube
 
 
-def maybe_reduce_time(cube: DataCube, reducer: Reducer) -> DataCube:
-    """Optionally reduce a cube over the time dimension using the given reducer."""
-    if reducer == Reducer.NONE:
-        return cube
-    return cube.reduce_dimension(dimension="t", reducer=reducer.value)
-
-
-def load_reduce(
-    con: Connection,
-    collection_id: str,
-    bbox: SpatialExtent,
-    time_range: list[str],
-    bands: list[str],
-    reducer: Reducer,
-    target_epsg: int | None = None,
-    resolution: float | tuple[float, float] | None = None,
-    method: str = "near",
-) -> DataCube:
-    """Load a collection and optionally reduce it over time."""
-    cube = load_collection(
-        con,
-        collection_id,
-        bbox,
-        time_range,
-        bands,
-        target_epsg=target_epsg,
-        resolution=resolution,
-        method=method,
-    )
-    return maybe_reduce_time(cube, reducer)
-
-
 def s2_clear_mask_from_scl(cube: DataCube) -> DataCube:
     """Create a boolean clear-pixel mask from the Sentinel-2 SCL band."""
     scl = cube.band("SCL")
@@ -224,7 +180,6 @@ def load_s2(
     bbox: SpatialExtent,
     time_range: list[str],
     bands: list[str],
-    reducer: Reducer,
     max_cloud_coverage: float | None = DEFAULT_MAX_CLOUD_COVER,
     target_epsg: int | None = DEFAULT_TARGET_EPSG,
     grid_ids: list[str] | None = None,
@@ -251,10 +206,6 @@ def load_s2(
     # Remove SCL band
     cube = cube.filter_bands(bands)
 
-    # Reduce now if specified
-    cube = maybe_reduce_time(cube, reducer)
-    clear = maybe_reduce_time(clear, reducer)
-
     return cube, clear
 
 
@@ -263,9 +214,7 @@ def load_s2(
 
 def _bin(cube: DataCube) -> DataCube:
     """Convert a boolean condition cube to a 0/1 cube using an openEO `if` process."""
-    return cube.apply(
-        lambda x: x.process("if", arguments={"value": x, "accept": 1, "reject": 0})
-    )
+    return cube.apply(lambda x: x.process("if", arguments={"value": x, "accept": 1, "reject": 0}))
 
 
 # endregion
@@ -277,7 +226,7 @@ def s2_scl(
     collection_id: str,
     bbox: SpatialExtent,
     time_range: list[str],
-    reducer: Reducer,
+    max_cloud_coverage: float,
 ) -> tuple[DataCube, DataCube]:
     """Load Sentinel-2 SCL and return a boolean mask selecting SCL class 6.
 
@@ -286,13 +235,12 @@ def s2_scl(
         collection_id: Sentinel-2 collection identifier to load.
         bbox: Spatial extent (bounding box) to load.
         time_range: Temporal extent as `[start, end]`.
-        reducer: Temporal reducer to apply (e.g. median/mean) or `Reducer.none`.
 
     Returns:
         Sentinel-2 cube and
         Boolean cube where pixels equal to SCL class 6 are True.
     """
-    s2_cube = load_reduce(con, collection_id, bbox, time_range, ["SCL"], reducer)
+    s2_cube, _ = load_s2(con, collection_id, bbox, time_range, bands=["SCL"], max_cloud_coverage=max_cloud_coverage)
     scl_water_mask = s2_cube.band("SCL") == 6
     return s2_cube, scl_water_mask
 
@@ -302,7 +250,6 @@ def s2_index_mask(
     collection_id: str,
     bbox: SpatialExtent,
     time_range: list[str],
-    reducer: Reducer,
     index_name: str,
     threshold: float | None,
     mode: str = "gt",
@@ -316,7 +263,6 @@ def s2_index_mask(
         collection_id: Sentinel-2 collection identifier to load.
         bbox: Spatial extent (bounding box) to load.
         time_range: Temporal extent as `[start, end]`.
-        reducer: Temporal reducer to apply (e.g. median/mean) or `Reducer.none`.
         index_name: Name of the index to compute. Supported values: `ndwi`, `mndwi`,
             `ndvi`, `bndvi`, `gndvi`.
         threshold: Threshold applied to the index.
@@ -336,9 +282,7 @@ def s2_index_mask(
     """
     key = index_name.lower().split("_")[1]
     if key not in _NORMDIFF_S2:
-        raise ValueError(
-            f"Unsupported index_name={index_name!r}. Supported: {sorted(_NORMDIFF_S2)}"
-        )
+        raise ValueError(f"Unsupported index_name={index_name!r}. Supported: {sorted(_NORMDIFF_S2)}")
 
     band_pos, band_neg = _NORMDIFF_S2[key]
     s2_cube, clear = load_s2(
@@ -347,7 +291,6 @@ def s2_index_mask(
         bbox,
         time_range,
         [band_pos, band_neg],
-        reducer,
         max_cloud_coverage,
         grid_ids=grid_ids,
     )
@@ -359,11 +302,13 @@ def s2_index_mask(
     idx = idx.mask(clear)
 
     if mode == "gt":
-        return s2_cube, _bin(idx > threshold)
-    if mode == "lt":
-        return s2_cube, _bin(idx < threshold)
+        mask = gt(idx, threshold)
+    elif mode == "lt":
+        mask = lt(idx, threshold)
+    else:
+        raise ValueError(f"Unsupported mode: {mode}")
 
-    raise ValueError(f"Unsupported mode={mode!r}. Use 'gt' or 'lt'.")
+    return s2_cube, _bin(mask)
 
 
 # endregion

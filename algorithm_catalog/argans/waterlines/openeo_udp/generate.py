@@ -1,126 +1,262 @@
 import json
 import sys
 from pathlib import Path
+
 import openeo
+from openeo import UDF
 from openeo.api.process import Parameter
+from openeo.processes import if_, eq
 from openeo.rest.connection import Connection
 from openeo.rest.datacube import DataCube
 from openeo.rest.udp import build_process_dict
-from openeo import UDF
+
 from s2_index import (
-    WATERLAND_THRESHOLDS,
     s2_scl,
     s2_index_mask,
     DEFAULT_S2_COLLECTION,
-    Reducer,
     DEFAULT_MAX_CLOUD_COVER,
+    WATERLAND_THRESHOLDS,
 )
 
 
-def build_water_land_mask_cube(
-    con: Connection,
-    bbox: Parameter,
-    time_range: Parameter,
-    method: Parameter,
-    threshold: Parameter,
-    iterations: Parameter,
-) -> DataCube:
-    """Build an openEO processing cube for the given water/land mask run specification."""
-    spec = WATERLAND_THRESHOLDS.get(method)
+def apply_morphology(cube: DataCube, iterations: int) -> DataCube:
+    """
+    Apply morphological operations to each time slice of a water/land mask.
 
-    if spec is None:
-        raise ValueError(f"Unsupported water/land mask method: {method}")
-
-    if method == "S2_SCL":
-        _, water_land_mask_cube = s2_scl(con, DEFAULT_S2_COLLECTION, bbox, time_range, Reducer.NONE)
-
-    else:
-        # If user doesn't specify, always take the default.
-        threshold = threshold if threshold is not None else spec.defaults["threshold"]
-
-        _, water_land_mask_cube = s2_index_mask(
-            con=con,
-            collection_id=DEFAULT_S2_COLLECTION,
-            bbox=bbox,
-            time_range=time_range,
-            reducer=Reducer.NONE,
-            index_name=method,
-            threshold=threshold,
-            mode=spec.mode.value,  # "gt" or "lt"
-            max_cloud_coverage=DEFAULT_MAX_CLOUD_COVER,
-        )
-
+    Used to clean the mask (remove noise, fill gaps, smooth shapes)
+    before extracting waterlines.
+    """
     udf = UDF.from_file(
         Path(__file__).parent / "udf_morph_operations.py",
         context={"from_parameter": "context"},
     )
-    water_land_mask_cube = water_land_mask_cube.apply_dimension(
-        process=udf, dimension="t", context={"iterations": iterations}
+    return cube.apply_dimension(
+        process=udf,
+        dimension="t",
+        context={"iterations": iterations},
     )
 
-    return water_land_mask_cube
 
+def create_waterlines(cube: DataCube, crs: str = "EPSG:3857") -> DataCube:
+    """
+    Extract waterlines from a water/land mask using a UDF.
 
-def generate() -> dict:
-
-    ### 1. Connection
-    conn = openeo.connect(url="openeo.dataspace.copernicus.eu")
-
-    ### 2. Define parameters
-    spatial_extent = Parameter.bounding_box(
-        name="spatial_extent",
-        description=(
-            "Bounding box of the area of interest to extract waterlines for. "
-            "Defined as 'west', 'south', 'east', 'north' keys (EPSG:4326)."
-        ),
-    )
-    temporal_extent = Parameter.temporal_interval(
-        name="temporal_extent",
-        default=["2015-06-23", "2025-12-31"],
-        description=("Date range over which to extract waterlines. "),
-    )
-
-    # TODO: How user can set these?
-    method = Parameter.string(
-        name="s2_method",
-        default="S2_NDWI",
-        values=["S2_NDWI", "S2_MNDWI", "S2_SCL", "S2_NDVI", "S2_BNDVI", "S2_GNDVI"],
-        description=(
-            "Method name to create water/land mask from Sentinel-2 imagery."
-            "Water/land mask is an immediate step to extract waterlines."
-        ),
-    )
-    # threshold = Parameter.number(name="threshold", default=None)
-
-    iterations = Parameter.integer(
-        name="iterations",
-        default=2,
-        description=(
-            "Number of iterations for morphological operations on water/land raster."
-            "Morphological operations help to remove small objects and holes as "
-            "well as bridges and estuaries leaving more proper mask for coastline "
-            "waterlines extraction"
-        ),
-    )
-
-    ### 3. Generate water/land mask from Sentinel-2 using selected method.
-    water_land_mask = build_water_land_mask_cube(
-        con=conn,
-        bbox=spatial_extent,
-        time_range=temporal_extent,
-        method="S2_NDWI",  # this doesn't work with Parameter
-        threshold=None,
-        iterations=iterations,
-    )
-
-    ### 4. Extract waterlines from water/land mask using UDF.
+    Runs per time slice and outputs waterline geometries.
+    """
     udf = UDF.from_file(
         Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
         context={"from_parameter": "context"},
     )
-    waterlines_cube = water_land_mask.apply_dimension(
-        process=udf, dimension="t", context={"crs": "EPSG:3857", "time_dim": "t"}
+    return cube.apply_dimension(
+        process=udf,
+        dimension="t",
+        context={"crs": crs, "time_dim": "t"},
     )
+
+
+def build_water_land_mask_cube(
+    con: Connection,
+    bbox,
+    time_range,
+    max_cloud_coverage,
+    method,
+    iterations,
+    ndwi_threshold,
+    mndwi_threshold,
+    ndvi_threshold,
+    bndvi_threshold,
+    gndvi_threshold,
+):
+    """
+    Build a water/land mask using multiple selectable Sentinel-2 methods.
+
+    All method branches are constructed and the selected one is chosen
+    using openEO graph logic (since 'method' is a UDP parameter).
+    """
+    # Build all candidate branches
+
+    _, scl_cube = s2_scl(
+        con,
+        DEFAULT_S2_COLLECTION,
+        bbox,
+        time_range,
+        max_cloud_coverage=max_cloud_coverage
+    )
+    scl_cube = apply_morphology(scl_cube, iterations)
+
+    _, ndwi_cube = s2_index_mask(
+        con=con,
+        collection_id=DEFAULT_S2_COLLECTION,
+        bbox=bbox,
+        time_range=time_range,
+        index_name="S2_NDWI",
+        threshold=ndwi_threshold,
+        mode="gt",
+        max_cloud_coverage=max_cloud_coverage,
+    )
+    ndwi_cube = apply_morphology(ndwi_cube, iterations)
+
+    _, mndwi_cube = s2_index_mask(
+        con=con,
+        collection_id=DEFAULT_S2_COLLECTION,
+        bbox=bbox,
+        time_range=time_range,
+        index_name="S2_MNDWI",
+        threshold=mndwi_threshold,
+        mode="gt",
+        max_cloud_coverage=max_cloud_coverage,
+    )
+    mndwi_cube = apply_morphology(mndwi_cube, iterations)
+
+    _, ndvi_cube = s2_index_mask(
+        con=con,
+        collection_id=DEFAULT_S2_COLLECTION,
+        bbox=bbox,
+        time_range=time_range,
+        index_name="S2_NDVI",
+        threshold=ndvi_threshold,
+        mode="lt",
+        max_cloud_coverage=max_cloud_coverage,
+    )
+    ndvi_cube = apply_morphology(ndvi_cube, iterations)
+
+    _, bndvi_cube = s2_index_mask(
+        con=con,
+        collection_id=DEFAULT_S2_COLLECTION,
+        bbox=bbox,
+        time_range=time_range,
+        index_name="S2_BNDVI",
+        threshold=bndvi_threshold,
+        mode="lt",
+        max_cloud_coverage=max_cloud_coverage,
+    )
+    bndvi_cube = apply_morphology(bndvi_cube, iterations)
+
+    _, gndvi_cube = s2_index_mask(
+        con=con,
+        collection_id=DEFAULT_S2_COLLECTION,
+        bbox=bbox,
+        time_range=time_range,
+        index_name="S2_GNDVI",
+        threshold=gndvi_threshold,
+        mode="lt",
+        max_cloud_coverage=max_cloud_coverage,
+    )
+    gndvi_cube = apply_morphology(gndvi_cube, iterations)
+
+    # Select branch in the process graph.
+    selected = if_(
+        eq(method, "S2_SCL"),
+        scl_cube,
+        if_(
+            eq(method, "S2_MNDWI"),
+            mndwi_cube,
+            if_(
+                eq(method, "S2_NDVI"),
+                ndvi_cube,
+                if_(
+                    eq(method, "S2_BNDVI"),
+                    bndvi_cube,
+                    if_(
+                        eq(method, "S2_GNDVI"),
+                        gndvi_cube,
+                        ndwi_cube,  # default fallback
+                    ),
+                ),
+            ),
+        ),
+    )
+
+    return selected
+
+
+def generate() -> dict:
+    """
+    Create the UDP for extracting waterlines from Sentinel-2 imagery.
+
+    Workflow:
+    1. Load data
+    2. Create water/land mask (selectable method)
+    3. Apply morphology
+    4. Extract waterlines
+    """
+
+    ### 1. Connection
+    conn = openeo.connect(url="openeo.dataspace.copernicus.eu")
+
+    ### 2. Parameters
+    spatial_extent = Parameter.bounding_box(
+        name="spatial_extent",
+        description=("Bounding box of the area of interest. " "Defined as west, south, east, north in EPSG:4326."),
+    )
+
+    temporal_extent = Parameter.temporal_interval(
+        name="temporal_extent",
+        default=["2015-06-23", "2025-12-31"],
+        description="Date range over which to extract waterlines.",
+    )
+
+    max_cloud_coverage = Parameter.number(
+        name="max_cloud_coverage",
+        default=DEFAULT_MAX_CLOUD_COVER,
+        description=("Maximum allowed cloud coverage.")
+    )
+
+    method = Parameter.string(
+        name="s2_method",
+        default="S2_NDWI",
+        values=["S2_NDWI", "S2_MNDWI", "S2_SCL", "S2_NDVI", "S2_BNDVI", "S2_GNDVI"],
+        description="Method used to create the water/land mask from Sentinel-2 imagery.",
+    )
+
+    iterations = Parameter.integer(
+        name="iterations",
+        default=2,
+        description="Number of iterations for morphological operations.",
+    )
+
+    # Separate threshold params are easiest in a single UDP.
+    ndwi_threshold = Parameter.number(
+        name="ndwi_threshold",
+        default=WATERLAND_THRESHOLDS["S2_NDWI"].defaults["threshold"],
+        description=WATERLAND_THRESHOLDS["S2_NDWI"].description,
+    )
+    mndwi_threshold = Parameter.number(
+        name="mndwi_threshold",
+        default=WATERLAND_THRESHOLDS["S2_MNDWI"].defaults["threshold"],
+        description=WATERLAND_THRESHOLDS["S2_MNDWI"].description,
+    )
+    ndvi_threshold = Parameter.number(
+        name="ndvi_threshold",
+        default=WATERLAND_THRESHOLDS["S2_NDVI"].defaults["threshold"],
+        description=WATERLAND_THRESHOLDS["S2_NDVI"].description,
+    )
+    bndvi_threshold = Parameter.number(
+        name="bndvi_threshold",
+        default=WATERLAND_THRESHOLDS["S2_BNDVI"].defaults["threshold"],
+        description=WATERLAND_THRESHOLDS["S2_BNDVI"].description,
+    )
+    gndvi_threshold = Parameter.number(
+        name="gndvi_threshold",
+        default=WATERLAND_THRESHOLDS["S2_GNDVI"].defaults["threshold"],
+        description=WATERLAND_THRESHOLDS["S2_GNDVI"].description,
+    )
+
+    water_land_mask = build_water_land_mask_cube(
+        con=conn,
+        bbox=spatial_extent,
+        time_range=temporal_extent,
+        max_cloud_coverage=max_cloud_coverage,
+        method=method,
+        iterations=iterations,
+        ndwi_threshold=ndwi_threshold,
+        mndwi_threshold=mndwi_threshold,
+        ndvi_threshold=ndvi_threshold,
+        bndvi_threshold=bndvi_threshold,
+        gndvi_threshold=gndvi_threshold,
+    )
+
+    waterlines_cube = create_waterlines(water_land_mask)
 
     return build_process_dict(
         process_graph=waterlines_cube,
@@ -130,7 +266,14 @@ def generate() -> dict:
         parameters=[
             spatial_extent,
             temporal_extent,
+            max_cloud_coverage,
+            method,
             iterations,
+            ndwi_threshold,
+            mndwi_threshold,
+            ndvi_threshold,
+            bndvi_threshold,
+            gndvi_threshold,
         ],
         categories=["sentinel-2", "coastline", "waterlines"],
     )
