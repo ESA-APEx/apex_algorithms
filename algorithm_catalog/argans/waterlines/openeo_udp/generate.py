@@ -181,10 +181,10 @@ def generate() -> dict:
     4. Extract waterlines
     """
 
-    ### 1. Connection
+    ### 1. Create backend connection
     conn = openeo.connect(url="openeo.dataspace.copernicus.eu")
 
-    ### 2. Parameters
+    ### 2. Define UDP input parameters
     spatial_extent = Parameter.bounding_box(
         name="spatial_extent",
         description=("Bounding box of the area of interest. " "Defined as west, south, east, north in EPSG:4326."),
@@ -215,7 +215,7 @@ def generate() -> dict:
         description="Number of iterations for morphological operations.",
     )
 
-    # Separate threshold params are easiest in a single UDP.
+    ### 3. Define threshold parameters
     ndwi_threshold = Parameter.number(
         name="ndwi_threshold",
         default=WATERLAND_THRESHOLDS["S2_NDWI"].defaults["threshold"],
@@ -242,6 +242,7 @@ def generate() -> dict:
         description=WATERLAND_THRESHOLDS["S2_GNDVI"].description,
     )
 
+    ### 4. Build the water/land mask graph
     water_land_mask = build_water_land_mask_cube(
         con=conn,
         bbox=spatial_extent,
@@ -256,6 +257,7 @@ def generate() -> dict:
         gndvi_threshold=gndvi_threshold,
     )
 
+    ### 5. Extract waterlines from the cleaned water/land mask
     waterlines_cube = create_waterlines(water_land_mask)
 
     return build_process_dict(
