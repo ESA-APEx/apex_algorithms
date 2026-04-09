@@ -51,7 +51,6 @@ CC-BY-NC
 - - pablo.angelo@dlr.de
 - Paul Karlshöfer (Producer, Processor, OpenEO UDP) DLR/EOC Imaging Spectroscopy
 - - paul.karlshoefer@dlr.de
-EOC Geoservice (Host) DLR/EOC
 
 
 ## Acknowledgments / Funding 
