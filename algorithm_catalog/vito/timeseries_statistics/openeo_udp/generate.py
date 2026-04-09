@@ -23,7 +23,7 @@ def generate() -> dict:
     connection = openeo.connect("openeofed.dataspace.copernicus.eu")
 
     # ── parameters ──────────────────────────────────────────────────────────
-    collection_id = Parameter(
+    collection_id = Parameter.string(
         name="collection_id",
         description=(
             "The identifier of the EO collection to load "
@@ -34,7 +34,7 @@ def generate() -> dict:
         optional=True,
     )
 
-    bands = Parameter(
+    bands = Parameter.array(
         name="bands",
         description=(
             "Band names to include in the statistics "
@@ -42,20 +42,16 @@ def generate() -> dict:
             "Must be provided so that output bands can be labelled "
             "(e.g. B04_min, B04_max, …)."
         ),
-        schema={"type": "array", "items": {"type": "string"}},
+        item_schema={"type": "string"},
         default=["B04", "B08"],
     )
 
-    geometry = Parameter(
+    geometry = Parameter.geojson(
         name="geometry",
         description=(
             "GeoJSON geometry (Polygon or MultiPolygon) defining the area "
             "of interest. Statistics are spatially averaged over this geometry."
-        ),
-        schema={
-            "type": "object",
-            "subtype": "geojson",
-        },
+        )
     )
 
     temporal_extent = Parameter.temporal_interval(
@@ -66,7 +62,7 @@ def generate() -> dict:
         )
         )
 
-    period = Parameter(
+    period = Parameter.string(
         name="period",
         description=(
             "Temporal aggregation period. When set to null (the default) "
@@ -76,10 +72,7 @@ def generate() -> dict:
             "'month' or 'year', the same statistics are computed for every "
             "period, producing a time-series of statistics."
         ),
-        schema=[
-            {"type": "string", "enum": ["year", "month", "week", "dekad", "day"]},
-            {"type": "null"},
-        ],
+        values=["year", "month", "week", "dekad", "day"],
         default=None,
         optional=True,
     )

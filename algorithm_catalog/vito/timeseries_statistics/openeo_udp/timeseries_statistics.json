@@ -1128,12 +1128,14 @@
   },
   "id": "timeseries_statistics",
   "summary": "Calculate temporal statistics for any EO collection",
-  "description": "# Timeseries Statistics\n\n## Description\n\nThis algorithm computes temporal statistics from any EO collection for a user-specified spatial and temporal extent. It is designed as a flexible, generic utility targeted at advanced APEx users who are familiar with the available collections and band names on the underlying platform.\n\nFor each requested band, the following statistics are computed along the temporal dimension:\n\n| Statistic | Description |\n|-----------|-------------|\n| **min**   | Minimum value over the temporal extent |\n| **max**   | Maximum value over the temporal extent |\n| **mean**  | Arithmetic mean over the temporal extent |\n| **sd**    | Standard deviation over the temporal extent |\n| **q10**   | 10th percentile over the temporal extent |\n| **q50**   | Median (50th percentile) over the temporal extent |\n| **q90**   | 90th percentile over the temporal extent |\n\nThe output is a single raster with `n_bands \u00d7 7` layers, where the stats for each band are stacked in the order: min, max, mean, sd, q10, q50, q90.\n\n## Parameters\n\n| Parameter         | Description |\n|-------------------|-------------|\n| `collection_id`   | The identifier of the EO collection to use (e.g. `SENTINEL2_L2A`, `SENTINEL1_GRD`). The collection must be available on the target backend. |\n| `bands`           | *(optional)* Band names to process (e.g. `[\"B04\", \"B08\"]` for Sentinel-2 Red and NIR). When `null` (the default) all bands of the collection are loaded. Specifying bands is recommended to reduce data volume and cost. |\n| `spatial_extent`  | Bounding box (`west`, `south`, `east`, `north`) in WGS84. |\n| `temporal_extent` | Two-element array specifying the start and end date (e.g. `[\"2023-05-01\", \"2023-07-31\"]`). |\n| `resolution`      | *(optional)* Target spatial resolution in the units of the collection's native CRS (metres for projected CRS, degrees for WGS84). When `null` (the default) the native collection resolution is preserved. |\n\n## Usage Notes\n\n- This UDP does **not** apply any pre-processing (e.g. cloud masking or SAR backscatter calibration). Users are responsible for selecting an appropriate collection and temporal window.\n- The output band order follows the input bands order. For example, with `bands = [\"B04\", \"B08\"]` the output will contain 14 bands ordered as: B04_min, B04_max, B04_mean, B04_sd, B04_q10, B04_q50, B04_q90, B08_min, ...\n- Cloud-affected observations in optical collections (e.g. Sentinel-2) will influence the statistics unless a cloud-masked collection variant is used.\n\n## Performance Characteristics\n\nThe processing cost depends on the selected collection, number of bands, spatial extent, and temporal range. As a reference point, computing statistics over a 10\u00d710 km area for two Sentinel-2 L2A bands over a 3-month period costs approximately 4 platform credits.\n\n## Example\n\nThe example below shows the derived mean and standard deviation for Sentinel-2 L2A bands B04 (Red) and B08 (NIR) calculated for a 10\u00d710 km area of interest near Mol, Belgium, for the summer of 2023.\n",
+  "description": "# Timeseries Statistics\n\n## Description\n\nThis algorithm computes temporal statistics from any EO collection for a user-specified geometry and temporal extent. It is designed as a flexible, generic utility targeted at advanced APEx users who are familiar with the available collections and band names on the underlying platform.\n\nFor each requested band, the following statistics are computed along the temporal dimension:\n\n| Statistic | Description |\n|-----------|-------------|\n| **min**   | Minimum value over the temporal extent |\n| **max**   | Maximum value over the temporal extent |\n| **mean**  | Arithmetic mean over the temporal extent |\n| **sd**    | Standard deviation over the temporal extent |\n| **q10**   | 10th percentile over the temporal extent |\n| **q50**   | Median (50th percentile) over the temporal extent |\n| **q90**   | 90th percentile over the temporal extent |\n\nThe output is a CSV file with spatially averaged statistics. Each band is suffixed with the statistic name (e.g. `B04_min`, `B04_max`, `B08_q50`).\n\n## Modes\n\n### Full mode (default)\n\nWhen `period` is `null` (the default), a single set of 7 statistics is computed over the entire temporal extent. The time dimension is collapsed, producing one row of results.\n\n### Period mode\n\nWhen `period` is set to a calendar period such as `\"month\"`, `\"dekad\"`, or `\"year\"`, the same 7 statistics are computed for each period, producing a time-series of statistics. This is useful for monitoring temporal trends or seasonal patterns.\n\n## Parameters\n\n| Parameter         | Description |\n|-------------------|-------------|\n| `collection_id`   | *(optional, default: `SENTINEL2_L2A`)* The identifier of the EO collection to use (e.g. `SENTINEL2_L2A`, `SENTINEL1_GRD`). The collection must be available on the target backend. |\n| `bands`           | Band names to process (e.g. `[\"B04\", \"B08\"]` for Sentinel-2 Red and NIR). Must be provided so that output columns can be labelled (e.g. `B04_min`, `B04_max`, \u2026). |\n| `geometry`        | GeoJSON geometry (Polygon or MultiPolygon) defining the area of interest. Statistics are spatially averaged over this geometry. |\n| `temporal_extent` | Two-element array specifying the start and end date (e.g. `[\"2023-05-01\", \"2023-07-31\"]`). |\n| `period`          | *(optional, default: `null`)* Temporal aggregation period. One of `\"year\"`, `\"month\"`, `\"week\"`, `\"dekad\"`, `\"day\"`, or `null` for full mode. |\n\n## Usage Notes\n\n- This UDP does **not** apply any pre-processing (e.g. cloud masking or SAR backscatter calibration). Users are responsible for selecting an appropriate collection and temporal window.\n- Cloud-affected observations in optical collections (e.g. Sentinel-2) will influence the statistics unless a cloud-masked collection variant is used.\n- The output columns are named `{band}_{stat}`, e.g. `B04_min`, `B04_max`, `B04_mean`, `B04_sd`, `B04_q10`, `B04_q50`, `B04_q90`, `B08_min`, \u2026\n- The spatial aggregation computes the mean of all pixels within the geometry for each statistic.\n\n## Performance Characteristics\n\nThe processing cost depends on the selected collection, number of bands, geometry size, and temporal range. As a reference point, computing statistics over a 10\u00d710 km area for two Sentinel-2 L2A bands over a 3-month period costs approximately 4 platform credits.\n\n## Example\n\nCompute monthly statistics for Sentinel-2 L2A bands B04 and B08 over a polygon near Mol, Belgium:\n\n```json\n{\n  \"collection_id\": \"SENTINEL2_L2A\",\n  \"bands\": [\"B04\", \"B08\"],\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[[4.97, 51.19], [5.07, 51.19], [5.07, 51.28], [4.97, 51.28], [4.97, 51.19]]]\n  },\n  \"temporal_extent\": [\"2023-05-01\", \"2023-07-31\"],\n  \"period\": \"month\"\n}\n```\n",
   "parameters": [
     {
       "name": "collection_id",
       "description": "The identifier of the EO collection to load (e.g. 'SENTINEL2_L2A', 'SENTINEL1_GRD'). The collection must be available on the target backend.",
-      "schema": {},
+      "schema": {
+        "type": "string"
+      },
       "optional": true,
       "default": "SENTINEL2_L2A"
     },
@@ -1191,21 +1193,16 @@
     {
       "name": "period",
       "description": "Temporal aggregation period. When set to null (the default) a single set of summary statistics (min, max, mean, sd, q10, q50, q90) is computed over the full temporal extent, collapsing the time dimension.  When set to a calendar period such as 'month' or 'year', the same statistics are computed for every period, producing a time-series of statistics.",
-      "schema": [
-        {
-          "type": "string",
-          "enum": [
-            "year",
-            "month",
-            "week",
-            "dekad",
-            "day"
-          ]
-        },
-        {
-          "type": "null"
-        }
-      ],
+      "schema": {
+        "type": "string",
+        "enum": [
+          "year",
+          "month",
+          "week",
+          "dekad",
+          "day"
+        ]
+      },
       "optional": true,
       "default": null
     }
