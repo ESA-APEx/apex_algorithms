@@ -63,7 +63,7 @@ def cwl_input_to_parameter(name, cwl_input_yaml):
         arguments["default"] = None
 
     if doc := cwl_input_yaml.get("doc"):
-        arguments["description"] = doc
+        arguments["description"] = str(doc).rstrip()
 
     if name == "spatial_extent":
         return Parameter.spatial_extent(**arguments)

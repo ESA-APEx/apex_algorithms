@@ -53,7 +53,7 @@ def generate() -> dict:
     return build_process_dict(
         process_graph=datacube,
         process_id="sentinel1_sar_coherence",
-        description=get_cwl_main(cwl_yaml).get("doc"),
+        description=get_cwl_main(cwl_yaml).get("doc").rstrip(),
         parameters=parameters,
     )
 

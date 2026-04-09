@@ -45,7 +45,7 @@ def generate() -> dict:
     return build_process_dict(
         process_graph=stac_resource,
         process_id="sentinel1_sar_interferogram",
-        description=get_cwl_main(cwl_yaml).get("doc"),
+        description=get_cwl_main(cwl_yaml).get("doc").rstrip(),
         parameters=parameters,
     )
 
