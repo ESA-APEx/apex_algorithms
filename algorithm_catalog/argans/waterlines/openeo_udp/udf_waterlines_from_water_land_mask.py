@@ -18,7 +18,6 @@ from shapely.geometry import (
     Point,
     GeometryCollection,
 )
-import json
 from shapely.ops import unary_union
 from openeo.udf import inspect
 import rioxarray
