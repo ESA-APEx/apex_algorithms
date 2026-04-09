@@ -7,7 +7,7 @@
     "process_graph": {
       "tsstats1": {
         "process_id": "timeseries_statistics",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b57bfb726afe27600016e4bda2c7012aff8edcba/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
         "arguments": {
           "collection_id": "SENTINEL2_L2A",
           "bands": ["B04", "B08"],
@@ -30,7 +30,7 @@
     "process_graph": {
       "tsstats1": {
         "process_id": "timeseries_statistics",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b57bfb726afe27600016e4bda2c7012aff8edcba/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
         "arguments": {
           "collection_id": "SENTINEL2_L2A",
           "bands": ["B04", "B08"],
