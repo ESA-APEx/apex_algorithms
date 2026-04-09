@@ -69,9 +69,7 @@ def split_into_segments(geom: GeometryLike) -> list[LineString]:
     return segments
 
 
-def _remove_small_interiors(
-    geom: Polygon, min_hole_area: float = DEFAULT_MIN_HOLE_AREA
-) -> Polygon:
+def _remove_small_interiors(geom: Polygon, min_hole_area: float = DEFAULT_MIN_HOLE_AREA) -> Polygon:
     """Remove small interior rings from polygon."""
     if geom.is_empty:
         return geom
@@ -102,9 +100,7 @@ def _vectorize_water_polygons(
     return polys
 
 
-def _remove_extent_intersections(
-    waterline: LineString, bounds, buffer: float = 0.0001
-) -> list[LineString]:
+def _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 0.0001) -> list[LineString]:
     """Return 2-point segments that do NOT intersect the raster extent boundary."""
     extent_edge = box(*bounds).boundary
     edges = split_into_segments(waterline)
@@ -160,9 +156,7 @@ def _clean_waterline_segments(
     return segments
 
 
-def _get_sea_direction_for_segment(
-    water_poly: Polygon, seg: LineString
-) -> tuple[str, float | None]:
+def _get_sea_direction_for_segment(water_poly: Polygon, seg: LineString) -> tuple[str, float | None]:
     """
     Determine where the sea (water polygon side) lies relative to a segment.
 
@@ -293,9 +287,7 @@ def waterline_from_land_water_raster(
     records: list[dict[str, Any]] = []
 
     if time_dim not in da.dims:
-        raise KeyError(
-            f"No {time_dim} in input array. Use one of the following: {da.dims}"
-        )
+        raise KeyError(f"No {time_dim} in input array. Use one of the following: {da.dims}")
 
     transform = da.rio.transform()
     bounds = da.rio.bounds()
@@ -332,36 +324,6 @@ def waterline_from_land_water_raster(
     return gdf
 
 
-# def apply_datacube(cube: xr.DataArray, context: dict) -> xr.DataArray:
-#     inspect(data=[cube.shape], message="Input UDF cube shape")
-#     gdf = waterline_from_land_water_raster(
-#         da=cube,
-#         crs=context.get("crs"),
-#         simplify_tolerance=context.get("simplify_tolerance"),
-#         time_dim=context.get("time_dim", "time"),
-#     )
-#     inspect(data=[len(gdf)], message="Output gdf len")
-    
-#     geojson = json.dumps(gdf.__geo_interface__, default=str)
-#     inspect(data=[geojson], message="Output geojson")
-#     #return xr.DataArray(geojson)
-#     return xr.DataArray.from_series(gdf.geometry)
-
-# def apply_vectorcube(geometries: gpd.geodataframe.GeoDataFrame,
-#                      cube: xr.DataArray,
-#                      context: dict) -> tuple[gpd.GeoDataFrame, xr.DataArray]:
-#     inspect(data=[geometries], message="Input UDF geometries")
-#     inspect(data=[cube.shape], message="Input UDF cube shape")
-#     gdf = waterline_from_land_water_raster(
-#         da=cube,
-#         crs=context.get("crs"),
-#         simplify_tolerance=context.get("simplify_tolerance"),
-#         time_dim=context.get("time_dim", "time"),
-#     )
-#     inspect(data=[gdf], message="Output geojson")
-    
-#     return gdf, cube
-
 def apply_udf_data(data: UdfData) -> UdfData:
 
     inspect(data=[data], message="Input UDFData inspection")
@@ -386,5 +348,5 @@ def apply_udf_data(data: UdfData) -> UdfData:
     data.set_feature_collection_list([feature_collection])
 
     inspect(data=[data], message="Output UDFData inspection")
-    
+
     return data
