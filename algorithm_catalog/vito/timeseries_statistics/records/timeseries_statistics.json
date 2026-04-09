@@ -73,7 +73,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/statistics_udp/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/statistic_udp/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json"
     },
     {
       "rel": "service",
@@ -97,7 +97,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=timeseries_statistics&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/statistics_udp/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=timeseries_statistics&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/statistic_udp/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
