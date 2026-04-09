@@ -37,7 +37,7 @@ def test_get_platform_ogc_records():
 )
 def test_service_record_validation(record):
     ## Validate if record file is located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'
-    assert record["path"].endswith(f"{record["data"]["id"]}/records/{record['data']['id']}.json"), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
+    assert record["path"].endswith(f"{record['data']['id']}/records/{record['data']['id']}.json"), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
     
     ## Validate record against the service OGC record schema.
     jsonschema.validate(instance=record["data"], schema=get_service_ogc_record_schema())

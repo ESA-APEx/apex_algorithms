@@ -92,7 +92,7 @@
       "rel": "platform",
       "type": "application/json",
       "title": "CDSE openEO federation",
-      "href": "../../../../platform_catalog/openeo_platform.json"
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {
       "rel": "provider",

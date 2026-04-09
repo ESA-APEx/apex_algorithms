@@ -71,13 +71,13 @@
     },
     {
       "rel": "application",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/uhi_jja_udp.json",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO UDP definition"
     },
     {
       "rel": "service",
-      "href": "https://openeofed.dataspace.copernicus.eu/",
+      "href": "https://openeofed.dataspace.copernicus.eu",
       "type": "application/json",
       "title": "openEO Backend"
     },
@@ -103,7 +103,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=UHI_per_pixel&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/uhi_jja_udp.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=UHI_per_pixel&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/compass_informatics/UHI_per_pixel/openeo_udp/UHI_per_pixel.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
