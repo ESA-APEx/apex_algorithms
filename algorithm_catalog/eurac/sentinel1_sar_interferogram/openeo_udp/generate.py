@@ -16,8 +16,8 @@ from esa_apex_toolbox.cwl_to_udp_utils import (
     load_string_from_any,
 )
 
-cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_coherence_parallel_temporal_extent.cwl"
-# cwl_url = "/home/emile/openeo/s1-workflows/cwl/sar_coherence_parallel_temporal_extent.cwl"
+cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+# cwl_url = "/home/emile/openeo/s1-workflows/cwl/sar_interferogram.cwl"
 
 
 def generate() -> dict:
@@ -30,38 +30,31 @@ def generate() -> dict:
         context[parameter.name] = {"from_parameter": parameter.name}
 
     connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
-    # TODO: Use run_cwl_to_stac once https://github.com/cloudinsar/s1-workflows/issues/80 is deployed
-    # datacube = StacResource(
-    #     graph=PGNode(
-    #         "run_cwl_to_stac",
-    #         namespace=None,
-    #         arguments={
-    #             "cwl": cwl_url,
-    #             "context": context,
-    #         },
-    #     ),
-    #     connection=connection,
-    # )
-    datacube = connection.datacube_from_process(
-        "run_udf",
-        data=None,
-        udf=cwl_url,
-        runtime="EOAP-CWL",
-        context=context,
+    stac_resource = StacResource(
+        graph=PGNode(
+            "run_cwl_to_stac",
+            namespace=None,
+            arguments={
+                "cwl": cwl_url,
+                "context": context,
+            },
+        ),
+        connection=connection,
     )
 
     return build_process_dict(
-        process_graph=datacube,
-        process_id="sentinel1_sar_coherence",
+        process_graph=stac_resource,
+        process_id="sentinel1_sar_interferogram",
         description=get_cwl_main(cwl_yaml).get("doc").rstrip(),
         parameters=parameters,
     )
 
+
 if __name__ == "__main__":
     j = generate()
-    write_json(j, "sentinel1_sar_coherence.json")
+    write_json(j, "sentinel1_sar_interferogram.json")
 
-    udp_path = Path("../records/sentinel1_sar_coherence.json")
+    udp_path = Path("../records/sentinel1_sar_interferogram.json")
     j_record = json.loads(udp_path.read_text())
     j_record["properties"]["description"] = j["description"]
     write_json(j_record, udp_path)
