@@ -1,0 +1,120 @@
+{
+  "process_graph": {
+    "runcwltostac1": {
+      "process_id": "run_cwl_to_stac",
+      "arguments": {
+        "context": {
+          "InSAR_pairs": {
+            "from_parameter": "InSAR_pairs"
+          },
+          "burst_id": {
+            "from_parameter": "burst_id"
+          },
+          "coherence_window_rg": {
+            "from_parameter": "coherence_window_rg"
+          },
+          "coherence_window_az": {
+            "from_parameter": "coherence_window_az"
+          },
+          "n_rg_looks": {
+            "from_parameter": "n_rg_looks"
+          },
+          "n_az_looks": {
+            "from_parameter": "n_az_looks"
+          },
+          "polarization": {
+            "from_parameter": "polarization"
+          },
+          "sub_swath": {
+            "from_parameter": "sub_swath"
+          }
+        },
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+      },
+      "result": true
+    }
+  },
+  "id": "sentinel1_sar_interferogram",
+  "description": "This process generates a time series of Sentinel-1 interferometric coherence, wrapped interferograms, and unwrapped interferograms for user\u2011defined interferometric pairs. The area of interest is defined at burst level, using the Sentinel\u20111 burst_id and sub_swath, ensuring precise spatial targeting and consistent geometry across acquisitions. The interferometric pairs to be processed are explicitly provided by the user through the InSAR_pair list, allowing full control over temporal baselines.\nThe workflow is implemented using ESA SNAP operators and is defined as a Common Workflow Language (CWL) pipeline [sar_interferogram.cwl](https://github.com/cloudinsar/s1-workflows/blob/main/cwl/sar_interferogram_parallel.cwl).\nThe generated interferograms are fully suitable for multi\u2011temporal interferometric analysis. In particular, the outputs can be directly used as input to multi\u2011temporal InSAR toolkits such as MintPy, enabling time\u2011series deformation analysis using methods like SBAS or Persistent Scatterer approaches.\n\nAn example on how to use it:\n\n```python\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.dataspace.copernicus.eu\").authenticate_oidc()\nstac_resource = connection.datacube_from_process(\n  \"sentinel1_sar_interferogram\",\n  namespace=\"https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/573649f793549fbcd2696b44d5222782ef211bc3/algorithm_catalog/eurac/sentinel1_sar_interferogram/openeo_udp/sentinel1_sar_interferogram.json\",\n  **{\n      \"InSAR_pairs\": [\n          [\n              \"2018-01-28\",\n              \"2018-02-03\"\n          ]\n      ],\n      \"burst_id\": 329488,\n      \"coherence_window_az\": 2,\n      \"coherence_window_rg\": 10,\n      \"n_az_looks\": 1,\n      \"n_rg_looks\": 4,\n      \"polarization\": \"VH\",\n      \"sub_swath\": \"IW2\"\n  }\n)\n\njob = stac_resource.create_job(title=\"sentinel1_sar_interferogram test\")\njob.start_and_wait()\njob.get_results().download_files()\n```",
+  "parameters": [
+    {
+      "name": "InSAR_pairs",
+      "description": "The list of [primary date, secondary date] pairs used to compute the interferogram. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/notebooks/LPS_DEMO/Input_selection.ipynb) to create the list of insar pairs based on your requirements.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "burst_id",
+      "description": "The Sentinel-1 burst identifier. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/notebooks/LPS_DEMO/Input_selection.ipynb) to find a fitting `burst_id`.\n Alternatively, the burst id map can be downloaded here: [Burst ID Maps 2022-05-30](https://sar-mpc.eu/files/S1_burstid_20220530.zip).",
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "name": "coherence_window_rg",
+      "description": "Coherence window size in range direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 10
+    },
+    {
+      "name": "coherence_window_az",
+      "description": "Coherence window size in azimuth direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 2
+    },
+    {
+      "name": "n_rg_looks",
+      "description": "Multi-look window size in range direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 4
+    },
+    {
+      "name": "n_az_looks",
+      "description": "Multi-look window size in azimuth direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 1
+    },
+    {
+      "name": "polarization",
+      "description": "polarization",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "VV",
+          "VH"
+        ]
+      }
+    },
+    {
+      "name": "sub_swath",
+      "description": "Sub-swath identifier",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "IW1",
+          "IW2",
+          "IW3"
+        ]
+      }
+    }
+  ]
+}

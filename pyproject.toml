@@ -30,6 +30,7 @@ Issues = "https://github.com/ESA-APEx/apex_algorithms/issues"
 tests = [
     "pytest>=8.2.0",
     "requests_mock>=1.12.0",
+    "jsonschema",
 ]
 dev = [
     "pytest>=8.2.0",
