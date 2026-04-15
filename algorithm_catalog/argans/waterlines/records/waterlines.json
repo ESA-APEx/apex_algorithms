@@ -63,10 +63,13 @@
     ],
     "formats": [
       {
-        "name": "GeoTiff"
+        "name": "GeoJSON"
       },
       {
-        "name": "PNG"
+        "name": "Parquet"
+      },
+      {
+        "name": "GPKG"
       }
     ],
     "license": "CC-BY-4.0"
