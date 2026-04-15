@@ -44,6 +44,8 @@ def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCub
     """
 
     # Vectorize cube
+    # TODO: The waterlines UDF required vectorized cube, however this fails
+    # when building graph: AttributeError: 'ProcessBuilder' object has no attribute 'raster_to_vector'
     #cube = cube.raster_to_vector()
 
     udf = UDF.from_file(
@@ -52,7 +54,7 @@ def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCub
     )
     return cube.apply_dimension(
         process=udf,
-        dimension="t",
+        dimension="geometry",
         context={"simplify_tolerance": simplify_tolerance},
     )
 
