@@ -231,15 +231,18 @@ def waterline_from_vectorized_water_raster(
     simplify_tolerance: float | None = None,
 ) -> gpd.GeoDataFrame:
     """
-    Generate waterline segments for each time step from a vectorized land/water mask raster.
-
+    Generate waterline segments for each time step from a vectorized land/water mask.
+    The input gdf is the output of openEO raster_to_vector() process.
     Args:
-        gdf: Vectorized water/land mask with polygons geometries. This GeoDataFrame contains
-            separate field for each time stamp. Each row contains either NULL, 0, or 1 value,
-            where NULL means the polygons is not for the given time stamp, 0 is land polygon
-            and 1 is water polygon.
-        simplify_tolerance: Optional tolerance for geometry simplification.
-            If provided, resulting geometries will be simplified.
+        gdf: GeoDataFrame containing polygon geometries and one non-geometry column
+            per timestamp. For each timestamp column, values indicate whether a
+            polygon belongs to water or land at that time:
+            - null: polygon not present for that timestamp
+            - 0: land polygon
+            - non-zero: water polygon
+        simplify_tolerance: Optional tolerance for geometry simplification. If
+            provided, merged water geometries are simplified before extracting
+            boundary segments.
 
     Returns:
         A GeoDataFrame with columns:
