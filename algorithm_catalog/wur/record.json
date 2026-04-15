@@ -2,7 +2,7 @@
     "id": "wur",
     "type": "Feature",
     "conformsTo": [
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
     ],
     "properties": {
         "created": "2025-12-03T13:00:00Z",

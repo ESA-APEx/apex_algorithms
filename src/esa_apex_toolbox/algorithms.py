@@ -115,7 +115,10 @@ class Algorithm:
 
         if not data.get("type") == "Feature":
             raise InvalidMetadataError(f"Expected a GeoJSON 'Feature' object, but got type {data.get('type')!r}.")
-        if "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data.get("conformsTo", []):
+        data_conforms_to = data.get("conformsTo", [])
+        # TODO: Remove http reference once merged to main
+        if (("https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to) and
+                ("http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to)):
             raise InvalidMetadataError(
                 f"Expected an 'OGC API - Records' record object, but got {data.get('conformsTo')!r}."
             )
