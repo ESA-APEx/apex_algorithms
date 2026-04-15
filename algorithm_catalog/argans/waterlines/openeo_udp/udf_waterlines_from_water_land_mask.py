@@ -310,11 +310,3 @@ def apply_udf_data(udf_data: UdfData) -> UdfData:
     inspect(data=[udf_data], message="Output UDFData inspection")
 
     return udf_data
-
-
-# from pathlib import Path
-# files_dir =  Path("P:/FastTrack/DAP10/openeo")
-# polygons_path = files_dir / "vectorcube.geojson"
-# gdf = gpd.read_file(polygons_path)
-# waterlines = waterline_from_vectorized_water_raster(gdf, simplify_tolerance=10)
-# waterlines.to_file(files_dir / "vatercube_waterlines.geojson")
