@@ -1,68 +1,38 @@
 # Waterlines openEO UDP
 
 ## Purpose
-Extract coastline waterlines from Sentinel-2 imagery using a selectable water/land classification method, morphological refinement, and UDF-based vectorization.
+Extract coastline waterlines from Sentinel-2 imagery using NDWI-based water detection, morphological refinement, and UDF-based vectorization.
 
 ---
 
 ## Methodology
 
-The algorithm processes Sentinel-2 time series data to generate water/land masks and extract waterlines.
-
 ### Water/Land Classification
 
-Water/land masks are derived using one of the following methods:
-
-#### Index-based methods
-
-Water is identified based on spectral indices computed from Sentinel-2 bands:
+Water masks are derived using the NDWI (Normalized Difference Water Index):
 
 - **NDWI (Normalized Difference Water Index)**  
   $$
   NDWI = \frac{G - NIR}{G + NIR}
   $$
 
-- **MNDWI (Modified NDWI)**  
-  $$
-  MNDWI = \frac{G - SWIR}{G + SWIR}
-  $$
-
-- **NDVI (Normalized Difference Vegetation Index)**  
-  $$
-  NDVI = \frac{NIR - R}{NIR + R}
-  $$
-
-- **GNDVI (Green NDVI)**  
-  $$
-  GNDVI = \frac{NIR - G}{NIR + G}
-  $$
-
-- **BNDVI (Blue NDVI)**  
-  $$
-  BNDVI = \frac{NIR - B}{NIR + B}
-  $$
+Where water is classified as:
+- **NDWI > threshold**
 
 Where:
-- **B** = Blue band (S2 B02)  
 - **G** = Green band (S2 B03)  
-- **R** = Red band (S2 B04)  
 - **NIR** = Near Infrared (S2 B08)  
-- **SWIR** = Shortwave Infrared (S2 B11)
 
-Water classification rules:
-- NDWI, MNDWI → water if index > threshold  
-- NDVI, GNDVI, BNDVI → water if index < threshold  
-
-Default thresholds are provided for each index but can be overridden via parameters.
+Default threshold is equal to **0.01** but can be overridden via parameters.
 
 ---
 
-#### SCL-based method
+### Why only NDWI?
+This MVP supports only one method (**S2_NDWI**).
 
-- Uses the Sentinel-2 Scene Classification Layer (SCL)  
-- Water is identified as class `6`  
+Originally, multiple methods were selectable via a parameter, but this required openEO `if_()` logic, which converts the result into a `ProcessBuilder` instead of a `DataCube`.
+This breaks the `raster_to_vector()` step needed for waterline extraction.
 
----
 
 ### Morphological Processing
 
@@ -130,3 +100,4 @@ This work was developed as part of an ESA-funded Fast Track project.
 
 - Results are most reliable for scenes with low cloud coverage  
 - NoData areas may introduce artifacts, particularly along boundaries between valid and invalid pixels  
+- NDWI might be less reliable in turbid waters
