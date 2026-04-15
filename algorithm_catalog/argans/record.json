@@ -9,7 +9,7 @@
     "updated": "2026-04-01T00:00:00Z",
     "type": "algorithm_provider",
     "title": "Argans Ltd",
-    "description": "Argans Ltd builds open source EO tools.",
+    "description": "Argans specializes in satellite-based Earth observation, remote sensing, and GIS for monitoring marine, atmospheric, and land environments.",
     "keywords": [],
     "language": {
       "code": "en-US",
@@ -62,7 +62,7 @@
       "rel": "logo-dark",
       "type": "image/png",
       "title": "Logo",
-      "href": "https://argans.co.uk/img/logo.png"
+      "href": "https://argans.co.uk/img/logos/argans_white_new.png"
     }
   ]
 }
