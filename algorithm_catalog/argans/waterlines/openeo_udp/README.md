@@ -1,7 +1,7 @@
 # Waterlines openEO UDP
 
 ## Purpose
-Extract coastline waterlines from Sentinel-2 imagery using a selectable water/land classification method, morphological refinement, and UDF-based vectorisation.
+Extract coastline waterlines from Sentinel-2 imagery using a selectable water/land classification method, morphological refinement, and UDF-based vectorization.
 
 ---
 
@@ -13,7 +13,7 @@ The algorithm processes Sentinel-2 time series data to generate water/land masks
 
 Water/land masks are derived using one of the following methods:
 
-#### Index-based methods (thresholding)
+#### Index-based methods
 
 Water is identified based on spectral indices computed from Sentinel-2 bands:
 
