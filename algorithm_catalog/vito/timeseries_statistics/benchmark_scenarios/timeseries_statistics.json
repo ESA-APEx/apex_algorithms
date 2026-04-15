@@ -20,31 +20,10 @@
         "result": true
       }
     },
-    "reference_data": {}
-  },
-  {
-    "id": "timeseries_statistics_s2_monthly",
-    "type": "openeo",
-    "description": "Monthly statistics for Sentinel-2 L2A Red and NIR bands over a 10x10 km area near Mol, Belgium.",
-    "backend": "openeo.dataspace.copernicus.eu",
-    "process_graph": {
-      "tsstats1": {
-        "process_id": "timeseries_statistics",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/timeseries_statistics/openeo_udp/timeseries_statistics.json",
-        "arguments": {
-          "collection_id": "SENTINEL2_L2A",
-          "bands": ["B04", "B08"],
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [[[4.97, 51.19], [5.07, 51.19], [5.07, 51.28], [4.97, 51.28], [4.97, 51.19]]]
-          },
-          "temporal_extent": ["2023-05-01", "2023-07-31"],
-          "period": "month"
-        },
-        "result": true
-      }
-    },
-    "reference_data": {}
+      "reference_data":  {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-24225368486!tests_test_benchmarks.py__test_run_benchmark_timeseries_statistics_s2_full_!actual/job-results.json",
+      "timeseries.csv": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-24225368486!tests_test_benchmarks.py__test_run_benchmark_timeseries_statistics_s2_full_!actual/timeseries.csv"
+    }
   },
   {
     "id": "timeseries_statistics_s1_dekad",

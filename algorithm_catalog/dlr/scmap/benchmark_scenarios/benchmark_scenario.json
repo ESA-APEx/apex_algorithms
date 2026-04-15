@@ -21,7 +21,7 @@
       },
       "reference_data": {
         "job-results.json": "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/job-results.json",
-        "openEO.tif": "https://github.com/Schiggebam/dlr_scmap_resources/blob/main/openEO.tif"
+        "openEO.tif": "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/openEO.tif"
       }
     }
 ]
