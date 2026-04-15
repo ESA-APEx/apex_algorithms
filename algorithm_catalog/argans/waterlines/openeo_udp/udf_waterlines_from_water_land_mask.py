@@ -81,24 +81,6 @@ def _remove_small_interiors(geom: Polygon, min_hole_area: float = DEFAULT_MIN_HO
     return Polygon(geom.exterior, holes=kept_holes)
 
 
-def _vectorize_water_polygons(
-    water_mask: np.ndarray,
-    transform: Affine,
-    water_value: int = 1,
-) -> list[Polygon]:
-    """Create water polygons from a 0/1 coastal-water mask."""
-    polys: list[Polygon] = []
-    mask = water_mask.astype(bool)
-
-    for geom, val in shapes(water_mask, mask=mask, transform=transform):
-        if int(val) == int(water_value):
-            shp = shape(geom)
-            shp = _remove_small_interiors(shp)
-            polys.append(shp)
-
-    return polys
-
-
 def _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 0.0001) -> list[LineString]:
     """Return 2-point segments that do NOT intersect the raster extent boundary."""
     extent_edge = box(*bounds).boundary
@@ -214,19 +196,17 @@ def _get_sea_direction_for_segment(water_poly: Polygon, seg: LineString) -> tupl
 
 
 def _segments_for_water_mask(
-    water_mask_2d: np.ndarray,
-    transform: Affine,
+    gdf_water_one_timestamp,
     bounds,
     simplify_tolerance: float | None = None,
 ) -> tuple[list[LineString], Polygon] | None:
     """Converts water land mask for single timestamp to cleaned waterline segments."""
 
-    # Here water_value is 1 because _build_coastal_water_mask returns 0/1
-    water_polys = _vectorize_water_polygons(water_mask_2d, transform, water_value=1)
-    if not water_polys:
-        return None
+    # Remove small interiors
+    gdf_water_one_timestamp["geometry"] = gdf_water_one_timestamp["geometry"].apply(_remove_small_interiors)
 
-    water_poly = unary_union(water_polys)
+    # Merge all polygons
+    water_poly = gdf_water_one_timestamp.union_all()
 
     if simplify_tolerance is not None:
         water_poly = water_poly.simplify(simplify_tolerance, preserve_topology=True)
@@ -246,23 +226,20 @@ def _segments_for_water_mask(
     return cleaned_segments, water_poly
 
 
-def waterline_from_land_water_raster(
-    da: xr.DataArray,
-    crs: str | None = None,
+def waterline_from_vectorized_water_raster(
+    gdf: gpd.GeoDataFrame,
     simplify_tolerance: float | None = None,
-    time_dim: str = DEFAULT_TIME_DIM,
 ) -> gpd.GeoDataFrame:
     """
-    Generate waterline segments for each time step from a land/water mask raster.
+    Generate waterline segments for each time step from a vectorized land/water mask raster.
 
     Args:
-        da: DataArray containing a land/water mask with a time dimension.
-        crs: DataArray projection. If None it will be read from da. However in some
-            situations this information might not be stored in da (for example when
-            reading dataset from netCDF) so option to provide it is given.
+        gdf: Vectorized water/land mask with polygons geometries. This GeoDataFrame contains
+            separate field for each time stamp. Each row contains either NULL, 0, or 1 value,
+            where NULL means the polygons is not for the given time stamp, 0 is land polygon
+            and 1 is water polygon.
         simplify_tolerance: Optional tolerance for geometry simplification.
             If provided, resulting geometries will be simplified.
-        time_dim: Name of the time dimension in the raster dataset.
 
     Returns:
         A GeoDataFrame with columns:
@@ -275,29 +252,17 @@ def waterline_from_land_water_raster(
             - geometry: Waterline geometry (LineString or MultiLineString).
     """
 
-    if crs is None:
-        if da.rio.crs is not None:
-            crs = da.rio.crs
-        elif "crs" in da.attrs:
-            crs = da.attrs["crs"]
-    if crs is None:
-        raise ValueError("CRS needed to perform vectorization.")
-
     records: list[dict[str, Any]] = []
 
-    if time_dim not in da.dims:
-        raise KeyError(f"No {time_dim} in input array. Use one of the following: {da.dims}")
-
-    transform = da.rio.transform()
-    bounds = da.rio.bounds()
-
-    for i in range(da.sizes[time_dim]):
-        slice2d = da.isel({time_dim: i})
-        tval = slice2d[time_dim].values
-        inspect(data=[tval], message="Extracting waterlines for timestamp")
+    # Get time dimensions
+    time_stamps = gdf.loc[:, gdf.columns != "geometry"].columns.to_list()
+    bounds = gdf.total_bounds
+    for time_stamp in time_stamps:
+        one_time_stamp_gdf = gdf[[time_stamp, "geometry"]].dropna(subset=[time_stamp])
+        one_time_stamp_gdf_water_only = one_time_stamp_gdf[one_time_stamp_gdf[time_stamp] != 0]
+        inspect(data=[time_stamp], message="Extracting waterlines for timestamp")
         res = _segments_for_water_mask(
-            slice2d.values,
-            transform=transform,
+            one_time_stamp_gdf_water_only,
             bounds=bounds,
             simplify_tolerance=simplify_tolerance,
         )
@@ -305,12 +270,12 @@ def waterline_from_land_water_raster(
             continue
 
         segments, water_poly = res
-        inspect(data=[tval], message="Calculating sea direction for timestamp")
+        inspect(data=[time_stamp], message="Calculating sea direction for timestamp")
         for seg in segments:
             sea_direction = _get_sea_direction_for_segment(water_poly, seg)
             records.append(
                 {
-                    "time": tval,
+                    "time": time_stamp,
                     "type": "waterline_segment",
                     DEFAULT_SEA_DIRECTION_8_COLUMN: sea_direction[0],
                     DEFAULT_SEA_AZIMUTH_DEG_COLUMN: sea_direction[1],
@@ -318,34 +283,35 @@ def waterline_from_land_water_raster(
                 }
             )
     inspect(data=[records], message="Converting records to geodataframe")
-    gdf = gpd.GeoDataFrame(records, geometry="geometry", crs=crs)
+    gdf = gpd.GeoDataFrame(records, geometry="geometry", crs=gdf.crs)
     gdf = gdf[~gdf.geometry.isna() & ~gdf.geometry.is_empty].reset_index(drop=True)
     return gdf
 
 
-def apply_udf_data(data: UdfData) -> UdfData:
+def apply_udf_data(udf_data: UdfData) -> UdfData:
 
-    inspect(data=[data], message="Input UDFData inspection")
+    inspect(data=[udf_data], message="Input UDFData inspection")
 
-    cube = data.get_datacube_list()[0].get_array()
-    inspect(data=[list(cube.dims), list(cube.shape)], message="Input UDF cube dims/shape")
+    [feature_collection] = udf_data.get_feature_collection_list()
+    gdf = feature_collection.data
 
-    gdf = waterline_from_land_water_raster(
-        da=cube,
-        crs=data.user_context.get("crs"),
-        simplify_tolerance=data.user_context.get("simplify_tolerance"),
-        time_dim=data.user_context.get("time_dim", "time"),
+    gdf = waterline_from_vectorized_water_raster(
+        gdf=gdf,
+        simplify_tolerance=udf_data.user_context.get("simplify_tolerance"),
     )
 
     inspect(data=[gdf], message="Output gdf")
 
-    feature_collection = FeatureCollection(
-        id=DEFAULT_OUT_LAYER,
-        data=gdf,
-    )
+    udf_data.set_feature_collection_list([FeatureCollection(id="_", data=gdf)])
 
-    data.set_feature_collection_list([feature_collection])
+    inspect(data=[udf_data], message="Output UDFData inspection")
 
-    inspect(data=[data], message="Output UDFData inspection")
+    return udf_data
 
-    return data
+
+# from pathlib import Path
+# files_dir =  Path("P:/FastTrack/DAP10/openeo")
+# polygons_path = files_dir / "vectorcube.geojson"
+# gdf = gpd.read_file(polygons_path)
+# waterlines = waterline_from_vectorized_water_raster(gdf, simplify_tolerance=10)
+# waterlines.to_file(files_dir / "vatercube_waterlines.geojson")

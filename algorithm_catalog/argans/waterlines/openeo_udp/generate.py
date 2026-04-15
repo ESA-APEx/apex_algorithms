@@ -36,12 +36,16 @@ def apply_morphology(cube: DataCube, iterations: int) -> DataCube:
     )
 
 
-def create_waterlines(cube: DataCube, crs: str = "EPSG:3857") -> DataCube:
+def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCube:
     """
     Extract waterlines from a water/land mask using a UDF.
 
     Runs per time slice and outputs waterline geometries.
     """
+
+    # Vectorize cube
+    #cube = cube.raster_to_vector()
+
     udf = UDF.from_file(
         Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
         context={"from_parameter": "context"},
@@ -49,7 +53,7 @@ def create_waterlines(cube: DataCube, crs: str = "EPSG:3857") -> DataCube:
     return cube.apply_dimension(
         process=udf,
         dimension="t",
-        context={"crs": crs, "time_dim": "t"},
+        context={"simplify_tolerance": simplify_tolerance},
     )
 
 
