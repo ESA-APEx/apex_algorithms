@@ -11,7 +11,7 @@
     "updated": "2026-04-01T00:00:00Z",
     "type": "service",
     "title": "Waterlines from Sentinel-2.",
-    "description": "Extracts coastal waterlines from timeseries of Sentinel-2.",
+    "description": "Extracts coastal waterlines from Sentinel-2 time series by generating NDWI-based land-water masks, vectorising them, and converting them into waterlines.",
     "keywords": [
       "Normalized Difference Water Index (NDWI)",
       "Natural Hazards",
