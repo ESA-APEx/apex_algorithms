@@ -1,0 +1,1210 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": {
+          "from_parameter": "bands"
+        },
+        "id": {
+          "from_parameter": "collection_id"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "filterspatial1": {
+      "process_id": "filter_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "geometries": {
+          "from_parameter": "geometry"
+        }
+      }
+    },
+    "aggregatetemporalperiod1": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "min1": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply1": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_min"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod1"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply1"
+        }
+      }
+    },
+    "aggregatetemporalperiod2": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "max1": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply2": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_max"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels2": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod2"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply2"
+        }
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "renamelabels1"
+        },
+        "cube2": {
+          "from_node": "renamelabels2"
+        }
+      }
+    },
+    "aggregatetemporalperiod3": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply3": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_mean"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels3": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod3"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply3"
+        }
+      }
+    },
+    "mergecubes2": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes1"
+        },
+        "cube2": {
+          "from_node": "renamelabels3"
+        }
+      }
+    },
+    "aggregatetemporalperiod4": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "sd1": {
+              "process_id": "sd",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply4": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_sd"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels4": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod4"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply4"
+        }
+      }
+    },
+    "mergecubes3": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes2"
+        },
+        "cube2": {
+          "from_node": "renamelabels4"
+        }
+      }
+    },
+    "aggregatetemporalperiod5": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.1
+                ]
+              }
+            },
+            "element1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_node": "quantiles1"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply5": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_q10"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels5": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod5"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply5"
+        }
+      }
+    },
+    "mergecubes4": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes3"
+        },
+        "cube2": {
+          "from_node": "renamelabels5"
+        }
+      }
+    },
+    "aggregatetemporalperiod6": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.5
+                ]
+              }
+            },
+            "element1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_node": "quantiles1"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply6": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_q50"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels6": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod6"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply6"
+        }
+      }
+    },
+    "mergecubes5": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes4"
+        },
+        "cube2": {
+          "from_node": "renamelabels6"
+        }
+      }
+    },
+    "aggregatetemporalperiod7": {
+      "process_id": "aggregate_temporal_period",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "period": {
+          "from_parameter": "period"
+        },
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.9
+                ]
+              }
+            },
+            "element1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_node": "quantiles1"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply7": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_q90"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels7": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatetemporalperiod7"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply7"
+        }
+      }
+    },
+    "mergecubes6": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes5"
+        },
+        "cube2": {
+          "from_node": "renamelabels7"
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "min2": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply8": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_min"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels8": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply8"
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "max2": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply9": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_max"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels9": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply9"
+        }
+      }
+    },
+    "mergecubes7": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "renamelabels8"
+        },
+        "cube2": {
+          "from_node": "renamelabels9"
+        }
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "mean2": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply10": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_mean"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels10": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply10"
+        }
+      }
+    },
+    "mergecubes8": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes7"
+        },
+        "cube2": {
+          "from_node": "renamelabels10"
+        }
+      }
+    },
+    "reducedimension4": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "sd2": {
+              "process_id": "sd",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply11": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_sd"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels11": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension4"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply11"
+        }
+      }
+    },
+    "mergecubes9": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes8"
+        },
+        "cube2": {
+          "from_node": "renamelabels11"
+        }
+      }
+    },
+    "reducedimension5": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.1
+                ]
+              }
+            },
+            "element1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_node": "quantiles1"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply12": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_q10"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels12": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension5"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply12"
+        }
+      }
+    },
+    "mergecubes10": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes9"
+        },
+        "cube2": {
+          "from_node": "renamelabels12"
+        }
+      }
+    },
+    "reducedimension6": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.5
+                ]
+              }
+            },
+            "element1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_node": "quantiles1"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply13": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_q50"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels13": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension6"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply13"
+        }
+      }
+    },
+    "mergecubes11": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes10"
+        },
+        "cube2": {
+          "from_node": "renamelabels13"
+        }
+      }
+    },
+    "reducedimension7": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterspatial1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.9
+                ]
+              }
+            },
+            "element1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_node": "quantiles1"
+                },
+                "index": 0
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "arrayapply14": {
+      "process_id": "array_apply",
+      "arguments": {
+        "data": {
+          "from_parameter": "bands"
+        },
+        "process": {
+          "process_graph": {
+            "concat1": {
+              "process_id": "text_concat",
+              "arguments": {
+                "data": [
+                  {
+                    "from_parameter": "x"
+                  },
+                  "_q90"
+                ],
+                "separator": ""
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels14": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension7"
+        },
+        "dimension": "bands",
+        "target": {
+          "from_node": "arrayapply14"
+        }
+      }
+    },
+    "mergecubes12": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes11"
+        },
+        "cube2": {
+          "from_node": "renamelabels14"
+        }
+      }
+    },
+    "isvalid1": {
+      "process_id": "is_valid",
+      "arguments": {
+        "x": {
+          "from_parameter": "period"
+        }
+      }
+    },
+    "if1": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "mergecubes6"
+        },
+        "reject": {
+          "from_node": "mergecubes12"
+        },
+        "value": {
+          "from_node": "isvalid1"
+        }
+      }
+    },
+    "aggregatespatial1": {
+      "process_id": "aggregate_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "if1"
+        },
+        "geometries": {
+          "from_parameter": "geometry"
+        },
+        "reducer": {
+          "process_graph": {
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "saveresult1": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "aggregatespatial1"
+        },
+        "format": "CSV"
+      },
+      "result": true
+    }
+  },
+  "id": "timeseries_statistics",
+  "summary": "Calculate temporal statistics for any EO collection",
+  "description": "# Timeseries Statistics\n\n## Description\n\nThis algorithm computes temporal statistics from any EO collection for a user-specified geometry and temporal extent. It is designed as a flexible, generic utility targeted at advanced APEx users who are familiar with the available collections and band names on the underlying platform.\n\nFor each requested band, the following statistics are computed along the temporal dimension:\n\n| Statistic | Description |\n|-----------|-------------|\n| **min**   | Minimum value over the temporal extent |\n| **max**   | Maximum value over the temporal extent |\n| **mean**  | Arithmetic mean over the temporal extent |\n| **sd**    | Standard deviation over the temporal extent |\n| **q10**   | 10th percentile over the temporal extent |\n| **q50**   | Median (50th percentile) over the temporal extent |\n| **q90**   | 90th percentile over the temporal extent |\n\nThe output is a CSV file with spatially averaged statistics. Each band is suffixed with the statistic name (e.g. `B04_min`, `B04_max`, `B08_q50`).\n\n## Modes\n\n### Full mode (default)\n\nWhen `period` is `null` (the default), a single set of 7 statistics is computed over the entire temporal extent. The time dimension is collapsed, producing one row of results.\n\n### Period mode\n\nWhen `period` is set to a calendar period such as `\"month\"`, `\"dekad\"`, or `\"year\"`, the same 7 statistics are computed for each period, producing a time-series of statistics. This is useful for monitoring temporal trends or seasonal patterns.\n\n## Parameters\n\n| Parameter         | Description |\n|-------------------|-------------|\n| `collection_id`   | *(optional, default: `SENTINEL2_L2A`)* The identifier of the EO collection to use (e.g. `SENTINEL2_L2A`, `SENTINEL1_GRD`). The collection must be available on the target backend. |\n| `bands`           | Band names to process (e.g. `[\"B04\", \"B08\"]` for Sentinel-2 Red and NIR). Must be provided so that output columns can be labelled (e.g. `B04_min`, `B04_max`, \u2026). |\n| `geometry`        | GeoJSON geometry (Polygon or MultiPolygon) defining the area of interest. Statistics are spatially averaged over this geometry. |\n| `temporal_extent` | Two-element array specifying the start and end date (e.g. `[\"2023-05-01\", \"2023-07-31\"]`). |\n| `period`          | *(optional, default: `null`)* Temporal aggregation period. One of `\"year\"`, `\"month\"`, `\"week\"`, `\"dekad\"`, `\"day\"`, or `null` for full mode. |\n\n## Usage Notes\n\n- This UDP does **not** apply any pre-processing (e.g. cloud masking or SAR backscatter calibration). Users are responsible for selecting an appropriate collection and temporal window.\n- Cloud-affected observations in optical collections (e.g. Sentinel-2) will influence the statistics unless a cloud-masked collection variant is used.\n- The output columns are named `{band}_{stat}`, e.g. `B04_min`, `B04_max`, `B04_mean`, `B04_sd`, `B04_q10`, `B04_q50`, `B04_q90`, `B08_min`, \u2026\n- The spatial aggregation computes the mean of all pixels within the geometry for each statistic.\n\n## Performance Characteristics\n\nThe processing cost depends on the selected collection, number of bands, geometry size, and temporal range. As a reference point, computing statistics over a 10\u00d710 km area for two Sentinel-2 L2A bands over a 3-month period costs approximately 4 platform credits.\n\n## Example\n\nCompute monthly statistics for Sentinel-2 L2A bands B04 and B08 over a polygon near Mol, Belgium:\n\n```json\n{\n  \"collection_id\": \"SENTINEL2_L2A\",\n  \"bands\": [\"B04\", \"B08\"],\n  \"geometry\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[[4.97, 51.19], [5.07, 51.19], [5.07, 51.28], [4.97, 51.28], [4.97, 51.19]]]\n  },\n  \"temporal_extent\": [\"2023-05-01\", \"2023-07-31\"],\n  \"period\": \"month\"\n}\n```\n",
+  "parameters": [
+    {
+      "name": "collection_id",
+      "description": "The identifier of the EO collection to load (e.g. 'SENTINEL2_L2A', 'SENTINEL1_GRD'). The collection must be available on the target backend.",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "SENTINEL2_L2A"
+    },
+    {
+      "name": "bands",
+      "description": "Band names to include in the statistics (e.g. ['B04', 'B08'] for Sentinel-2 L2A Red and NIR). Must be provided so that output bands can be labelled (e.g. B04_min, B04_max, \u2026).",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "default": [
+        "B04",
+        "B08"
+      ],
+      "optional": true
+    },
+    {
+      "name": "geometry",
+      "description": "GeoJSON geometry (Polygon or MultiPolygon) defining the area of interest. Statistics are spatially averaged over this geometry.",
+      "schema": {
+        "type": "object",
+        "subtype": "geojson"
+      }
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent as a two-element array [start, end] using ISO-8601 date or date-time strings.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "period",
+      "description": "Temporal aggregation period. When set to null (the default) a single set of summary statistics (min, max, mean, sd, q10, q50, q90) is computed over the full temporal extent, collapsing the time dimension.  When set to a calendar period such as 'month' or 'year', the same statistics are computed for every period, producing a time-series of statistics.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "year",
+          "month",
+          "week",
+          "dekad",
+          "day"
+        ]
+      },
+      "optional": true,
+      "default": null
+    }
+  ]
+}

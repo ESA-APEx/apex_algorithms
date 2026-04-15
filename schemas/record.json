@@ -106,6 +106,8 @@
             "enum": [
               "Agriculture",
               "Land Use/Land Cover Classification",
+              "Land Use/Land Cover Change",
+              "Deforestation",
               "Vegetation",
               "Normalized Difference Vegetation Index (NDVI)",
               "Leaf Area Index (LAI)",
@@ -125,10 +127,13 @@
               "Digital Elevation/Terrain Model (DEM)",
               "ECMWF ERA5",
               "Data Analysis and Visualization",
-              "Statistical Applications",
+              "Statistics",
+              "Change Detection Services",
               "Urban Heat Island",
               "Land Surface Temperature",
-              "Climate"
+              "Climate",
+              "Soils",
+              "Radar"
             ]
           },
           "minItems": 1,

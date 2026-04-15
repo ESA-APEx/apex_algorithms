@@ -1,0 +1,27 @@
+[
+    {
+      "id": "scmap_composite",
+      "type": "openeo",
+      "backend": "openeofed.dataspace.copernicus.eu",
+      "process_graph": {
+        "scmap1": {
+          "process_id": "scmap_composite",
+          "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dlr/scmap/openeo_udp/scmap_composite.json",
+          "arguments": {
+            "temporal_extent": ["2025-04-01", "2025-05-07"],
+            "bounding_box": { "west": 11.1, "south": 48.1, "east": 11.2, "north": 48.2, "crs": "EPSG:4326"},
+            "nmad_sigma": 3.0,
+            "max_sun_zenith_angle": 70,
+            "compute_ci": false,
+            "compute_mref": false,
+            "compute_mask": false
+          },
+          "result": true
+        }
+      },
+      "reference_data": {
+        "job-results.json": "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/job-results.json",
+        "openEO.tif": "https://raw.githubusercontent.com/Schiggebam/dlr_scmap_resources/refs/heads/main/openEO.tif"
+      }
+    }
+]
