@@ -13,9 +13,10 @@
     "title": "Waterlines from Sentinel-2.",
     "description": "Extracts coastal waterlines from timeseries of Sentinel-2.",
     "keywords": [
-      "Waterlines",
-      "Coastline",
-      "Sentinel-2"
+      "Normalized Difference Water Index (NDWI)",
+      "Natural Hazards",
+      "Sentinel-2",
+      "Coastal"
     ],
     "language": {
       "code": "en-US",
