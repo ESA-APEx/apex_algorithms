@@ -16,14 +16,10 @@
             "north": 29.082,
             "crs": "EPSG:4326"
           },
-          "s2_method": "S2_NDWI",
           "iterations": 2,
           "max_cloud_coverage": 5,
           "ndwi_threshold": 0.01,
-          "mndwi_threshold": 0.1,
-          "ndvi_threshold": 0.03,
-          "bndvi_threshold": 0.03,
-          "gndvi_threshold": 0.03
+          "simplify_tolerance": 10
         },
         "result": true
       }
