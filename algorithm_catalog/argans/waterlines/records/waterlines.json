@@ -93,7 +93,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=waterlines&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json&server=openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=waterlines&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json&server=openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "service",
