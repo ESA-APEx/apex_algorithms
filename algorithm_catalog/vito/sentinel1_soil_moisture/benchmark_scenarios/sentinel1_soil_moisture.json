@@ -59,9 +59,8 @@
             }
         },
         "reference_data": {
-            "openEO.tif": "",
-            "job-results.json": ""
+            "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-23676388885!tests_test_benchmarks.py__test_run_benchmark_sentinel1_soil_moisture_!actual/openEO.tif",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-23676388885!tests_test_benchmarks.py__test_run_benchmark_sentinel1_soil_moisture_!actual/job-results.json"
         }
-
     }
 ]
