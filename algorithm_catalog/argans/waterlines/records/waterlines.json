@@ -81,7 +81,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json"
     },
     {
       "rel": "code",
@@ -102,10 +102,10 @@
       "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
-      "rel": "platform",
-      "type": "application/json",
-      "title": "TiTiler openEO",
-      "href": "../../../../platform_catalog/titiler_openeo.json"
+        "rel": "platform",
+        "type": "application/json",
+        "title": "CDSE openEO federation",
+        "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {
       "rel": "provider",
@@ -117,7 +117,7 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/argans/waterlines/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/records/thumbnail.png"
     }
   ]
 }
