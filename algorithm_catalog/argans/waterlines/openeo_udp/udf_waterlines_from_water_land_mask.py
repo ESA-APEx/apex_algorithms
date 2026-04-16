@@ -11,14 +11,12 @@ import geopandas as gpd
 from rasterio.features import shapes, Affine
 from shapely.geometry import (
     box,
-    shape,
     LineString,
     MultiLineString,
     Polygon,
     Point,
     GeometryCollection,
 )
-from shapely.ops import unary_union
 from openeo.udf import inspect
 import rioxarray
 from openeo.udf.feature_collection import FeatureCollection
@@ -253,6 +251,8 @@ def waterline_from_vectorized_water_raster(
             - sea_azimuth_deg: Direction toward the sea in degrees (azimuth,
               typically measured clockwise from north).
             - geometry: Waterline geometry (LineString or MultiLineString).
+    Raises:
+        ValueError if no waterlines segments extracted.
     """
 
     records: list[dict[str, Any]] = []
@@ -285,6 +285,10 @@ def waterline_from_vectorized_water_raster(
                     "geometry": seg,
                 }
             )
+    if len(records) == 0:
+        raise ValueError(
+            "No waterline segments found within the specified area of interest. Check that the area overlaps with known water bodies and that the input data is valid."
+        )
     inspect(data=[records], message="Converting records to geodataframe")
     gdf = gpd.GeoDataFrame(records, geometry="geometry", crs=gdf.crs)
     gdf = gdf[~gdf.geometry.isna() & ~gdf.geometry.is_empty].reset_index(drop=True)
