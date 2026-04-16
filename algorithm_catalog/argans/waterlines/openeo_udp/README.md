@@ -1,57 +1,30 @@
 # Waterlines openEO UDP
 ## Purpose
-Extract coastline waterlines from Sentinel-2 imagery using NDWI-based water detection, morphological refinement, and UDF-based vectorization.
+Extract coastline waterlines from Sentinel-2 imagery using NDWI-based water detection, morphological refinement, and UDF-based conversion from water polygons to coast waterlines.
 
 ## Methodology
 ### Water/Land Classification
-Water masks are derived using the NDWI (Normalized Difference Water Index):
+Water masks are generated using the **Normalized Difference Water Index (NDWI)**, where pixels are classified as water when **NDWI > threshold**. The default threshold is **0.01**, but it can be adjusted using the `ndwi_threshold` parameter.
 
-- **NDWI (Normalized Difference Water Index)**  
-  $$
-  NDWI = \frac{G - NIR}{G + NIR}
-  $$
+NDWI is computed as the normalized difference between the Sentinel-2 **Green** band (B03) and **Near-Infrared** band (B08), defined as the difference between these bands divided by their sum.
 
-Where water is classified as:
-- **NDWI > threshold**
-
-Where:
-- **G** = Green band (S2 B03)  
-- **NIR** = Near Infrared (S2 B08)  
-
-Default threshold is equal to **0.01** but can be overridden via parameters.
-
-### Why only NDWI?
-This MVP supports only one method (**S2_NDWI**).
-
-Originally, multiple methods were selectable via a parameter, but this required openEO `if_()` logic, which converts the result into a `ProcessBuilder` instead of a `DataCube`.
-This breaks the `raster_to_vector()` step needed for waterline extraction.
+*This MVP supports only one method (**S2_NDWI**). Originally, multiple methods were selectable via a parameter, but this required openEO `if_()` logic, which converts the result into a `ProcessBuilder` instead of a `DataCube`.
+This breaks the `raster_to_vector()` step needed for waterline extraction.*
 
 ### Morphological Processing
-For each timestamp, the water/land mask is refined using morphological operations to:
-
-- remove small isolated objects  
-- fill small holes  
-- smooth boundaries  
-- reduce artifacts such as narrow bridges and estuaries  
-
-This improves the quality and stability of the resulting waterlines.
+For each timestamp, the water/land mask is refined using morphological operations to remove small isolated objects, fill small holes, smooth boundaries and reduce artifacts such as narrow bridges and estuaries. This improves the quality and stability of the resulting waterlines.
 
 ### Waterline Extraction
-The cleaned masks are converted into vector waterlines using a UDF, producing geometries for each time step.
+The cleaned masks are vectorized using the built-in openEO function `raster_to_vector()`. The resulting water polygons are then transformed into waterlines via a UDF, producing time-resolved geometries for each timestep.
 
-## Output
-The process outputs Vector cube of coastline waterlines with the following properties:
+The output is a vector cube of coastline waterlines with the following properties:
 - **time**: Acquisition timestamp (Sentinel-2 datetime)  
 - **type**: Feature type (`waterline_segment`)  
 - **sea_direction_8**: Sea direction (N, NE, E, SE, S, SW, W, NW)  
 - **sea_azimuth_deg**: Sea direction in degrees (azimuth, clockwise from north)  
 - **geometry**: Waterline geometry (LineString or MultiLineString) in EPSG:3857  
 
-## Usage
-See the APEx documentation and repository:
-
-- [UDP Writer Guide](https://esa-apex.github.io/apex_documentation/guides/udp_writer_guide.html)  
-- [APEx Algorithms GitHub](https://github.com/ESA-APEx/apex_algorithms)
+The **sea_azimuth_deg** property is particularly useful for downstream processing, as it can be used to shift the waterline and derive a shoreline (*a waterline normalized for beach slope and tidal conditions*).
 
 ## Authors / Contact
 - **Milena Napiorkowska** (openEO UDP) Argans Ltd  
