@@ -184,5 +184,5 @@ def generate() -> dict:
 
 
 if __name__ == "__main__":
-    with open(Path(__file__).parent / "waterlines_s2_ndwi.json", "w") as f:
+    with open(Path(__file__).parent / "waterlines.json", "w") as f:
         json.dump(generate(), f, indent=2)
