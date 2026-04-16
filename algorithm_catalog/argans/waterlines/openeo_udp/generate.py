@@ -168,7 +168,7 @@ def generate() -> dict:
 
     return build_process_dict(
         process_graph=waterlines_cube,
-        process_id="waterlines_s2_ndwi",
+        process_id="waterlines",
         summary="Waterlines extracted from Sentinel-2 using NDWI.",
         description=(Path(__file__).parent / "README.md").read_text(),
         parameters=[

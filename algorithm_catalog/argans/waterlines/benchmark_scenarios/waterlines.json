@@ -1,6 +1,6 @@
 [
   {
-    "id": "waterlines_s2_ndwi",
+    "id": "waterlines",
     "type": "openeo",
     "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
