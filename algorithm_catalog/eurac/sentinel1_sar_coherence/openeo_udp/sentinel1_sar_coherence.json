@@ -69,7 +69,9 @@
           "IW2",
           "IW3"
         ]
-      }
+      },
+      "optional": true,
+      "default": null
     },
     {
       "name": "temporal_extent",
