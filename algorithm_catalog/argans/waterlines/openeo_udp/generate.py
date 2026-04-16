@@ -124,7 +124,7 @@ def generate() -> dict:
 
     temporal_extent = Parameter.temporal_interval(
         name="temporal_extent",
-        default=["2015-06-23", "2025-12-31"],
+        default=["2025-01-01", "2025-12-31"],
         description="Date range over which to extract waterlines.",
     )
 
