@@ -283,9 +283,9 @@ def s2_index_mask(
     idx = idx.mask(clear)
 
     if mode == "gt":
-        mask = idx.process("gt", x=idx, y=threshold)
+        mask = idx.apply(lambda x: x > threshold)
     elif mode == "lt":
-        mask = idx.process("lt", x=idx, y=threshold)
+        mask = idx.apply(lambda x: x < threshold)
     else:
         raise ValueError(f"Unsupported mode: {mode}")
 
