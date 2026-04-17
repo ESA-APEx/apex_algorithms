@@ -203,6 +203,9 @@ def _segments_for_water_mask(
     # Remove small interiors
     gdf_water_one_timestamp["geometry"] = gdf_water_one_timestamp["geometry"].apply(_remove_small_interiors)
 
+    # Remove small polygons
+    gdf_water_one_timestamp = gdf_water_one_timestamp[gdf_water_one_timestamp["geometry"].area > DEFAULT_MIN_HOLE_AREA]
+
     # Merge all polygons
     water_poly = gdf_water_one_timestamp.union_all()
 
