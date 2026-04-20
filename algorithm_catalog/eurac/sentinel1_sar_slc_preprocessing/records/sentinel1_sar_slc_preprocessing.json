@@ -88,7 +88,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1c3b771478a90e3369571675c88cc48539e872b8/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1c3b771478a90e3369571675c88cc48539e872b8/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json"
     },
     {
       "rel": "service",
