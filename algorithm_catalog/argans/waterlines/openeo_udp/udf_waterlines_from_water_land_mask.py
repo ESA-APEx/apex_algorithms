@@ -79,11 +79,12 @@ def _remove_small_interiors(geom: Polygon, min_hole_area: float = DEFAULT_MIN_HO
     return Polygon(geom.exterior, holes=kept_holes)
 
 
-def _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 0.0001) -> list[LineString]:
+def _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 500) -> list[LineString]:
     """Return 2-point segments that do NOT intersect the raster extent boundary."""
     extent_edge = box(*bounds).boundary
     edges = split_into_segments(waterline)
-    return [e for e in edges if not e.buffer(buffer).intersects(extent_edge)]
+    extent_edge_buffered = extent_edge.buffer(buffer)
+    return [e for e in edges if not e.within(extent_edge_buffered)]
 
 
 def _remove_short_dangling_segments(
@@ -305,6 +306,7 @@ def apply_udf_data(udf_data: UdfData) -> UdfData:
     [feature_collection] = udf_data.get_feature_collection_list()
     gdf = feature_collection.data
 
+    inspect(data=[udf_data.user_context], message="Input UDFData user context inspection")
     gdf = waterline_from_vectorized_water_raster(
         gdf=gdf,
         simplify_tolerance=udf_data.user_context.get("simplify_tolerance"),
