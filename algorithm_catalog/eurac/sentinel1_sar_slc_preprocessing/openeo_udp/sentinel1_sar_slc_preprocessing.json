@@ -1,0 +1,93 @@
+{
+  "process_graph": {
+    "runudf1": {
+      "process_id": "run_udf",
+      "arguments": {
+        "context": {
+          "temporal_extent": {
+            "from_parameter": "temporal_extent"
+          },
+          "burst_id": {
+            "from_parameter": "burst_id"
+          },
+          "primary_date": {
+            "from_parameter": "primary_date"
+          },
+          "polarization": {
+            "from_parameter": "polarization"
+          },
+          "sub_swath": {
+            "from_parameter": "sub_swath"
+          }
+        },
+        "data": null,
+        "runtime": "EOAP-CWL",
+        "udf": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_slc_preprocessing.cwl"
+      },
+      "result": true
+    }
+  },
+  "id": "sentinel1_sar_slc_preprocessing",
+  "description": "This process generates a STAC collection of co\u2011registered Sentinel\u20111 Single Look Complex (SLC) bursts in SAR geometry. A specific Sentinel\u20111 burst is selected by explicitly defining the burst_id and sub_swath parameters, enabling fine\u2011grained, burst\u2011level access to Sentinel\u20111 TOPS data.\nThe co\u2011registration is performed using the [ESA SNAP Back\u2011Geocoding operator](https://step.esa.int/main/wp-content/help/versions/13.0.0/snap-toolboxes/eu.esa.microwavetbx.sar.op.sentinel1.ui/operators/BackGeocodingOp.html), which aligns all SLC acquisitions to a common primary geometry, ensuring pixel\u2011level consistency across the temporal stack. The entire workflow is implemented as a Common Workflow Language (CWL) pipeline.\nThe resulting co\u2011registered SLC stack provides the fundamental input for a wide range of advanced SAR analyses, including InSAR interferogram generation, coherence estimation, and polarimetric processing.",
+  "parameters": [
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "burst_id",
+      "description": "burst_id",
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "name": "primary_date",
+      "description": "primary_date",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "polarization",
+      "description": "polarization",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "name": "sub_swath",
+      "description": "sub_swath",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}
