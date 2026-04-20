@@ -293,7 +293,7 @@ def waterline_from_vectorized_water_raster(
 
 def apply_udf_data(udf_data: UdfData) -> UdfData:
 
-    feature_collection = udf_data.get_feature_collection_list()
+    feature_collection = udf_data.get_feature_collection_list()[0]
     gdf = feature_collection.data
     inspect(data=[gdf], message="Input gdf data inspection")
 
