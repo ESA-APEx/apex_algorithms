@@ -303,18 +303,28 @@ def apply_udf_data(udf_data: UdfData) -> UdfData:
 
     inspect(data=[udf_data], message="Input UDFData inspection")
 
-    [feature_collection] = udf_data.get_feature_collection_list()
+    feature_collection = udf_data.get_feature_collection_list()[0]
     gdf = feature_collection.data
 
-    inspect(data=[udf_data.user_context], message="Input UDFData user context inspection")
+    user_context = udf_data.user_context or {}
+
+    simplify_tolerance = user_context.get("simplify_tolerance", 10)
+
+    inspect(
+        data=[simplify_tolerance],
+        message="Simplify tolerance resolved"
+    )
+
     gdf = waterline_from_vectorized_water_raster(
         gdf=gdf,
-        simplify_tolerance=udf_data.user_context.get("simplify_tolerance"),
+        simplify_tolerance=simplify_tolerance,
     )
 
     inspect(data=[gdf], message="Output gdf")
 
-    udf_data.set_feature_collection_list([FeatureCollection(id="_", data=gdf)])
+    udf_data.set_feature_collection_list([
+        FeatureCollection(id="_", data=gdf)
+    ])
 
     inspect(data=[udf_data], message="Output UDFData inspection")
 
