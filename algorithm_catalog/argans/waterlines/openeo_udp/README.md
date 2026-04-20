@@ -36,7 +36,7 @@ The **sea_azimuth_deg** property is particularly useful for downstream processin
 - **Holly Baxter** (Methodology) Argans Ltd  
   hbaxtar@argans.co.uk  
 
-- **Cameron Mackenzie** (Methodology) Argans Ltd
+- **Cameron Mackenzie** (Methodology, openEO UDP) Argans Ltd
   cmackenzie@argans.co.uk  
 
 ## Acknowledgments
