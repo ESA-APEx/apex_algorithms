@@ -302,10 +302,10 @@ def apply_udf_data(udf_data: UdfData) -> UdfData:
         simplify_tolerance=15,
     )
 
+    inspect(data=[gdf], message="Output gdf data inspection")
+
     udf_data.set_feature_collection_list([
         FeatureCollection(id="_", data=gdf)
     ])
-
-    inspect(data=[gdf], message="Output gdf")
 
     return udf_data

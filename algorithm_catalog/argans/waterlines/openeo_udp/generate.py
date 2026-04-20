@@ -22,7 +22,7 @@ def apply_morphology(cube: DataCube, iterations: int) -> DataCube:
     return cube.apply_dimension(process=udf, dimension="t")
 
 
-def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCube:
+def create_waterlines(cube: DataCube) -> DataCube:
     """
     Extract waterlines from a water/land mask using a UDF.
 
@@ -33,7 +33,6 @@ def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCub
 
     udf = UDF.from_file(
         Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
-        context={"simplify_tolerance": simplify_tolerance},
     )
     return cube.apply_dimension(process=udf, dimension="geometry")
 
@@ -139,12 +138,7 @@ def generate() -> dict:
         ndwi_threshold=ndwi_threshold,
     )
 
-    water_land_mask_vector_cube = water_land_mask.raster_to_vector()
-
-    udf = UDF.from_file(
-        Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
-    )
-    waterlines_cube = water_land_mask_vector_cube.apply_dimension(process=udf, dimension="geometry")
+    waterlines_cube = create_waterlines(water_land_mask)
 
     return build_process_dict(
         process_graph=waterlines_cube,
