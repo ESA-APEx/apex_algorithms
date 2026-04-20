@@ -297,9 +297,17 @@ def apply_udf_data(udf_data: UdfData) -> UdfData:
     gdf = feature_collection.data
     inspect(data=[gdf], message="Input gdf data inspection")
 
+    user_context = udf_data.user_context or {}
+    simplify_tolerance = user_context.get("simplify_tolerance", 10)
+
+    inspect(
+        data=[simplify_tolerance],
+        message="Simplify tolerance resolved"
+    )
+
     gdf = waterline_from_vectorized_water_raster(
         gdf=gdf,
-        simplify_tolerance=15,
+        simplify_tolerance=simplify_tolerance,
     )
 
     inspect(data=[gdf], message="Output gdf data inspection")

@@ -17,12 +17,18 @@ from s2_index import (
 
 
 def apply_morphology(cube: DataCube, iterations: int) -> DataCube:
-    udf = UDF.from_file(Path(__file__).parent / "udf_morph_operations.py", context={"iterations": iterations})
+    udf = UDF.from_file(
+        Path(__file__).parent / "udf_morph_operations.py",
+        context={"from_parameter": "context"},
+    )
+    return cube.apply_dimension(
+        process=udf,
+        dimension="t",
+        context={"iterations": iterations},
+    )
 
-    return cube.apply_dimension(process=udf, dimension="t")
 
-
-def create_waterlines(cube: DataCube) -> DataCube:
+def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCube:
     """
     Extract waterlines from a water/land mask using a UDF.
 
@@ -33,8 +39,13 @@ def create_waterlines(cube: DataCube) -> DataCube:
 
     udf = UDF.from_file(
         Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
+        context={"from_parameter": "context"},
     )
-    return cube.apply_dimension(process=udf, dimension="geometry")
+    return cube.apply_dimension(
+        process=udf,
+        dimension="geometry",
+        context={"simplify_tolerance": simplify_tolerance},
+    )
 
 
 def build_water_land_mask_cube(
@@ -129,6 +140,12 @@ def generate() -> dict:
         description=WATERLAND_THRESHOLDS["S2_NDWI"].description,
     )
 
+    simplify_tolerance = Parameter.number(
+        name="simplify_tolerance",
+        default=10,
+        description="Tolerance used to simplify vectorized water polygons before extracting waterlines.",
+    )
+
     water_land_mask = build_water_land_mask_cube(
         con=conn,
         bbox=spatial_extent,
@@ -138,7 +155,7 @@ def generate() -> dict:
         ndwi_threshold=ndwi_threshold,
     )
 
-    waterlines_cube = create_waterlines(water_land_mask)
+    waterlines_cube = create_waterlines(water_land_mask, simplify_tolerance=simplify_tolerance)
 
     return build_process_dict(
         process_graph=waterlines_cube,
@@ -151,6 +168,7 @@ def generate() -> dict:
             max_cloud_coverage,
             iterations,
             ndwi_threshold,
+            simplify_tolerance,
         ],
         categories=["sentinel-2", "coastline", "waterlines"],
     )
