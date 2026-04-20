@@ -1,7 +1,7 @@
 {
   "process_graph": {
-    "runudf1": {
-      "process_id": "run_udf",
+    "runcwltostac1": {
+      "process_id": "run_cwl_to_stac",
       "arguments": {
         "context": {
           "temporal_extent": {
@@ -20,9 +20,7 @@
             "from_parameter": "sub_swath"
           }
         },
-        "data": null,
-        "runtime": "EOAP-CWL",
-        "udf": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_slc_preprocessing.cwl"
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_slc_preprocessing.cwl"
       },
       "result": true
     }

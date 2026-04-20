@@ -30,24 +30,16 @@ def generate() -> dict:
         context[parameter.name] = {"from_parameter": parameter.name}
 
     connection = openeo.connect("https://openeofed.dataspace.copernicus.eu").authenticate_oidc()
-    # TODO: Use run_cwl_to_stac once https://github.com/cloudinsar/s1-workflows/issues/80 is deployed
-    # datacube = StacResource(
-    #     graph=PGNode(
-    #         "run_cwl_to_stac",
-    #         namespace=None,
-    #         arguments={
-    #             "cwl": cwl_url,
-    #             "context": context,
-    #         },
-    #     ),
-    #     connection=connection,
-    # )
-    datacube = connection.datacube_from_process(
-        "run_udf",
-        data=None,
-        udf=cwl_url,
-        runtime="EOAP-CWL",
-        context=context,
+    datacube = StacResource(
+        graph=PGNode(
+            "run_cwl_to_stac",
+            namespace=None,
+            arguments={
+                "cwl": cwl_url,
+                "context": context,
+            },
+        ),
+        connection=connection,
     )
 
     return build_process_dict(
@@ -56,6 +48,7 @@ def generate() -> dict:
         description=get_cwl_main(cwl_yaml).get("doc", "").rstrip(),
         parameters=parameters,
     )
+
 
 if __name__ == "__main__":
     j = generate()
