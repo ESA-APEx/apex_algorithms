@@ -17,21 +17,9 @@ from s2_index import (
 
 
 def apply_morphology(cube: DataCube, iterations: int) -> DataCube:
-    """
-    Apply morphological operations to each time slice of a water/land mask.
+    udf = UDF.from_file(Path(__file__).parent / "udf_morph_operations.py", context={"iterations": iterations})
 
-    Used to clean the mask (remove noise, fill gaps, smooth shapes)
-    before extracting waterlines.
-    """
-    udf = UDF.from_file(
-        Path(__file__).parent / "udf_morph_operations.py",
-        context={"from_parameter": "context"},
-    )
-    return cube.apply_dimension(
-        process=udf,
-        dimension="t",
-        context={"iterations": iterations},
-    )
+    return cube.apply_dimension(process=udf, dimension="t")
 
 
 def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCube:
@@ -45,13 +33,9 @@ def create_waterlines(cube: DataCube, simplify_tolerance: float = 10) -> DataCub
 
     udf = UDF.from_file(
         Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
-        context={"from_parameter": "context"},
-    )
-    return cube.apply_dimension(
-        process=udf,
-        dimension="geometry",
         context={"simplify_tolerance": simplify_tolerance},
     )
+    return cube.apply_dimension(process=udf, dimension="geometry")
 
 
 def build_water_land_mask_cube(
