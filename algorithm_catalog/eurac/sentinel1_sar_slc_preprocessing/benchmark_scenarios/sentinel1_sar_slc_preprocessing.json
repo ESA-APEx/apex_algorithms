@@ -7,7 +7,7 @@
     "process_graph": {
       "sentinel1_sar_slc_preprocessing1": {
         "process_id": "sentinel1_sar_slc_preprocessing",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1c3b771478a90e3369571675c88cc48539e872b8/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json",
         "arguments": {
           "temporal_extent": [
             "2018-01-28",
