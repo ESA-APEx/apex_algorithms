@@ -308,7 +308,7 @@ def apply_udf_data(udf_data: UdfData) -> UdfData:
 
     user_context = udf_data.user_context or {}
 
-    simplify_tolerance = user_context.get("simplify_tolerance", 10)
+    simplify_tolerance = user_context.get("simplify_tolerance", 15)
 
     inspect(
         data=[simplify_tolerance],

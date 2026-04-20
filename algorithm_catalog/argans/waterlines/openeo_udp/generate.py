@@ -130,12 +130,6 @@ def generate() -> dict:
         description=WATERLAND_THRESHOLDS["S2_NDWI"].description,
     )
 
-    simplify_tolerance = Parameter.number(
-        name="simplify_tolerance",
-        default=10,
-        description="Tolerance used to simplify vectorized water polygons before extracting waterlines.",
-    )
-
     water_land_mask = build_water_land_mask_cube(
         con=conn,
         bbox=spatial_extent,
@@ -145,10 +139,12 @@ def generate() -> dict:
         ndwi_threshold=ndwi_threshold,
     )
 
-    waterlines_cube = create_waterlines(
-        water_land_mask,
-        simplify_tolerance=simplify_tolerance,
+    water_land_mask_vector_cube = water_land_mask.raster_to_vector()
+
+    udf = UDF.from_file(
+        Path(__file__).parent / "udf_waterlines_from_water_land_mask.py",
     )
+    waterlines_cube = water_land_mask_vector_cube.apply_dimension(process=udf, dimension="geometry")
 
     return build_process_dict(
         process_graph=waterlines_cube,
@@ -161,7 +157,6 @@ def generate() -> dict:
             max_cloud_coverage,
             iterations,
             ndwi_threshold,
-            simplify_tolerance,
         ],
         categories=["sentinel-2", "coastline", "waterlines"],
     )
