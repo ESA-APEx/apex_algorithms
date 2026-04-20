@@ -1,14 +1,6 @@
-# /// script
-# dependencies = [
-#   "rioxarray",
-# ]
-# ///
-
 from typing import Iterable, Union, Any
 import numpy as np
-import xarray as xr
 import geopandas as gpd
-from rasterio.features import shapes, Affine
 from shapely.geometry import (
     box,
     LineString,
@@ -18,7 +10,6 @@ from shapely.geometry import (
     GeometryCollection,
 )
 from openeo.udf import inspect
-import rioxarray
 from openeo.udf.feature_collection import FeatureCollection
 from openeo.udf.udf_data import UdfData
 
@@ -263,6 +254,7 @@ def waterline_from_vectorized_water_raster(
 
     # Get time dimensions
     time_stamps = gdf.loc[:, gdf.columns != "geometry"].columns.to_list()
+    inspect(data=[time_stamps], message="Input time stamps.")
     bounds = gdf.total_bounds
     for time_stamp in time_stamps:
         one_time_stamp_gdf = gdf[[time_stamp, "geometry"]].dropna(subset=[time_stamp])
@@ -301,10 +293,9 @@ def waterline_from_vectorized_water_raster(
 
 def apply_udf_data(udf_data: UdfData) -> UdfData:
 
-    inspect(data=[udf_data], message="Input UDFData inspection")
-
     feature_collection = udf_data.get_feature_collection_list()[0]
     gdf = feature_collection.data
+    inspect(data=[gdf], message="Input gdf data inspection")
 
     user_context = udf_data.user_context or {}
 
