@@ -105,7 +105,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/opensartoolkit-v2-1-7"
+      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/opensartoolkit-v2-2-1"
     },
     {
       "rel": "about",
