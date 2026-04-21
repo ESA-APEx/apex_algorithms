@@ -76,7 +76,11 @@
       "schema": {
         "type": "array",
         "items": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "VV",
+            "VH"
+          ]
         }
       }
     },
@@ -84,7 +88,12 @@
       "name": "sub_swath",
       "description": "sub_swath",
       "schema": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "IW1",
+          "IW2",
+          "IW3"
+        ]
       }
     }
   ]
