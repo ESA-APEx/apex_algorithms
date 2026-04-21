@@ -3,7 +3,7 @@
         "loadmlmodel1": {
             "process_id": "load_ml_model",
             "arguments": {
-                "id": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RandomForest-ForestFire-model.json"
+                "id": "https://openeo.dataspace.copernicus.eu/openeo/1.2/jobs/j-2604210652314059b6fdb79369192a44/results/items/M2UyNGUyNTEtMmU5YS00MzhmLTkwYTktZDQ1MDBlNTc2NTc0/8003b73580fe69ab521545b04a0899fa/ml_model_metadata.json?expires=1777362212"
             }
         },
         "loadcollection1": {
