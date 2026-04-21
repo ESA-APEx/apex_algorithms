@@ -70,7 +70,7 @@ def _remove_small_interiors(geom: Polygon, min_hole_area: float = DEFAULT_MIN_HO
     return Polygon(geom.exterior, holes=kept_holes)
 
 
-def _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 500) -> list[LineString]:
+def _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 600) -> list[LineString]:
     """Return 2-point segments that do NOT intersect the raster extent boundary."""
     extent_edge = box(*bounds).boundary
     edges = split_into_segments(waterline)
@@ -218,7 +218,7 @@ def _segments_for_water_mask(
 
     return cleaned_segments, water_poly
 
-
+ 
 def waterline_from_vectorized_water_raster(
     gdf: gpd.GeoDataFrame,
     simplify_tolerance: float | None = None,
@@ -252,26 +252,65 @@ def waterline_from_vectorized_water_raster(
 
     records: list[dict[str, Any]] = []
 
-    # Get time dimensions
+    # Identify time columns
     time_stamps = gdf.loc[:, gdf.columns != "geometry"].columns.to_list()
     inspect(data=[time_stamps], message="Input time stamps.")
+
+    if not time_stamps:
+        inspect(data=["No time columns found"], message="Empty input")
+        return gpd.GeoDataFrame(geometry=[], crs=gdf.crs)
+
     bounds = gdf.total_bounds
+
     for time_stamp in time_stamps:
+        inspect(data=[time_stamp], message="Processing timestamp")
+
+        # Drop NaNs
         one_time_stamp_gdf = gdf[[time_stamp, "geometry"]].dropna(subset=[time_stamp])
-        one_time_stamp_gdf_water_only = one_time_stamp_gdf[one_time_stamp_gdf[time_stamp] != 0]
-        inspect(data=[time_stamp], message="Extracting waterlines for timestamp")
+
+        if one_time_stamp_gdf.empty:
+            inspect(data=[time_stamp], message="All values NaN, skipping")
+            continue
+
+        # Keep only water polygons
+        water_gdf = one_time_stamp_gdf[one_time_stamp_gdf[time_stamp] != 0]
+
+        if water_gdf.empty:
+            inspect(data=[time_stamp], message="No water polygons, skipping")
+            continue
+
+        # Remove invalid geometries early
+        water_gdf = water_gdf[~water_gdf.geometry.is_empty & water_gdf.geometry.notna()]
+
+        if water_gdf.empty:
+            inspect(data=[time_stamp], message="No valid geometries after cleaning")
+            continue
+
+        # Process water mask → segments
         res = _segments_for_water_mask(
-            one_time_stamp_gdf_water_only,
+            water_gdf.copy(),
             bounds=bounds,
             simplify_tolerance=simplify_tolerance,
         )
+
         if res is None:
+            inspect(data=[time_stamp], message="No boundary extracted (None), skipping")
             continue
 
         segments, water_poly = res
-        inspect(data=[time_stamp], message="Calculating sea direction for timestamp")
+
+        if not segments:
+            inspect(data=[time_stamp], message="No segments found, skipping")
+            continue
+
+        inspect(data=[len(segments)], message="Segments found")
+
         for seg in segments:
+            if seg.is_empty or seg.length == 0:
+                continue
+
             sea_direction = _get_sea_direction_for_segment(water_poly, seg)
+
             records.append(
                 {
                     "time": time_stamp,
@@ -281,15 +320,34 @@ def waterline_from_vectorized_water_raster(
                     "geometry": seg,
                 }
             )
-    if len(records) == 0:
-        raise ValueError(
-            "No waterline segments found within the specified area of interest. Check that the area overlaps with known water bodies and that the input data is valid."
-        )
-    inspect(data=[records], message="Converting records to geodataframe")
-    gdf = gpd.GeoDataFrame(records, geometry="geometry", crs=gdf.crs)
-    gdf = gdf[~gdf.geometry.isna() & ~gdf.geometry.is_empty].reset_index(drop=True)
-    return gdf
 
+    # 🔑 CRITICAL CHANGE: never crash on empty result
+    if len(records) == 0:
+        inspect(
+            data=["No waterline segments found for any timestamp"],
+            message="Returning empty GeoDataFrame",
+        )
+
+        return gpd.GeoDataFrame(
+            columns=[
+                "time",
+                "type",
+                DEFAULT_SEA_DIRECTION_8_COLUMN,
+                DEFAULT_SEA_AZIMUTH_DEG_COLUMN,
+                "geometry",
+            ],
+            geometry="geometry",
+            crs=gdf.crs,
+        )
+
+    inspect(data=[len(records)], message="Total segments created")
+
+    result_gdf = gpd.GeoDataFrame(records, geometry="geometry", crs=gdf.crs)
+    result_gdf = result_gdf[
+        ~result_gdf.geometry.isna() & ~result_gdf.geometry.is_empty
+    ].reset_index(drop=True)
+
+    return result_gdf
 
 def apply_udf_data(udf_data: UdfData) -> UdfData:
 
