@@ -9,15 +9,15 @@
         "process_id": "sentinel1_sar_slc_preprocessing",
         "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/2ed1e3dc9884c1d7354687b709563d239393c392/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json",
         "arguments": {
-          "burst_id": 234893,
-          "primary_date": "2024-08-09",
+          "burst_id": 329488,
           "polarization": [
-            "VV"
+            "VH"
           ],
-          "sub_swath": "IW1",
+          "primary_date": "2018-01-28",
+          "sub_swath": "IW2",
           "temporal_extent": [
-            "2024-08-09",
-            "2024-08-21"
+            "2018-01-28",
+            "2018-02-04"
           ]
         },
         "result": true
