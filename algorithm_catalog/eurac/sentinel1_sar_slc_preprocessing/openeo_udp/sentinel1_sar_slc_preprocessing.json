@@ -30,7 +30,7 @@
   "parameters": [
     {
       "name": "temporal_extent",
-      "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+      "description": "Temporal extent as [start_date, end_date], e.g., ['2024-08-01', '2024-09-30'].",
       "schema": {
         "type": "array",
         "subtype": "temporal-interval",
@@ -58,14 +58,14 @@
     },
     {
       "name": "burst_id",
-      "description": "burst_id",
+      "description": "A temporal extent could have multiple bursts per day. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/notebooks/LPS_DEMO/Input_selection.ipynb) to find a fitting `burst_id`.\nAlternatively, the burst id map can be downloaded here: [Burst ID Maps 2022-05-30](https://sar-mpc.eu/files/S1_burstid_20220530.zip).",
       "schema": {
         "type": "integer"
       }
     },
     {
       "name": "primary_date",
-      "description": "primary_date",
+      "description": "Acquisition date of the image to be used as reference of the coregistration operation.",
       "schema": {
         "type": "string"
       }
