@@ -86,7 +86,7 @@
     },
     {
       "name": "sub_swath",
-      "description": "sub_swath",
+      "description": "Sub-swath identifier",
       "schema": {
         "type": "string",
         "enum": [
