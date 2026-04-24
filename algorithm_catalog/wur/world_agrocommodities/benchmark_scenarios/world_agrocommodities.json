@@ -7,7 +7,7 @@
     "process_graph": {
       "worldagrocommodities1": {
         "process_id": "world_agrocommodities",
-        "namespace": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.2/src/world_agrocommodities/udp/world_agrocommodities.json",
+        "namespace": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.3/src/world_agrocommodities/udp/world_agrocommodities.json",
         "arguments": {
           "spatial_extent": {
             "west": 817475.0741295104,
@@ -27,8 +27,8 @@
       }
     },
     "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-24283635670!tests_test_benchmarks.py__test_run_benchmark_world_agrocommodities_!actual/job-results.json",
-      "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-24283635670!tests_test_benchmarks.py__test_run_benchmark_world_agrocommodities_!actual/openEO.nc"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP16!tests_test_benchmarks.py__test_run_benchmark_world_agrocommodities_!actual/job-results.json",
+      "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP16!tests_test_benchmarks.py__test_run_benchmark_world_agrocommodities_!actual/openEO.nc"
     },
     "reference_options": {}
   }

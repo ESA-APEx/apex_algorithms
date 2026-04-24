@@ -21,6 +21,12 @@ from apex_algorithm_qa_tools.scenarios import (
 logger = logging.getLogger(__name__)
 
 
+#: Label applied to every benchmark issue — use this to filter all benchmark issues.
+BENCHMARK_LABEL = "benchmark"
+#: Prefix for the per-phase label, e.g. ``benchmark-phase:run-job``.
+BENCHMARK_PHASE_LABEL_PREFIX = "benchmark-phase"
+
+
 class GithubApi:
     """
     Generic GitHub API client for authenticated requests to a specific repository.
@@ -307,8 +313,36 @@ class ScenarioRunInfo:
                 path = path.relative_to(get_project_root())
             return self.github_context.get_file_permalink(path)
 
+    def _get_failed_phase(self) -> str | None:
+        """Extract the base phase name from ``test:phase:exception``.
+
+        The metric value can be ``"run-job"`` or ``"compare:derived_from-change"``.
+        This returns just the phase part (before the first ``:``).
+        """
+        phase_exception = self.test_metrics.get("test:phase:exception")
+        if phase_exception:
+            return phase_exception.split(":")[0]
+        return None
+
     def issue_title(self) -> str:
-        return f"Scenario Failure: {self.scenario.id}"
+        return f"Benchmark: {self.scenario.id}"
+
+    def issue_labels(self) -> List[str]:
+        """
+        Return GitHub labels to attach to the issue.
+
+        Every benchmark issue gets:
+        - ``benchmark`` — central label for filtering all benchmark issues
+        - ``benchmark-phase:<phase>`` — the phase that failed
+          (e.g. ``benchmark-phase:run-job`` or ``benchmark-phase:compare``)
+        """
+        labels: List[str] = [BENCHMARK_LABEL]
+
+        failed_phase = self._get_failed_phase()
+        if failed_phase:
+            labels.append(f"{BENCHMARK_PHASE_LABEL_PREFIX}:{failed_phase}")
+
+        return labels
 
     def build_workflow_run_overview(self) -> str:
         scenario_link = self.get_scenario_link()
@@ -409,14 +443,14 @@ class GithubIssueHandler:
         self,
         github_context: GithubContext | None = None,
         github_token: str | None = None,
-        issue_label: str = "benchmark-failure",
+        central_label: str = BENCHMARK_LABEL,
     ):
         self.github_context = github_context or GithubContext()
         self.github_api = GithubApi(
             repository=self.github_context.repository,
             token=github_token or self.github_context.token,
         )
-        self.issue_label = issue_label
+        self.central_label = central_label
         self._benchmark_scenarios = get_benchmark_scenarios()
 
     def get_benchmark_scenarios(self, scenario_id: str) -> BenchmarkScenario | None:
@@ -456,10 +490,10 @@ class GithubIssueHandler:
             f"Extracted {len(failure_logs)} failure logs from {cli_args.terminal_report}"
         )
 
-        # Collect existing GitHub issues
-        all_existing_issues = self.github_api.list_issues(labels=[self.issue_label])
+        # Collect existing GitHub issues by the central umbrella label
+        all_existing_issues = self.github_api.list_issues(labels=[self.central_label])
         logger.info(
-            f"Found {len(all_existing_issues)} existing issues labeled '{self.issue_label}'"
+            f"Found {len(all_existing_issues)} existing issues labeled '{self.central_label}'"
         )
 
         for test_report in test_reports:
@@ -502,7 +536,7 @@ class GithubIssueHandler:
                 self.github_api.create_issue(
                     title=issue_title,
                     body=scenario_run_info.build_issue_body(),
-                    labels=[self.issue_label],
+                    labels=scenario_run_info.issue_labels(),
                 )
             elif existing_issues:
                 for issue in existing_issues:
