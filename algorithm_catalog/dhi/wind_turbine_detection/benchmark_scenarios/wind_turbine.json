@@ -13,7 +13,7 @@
             "south": 53.951,
             "west": 8.858
           },
-          "year": 2024
+          "year": 2025
         },
         "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/wind_turbine_detection/openeo_udp/wind_turbine_detection.json",
         "process_id": "wind_turbine_detection"

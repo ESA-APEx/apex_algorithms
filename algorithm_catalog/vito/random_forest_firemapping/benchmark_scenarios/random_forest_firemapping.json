@@ -3,7 +3,7 @@
         "id": "forest_fire_mapping",
         "type": "openeo",
         "description": "Forest Fire Mapping using Random Forest based on Sentinel-2 and Sentinel-1 data",
-        "backend": "openeo.vito.be",
+        "backend": "openeo.dataspace.copernicus.eu",
         "process_graph": {
             "randomforestfiremapping1": {
                 "arguments": {
