@@ -55,8 +55,8 @@
             }
         },
         "reference_data": {
-            "openEO_2022-05-02Z.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/openEO_2022-05-02Z.tif",
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/phenology/job-results.json"
+            "openEO_2022-05-02Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_phenology_!actual/openEO_2022-05-02Z.tif",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_phenology_!actual/job-results.json"
         },
         "reference_options": {
             "rtol": 0.1

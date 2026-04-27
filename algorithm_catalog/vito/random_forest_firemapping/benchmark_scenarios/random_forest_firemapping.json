@@ -90,8 +90,8 @@
             }
         },
         "reference_data": {
-            "openEO.tif": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/openEO.tif",
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/job-results.json"
+            "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/openEO.tif",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_forest_fire_mapping_!actual/job-results.json"
         },
         "reference_options": {
         "pixel_tolerance": 1
