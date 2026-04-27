@@ -1,0 +1,123 @@
+{
+  "id": "waterlines",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-04-01T00:00:00Z",
+    "updated": "2026-04-16T00:00:00Z",
+    "type": "service",
+    "title": "Waterlines from Sentinel-2",
+    "description": "Extracts coastal waterlines from Sentinel-2 time series by generating NDWI-based land-water masks, vectorising them, and converting them into waterlines.",
+    "keywords": [
+      "Normalized Difference Water Index (NDWI)",
+      "Natural Hazards",
+      "Sentinel-2",
+      "Coastal"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Argans Ltd",
+        "organization": "Argans Ltd",
+        "links": [
+          {
+            "href": "https://argans.co.uk",
+            "title": "Argans Ltd",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Argans Ltd",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "COASTAL PROCESSES"
+          },
+          {
+            "id": "REMOTE SENSING"
+          },
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoJSON"
+      },
+      {
+        "name": "Parquet"
+      },
+      {
+        "name": "GPKG"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "openeo-udp repository",
+      "href": ""
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=waterlines&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json&server=openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO Federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+        "rel": "platform",
+        "type": "application/json",
+        "title": "CDSE openEO federation",
+        "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Argans Ltd",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/records/thumbnail.png"
+    }
+  ]
+}

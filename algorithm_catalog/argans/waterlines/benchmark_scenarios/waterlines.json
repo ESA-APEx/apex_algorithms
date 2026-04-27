@@ -1,0 +1,30 @@
+[
+  {
+    "id": "waterlines",
+    "type": "openeo",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "waterlines1": {
+        "process_id": "waterlines",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/argans_waterlines/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json",
+        "arguments": {
+          "temporal_extent": ["2024-06-01", "2024-06-30"],
+          "spatial_extent": {
+            "west": -95.13,
+            "south": 29.078,
+            "east": -95.12,
+            "north": 29.082,
+            "crs": "EPSG:4326"
+          },
+          "iterations": 2,
+          "max_cloud_coverage": 5,
+          "ndwi_threshold": 0.01,
+          "simplify_tolerance": 10
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+    }
+  }
+]

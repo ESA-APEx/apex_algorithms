@@ -1,0 +1,68 @@
+{
+  "id": "argans",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-04-01T00:00:00Z",
+    "updated": "2026-04-01T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "Argans Ltd",
+    "description": "Argans specializes in satellite-based Earth observation, remote sensing, and GIS for monitoring marine, atmospheric, and land environments.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Argans Ltd",
+        "emails": [
+          {
+            "value": "enquiries@argans.co.uk"
+          }
+        ],
+        "links": [
+          {
+            "href": "https://argans.co.uk",
+            "type": "text/html",
+            "title": "Argans Ltd",
+            "rel": "website"
+          }
+        ]
+      }
+    ],
+    "themes": [],
+    "acl": {
+      "admin": ["@argans.co.uk"]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "Argans Ltd",
+      "href": "https://argans.co.uk"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://argans.co.uk/img/logo.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://argans.co.uk/img/logos/argans_white_new.png"
+    }
+  ]
+}
