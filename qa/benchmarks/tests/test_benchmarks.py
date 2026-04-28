@@ -198,4 +198,51 @@ def test_run_benchmark(
                 msg += "\n\nActual data S3 URLs (uploaded on failure):"
                 for name, url in actual_s3_urls.items():
                     msg += f"\n  {name}: {url}"
+
+            # Build visual comparison artifacts (PNG + interactive Leaflet HTML),
+            # upload them to S3 alongside the actual data, and record them as a
+            # metric so they can be rendered in the GitHub issue body.
+            try:
+                from apex_algorithm_qa_tools.comparison_artifacts import (
+                    build_comparison_artifacts,
+                )
+
+                comparison_dir = tmp_path / "comparison"
+                artifacts = build_comparison_artifacts(
+                    actual_dir=actual_dir,
+                    reference_dir=reference_dir,
+                    out_dir=comparison_dir,
+                )
+                artifact_records = []
+                for art in artifacts:
+                    record = {"title": art.title, "summary": art.summary}
+                    for attr, key in (
+                        ("png_path", "preview_url"),
+                        ("html_path", "interactive_url"),
+                    ):
+                        path = getattr(art, attr)
+                        if path and path.exists():
+                            upload_assets_on_fail(path)
+                            record[key] = upload_assets_on_fail.get_url(path)
+                    artifact_records.append(record)
+
+                if artifact_records:
+                    track_metric(
+                        "comparison_artifacts", json.dumps(artifact_records)
+                    )
+                    msg += "\n\nVisual comparison artifacts:"
+                    for r in artifact_records:
+                        line = f"\n  - {r['title']}: {r.get('summary', '')}"
+                        if r.get("preview_url"):
+                            line += f"\n    preview: {r['preview_url']}"
+                        if r.get("interactive_url"):
+                            line += f"\n    interactive: {r['interactive_url']}"
+                        msg += line
+            except Exception as art_exc:
+                _log.warning(
+                    f"Failed to build comparison artifacts: {art_exc!r}",
+                    exc_info=True,
+                )
+
             raise AssertionError(msg) from None
+

@@ -210,6 +210,7 @@ class PytestReportParser:
                         "test:phase:start",
                         "test:phase:end",
                         "test:phase:exception",
+                        "comparison_artifacts",
                     ]
                 },
             }
@@ -424,6 +425,10 @@ class ScenarioRunInfo:
         if contact_table:
             body += "\n\n### Contact Information\n\n" + contact_table
 
+        comparison_md = self._build_comparison_section()
+        if comparison_md:
+            body += "\n\n### Visual Comparison\n\n" + comparison_md
+
         process_graph = json.dumps(self.scenario.process_graph, indent=2)
         body += "\n\n### Process Graph"
         body += f"\n\n```json\n{process_graph}\n```"
@@ -432,6 +437,28 @@ class ScenarioRunInfo:
         body += f"\n\n```plaintext\n{self.failure_logs}\n```\n"
 
         return body
+
+    def _build_comparison_section(self) -> str | None:
+        """Render the visual comparison artifacts section, if any were recorded."""
+        raw = self.test_metrics.get("comparison_artifacts")
+        if not raw:
+            return None
+        try:
+            artifacts = json.loads(raw) if isinstance(raw, str) else raw
+        except (TypeError, json.JSONDecodeError) as e:
+            logger.warning(f"Could not parse comparison_artifacts metric: {e!r}")
+            return None
+        if not artifacts:
+            return None
+        try:
+            from apex_algorithm_qa_tools.comparison_artifacts import (
+                render_artifacts_markdown,
+            )
+
+            return render_artifacts_markdown(artifacts)
+        except Exception as e:
+            logger.warning(f"Could not render comparison artifacts markdown: {e!r}")
+            return None
 
     def build_comment_body(self) -> str:
         """Build the comment body for an existing issue"""

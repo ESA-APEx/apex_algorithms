@@ -187,6 +187,7 @@ class TestPytestReportParser:
                 "test:phase:start": "compare",
                 "test:phase:end": "download-reference",
                 "test:phase:exception": "compare",
+                "comparison_artifacts": None,
             },
             {
                 "nodeid": "something_else",
@@ -199,6 +200,7 @@ class TestPytestReportParser:
                 "test:phase:start": None,
                 "test:phase:end": None,
                 "test:phase:exception": None,
+                "comparison_artifacts": None,
             },
         ]
 

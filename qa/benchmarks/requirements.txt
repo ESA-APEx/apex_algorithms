@@ -6,3 +6,8 @@ xarray>=2024.6.0
 netCDF4>=1.7.1
 rioxarray>=0.15.7
 pytest-html>=4.1.1
+# Visual comparison artifacts (PNG previews + interactive Leaflet maps)
+matplotlib>=3.8.0
+folium>=0.16.0
+pandas>=2.0.0
+pyarrow>=15.0.0
