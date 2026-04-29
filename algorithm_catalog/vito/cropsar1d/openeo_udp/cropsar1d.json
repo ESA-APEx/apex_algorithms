@@ -7,7 +7,7 @@
           "from_parameter": "end_date"
         },
         "geometry": {
-          "from_parameter": "spatial_extent"
+          "from_parameter": "geometry"
         },
         "minimal_input_checks": {
           "from_parameter": "minimal_input_checks"
@@ -33,7 +33,7 @@
   },
   "parameters": [
     {
-      "name": "spatial_extent",
+      "name": "geometry",
       "description": "Limits the data to process to the specified bounding box or polygons.\\n\\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\\n\\nEmpty geometries are ignored.\\nSet this parameter to null to set no limit for the spatial extent.",
       "schema": [
         {
