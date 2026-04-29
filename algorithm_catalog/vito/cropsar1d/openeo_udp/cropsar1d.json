@@ -1,0 +1,163 @@
+{
+  "process_graph": {
+    "cropsar1d1": {
+      "process_id": "cropsar1d",
+      "arguments": {
+        "enddate": {
+          "from_parameter": "enddate"
+        },
+        "geometry": {
+          "from_parameter": "geometry"
+        },
+        "minimal_input_checks": {
+          "from_parameter": "minimal_input_checks"
+        },
+        "output": {
+          "from_parameter": "biopar_type"
+        },
+        "startdate": {
+          "from_parameter": "startdate"
+        }
+      },
+      "namespace": "vito",
+      "result": true
+    }
+  },
+  "id": "cropsar1d",
+  "summary": "Monitor crop growth and health from space using CropSAR1D implemented using collections offered by Terrascope.",
+  "description": "CropSAR is an innovative technique that uses Sentinel-1 radar observations to augment those of Sentinel-2. By doing so, more continuous vegetation properties monitoring can be performed, including vegetation information for situations where these properties cannot be retrieved from Sentinel-2 observations due to cloud occurrence. This technique is especially beneficial to operational agricultural monitoring, as the entire crop growth cycle can be observed, particularly the drastic changes during its development. The Sentinel-1 \u03c30 backscatter signal contains information on vegetation's structure and moisture content and the underlying soil. This correlation is demonstrated in Figure 1. The CropSAR temporal resolution is defined by the combined revisit rate of Sentinel-1 and cloud-free Sentinel-2 observations. For Belgium and its surroundings (~50\u00b0N), this is almost every day (because both the ascending and descending tracks for Sentinel-1 are acquired).\n\n\nA more detailed introduction to CropSAR, it's working principles, and added value is given in this [blog](https://blog.vito.be/remotesensing/cropsar2019). The various CropSAR web service elements are explained below.\n\n\n>**Note:** CropSAR is intended to provide the augmented Sentinel-1 and -2 vegetation indices for individual agricultural fields. Although it can be requested over larger areas (e.g. at the community level), the added value for such areas will be limited, and it will take a considerable time for the algorithm to provide you with the results.\n\n\n>**Disclaimer:** Requesting CropSAR in NRT (near real-time) will result in a lower performance of the fAPAR estimates. This lower performance only occurs for the fAPAR estimates in 3 months before the real-time.\n\n\n### **Methodology**\nCropSAR takes as input the cloud-interrupted time series of Sentinel-2 fAPAR and adds the uninterrupted time series of Sentinel-1 backscatter. The algorithm then returns a completely cloud-free time series of fAPAR together with its confidence level.",
+  "default_job_options": {
+    "udf-dependency-archives": [
+      "https://artifactory.vgt.vito.be/artifactory/auxdata-public/cropsar_px/cropsar1d/cropsar-2.0.0-py3-none-any_site_packages.zip#cropsar_onnx"
+    ]
+  },
+  "parameters": [
+    {
+      "name": "geometry",
+      "description": "Limits the data to process to the specified bounding box or polygons.\\n\\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\\n\\nEmpty geometries are ignored.\\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ]
+    },
+    {
+      "name": "startdate",
+      "description": "Start of the temporal interval and time. The date format is YYYY-MM-DD. If no time is specified, it defaults to 00:00:00. ",
+      "schema": {
+        "type": "string",
+        "subtype": "date",
+        "format": "date"
+      }
+    },
+    {
+      "name": "enddate",
+      "description": "End of the temporal interval and time. The date format is YYYY-MM-DD. If no time is specified, it defaults to 00:00:00. ",
+      "schema": {
+        "type": "string",
+        "subtype": "date",
+        "format": "date"
+      }
+    },
+    {
+      "name": "minimal_input_checks",
+      "description": "If set to true, the algorithm will perform minimal checks on the input data, which may lead to faster processing times but potentially less accurate results. If set to false, the algorithm will perform more comprehensive checks on the input data, which may lead to longer processing times but potentially more accurate results.",
+      "schema": {
+        "type": "boolean"
+      },
+      "default": false,
+      "optional": true
+    },
+    {
+      "name": "biopar_type",
+      "description": "Type of biophysical parameter to be used.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "FAPAR",
+          "FCOVER"
+        ]
+      },
+      "default": "FAPAR",
+      "optional": true
+    }
+  ]
+}

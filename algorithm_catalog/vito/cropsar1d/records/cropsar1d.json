@@ -1,0 +1,124 @@
+{
+    "id": "cropsar1d",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-03-19T00:00:00Z",
+        "updated": "2026-03-19T00:00:00Z",
+        "type": "service",
+        "title": "CropSAR 1D",
+        "description": "CropSAR 1D is a process that applies the CropSAR 1D model to a given geometry and time range, producing a biophysical parameter (e.g., FAPAR) as output. The process takes as input a geometry (in GeoJSON format), a start date, an end date, and the desired output biophysical parameter. The process is designed to run on the VITO backend and utilizes the OpenEO API for execution.",
+        "cost_estimate": 45,
+        "cost_unit": "platform credits",
+        "keywords": [
+            "Sentinel-1",
+            "Sentinel-2",
+            "Agriculture",
+            "Crop monitoring",
+            "Biophysical parameters",
+            "FAPAR",
+            "OpenEO",
+            "VITO"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "Terrascope EOplaza",
+                "links": [
+                    {
+                        "href": "https://portal.terrascope.be/",
+                        "title": "Terrascope EOplaza Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "https://terrascope.be/en/forum",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "AGRICULTURE"
+                    },
+                    {
+                        "id": "FIELD CROP PRODUCTS"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "GeoTIFF"
+            }
+        ],
+        "license": "proprietary"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "VITO openEO backend",
+            "href": "https://openeo.vito.be/openeo"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar1d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json&server=https://openeo.vito.be"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/records/thumbnail.png"
+        }
+    ]
+}
