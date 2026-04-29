@@ -1,0 +1,67 @@
+{
+  "id": "earthdaily",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-04-24T00:00:00Z",
+    "updated": "2026-04-24T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "EarthDaily",
+    "description": "Earth observation data and analytics provider.",
+    "keywords": [
+      "Earth Observation",
+      "Satellite Imagery",
+      "Analytics"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EarthDaily",
+        "organization": "EarthDaily",
+        "roles": [
+          "processor"
+        ],
+        "contactInstructions": "Contact EarthDaily through the public website."
+      }
+    ],
+    "themes": [],
+    "license": "MIT",
+    "acl": {
+      "admin": [
+        "@earthdaily.com"
+      ]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "EarthDaily",
+      "href": "https://earthdaily.com/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "EarthDaily logo",
+      "href": "https://earthdaily.com/hs-fs/hubfs/3.%20Logos%20all/EarthDaily%20Logos/EDA_logo_gradient-white.png?width=1000&height=472&name=EDA_logo_gradient-white.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "EarthDaily logo",
+      "href": "https://earthdaily.com/hs-fs/hubfs/3.%20Logos%20all/EarthDaily%20Logos/EDA_logo_gradient-white.png?width=1000&height=472&name=EDA_logo_gradient-white.png"
+    }
+  ]
+}

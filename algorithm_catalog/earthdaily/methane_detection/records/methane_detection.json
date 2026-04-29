@@ -1,0 +1,137 @@
+{
+  "id": "methane_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "visibility": "public",
+    "created": "2026-04-24T00:00:00Z",
+    "updated": "2026-04-24T00:00:00Z",
+    "type": "service",
+    "title": "Sentinel-2 Methane Enhancement Detection",
+    "description": "Earth observation methane detection workflow that searches STAC Sentinel-2 imagery, applies a SWIR-band matched-filter algorithm, and produces methane enhancement heatmaps with STAC-packaged GeoTIFF, PNG, and JSON outputs.",
+    "cost_estimate": 0.0,
+    "cost_unit": "platform dependent",
+    "keywords": [
+      "Climate",
+      "Sentinel-2",
+      "Data Analysis and Visualization"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EarthDaily",
+        "organization": "EarthDaily",
+        "roles": [
+          "processor"
+        ],
+        "links": [
+          {
+            "href": "https://earthdaily.com/",
+            "title": "EarthDaily website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/earthdaily/methane-detection",
+            "title": "methane-detection source repository",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact EarthDaily through the public website."
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "ATMOSPHERE"
+          },
+          {
+            "id": "ATMOSPHERIC CHEMISTRY"
+          },
+          {
+            "id": "TRACE GASES"
+          },
+          {
+            "id": "METHANE"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JSON"
+      }
+    ],
+    "license": "MIT"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "EOAP CWL Workflow Application Package",
+      "href": "https://raw.githubusercontent.com/earthdaily/methane-detection/main/app-package.cwl"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Methane detection OGC API Processes endpoint",
+      "href": "https://pygeoapi-eoxhub.workspace.gtif-ukif.hub-otc.eox.at/processes/execute-methane-process"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "EOxHub Workspaces",
+      "href": "../../../../platform_catalog/eoxhub.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "EarthDaily",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "methane-detection documentation",
+      "href": "https://github.com/earthdaily/methane-detection#readme"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Source repository",
+      "href": "https://github.com/earthdaily/methane-detection"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Methane enhancement heatmap thumbnail",
+      "href": "thumbnail.png"
+    }
+  ]
+}

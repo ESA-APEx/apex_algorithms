@@ -1,0 +1,77 @@
+{
+  "id": "eoxhub",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-04-29T00:00:00Z",
+    "updated": "2026-04-29T00:00:00Z",
+    "type": "ogc_backend",
+    "title": "EOxHub Workspaces",
+    "short_title": "EOxHub",
+    "description": "EOxHub Workspaces is a cloud-based Earth observation workspace platform supporting geospatial processing and OGC API services through applications such as pygeoapi.",
+    "keywords": [
+      "Earth Observation",
+      "OGC API Processes",
+      "pygeoapi"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EOxHub Workspaces",
+        "organization": "EOX IT Services GmbH",
+        "roles": [
+          "operator"
+        ],
+        "links": [
+          {
+            "href": "https://hub.eox.at/contact",
+            "title": "EOxHub contact",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact EOX IT Services GmbH through the EOxHub contact page."
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "EOxHub Workspaces",
+      "href": "https://hub.eox.at/"
+    },
+    {
+      "rel": "documentation",
+      "type": "text/html",
+      "title": "EOxHub Workspaces documentation",
+      "href": "https://documentation.hub.eox.at/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/svg+xml",
+      "title": "EOxHub logo",
+      "href": "https://hub-brands.eox.at/eoxhub/eoxhub.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg+xml",
+      "title": "EOxHub logo",
+      "href": "https://hub-brands.eox.at/eoxhub/eoxhub.svg"
+    }
+  ]
+}
