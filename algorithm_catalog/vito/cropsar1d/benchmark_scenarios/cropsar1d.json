@@ -1,0 +1,70 @@
+[
+    {
+        "id": "cropsar1d",
+        "type": "openeo",
+        "description": "CropSAR 1d is a process that applies the CropSAR 1d model to a given geometry and time range, producing a biophysical parameter (e.g., FAPAR) as output. The process takes as input a geometry (in GeoJSON format), a start date, an end date, and the desired output biophysical parameter. The process is designed to run on the VITO backend and utilizes the OpenEO API for execution.",
+        "backend": "openeo.vito.be",
+        "process_graph": {
+            "cropsar1d1": {
+                "arguments": {
+                    "end_date": "2024-12-31",
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
+                                ],
+                                [
+                                    5.178744792938232,
+                                    51.24672597710759
+                                ],
+                                [
+                                    5.185289382934569,
+                                    51.24504696935156
+                                ],
+                                [
+                                    5.18676996231079,
+                                    51.245342479161295
+                                ],
+                                [
+                                    5.187370777130127,
+                                    51.24918393390799
+                                ],
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "output": "FAPAR",
+                    "start_date": "2024-01-01"
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json",
+                "process_id": "cropsar1d"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "cropsar1d1"
+                    },
+                    "format": "GTiff",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "job_options": {
+            "udf-dependency-archives": [
+                "https://artifactory.vgt.vito.be/artifactory/auxdata-public/cropsar_px/cropsar1d/cropsar-2.0.0-py3-none-any_site_packages.zip#cropsar_onnx"
+            ]
+        },
+        "reference_data": {
+            "result.json": "https://s3.waw3-1.cloudferro.com/apex-examples/cropsar1d/result.json",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-examples/cropsar1d/job-results.json"
+        }
+    }
+]
