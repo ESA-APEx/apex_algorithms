@@ -4,7 +4,7 @@
       "process_id": "cropsar1d",
       "arguments": {
         "enddate": {
-          "from_parameter": "end_date"
+          "from_parameter": "enddate"
         },
         "geometry": {
           "from_parameter": "geometry"
@@ -16,7 +16,7 @@
           "from_parameter": "biopar_type"
         },
         "startdate": {
-          "from_parameter": "start_date"
+          "from_parameter": "startdate"
         }
       },
       "namespace": "vito",
@@ -120,7 +120,7 @@
       ]
     },
     {
-      "name": "start_date",
+      "name": "startdate",
       "description": "Start of the temporal interval and time. The date format is YYYY-MM-DD. If no time is specified, it defaults to 00:00:00. ",
       "schema": {
         "type": "string",
@@ -129,7 +129,7 @@
       }
     },
     {
-      "name": "end_date",
+      "name": "enddate",
       "description": "End of the temporal interval and time. The date format is YYYY-MM-DD. If no time is specified, it defaults to 00:00:00. ",
       "schema": {
         "type": "string",
