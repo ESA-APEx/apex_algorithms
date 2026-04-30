@@ -52,6 +52,40 @@ def collect_metrics_from_results_metadata(
         track_metric("results:proj:bbox:area:utm:km2", max(proj_shape_area_km2))
 
 
+def check_reference_performance(
+    scenario_id: str,
+    reference_performance: dict,
+    tracked_metrics: dict,
+    *,
+    default_tolerance: float = 0.2,
+) -> list[str]:
+    """
+    Compare tracked metrics against reference performance baselines.
+
+    Returns a list of warning/violation messages for metrics that exceed
+    ``max * (1 + tolerance)``.
+    """
+    violations = []
+    for metric_name, ref in reference_performance.items():
+        max_val = ref["max"]
+        tolerance = ref.get("tolerance", default_tolerance)
+        actual = tracked_metrics.get(metric_name)
+        if actual is None:
+            violations.append(
+                f"[{scenario_id}] performance metric {metric_name!r}: "
+                f"not found in tracked metrics (expected max={max_val})"
+            )
+            continue
+        threshold = max_val * (1 + tolerance)
+        if actual > threshold:
+            violations.append(
+                f"[{scenario_id}] performance regression in {metric_name!r}: "
+                f"actual={actual} exceeds max={max_val} "
+                f"(with tolerance={tolerance:.0%}, threshold={threshold})"
+            )
+    return violations
+
+
 def analyse_results_comparison_exception(exc: Exception) -> Union[str, None]:
     if isinstance(exc, AssertionError):
         if "Differing 'derived_from' links" in str(exc):
