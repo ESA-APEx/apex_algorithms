@@ -32,9 +32,9 @@
     },
     "reference_performance": {
       "costs": {"max": 5, "tolerance": 0.2},
-      "usage:cpu:cpu-seconds": {"max": 3000, "tolerance": 0.2},
-      "usage:memory:mb-seconds": {"max": 10000000, "tolerance": 0.2},
-      "usage:duration:seconds": {"max": 120, "tolerance": 0.2}
+      "cpu:cpu-seconds": {"max": 3000, "tolerance": 0.2},
+      "memory:mb-seconds": {"max": 10000000, "tolerance": 0.2},
+      "duration:seconds": {"max": 120, "tolerance": 0.2}
     }
   }
 ]
