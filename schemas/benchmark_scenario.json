@@ -37,6 +37,24 @@
     "reference_options": {
       "type": "object",
       "description": "Options to fine-tune how actual and reference results should be compared."
+    },
+    "reference_performance": {
+      "type": "object",
+      "description": "Reference performance baselines for regression detection. Keys are metric names (e.g. 'costs', 'usage:cpu:cpu-seconds'), values are objects with 'max' (threshold) and optional 'tolerance' (fractional, default 0.2).",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "max": {
+            "type": "number",
+            "description": "Maximum expected value for this metric."
+          },
+          "tolerance": {
+            "type": "number",
+            "description": "Fractional tolerance above 'max' before flagging a regression (default 0.2 = 20%)."
+          }
+        },
+        "required": ["max"]
+      }
     }
   },
   "required": [
