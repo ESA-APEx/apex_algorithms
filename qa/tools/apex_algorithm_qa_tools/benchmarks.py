@@ -52,6 +52,22 @@ def collect_metrics_from_results_metadata(
         track_metric("results:proj:bbox:area:utm:km2", max(proj_shape_area_km2))
 
 
+def _resolve_metric_name(short_name: str, tracked_metrics: dict) -> str:
+    """
+    Resolve a short metric name (e.g. "cpu:cpu-seconds", "memory:mb-seconds")
+    to the full tracked metric name (e.g. "usage:cpu:cpu-seconds").
+
+    If the short name already matches a tracked metric exactly, it is returned as-is.
+    Otherwise, it looks for a tracked metric matching ``usage:{short_name}``.
+    """
+    if short_name in tracked_metrics:
+        return short_name
+    full = f"usage:{short_name}"
+    if full in tracked_metrics:
+        return full
+    return short_name
+
+
 def check_reference_performance(
     scenario_id: str,
     reference_performance: dict,
@@ -62,14 +78,19 @@ def check_reference_performance(
     """
     Compare tracked metrics against reference performance baselines.
 
+    Metric names can be specified as short names (e.g. ``"cpu"``, ``"memory"``,
+    ``"duration"``) which are automatically resolved to the full tracked metric
+    name (e.g. ``"usage:cpu:cpu-seconds"``), or as full names.
+
     Returns a list of warning/violation messages for metrics that exceed
     ``max * (1 + tolerance)``.
     """
     violations = []
     for metric_name, ref in reference_performance.items():
+        resolved_name = _resolve_metric_name(metric_name, tracked_metrics)
         max_val = ref["max"]
         tolerance = ref.get("tolerance", default_tolerance)
-        actual = tracked_metrics.get(metric_name)
+        actual = tracked_metrics.get(resolved_name)
         if actual is None:
             violations.append(
                 f"[{scenario_id}] performance metric {metric_name!r}: "
@@ -79,7 +100,7 @@ def check_reference_performance(
         threshold = max_val * (1 + tolerance)
         if actual > threshold:
             violations.append(
-                f"[{scenario_id}] performance regression in {metric_name!r}: "
+                f"[{scenario_id}] performance regression in {metric_name!r} ({resolved_name}): "
                 f"actual={actual} exceeds max={max_val} "
                 f"(with tolerance={tolerance:.0%}, threshold={threshold})"
             )
