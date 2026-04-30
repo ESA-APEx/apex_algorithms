@@ -8,6 +8,7 @@ import openeo
 import pytest
 from apex_algorithm_qa_tools.benchmarks import (
     analyse_results_comparison_exception,
+    check_reference_performance,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
 )
@@ -125,6 +126,28 @@ def test_run_benchmark(
 
         results = job.get_results()
         collect_metrics_from_results_metadata(results, track_metric=track_metric)
+
+    if scenario.reference_performance:
+        with track_phase(phase="check-performance"):
+            # Gather tracked metrics collected so far
+            _tracked = {
+                name: value
+                for name, value in request.node.user_properties
+                if isinstance(value, (int, float))
+            }
+            violations = check_reference_performance(
+                scenario_id=scenario.id,
+                reference_performance=scenario.reference_performance,
+                tracked_metrics=_tracked,
+            )
+            for v in violations:
+                _log.warning(v)
+            if violations:
+                import warnings
+                warnings.warn(
+                    f"Performance regression detected:\n" + "\n".join(violations),
+                    stacklevel=1,
+                )
 
     with track_phase(phase="download-actual"):
         # Download actual results
