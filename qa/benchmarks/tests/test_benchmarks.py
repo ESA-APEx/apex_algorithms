@@ -140,13 +140,9 @@ def test_run_benchmark(
                 reference_performance=scenario.reference_performance,
                 tracked_metrics=_tracked,
             )
-            for v in violations:
-                _log.warning(v)
             if violations:
-                import warnings
-                warnings.warn(
-                    f"Performance regression detected:\n" + "\n".join(violations),
-                    stacklevel=1,
+                raise AssertionError(
+                    f"Performance regression detected:\n" + "\n".join(violations)
                 )
 
     with track_phase(phase="download-actual"):

@@ -7,6 +7,7 @@ import openeo.testing.results
 import pytest
 from apex_algorithm_qa_tools.benchmarks import (
     analyse_results_comparison_exception,
+    check_reference_performance,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
 )
@@ -77,7 +78,61 @@ def test_collect_metrics_from_results_metadata_shape_and_bbox(dummy_tracker):
     ]
 
 
-def _create_metadata_file(path: Path, *, links: List[dict] | None):
+
+
+def test_check_reference_performance_pass():
+    """Test that check_reference_performance passes when metrics are within bounds."""
+    tracked = {
+        "costs": 4.5,
+        "usage:cpu:cpu-seconds": 2500,
+        "usage:duration:seconds": 100,
+    }
+    reference = {
+        "costs": {"max": 5, "tolerance": 0.2},
+        "usage:cpu:cpu-seconds": {"max": 3000, "tolerance": 0.2},
+        "usage:duration:seconds": {"max": 120, "tolerance": 0.2},
+    }
+    violations = check_reference_performance(
+        scenario_id="test_scenario",
+        reference_performance=reference,
+        tracked_metrics=tracked,
+    )
+    assert violations == []
+
+
+def test_check_reference_performance_regression():
+    """Test that check_reference_performance detects regressions."""
+    tracked = {
+        "costs": 7.0,  # exceeds 5 * 1.2 = 6.0
+        "usage:cpu:cpu-seconds": 2500,
+    }
+    reference = {
+        "costs": {"max": 5, "tolerance": 0.2},
+        "usage:cpu:cpu-seconds": {"max": 3000, "tolerance": 0.2},
+    }
+    violations = check_reference_performance(
+        scenario_id="test_scenario",
+        reference_performance=reference,
+        tracked_metrics=tracked,
+    )
+    assert len(violations) == 1
+    assert "regression in 'costs'" in violations[0]
+
+
+def test_check_reference_performance_missing_metric():
+    """Test that check_reference_performance reports missing metrics."""
+    tracked = {"costs": 4.5}
+    reference = {
+        "costs": {"max": 5},
+        "usage:cpu:cpu-seconds": {"max": 3000},
+    }
+    violations = check_reference_performance(
+        scenario_id="test_scenario",
+        reference_performance=reference,
+        tracked_metrics=tracked,
+    )
+    assert len(violations) == 1
+    assert "not found in tracked metrics" in violations[0]
     metadata = {}
     if links is not None:
         metadata["links"] = links
