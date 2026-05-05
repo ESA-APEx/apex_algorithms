@@ -133,6 +133,9 @@ def test_check_reference_performance_missing_metric():
     )
     assert len(violations) == 1
     assert "not found in tracked metrics" in violations[0]
+
+
+def _create_metadata_file(path: Path, *, links: List[dict] | None):
     metadata = {}
     if links is not None:
         metadata["links"] = links
