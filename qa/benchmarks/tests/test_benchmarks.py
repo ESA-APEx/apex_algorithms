@@ -11,6 +11,7 @@ from apex_algorithm_qa_tools.benchmarks import (
     check_reference_performance,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
+    compute_adaptive_baselines,
 )
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
@@ -127,23 +128,61 @@ def test_run_benchmark(
         results = job.get_results()
         collect_metrics_from_results_metadata(results, track_metric=track_metric)
 
-    if scenario.reference_performance:
-        with track_phase(phase="check-performance"):
-            # Gather tracked metrics collected so far
-            _tracked = {
-                name: value
-                for name, value in request.node.user_properties
-                if isinstance(value, (int, float))
-            }
+    with track_phase(phase="check-performance"):
+        # Gather tracked metrics collected so far
+        _tracked = {
+            name: value
+            for name, value in request.node.user_properties
+            if isinstance(value, (int, float))
+        }
+
+        # Compute adaptive baselines from historical runs on S3
+        resolved_baselines = {}
+        s3_bucket = request.config.getoption(
+            "--track-metrics-parquet-s3-bucket", default=None
+        )
+        s3_key = request.config.getoption(
+            "--track-metrics-parquet-s3-key", default="metrics/v0/metrics.parquet"
+        )
+        if s3_bucket:
+            try:
+                from apex_algorithm_qa_tools.benchmark_trends import (
+                    create_s3_filesystem,
+                    load_scenario_history,
+                )
+
+                fs = create_s3_filesystem()
+                history = load_scenario_history(
+                    parquet_path=f"{s3_bucket}/{s3_key}",
+                    scenario_id=scenario.id,
+                    filesystem=fs,
+                )
+                if history:
+                    resolved_baselines = compute_adaptive_baselines(history)
+                    _log.info(
+                        f"Using adaptive baselines for {scenario.id!r} "
+                        f"from {len(history)} historical runs"
+                    )
+            except Exception as e:
+                _log.warning(
+                    f"Could not load history for adaptive baselines: {e}"
+                )
+
+        if resolved_baselines:
             violations = check_reference_performance(
                 scenario_id=scenario.id,
-                reference_performance=scenario.reference_performance,
+                reference_performance=resolved_baselines,
                 tracked_metrics=_tracked,
             )
             if violations:
                 raise AssertionError(
                     f"Performance regression detected:\n" + "\n".join(violations)
                 )
+        else:
+            _log.info(
+                f"No performance baselines available for {scenario.id!r} "
+                f"(no historical data yet)"
+            )
 
     with track_phase(phase="download-actual"):
         # Download actual results

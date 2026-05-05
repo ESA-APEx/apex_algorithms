@@ -37,7 +37,6 @@ class BenchmarkScenario:
     job_options: dict | None = None
     reference_data: dict = dataclasses.field(default_factory=dict)
     reference_options: dict = dataclasses.field(default_factory=dict)
-    reference_performance: dict = dataclasses.field(default_factory=dict)
     source: str | Path | None = None
 
     @classmethod
@@ -57,7 +56,6 @@ class BenchmarkScenario:
             reference_data=data.get("reference_data", {}),
             job_options=data.get("job_options"),
             reference_options=data.get("reference_options", {}),
-            reference_performance=data.get("reference_performance", {}),
             source=source,
         )
 

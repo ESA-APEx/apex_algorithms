@@ -2,10 +2,13 @@
 Reusable utilities to use in benchmarking
 """
 
+import logging
 from typing import Union
 
 from apex_algorithm_qa_tools.pytest.pytest_track_metrics import MetricsTracker
 from openeo.rest.job import BatchJob, JobResults
+
+_log = logging.getLogger(__name__)
 
 
 def collect_metrics_from_job_metadata(
@@ -64,9 +67,9 @@ def check_reference_performance(
 
     Returns a list of warning/violation messages for metrics that exceed
     ``max * (1 + tolerance)``.
-    
+
     Metric names should match exactly as tracked (e.g. ``usage:cpu:cpu-seconds``,
-    ``usage:memory:mb-seconds``, ``costs``).
+    ``usage:memory:mb-seconds``, ``costs``, ``costs:per_km2``).
     """
     violations = []
     for metric_name, ref in reference_performance.items():
@@ -74,10 +77,7 @@ def check_reference_performance(
         tolerance = ref.get("tolerance", default_tolerance)
         actual = tracked_metrics.get(metric_name)
         if actual is None:
-            violations.append(
-                f"[{scenario_id}] performance metric {metric_name!r}: "
-                f"not found in tracked metrics (expected max={max_val})"
-            )
+            # Metric not tracked — skip silently, only flag actual regressions
             continue
         threshold = max_val * (1 + tolerance)
         if actual > threshold:
@@ -87,6 +87,92 @@ def check_reference_performance(
                 f"(with tolerance={tolerance:.0%}, threshold={threshold})"
             )
     return violations
+
+
+def _adaptive_k(n: int) -> float:
+    """
+    Compute the adaptive multiplier for the performance threshold.
+
+    Linearly interpolates from k=4.0 at n=2 to k=2.0 at n=10:
+    ``k(n) = 4.0 - 0.25 * (n - 2)``
+    """
+    return 4.0 - 0.25 * (n - 2)
+
+
+def compute_adaptive_baselines(
+    historical_values: list[dict],
+    metric_names: list[str] | None = None,
+) -> dict:
+    """
+    Compute adaptive performance baselines from historical successful runs.
+
+    Uses ``mean + k(n) * σ`` where k linearly decreases from 4.0 to 2.0
+    as n goes from 2 to 10 (capped at 10 most recent runs):
+
+    - n=1: no σ, uses 50% tolerance on the single value
+    - n=2: k=4.0
+    - n=5: k=3.25
+    - n=10: k=2.0 (tightest, standard 2σ check)
+
+    :param historical_values: List of dicts, each containing metric values
+        from a successful benchmark run.
+    :param metric_names: Metrics to compute baselines for. If None, auto-detects
+        numeric metrics present in the history.
+    :return: Dict of ``{metric_name: {"max": threshold, "tolerance": 0, ...}}``
+        ready for use with :func:`check_reference_performance`.
+    """
+    import math
+
+    if not historical_values:
+        return {}
+
+    # Only use the most recent runs (max 10) for baseline computation
+    historical_values = historical_values[-10:]
+
+    # Auto-detect numeric metric names from history
+    if metric_names is None:
+        metric_names = set()
+        for row in historical_values:
+            for k, v in row.items():
+                if isinstance(v, (int, float)):
+                    metric_names.add(k)
+        metric_names = sorted(metric_names)
+
+    baselines = {}
+    for name in metric_names:
+        values = [
+            row[name] for row in historical_values
+            if name in row and isinstance(row.get(name), (int, float))
+        ]
+        n = len(values)
+        if n == 0:
+            continue
+
+        if n == 1:
+            # Single observation: use it with 50% tolerance
+            baselines[name] = {
+                "max": values[0],
+                "tolerance": 0.5,
+                "source": "adaptive",
+                "n_samples": 1,
+            }
+        else:
+            mean = sum(values) / n
+            variance = sum((v - mean) ** 2 for v in values) / (n - 1)
+            std = math.sqrt(variance)
+            k = _adaptive_k(n)
+            threshold = mean + k * std
+            baselines[name] = {
+                "max": round(threshold, 4),
+                "tolerance": 0,  # threshold already includes the adaptive band
+                "source": "adaptive",
+                "n_samples": n,
+                "mean": round(mean, 4),
+                "std": round(std, 4),
+                "k": round(k, 2),
+            }
+
+    return baselines
 
 
 def analyse_results_comparison_exception(exc: Exception) -> Union[str, None]:

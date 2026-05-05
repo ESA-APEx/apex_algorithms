@@ -45,7 +45,6 @@ class TestBenchmarkScenario:
         assert bs.job_options is None
         assert bs.reference_data == {}
         assert bs.reference_options == {}
-        assert bs.reference_performance == {}
 
     def test_validation_minimal(self):
         bs = BenchmarkScenario.from_dict(
@@ -63,7 +62,6 @@ class TestBenchmarkScenario:
         assert bs.job_options is None
         assert bs.reference_data == {}
         assert bs.reference_options == {}
-        assert bs.reference_performance == {}
 
     def test_validation_missing_essentials(self):
         with pytest.raises(jsonschema.ValidationError):

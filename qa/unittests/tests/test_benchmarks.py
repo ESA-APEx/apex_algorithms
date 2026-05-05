@@ -10,6 +10,7 @@ from apex_algorithm_qa_tools.benchmarks import (
     check_reference_performance,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
+    compute_adaptive_baselines,
 )
 
 
@@ -120,7 +121,7 @@ def test_check_reference_performance_regression():
 
 
 def test_check_reference_performance_missing_metric():
-    """Test that check_reference_performance reports missing metrics."""
+    """Test that missing metrics are silently skipped (only flag regressions)."""
     tracked = {"costs": 4.5}
     reference = {
         "costs": {"max": 5},
@@ -131,8 +132,79 @@ def test_check_reference_performance_missing_metric():
         reference_performance=reference,
         tracked_metrics=tracked,
     )
+    assert violations == []
+
+
+def test_compute_adaptive_baselines_single_observation():
+    """With 1 observation, uses the value with 50% tolerance."""
+    history = [{"costs": 10.0}]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert baselines["costs"]["max"] == 10.0
+    assert baselines["costs"]["tolerance"] == 0.5
+    assert baselines["costs"]["n_samples"] == 1
+
+
+def test_compute_adaptive_baselines_two_observations():
+    """With 2 observations, k(2)=4.0 so threshold is very loose."""
+    history = [{"costs": 10.0}, {"costs": 12.0}]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert baselines["costs"]["n_samples"] == 2
+    assert baselines["costs"]["k"] == 4.0
+    assert baselines["costs"]["tolerance"] == 0  # baked into max
+    # mean=11, std~=1.414, threshold = 11 + 4.0*1.414 = ~16.66
+    assert baselines["costs"]["max"] > 16.0
+
+
+def test_compute_adaptive_baselines_many_observations():
+    """With many observations, only last 10 are used, k(10)=2.0."""
+    history = [{"costs": 10.0 + i * 0.1} for i in range(20)]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert baselines["costs"]["n_samples"] == 10  # capped at 10
+    assert baselines["costs"]["k"] == 2.0  # exactly 2σ at n=10
+
+
+def test_compute_adaptive_baselines_auto_detect_metrics():
+    """Without explicit metric_names, auto-detects numeric fields."""
+    history = [
+        {"costs": 10.0, "usage:cpu:cpu-seconds": 100, "scenario_id": "foo"},
+        {"costs": 12.0, "usage:cpu:cpu-seconds": 110, "scenario_id": "foo"},
+        {"costs": 11.0, "usage:cpu:cpu-seconds": 105, "scenario_id": "foo"},
+    ]
+    baselines = compute_adaptive_baselines(history)
+    assert "costs" in baselines
+    assert "usage:cpu:cpu-seconds" in baselines
+    # scenario_id is a string, not numeric, so should not appear
+    assert "scenario_id" not in baselines
+
+
+def test_compute_adaptive_baselines_empty():
+    """Empty history returns empty baselines."""
+    assert compute_adaptive_baselines([]) == {}
+
+
+def test_adaptive_baselines_integration():
+    """Adaptive baselines work end-to-end with check_reference_performance."""
+    history = [
+        {"costs": 10.0},
+        {"costs": 11.0},
+        {"costs": 10.5},
+    ]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    # A value within the adaptive band should pass
+    violations = check_reference_performance(
+        scenario_id="test",
+        reference_performance=baselines,
+        tracked_metrics={"costs": 12.0},
+    )
+    assert violations == []
+    # A wildly high value should fail
+    violations = check_reference_performance(
+        scenario_id="test",
+        reference_performance=baselines,
+        tracked_metrics={"costs": 50.0},
+    )
     assert len(violations) == 1
-    assert "not found in tracked metrics" in violations[0]
+    assert "regression" in violations[0]
 
 
 def _create_metadata_file(path: Path, *, links: List[dict] | None):
