@@ -29,7 +29,7 @@ def generate() -> dict:
     for parameter in parameters:
         context[parameter.name] = {"from_parameter": parameter.name}
 
-    connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+    connection = openeo.connect("https://openeofed.dataspace.copernicus.eu").authenticate_oidc()
     stac_resource = StacResource(
         graph=PGNode(
             "run_cwl_to_stac",

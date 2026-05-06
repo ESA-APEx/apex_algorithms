@@ -100,9 +100,9 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
             )
         elif isinstance(cwl_type, dict) and cwl_type.get("type") == "enum":
             schema = {"type": "string"}
-            if symbols := cwl_input_yaml.get("symbols"):
+            if symbols := cwl_type.get("symbols"):
                 schema["enum"] = symbols
-            elif symbols := cwl_input_yaml.get("type", {}).get("symbols"):
+            elif symbols := cwl_type.get("type", {}).get("symbols"):
                 schema["enum"] = symbols
             return Parameter(
                 **arguments,

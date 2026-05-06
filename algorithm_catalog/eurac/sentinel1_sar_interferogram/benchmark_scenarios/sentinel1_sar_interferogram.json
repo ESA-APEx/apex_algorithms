@@ -7,7 +7,7 @@
     "process_graph": {
       "sentinel1_sar_interferogram1": {
         "process_id": "sentinel1_sar_interferogram",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/10af8f85fc5cbcd2eec8d4617128e52eca397820/algorithm_catalog/eurac/sentinel1_sar_interferogram/openeo_udp/sentinel1_sar_interferogram.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/sentinel1_sar_interferogram/openeo_udp/sentinel1_sar_interferogram.json",
         "arguments": {
           "InSAR_pairs": [
             [
@@ -27,6 +27,8 @@
       }
     },
     "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/535!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_interferogram_!actual/job-results.json",
+      "phase_coh_20180128T062713_20180203T062631.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/535!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_interferogram_!actual/phase_coh_20180128T062713_20180203T062631.tif"
     }
   }
 ]
