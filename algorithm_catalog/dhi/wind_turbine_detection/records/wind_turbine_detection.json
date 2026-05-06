@@ -93,7 +93,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "Terrascope",
       "href": "../../../../platform_catalog/terrascope.json"
     },
     {
