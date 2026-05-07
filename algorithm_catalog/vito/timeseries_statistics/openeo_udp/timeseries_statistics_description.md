@@ -49,19 +49,4 @@ When `period` is set to a calendar period such as `"month"`, `"dekad"`, or `"yea
 
 The processing cost depends on the selected collection, number of bands, geometry size, and temporal range. As a reference point, computing statistics over a 10×10 km area for two Sentinel-2 L2A bands over a 3-month period costs approximately 4 platform credits.
 
-## Example
 
-Compute monthly statistics for Sentinel-2 L2A bands B04 and B08 over a polygon near Mol, Belgium:
-
-```json
-{
-  "collection_id": "SENTINEL2_L2A",
-  "bands": ["B04", "B08"],
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [[[4.97, 51.19], [5.07, 51.19], [5.07, 51.28], [4.97, 51.28], [4.97, 51.19]]]
-  },
-  "temporal_extent": ["2023-05-01", "2023-07-31"],
-  "period": "month"
-}
-```
