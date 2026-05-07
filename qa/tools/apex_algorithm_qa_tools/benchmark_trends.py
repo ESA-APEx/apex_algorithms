@@ -19,7 +19,6 @@ Usage::
 
 import logging
 import os
-from typing import Union
 
 _log = logging.getLogger(__name__)
 
