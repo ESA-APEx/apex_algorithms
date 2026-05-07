@@ -129,6 +129,11 @@ def has_rel(links: Any, rel_name: str) -> bool:
 	return any(isinstance(link, dict) and link.get("rel") == rel_name for link in links)
 
 
+def is_private_service(properties: dict[str, Any]) -> bool:
+	visibility = properties.get("visibility")
+	return isinstance(visibility, str) and visibility.strip().lower() == "private"
+
+
 def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 	provider_record_paths = sorted(catalog_root.glob("*/record.json"))
 
@@ -138,13 +143,6 @@ def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 	keyword_counter: Counter[str] = Counter()
 	providers: list[dict[str, Any]] = []
 	platform_title_cache: dict[str, str] = {}
-
-	algorithms_with_cost = 0
-	algorithms_with_benchmark = 0
-	algorithms_with_thumbnail = 0
-	algorithms_with_preview = 0
-	algorithms_with_notebook = 0
-	algorithms_with_webapp = 0
 
 	for provider_record_path in provider_record_paths:
 		provider_dir = provider_record_path.parent
@@ -158,7 +156,7 @@ def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 		provider_name = provider_title if isinstance(provider_title, str) and provider_title.strip() else provider_slug
 
 		algorithm_paths = get_algorithm_record_paths(provider_dir)
-		providers.append({"id": provider_slug, "name": provider_name, "algorithm_count": len(algorithm_paths)})
+		public_algorithm_count = 0
 
 		for algorithm_path in algorithm_paths:
 			algorithm_record = load_json(algorithm_path)
@@ -169,34 +167,15 @@ def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 				properties = {}
 			if not isinstance(links, list):
 				links = []
+			if is_private_service(properties):
+				continue
 
 			keywords = [item for item in properties.get("keywords", []) if isinstance(item, str) and item.strip()]
 
 			interfaces = normalize_interface(algorithm_record.get("conformsTo", []))
 			platforms = extract_platform_names(links, algorithm_path, platform_title_cache)
 
-			has_cost = "cost_estimate" in properties and properties.get("cost_estimate") is not None
-			has_benchmark = (algorithm_path.parent.parent / "benchmark_scenarios").exists() or (
-				algorithm_path.parent.parent / "benchmark-scenarios"
-			).exists()
-			has_thumbnail_link = has_rel(links, "thumbnail")
-			has_preview_link = has_rel(links, "preview")
-			has_notebook_link = has_rel(links, "notebook")
-			has_webapp_link = has_rel(links, "webapp")
-
-			if has_cost:
-				algorithms_with_cost += 1
-			if has_benchmark:
-				algorithms_with_benchmark += 1
-			if has_thumbnail_link:
-				algorithms_with_thumbnail += 1
-			if has_preview_link:
-				algorithms_with_preview += 1
-			if has_notebook_link:
-				algorithms_with_notebook += 1
-			if has_webapp_link:
-				algorithms_with_webapp += 1
-
+			public_algorithm_count += 1
 			provider_counter[provider_name] += 1
 			for platform in platforms:
 				platform_counter[platform] += 1
@@ -204,6 +183,8 @@ def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 				interface_counter[interface] += 1
 			for keyword in keywords:
 				keyword_counter[keyword] += 1
+
+		providers.append({"id": provider_slug, "name": provider_name, "algorithm_count": public_algorithm_count})
 	total_algorithms = sum(provider_counter.values())
 	total_providers = len(providers)
 	total_platforms = len(platform_counter)
@@ -226,12 +207,6 @@ def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 			"algorithms_by_interface": counter_to_sorted_list(interface_counter),
 			"algorithms_by_platform": counter_to_sorted_list(platform_counter, limit=top_n),
 			"top_keywords": counter_to_sorted_list(keyword_counter, limit=top_n),
-			"algorithms_with_cost_estimate": algorithms_with_cost,
-			"algorithms_with_benchmark_scenario": algorithms_with_benchmark,
-			"algorithms_with_thumbnail_link": algorithms_with_thumbnail,
-			"algorithms_with_preview_link": algorithms_with_preview,
-			"algorithms_with_notebook_link": algorithms_with_notebook,
-			"algorithms_with_webapp_link": algorithms_with_webapp,
 		},
 	}
 
