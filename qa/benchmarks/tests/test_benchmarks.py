@@ -161,11 +161,13 @@ def test_run_benchmark(
                     resolved_baselines = compute_adaptive_baselines(history)
                     _log.info(
                         f"Using adaptive baselines for {scenario.id!r} "
-                        f"from {len(history)} historical runs"
+                        f"from {len(history)} historical runs "
+                        f"({len(resolved_baselines)} metrics with sufficient samples)"
                     )
-            except Exception as e:
+            except Exception:
                 _log.warning(
-                    f"Could not load history for adaptive baselines: {e}"
+                    "Could not load history for adaptive baselines",
+                    exc_info=True,
                 )
 
         if resolved_baselines:

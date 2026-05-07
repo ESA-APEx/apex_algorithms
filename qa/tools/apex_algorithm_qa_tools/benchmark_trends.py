@@ -89,8 +89,11 @@ def load_scenario_history(
     try:
         dataset = ds.dataset(parquet_path, filesystem=filesystem)
         table = dataset.to_table()
-    except Exception as e:
-        _log.warning(f"Could not load benchmark history from {parquet_path}: {e}")
+    except Exception:
+        _log.warning(
+            f"Could not load benchmark history from {parquet_path}",
+            exc_info=True,
+        )
         return []
 
     df = table.to_pandas()
@@ -103,10 +106,15 @@ def load_scenario_history(
     mask = (df["scenario_id"] == scenario_id) & (df["test:outcome"] == "passed")
     df = df[mask]
 
-    if "test:start" in df.columns:
-        df = df.sort_values("test:start")
+    # Sort by start time so consumers can rely on "oldest first" ordering.
+    time_col = next(
+        (c for c in ("test:start", "test:start:datetime") if c in df.columns),
+        None,
+    )
+    if time_col:
+        df = df.sort_values(time_col)
 
-    # Extract metric values
+    # Extract metric values + timestamp for downstream age-window filtering.
     history = []
     for _, row in df.iterrows():
         metrics = {}
@@ -116,8 +124,11 @@ def load_scenario_history(
                     metrics[name] = float(row[name])
                 except (ValueError, TypeError):
                     pass
-        if metrics:
-            history.append(metrics)
+        if not metrics:
+            continue
+        if time_col and row.get(time_col) is not None:
+            metrics["_datetime"] = str(row[time_col])
+        history.append(metrics)
 
     _log.info(
         f"Loaded {len(history)} historical runs for scenario {scenario_id!r}"

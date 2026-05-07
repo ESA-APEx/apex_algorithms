@@ -10,20 +10,39 @@ from openeo.rest.job import BatchJob, JobResults
 
 _log = logging.getLogger(__name__)
 
+# Usage keys we expect every backend to report. Used purely for completeness
+# warnings; absent keys do not fail the test, but they do disable adaptive
+# regression checks on the corresponding metric for this run.
+EXPECTED_USAGE_KEYS = ("cpu", "memory", "duration")
+
 
 def collect_metrics_from_job_metadata(
     job_metadata: Union[BatchJob, dict],
     track_metric: MetricsTracker,
+    expected_usage_keys: tuple = EXPECTED_USAGE_KEYS,
 ):
     if isinstance(job_metadata, BatchJob):
         job_metadata = job_metadata.describe()
 
     track_metric("costs", job_metadata.get("costs"))
-    for usage_metric, usage_data in job_metadata.get("usage", {}).items():
+    usage = job_metadata.get("usage", {}) or {}
+    if not usage:
+        _log.warning("No 'usage' metrics reported in job metadata")
+    for usage_metric, usage_data in usage.items():
         if "unit" in usage_data and "value" in usage_data:
             track_metric(
                 f"usage:{usage_metric}:{usage_data['unit']}", usage_data["value"]
             )
+
+    # Completeness signal: which expected keys are missing from this run.
+    missing = sorted(k for k in expected_usage_keys if k not in usage)
+    if missing:
+        _log.warning(
+            f"Incomplete job usage metadata: missing expected keys {missing} "
+            f"(present: {sorted(usage.keys())})"
+        )
+    track_metric("metrics:usage_complete", 0 if missing else 1)
+    track_metric("metrics:usage_missing", ",".join(missing))
 
 
 def collect_metrics_from_results_metadata(
@@ -102,75 +121,103 @@ def _adaptive_k(n: int) -> float:
 def compute_adaptive_baselines(
     historical_values: list[dict],
     metric_names: list[str] | None = None,
+    *,
+    max_age_days: int | None = 90,
+    min_samples: int = 2,
+    max_samples: int = 10,
 ) -> dict:
     """
-    Compute adaptive performance baselines from historical successful runs.
+    Compute adaptive performance baselines from historical runs.
 
-    Uses ``mean + k(n) * σ`` where k linearly decreases from 4.0 to 2.0
-    as n goes from 2 to 10 (capped at 10 most recent runs):
+    Each metric is treated independently: we keep all rows in the time window
+    that actually contain that metric (up to ``max_samples`` most recent), and
+    only compute a baseline if at least ``min_samples`` such rows exist. This
+    means partial/incomplete metadata in some runs will only disable the
+    affected metric, not the whole regression check.
 
-    - n=1: no σ, uses 50% tolerance on the single value
-    - n=2: k=4.0
-    - n=5: k=3.25
-    - n=10: k=2.0 (tightest, standard 2σ check)
+    Threshold formula: ``mean + k(n) * σ`` where k linearly decreases from
+    4.0 (n=2) to 2.0 (n=10), so few samples → wider band, many samples →
+    tighter 2σ check.
 
-    :param historical_values: List of dicts, each containing metric values
-        from a successful benchmark run.
+    :param historical_values: List of dicts (oldest first). Each dict may
+        contain a ``_datetime`` key (ISO 8601 string) for time-window filtering;
+        rows with no/unparseable timestamp are kept regardless.
     :param metric_names: Metrics to compute baselines for. If None, auto-detects
-        numeric metrics present in the history.
+        numeric metrics present anywhere in the history.
+    :param max_age_days: Only consider runs newer than this many days. Set to
+        ``None`` to disable time filtering.
+    :param min_samples: Minimum number of historical observations required to
+        compute a baseline for a given metric.
+    :param max_samples: Cap on the number of most-recent observations used per
+        metric.
     :return: Dict of ``{metric_name: {"max": threshold, "tolerance": 0, ...}}``
         ready for use with :func:`check_reference_performance`.
     """
     import math
+    from datetime import datetime, timedelta, timezone
 
     if not historical_values:
         return {}
 
-    # Only use the most recent runs (max 10) for baseline computation
-    historical_values = historical_values[-10:]
+    # Time-window filter (per-row, not per-metric).
+    if max_age_days is not None:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
+        kept = []
+        for row in historical_values:
+            dt_str = row.get("_datetime")
+            if dt_str:
+                try:
+                    dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    if dt < cutoff:
+                        continue
+                except (ValueError, TypeError):
+                    pass  # unparseable → keep, better than silently dropping
+            kept.append(row)
+        historical_values = kept
 
-    # Auto-detect numeric metric names from history
+    if not historical_values:
+        return {}
+
+    # Auto-detect numeric metric names from history (union across all rows).
     if metric_names is None:
-        metric_names = set()
+        names = set()
         for row in historical_values:
             for k, v in row.items():
-                if isinstance(v, (int, float)):
-                    metric_names.add(k)
-        metric_names = sorted(metric_names)
+                if isinstance(v, (int, float)) and not k.startswith("_"):
+                    names.add(k)
+        metric_names = sorted(names)
 
     baselines = {}
     for name in metric_names:
+        # Per-metric: only rows that actually have this metric, most recent first.
         values = [
             row[name] for row in historical_values
-            if name in row and isinstance(row.get(name), (int, float))
-        ]
+            if isinstance(row.get(name), (int, float))
+        ][-max_samples:]
         n = len(values)
-        if n == 0:
+        if n < min_samples:
+            _log.debug(
+                f"Skipping baseline for {name!r}: only {n} sample(s) "
+                f"available (need >= {min_samples})"
+            )
             continue
 
-        if n == 1:
-            # Single observation: use it with 50% tolerance
-            baselines[name] = {
-                "max": values[0],
-                "tolerance": 0.5,
-                "source": "adaptive",
-                "n_samples": 1,
-            }
-        else:
-            mean = sum(values) / n
-            variance = sum((v - mean) ** 2 for v in values) / (n - 1)
-            std = math.sqrt(variance)
-            k = _adaptive_k(n)
-            threshold = mean + k * std
-            baselines[name] = {
-                "max": round(threshold, 4),
-                "tolerance": 0,  # threshold already includes the adaptive band
-                "source": "adaptive",
-                "n_samples": n,
-                "mean": round(mean, 4),
-                "std": round(std, 4),
-                "k": round(k, 2),
-            }
+        mean = sum(values) / n
+        variance = sum((v - mean) ** 2 for v in values) / (n - 1)
+        std = math.sqrt(variance)
+        k = _adaptive_k(n)
+        threshold = mean + k * std
+        baselines[name] = {
+            "max": round(threshold, 4),
+            "tolerance": 0,  # threshold already includes the adaptive band
+            "source": "adaptive",
+            "n_samples": n,
+            "mean": round(mean, 4),
+            "std": round(std, 4),
+            "k": round(k, 2),
+        }
 
     return baselines
 

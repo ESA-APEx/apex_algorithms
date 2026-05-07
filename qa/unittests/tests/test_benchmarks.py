@@ -34,6 +34,7 @@ def test_collect_metrics_from_job_metadata(dummy_tracker):
         "usage": {
             "cpu": {"unit": "cpu-seconds", "value": 123},
             "memory": {"unit": "mb-seconds", "value": 345},
+            "duration": {"unit": "seconds", "value": 9},
         },
     }
     collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
@@ -41,7 +42,31 @@ def test_collect_metrics_from_job_metadata(dummy_tracker):
         ("costs", 42),
         ("usage:cpu:cpu-seconds", 123),
         ("usage:memory:mb-seconds", 345),
+        ("usage:duration:seconds", 9),
+        ("metrics:usage_complete", 1),
+        ("metrics:usage_missing", ""),
     ]
+
+
+def test_collect_metrics_from_job_metadata_incomplete_usage(dummy_tracker):
+    """Missing expected usage keys are flagged but do not raise."""
+    metadata = {
+        "id": "job-2",
+        "costs": 42,
+        "usage": {
+            "duration": {"unit": "seconds", "value": 9},
+        },
+    }
+    collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
+    assert ("metrics:usage_complete", 0) in dummy_tracker.data
+    assert ("metrics:usage_missing", "cpu,memory") in dummy_tracker.data
+
+
+def test_collect_metrics_from_job_metadata_no_usage(dummy_tracker):
+    """Empty usage dict still produces a completeness signal."""
+    metadata = {"id": "job-3", "costs": 1}
+    collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
+    assert ("metrics:usage_complete", 0) in dummy_tracker.data
 
 
 def test_collect_metrics_from_results_metadata_proj_shape(dummy_tracker):
@@ -135,13 +160,44 @@ def test_check_reference_performance_missing_metric():
     assert violations == []
 
 
-def test_compute_adaptive_baselines_single_observation():
-    """With 1 observation, uses the value with 50% tolerance."""
+def test_compute_adaptive_baselines_single_observation_skipped():
+    """With <2 observations, no baseline is produced (need >= min_samples)."""
     history = [{"costs": 10.0}]
     baselines = compute_adaptive_baselines(history, metric_names=["costs"])
-    assert baselines["costs"]["max"] == 10.0
-    assert baselines["costs"]["tolerance"] == 0.5
-    assert baselines["costs"]["n_samples"] == 1
+    assert baselines == {}
+
+
+def test_compute_adaptive_baselines_per_metric_partial_history():
+    """A metric only present in some runs still gets a baseline if enough
+    samples remain; metrics with too few samples are skipped silently."""
+    history = [
+        {"costs": 10.0, "usage:cpu:cpu-seconds": 100},
+        {"costs": 11.0},  # cpu missing here
+        {"costs": 10.5, "usage:cpu:cpu-seconds": 105},
+    ]
+    baselines = compute_adaptive_baselines(history)
+    # costs has 3 samples → baseline computed
+    assert baselines["costs"]["n_samples"] == 3
+    # cpu has only 2 samples (still >= min_samples=2) → baseline computed
+    assert baselines["usage:cpu:cpu-seconds"]["n_samples"] == 2
+
+
+def test_compute_adaptive_baselines_age_window():
+    """Runs older than max_age_days are excluded."""
+    from datetime import datetime, timedelta, timezone
+
+    now = datetime.now(timezone.utc)
+    history = [
+        {"costs": 999.0, "_datetime": (now - timedelta(days=400)).isoformat()},
+        {"costs": 10.0, "_datetime": (now - timedelta(days=10)).isoformat()},
+        {"costs": 11.0, "_datetime": (now - timedelta(days=5)).isoformat()},
+    ]
+    baselines = compute_adaptive_baselines(
+        history, metric_names=["costs"], max_age_days=90
+    )
+    # The 999.0 outlier is outside the window and must be excluded.
+    assert baselines["costs"]["n_samples"] == 2
+    assert baselines["costs"]["mean"] == pytest.approx(10.5)
 
 
 def test_compute_adaptive_baselines_two_observations():
