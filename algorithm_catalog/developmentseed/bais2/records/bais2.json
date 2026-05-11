@@ -64,6 +64,9 @@
     ],
     "formats": [
       {
+        "name": "GeoTiff"
+      },
+      {
         "name": "PNG"
       }
     ],

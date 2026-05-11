@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sentinel1_sar_slc_preprocessing",
+    "type": "openeo",
+    "description": "Calculating sentinel1_sar_slc_preprocessing.",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "sentinel1_sar_slc_preprocessing1": {
+        "process_id": "sentinel1_sar_slc_preprocessing",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/sentinel1_sar_slc_preprocessing/openeo_udp/sentinel1_sar_slc_preprocessing.json",
+        "arguments": {
+          "burst_id": 329488,
+          "polarization": [
+            "VH"
+          ],
+          "primary_date": "2018-01-28",
+          "sub_swath": "IW2",
+          "temporal_extent": [
+            "2018-01-28",
+            "2018-02-04"
+          ]
+        },
+        "result": true
+      }
+    },
+    "reference_data": {
+      "S1_2images_prm_20180128T062713_vh_grid_lat.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_prm_20180128T062713_vh_grid_lat.tif",
+      "S1_2images_prm_20180128T062713_vh_grid_lat.tif_0": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_prm_20180128T062713_vh_grid_lat.tif_0",
+      "S1_2images_prm_20180128T062713_vh_grid_lon.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_prm_20180128T062713_vh_grid_lon.tif",
+      "S1_2images_prm_20180128T062713_vh_grid_lon.tif_0": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_prm_20180128T062713_vh_grid_lon.tif_0",
+      "S1_2images_prm_20180128T062713_vh_i_VH.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_prm_20180128T062713_vh_i_VH.tif",
+      "S1_2images_prm_20180128T062713_vh_q_VH.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_prm_20180128T062713_vh_q_VH.tif",
+      "S1_2images_sec_20180203T062631_vh_i_VH.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_sec_20180203T062631_vh_i_VH.tif",
+      "S1_2images_sec_20180203T062631_vh_q_VH.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/S1_2images_sec_20180203T062631_vh_q_VH.tif",
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/541!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_slc_preprocessing_!actual/job-results.json"
+    }
+  }
+]
