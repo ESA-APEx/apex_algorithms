@@ -112,10 +112,7 @@ def _get_client_credentials_env_var(url: str) -> str:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
     elif hostname == "openeo-staging.dataspace.copernicus.eu":
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
-    elif hostname in {
-        "openeo.dev.warsaw.openeo.dataspace.copernicus.eu",
-        "openeo.dev.waw3-1.openeo-int.v1.dataspace.copernicus.eu",
-    }:
+    elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif hostname in {"openeo.cloud", "openeo.eodc.eu"}:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
