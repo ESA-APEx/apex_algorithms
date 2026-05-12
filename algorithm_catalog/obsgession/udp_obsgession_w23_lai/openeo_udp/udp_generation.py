@@ -1,25 +1,3 @@
-"""
-UDP to generate obsgession W23 LAI datasets.
-A few manual stepes need to be executed
-for temporal aggregation function
-replace median with
-{
-            "from_parameter": "temp_aggregator"
-          }
-concat does not work with the current version of openeo. So the filename prefix is adapted manually in the json.
-"textconcat1": {
-      "process_id": "text_concat",
-      "arguments": {
-        "data": [
-          "EO4Diversity_LAI_",
-          {"from_parameter": "binning_period"},
-          "_",
-          {"from_parameter": "param_temp_aggregator"},
-          "_"]
-      }
-    }
-
-"""
 import json
 import openeo
 from openeo.api.process import Parameter
