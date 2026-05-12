@@ -52,9 +52,7 @@
                 "projection": {
                     "from_parameter": "epsg"
                 },
-                "resolution": {
-                    "from_parameter": "resolution"
-                }
+                "resolution": 20
             }
         },
         "loadcollection2": {
@@ -650,9 +648,7 @@
                 "projection": {
                     "from_parameter": "epsg"
                 },
-                "resolution": {
-                    "from_parameter": "resolution"
-                }
+                "resolution": 20
             }
         },
         "dropdimension1": {
@@ -758,12 +754,12 @@
                 "options": {
                     "file_metadata": {
                         "copyright": "OBSGESSION project 2025 / Contains modified Copernicus Sentinel data processed by VITO",
-                        "creation_time": "2026-05-12T09:23:14Z",
+                        "creation_time": "2026-05-12T09:46:00Z",
                         "processing_platform": "openEO platform, {'client': 0.48.0}",
                         "EO_PROCESSING_SOFTWARE": "eo_processing, version 0.5.0",
                         "producer": "VITO NV",
                         "references": "https://obsgession.eu/",
-                        "Spectro-Scopist": "Dr. Marcel Buchhorn",
+                        "Wunder-Kind": "Dr. Marcel Buchhorn",
                         "description": "Generation of EO4Diversity conform high-resolution temperate forests optimized LAI products based on Sentinel-2 following the OBSGESSION W2.3 benchmarking.",
                         "tiling_grid": "LAEA",
                         "time_start": {
@@ -893,7 +889,15 @@
             "name": "binning_period",
             "description": "The temporal binning period. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
             "schema": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                    "day",
+                    "week",
+                    "dekad",
+                    "month",
+                    "season",
+                    "year"
+                ]
             },
             "default": "month",
             "optional": true

@@ -1,12 +1,7 @@
 """
 UDP to generate obsgession W23 LAI datasets.
 A few manual stepes need to be executed
-On resolution are e few checks which need to be circumvented
-replace 1001 with
-{
-            "from_parameter": "resolution"
-          }
-same for temporal aggregation function
+for temporal aggregation function
 replace median with
 {
             "from_parameter": "temp_aggregator"
@@ -70,22 +65,6 @@ def generate() -> dict:
         name="end_date",
         description="End date of the observation period in format YYYY-MM-DD.",
     )
-    param_binning_period= Parameter.string(
-        name="binning_period",
-        default='month',
-        description="The temporal binning period. Please have a look at openeo documentation of the process "
-                    "aggregate_temporal_period for more information",
-    )
-
-    param_temp_aggregator = Parameter.string(
-        name="temp_aggregator",
-        description="The temporal aggregation function. Please have a look at openeo documentation of the process "
-                    "aggregate_temporal_period for more information",
-        values=["min", "max", "mean", "median"],
-        default="mean"
-    )
-
-    # set up the UDP parameters
     param_AOI = Parameter(
         name="spatial_extent",
         description="""the AOI should be set as an openEO BBOX dict. It defines the boundaries of the area of interest.
@@ -134,6 +113,21 @@ def generate() -> dict:
             }
             }
             )
+    param_binning_period= Parameter.string(
+        name="binning_period",
+        default='month',
+        description="The temporal binning period. Please have a look at openeo documentation of the process "
+                    "aggregate_temporal_period for more information",
+        values=['day', 'week', 'dekad','month', 'season', 'year']
+    )
+
+    param_temp_aggregator = Parameter.string(
+        name="temp_aggregator",
+        description="The temporal aggregation function. Please have a look at openeo documentation of the process "
+                    "aggregate_temporal_period for more information",
+        values=["min", "max", "mean", "median"],
+        default="mean"
+    )
     param_epsg = Parameter.number(
         name="epsg",
         description="The desired output projection system.",
@@ -269,9 +263,6 @@ if __name__ == "__main__":
 
     # dump to json file to be usable as UDP
     json_str = json.dumps(process_graph, indent=2)
-    
-    # Replace the literal resolution value with parameter reference
-    json_str = json_str.replace(': 20.0', ': {"from_parameter": "resolution"}')
 
     with open("udp_obsgession_w23_lai.json", "w") as f:
         f.write(json_str)
