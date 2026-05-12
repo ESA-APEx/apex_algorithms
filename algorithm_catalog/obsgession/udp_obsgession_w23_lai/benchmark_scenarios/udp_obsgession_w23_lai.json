@@ -32,6 +32,9 @@
                 "process_id": "udp_obsgession_w23_lai"
             }
         },
-        "reference_data": {}
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/job-results.json",
+            "EO4Diversity_LAI__2025-06-01Z.tif":"https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/EO4Diversity_LAI__2025-06-01Z.tif"
+        }
     }
 ]
