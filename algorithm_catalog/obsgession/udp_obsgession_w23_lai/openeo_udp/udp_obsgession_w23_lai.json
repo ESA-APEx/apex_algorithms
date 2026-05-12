@@ -482,15 +482,6 @@
                 }
             }
         },
-        "eq1": {
-            "process_id": "eq",
-            "arguments": {
-                "x": {
-                    "from_parameter": "temp_aggregator"
-                },
-                "y": "median"
-            }
-        },
         "aggregatetemporalperiod2": {
             "process_id": "aggregate_temporal_period",
             "arguments": {
@@ -513,15 +504,6 @@
                         }
                     }
                 }
-            }
-        },
-        "eq2": {
-            "process_id": "eq",
-            "arguments": {
-                "x": {
-                    "from_parameter": "temp_aggregator"
-                },
-                "y": "mean"
             }
         },
         "aggregatetemporalperiod3": {
@@ -548,15 +530,6 @@
                 }
             }
         },
-        "eq3": {
-            "process_id": "eq",
-            "arguments": {
-                "x": {
-                    "from_parameter": "temp_aggregator"
-                },
-                "y": "max"
-            }
-        },
         "aggregatetemporalperiod4": {
             "process_id": "aggregate_temporal_period",
             "arguments": {
@@ -581,65 +554,75 @@
                 }
             }
         },
-        "eq4": {
+        "eq1": {
             "process_id": "eq",
             "arguments": {
+                "case_sensitive": false,
                 "x": {
                     "from_parameter": "temp_aggregator"
                 },
-                "y": "min"
+                "y": "max"
             }
         },
         "if1": {
             "process_id": "if",
             "arguments": {
                 "accept": {
+                    "from_node": "aggregatetemporalperiod3"
+                },
+                "reject": {
                     "from_node": "aggregatetemporalperiod4"
                 },
                 "value": {
-                    "from_node": "eq4"
+                    "from_node": "eq1"
                 }
+            }
+        },
+        "eq2": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "temp_aggregator"
+                },
+                "y": "mean"
             }
         },
         "if2": {
             "process_id": "if",
             "arguments": {
                 "accept": {
-                    "from_node": "aggregatetemporalperiod3"
-                },
-                "reject": {
-                    "from_node": "if1"
-                },
-                "value": {
-                    "from_node": "eq3"
-                }
-            }
-        },
-        "if3": {
-            "process_id": "if",
-            "arguments": {
-                "accept": {
                     "from_node": "aggregatetemporalperiod2"
                 },
                 "reject": {
-                    "from_node": "if2"
+                    "from_node": "if1"
                 },
                 "value": {
                     "from_node": "eq2"
                 }
             }
         },
-        "if4": {
+        "eq3": {
+            "process_id": "eq",
+            "arguments": {
+                "case_sensitive": false,
+                "x": {
+                    "from_parameter": "temp_aggregator"
+                },
+                "y": "median"
+            }
+        },
+        "if3": {
             "process_id": "if",
             "arguments": {
                 "accept": {
                     "from_node": "aggregatetemporalperiod1"
                 },
                 "reject": {
-                    "from_node": "if3"
+                    "from_node": "if2"
                 },
                 "value": {
-                    "from_node": "eq1"
+                    "from_node": "eq3"
                 }
             }
         },
@@ -689,7 +672,7 @@
                 },
                 "process": {
                     "process_graph": {
-                        "eq1": {
+                        "eq4": {
                             "process_id": "eq",
                             "arguments": {
                                 "x": {
@@ -702,7 +685,7 @@
                             "process_id": "not",
                             "arguments": {
                                 "x": {
-                                    "from_node": "eq1"
+                                    "from_node": "eq4"
                                 }
                             },
                             "result": true
@@ -715,7 +698,7 @@
             "process_id": "mask",
             "arguments": {
                 "data": {
-                    "from_node": "if4"
+                    "from_node": "if3"
                 },
                 "mask": {
                     "from_node": "apply4"
@@ -765,22 +748,6 @@
                 }
             }
         },
-        "textconcat1": {
-            "process_id": "text_concat",
-            "arguments": {
-                "data": [
-                    "EO4Diversity_LAI_",
-                    {
-                        "from_parameter": "binning_period"
-                    },
-                    "_",
-                    {
-                        "from_parameter": "temp_aggregator"
-                    },
-                    "_"
-                ]
-            }
-        },
         "saveresult1": {
             "process_id": "save_result",
             "arguments": {
@@ -791,12 +758,12 @@
                 "options": {
                     "file_metadata": {
                         "copyright": "OBSGESSION project 2025 / Contains modified Copernicus Sentinel data processed by VITO",
-                        "creation_time": "2026-03-11T15:34:07Z",
+                        "creation_time": "2026-05-12T08:01:42Z",
                         "processing_platform": "openEO platform, {'client': 0.48.0}",
                         "EO_PROCESSING_SOFTWARE": "eo_processing, version 0.5.0",
                         "producer": "VITO NV",
                         "references": "https://obsgession.eu/",
-                        "Brain-Box": "Dr. Marcel Buchhorn",
+                        "Terra-Strategist": "Dr. Marcel Buchhorn",
                         "description": "Generation of EO4Diversity conform high-resolution temperate forests optimized LAI products based on Sentinel-2 following the OBSGESSION W2.3 benchmarking.",
                         "tiling_grid": "LAEA",
                         "time_start": {
@@ -822,11 +789,26 @@
                 }
             },
             "result": true
+        },
+        "textconcat1": {
+            "process_id": "text_concat",
+            "arguments": {
+                "data": [
+                    "EO4Diversity_LAI_",
+                    {
+                        "from_parameter": "binning_period"
+                    },
+                    "_",
+                    {
+                        "from_parameter": "temp_aggregator"
+                    },
+                    "_"
+                ]
+            }
         }
     },
-    "id": "udp_obsgession_w23_lai",
-    "summary": "calculates the LAI datasets for wa certain temporal spatial domain, aggregated to a specific temporal binning period and temporal aggregation function.",
-    "description": "# EO4Diversity EVI-LAI \n\nCalculate **Leaf Area Index (LAI)** at 10m spatial resolution based on Sentinel-2 time series, optimized for forested areas in temperate zones. Users can define spatial area-of-interest, the temporal interval, the temporal binning period and algorithm, and output spatial resolution and coordinate system. A cloud and tree cover mask are applied. The result is a Cloud Optimized GeoTIFF (COG) raster file.\n\nThe **LAI** provides a one-sided green leaf area, hence half the total area of a canopy\u2019s green elements, per unit of horizontal ground area. The satellite-derived value corresponds to the total green LAI of all the canopy layers, including the understory, which may represent a very significant contribution, particularly for forests. LAI is a remote sensing-based candidate for the Essential Biodiversity Variable (EBV) *Live cover fraction* in the EBV class *Ecosystem structure*, and provides relevant information for the EBV classes *Ecosystem functioning* and *Ecosystem phenology*. \n\nSentinel-2 time series provides opportunities for medium-resolution LAI mapping due to its spectral configuration, which includes multiple red-edge and shortwave infrared (SWIR) bands.\n\n# Methodology\n\nThe empirical algorithm to derive the LAI from Sentinel-2 is developed and validated by the ESA-funded EO4Diversity project. It relates in-situ LAI measurements to the enhanced vegetation index (EVI) by adapting the approach developed by Boegh et al. (2002), optimized for and demonstrating robust performance over temperate forest sites. The method is computationally efficient and validated over temperate forest ecosystems. In principle, it could be transferable to other vegetated ecosystems with appropriate re-calibration. The method was identified as a benchmark approach in the OBSGESSION project, funded by the European Union under the Horizon Europe research and innovation programme.\n\n# Quality\n\nAbdullah et al. (2025) reports RMSE values varying between 0.85 and 2.28 m\u00b2m\u207b\u00b2 and a correlation coefficient varying between 0.55 and 0.78 when comparing measured and sentinel-2 retrieved LAI values across different years and forest sites (coniferous, deciduous and mixed) in northwestern Europe. Tests demonstrated a stable relationship between estimated and measured LAI and reliable capture of inter-annual and inter-site variability in canopy structure of diverse temperate forests with a single set of calibrated regression. Slightly higher uncertainty was observed in coniferous plots, likely due to clumping effects and strong background reflectance, whereas deciduous stands showed tighter correlations with ground observations. Overall, the results confirm that the LAI algorithm provides an accurate and transferable measure of vegetation canopy density suitable for regional-scale monitoring and ecosystem-condition applications.\n\n# Limitations\n\n* Input is Sentinel-2 L2A data sourced from CDSE. Usage of other data sources like existing Sentinel-2 composites is not yet supported. \n* The applied forest mask is based on the WorldCover2021 dataset. Usage of an annual Land Cover dataset (e.g. CCI) is not yet supported.\n\n# Links\n\n* Abdullah et al. (2025). Deliverable D2.3. Algorithm Theoretical Baseline Document. Deliverable D2.3 EU Horizon Europe OBSGESSION Project, Grant agreement No. 101134954\n* Boegh, E., et al (2002). Airborne multispectral data for quantifying leaf area index, nitrogen concentration, and photosynthetic efficiency in agriculture. Remote Sens Environ 81(2-3): 179-193. https://doi.org/10.1016/S0034-4257(01)00342-X \n* OBSGESSION project [https://obsgession.eu/](https://obsgession.eu/)\n* EO4Diversity project [https://www.eo4diversity.info/](https://www.eo4diversity.info/)\n",
+    "id": "noplaceholder",
+    "description": "# EO4Diversity EVI-LAI \n\nCalculate **Leaf Area Index (LAI)** at 10m spatial resolution based on Sentinel-2 time series, optimized for forested areas in temperate zones. Users can define spatial area-of-interest, the temporal interval, the temporal binning period and algorithm, and output spatial resolution and coordinate system. A cloud and tree cover mask are applied. The result is a Cloud Optimized GeoTIFF (COG) raster file.\n\nThe **LAI** provides a one-sided green leaf area, hence half the total area of a canopy’s green elements, per unit of horizontal ground area. The satellite-derived value corresponds to the total green LAI of all the canopy layers, including the understory, which may represent a very significant contribution, particularly for forests. LAI is a remote sensing-based candidate for the Essential Biodiversity Variable (EBV) *Live cover fraction* in the EBV class *Ecosystem structure*, and provides relevant information for the EBV classes *Ecosystem functioning* and *Ecosystem phenology*. \n\nSentinel-2 time series provides opportunities for medium-resolution LAI mapping due to its spectral configuration, which includes multiple red-edge and shortwave infrared (SWIR) bands.\n\n# Methodology\n\nThe empirical algorithm to derive the LAI from Sentinel-2 is developed and validated by the ESA-funded EO4Diversity project. It relates in-situ LAI measurements to the enhanced vegetation index (EVI) by adapting the approach developed by Boegh et al. (2002), optimized for and demonstrating robust performance over temperate forest sites. The method is computationally efficient and validated over temperate forest ecosystems. In principle, it could be transferable to other vegetated ecosystems with appropriate re-calibration. The method was identified as a benchmark approach in the OBSGESSION project, funded by the European Union under the Horizon Europe research and innovation programme.\n\n# Quality\n\nAbdullah et al. (2025) reports RMSE values varying between 0.85 and 2.28 m²m⁻² and a correlation coefficient varying between 0.55 and 0.78 when comparing measured and sentinel-2 retrieved LAI values across different years and forest sites (coniferous, deciduous and mixed) in northwestern Europe. Tests demonstrated a stable relationship between estimated and measured LAI and reliable capture of inter-annual and inter-site variability in canopy structure of diverse temperate forests with a single set of calibrated regression. Slightly higher uncertainty was observed in coniferous plots, likely due to clumping effects and strong background reflectance, whereas deciduous stands showed tighter correlations with ground observations. Overall, the results confirm that the LAI algorithm provides an accurate and transferable measure of vegetation canopy density suitable for regional-scale monitoring and ecosystem-condition applications.\n\n# Limitations\n\n* Input is Sentinel-2 L2A data sourced from CDSE. Usage of other data sources like existing Sentinel-2 composites is not yet supported. \n* The applied forest mask is based on the WorldCover2021 dataset. Usage of an annual Land Cover dataset (e.g. CCI) is not yet supported.\n\n# Links\n\n* Abdullah et al. (2025). Deliverable D2.3. Algorithm Theoretical Baseline Document. Deliverable D2.3 EU Horizon Europe OBSGESSION Project, Grant agreement No. 101134954\n* Boegh, E., et al (2002). Airborne multispectral data for quantifying leaf area index, nitrogen concentration, and photosynthetic efficiency in agriculture. Remote Sens Environ 81(2-3): 179-193. https://doi.org/10.1016/S0034-4257(01)00342-X \n* OBSGESSION project [https://obsgession.eu/](https://obsgession.eu/)\n* EO4Diversity project [https://www.eo4diversity.info/](https://www.eo4diversity.info/)\n",
     "default_job_options": {
         "driver-memory": "8G",
         "driver-memoryOverhead": "5G",
@@ -841,40 +823,8 @@
     },
     "parameters": [
         {
-            "name": "start_date",
-            "description": "Start date of the observation period in format YYYY-MM-DD.",
-            "schema": {
-                "type": "string"
-            }
-        },
-        {
-            "name": "end_date",
-            "description": "End date of the observation period in format YYYY-MM-DD.",
-            "schema": {
-                "type": "string"
-            }
-        },
-        {
-            "name": "binning_period",
-            "description": "The temporal binning period. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
-            "schema": {
-                "type": "string"
-            },
-            "default": "monthly",
-            "optional": true
-        },
-        {
-            "name": "temp_aggregator",
-            "description": "The temporal aggregation function. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
-            "schema": {
-                "type": "string"
-            },
-            "default": "mean",
-            "optional": true
-        },
-        {
             "name": "aoi",
-            "description": "the AOI should be stet as an openEO BBOX dict. It defines the boundaries of the area of interest.\n    The coordinates are given in the order of west, south, east, north.",
+            "description": "the AOI should be stet as an openEO BBOX dict. It defines the boundaries of the area of interest.\n        The coordinates are given in the order of west, south, east, north.",
             "schema": {
                 "title": "Bounding Box",
                 "type": "object",
@@ -926,15 +876,46 @@
             }
         },
         {
-            "name": "epsg",
-            "description": "The desired output projection system.",
+            "name": "start_date",
+            "description": "Start date of the observation period in format YYYY-MM-DD.",
             "schema": {
-                "type": "number"
+                "type": "string"
             }
         },
         {
-            "name": "resolution",
-            "description": "The desired output resolution, specified in units of the projection system.",
+            "name": "end_date",
+            "description": "End date of the observation period in format YYYY-MM-DD.",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "binning_period",
+            "description": "The temporal binning period. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
+            "schema": {
+                "type": "string"
+            },
+            "default": "monthly",
+            "optional": true
+        },
+        {
+            "name": "temp_aggregator",
+            "description": "The temporal aggregation function. Please have a look at openeo documentation of the process aggregate_temporal_period for more information",
+            "schema": {
+                "type": "string",
+                "enum": [
+                    "min",
+                    "max",
+                    "mean",
+                    "median"
+                ]
+            },
+            "default": "mean",
+            "optional": true
+        },
+        {
+            "name": "epsg",
+            "description": "The desired output projection system.",
             "schema": {
                 "type": "number"
             }
