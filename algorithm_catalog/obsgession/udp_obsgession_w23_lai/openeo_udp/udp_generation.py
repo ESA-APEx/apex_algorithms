@@ -226,7 +226,9 @@ def generate() -> dict:
         format="GTiff",
         options={
         "file_metadata":file_meta,
-        "bands_metadata":bands_meta}
+        "bands_metadata":bands_meta,
+        "filename_prefix": f"EO4Diversity_LAI_",
+        }
     )
     return build_process_dict(
         process_graph=saved_result.flat_graph(),
@@ -238,32 +240,6 @@ def generate() -> dict:
 
 
 if __name__ == "__main__":
-    process_graph = generate()
-
-    flat_graph = process_graph["process_graph"]
-
-    # Add a text_concat node for dynamic filename prefixes. The GTiff backend expects a string for the filename prefix, so we need to concatenate the different parameters into a single string.
-    flat_graph["textconcat1"] = {
-        "process_id": "text_concat",
-        "arguments": {
-            "data": [
-                "EO4Diversity_LAI_",
-                {"from_parameter": "binning_period"},
-                "_",
-                {"from_parameter": "temp_aggregator"},
-                "_",
-            ]
-        },
-    }
-
-    for node in flat_graph.values():
-        if node.get("process_id") == "save_result":
-            node["arguments"]["options"]["filename_prefix"] = {"from_node": "textconcat1"}
-            break
-
-    # dump to json file to be usable as UDP
-    json_str = json.dumps(process_graph, indent=2)
-
     with open("udp_obsgession_w23_lai.json", "w") as f:
-        f.write(json_str)
+        json.dump(generate(), f, indent=2)
     print("Process graph saved to udp_obsgession_w23_lai.json")

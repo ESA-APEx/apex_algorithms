@@ -754,12 +754,12 @@
                 "options": {
                     "file_metadata": {
                         "copyright": "OBSGESSION project 2025 / Contains modified Copernicus Sentinel data processed by VITO",
-                        "creation_time": "2026-05-12T09:46:00Z",
+                        "creation_time": "2026-05-12T10:46:51Z",
                         "processing_platform": "openEO platform, {'client': 0.48.0}",
                         "EO_PROCESSING_SOFTWARE": "eo_processing, version 0.5.0",
                         "producer": "VITO NV",
                         "references": "https://obsgession.eu/",
-                        "Wunder-Kind": "Dr. Marcel Buchhorn",
+                        "Band-Composer": "Dr. Marcel Buchhorn",
                         "description": "Generation of EO4Diversity conform high-resolution temperate forests optimized LAI products based on Sentinel-2 following the OBSGESSION W2.3 benchmarking.",
                         "tiling_grid": "LAEA",
                         "time_start": {
@@ -779,28 +779,10 @@
                             "nodata_value": 255
                         }
                     },
-                    "filename_prefix": {
-                        "from_node": "textconcat1"
-                    }
+                    "filename_prefix": "EO4Diversity_LAI_"
                 }
             },
             "result": true
-        },
-        "textconcat1": {
-            "process_id": "text_concat",
-            "arguments": {
-                "data": [
-                    "EO4Diversity_LAI_",
-                    {
-                        "from_parameter": "binning_period"
-                    },
-                    "_",
-                    {
-                        "from_parameter": "temp_aggregator"
-                    },
-                    "_"
-                ]
-            }
         }
     },
     "id": "udp_obsgession_w23_lai",
