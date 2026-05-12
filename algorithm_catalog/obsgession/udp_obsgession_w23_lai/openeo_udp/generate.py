@@ -1,30 +1,7 @@
 """
-UDP to generate obsgession W23 LAI datasets.
-A few manual stepes need to be executed
-On resolution are e few checks which need to be circumvented
-replace 1001 with
-{
-            "from_parameter": "resolution"
-          }
-same for temporal aggregation function
-replace median with
-{
-            "from_parameter": "temp_aggregator"
-          }
-concat does not work with the current version of openeo. So the filename prefix is adapted manually in the json.
-"textconcat1": {
-      "process_id": "text_concat",
-      "arguments": {
-        "data": [
-          "EO4Diversity_LAI_",
-          {"from_parameter": "binning_period"},
-          "_",
-          {"from_parameter": "param_temp_aggregator"},
-          "_"]
-      }
-    }
-
+UDP to generate obsgession W23 LAI datasets (Monthly Average).
 """
+
 import json
 import openeo
 from openeo.api.process import Parameter
@@ -69,20 +46,6 @@ def generate() -> dict:
     param_end_date = Parameter.string(
         name="end_date",
         description="End date of the observation period in format YYYY-MM-DD.",
-    )
-    param_binning_period= Parameter.string(
-        name="binning_period",
-        default='month',
-        description="The temporal binning period. Please have a look at openeo documentation of the process "
-                    "aggregate_temporal_period for more information",
-    )
-
-    param_temp_aggregator = Parameter.string(
-        name="temp_aggregator",
-        description="The temporal aggregation function. Please have a look at openeo documentation of the process "
-                    "aggregate_temporal_period for more information",
-        values=["min", "max", "mean", "median"],
-        default="mean"
     )
 
     # set up the UDP parameters
@@ -132,21 +95,16 @@ def generate() -> dict:
                 "default": 3035
                 }
             }
-            }
-            )
-    param_epsg = Parameter.number(
-        name="epsg",
-        description="The desired output projection system.",
-        default=3035
-    )
+            },)
 
     provider = 'cdse'
     resolution = 20.0
+    epsg = 3035
 
     # use the eo_processing package to prepare the Sentinel-2 time series for the LAI calculation
     processing_options = get_advanced_options(
         provider=provider,
-        target_crs=param_epsg,
+        target_crs=epsg,
         resolution=resolution,
         ts_interpolation=False,
         ts_interval=None,
@@ -178,30 +136,14 @@ def generate() -> dict:
     LAI_cube = LAI_cube.mask(lai_mask)
 
     # temporal aggregation depending on the parameter value
-    LAI_cube_agg = eoconn.datacube_from_process(
-        process_id="if",
-        value=eq(param_temp_aggregator, "median", case_sensitive=False),
-        accept=LAI_cube.aggregate_temporal_period(period=param_binning_period, reducer='median'),
-        reject=eoconn.datacube_from_process(
-            process_id="if",
-            value=eq(param_temp_aggregator, "mean", case_sensitive=False),
-            accept=LAI_cube.aggregate_temporal_period(period=param_binning_period, reducer='mean'),
-            reject=eoconn.datacube_from_process(
-                process_id="if",
-                value=eq(param_temp_aggregator, "max", case_sensitive=False),
-                accept=LAI_cube.aggregate_temporal_period(period=param_binning_period, reducer='max'),
-                reject=LAI_cube.aggregate_temporal_period(period=param_binning_period, reducer='min')
-            )
-        ),
-    )
-    
+    LAI_cube_agg = LAI_cube.aggregate_temporal_period(period="month", reducer="mean")
+
     # load the WorldCover 2021 for masking to tree cover
     tree_cube = eoconn.load_collection("ESA_WORLDCOVER_10M_2021_V2",
                                         spatial_extent=param_AOI,
                                         bands=["MAP"]
                                         )
-    tree_cube = tree_cube.resample_spatial(projection=param_epsg,
-                             resolution=resolution)
+    tree_cube = tree_cube.resample_spatial(projection=3025, resolution=resolution)
     tree_cube = tree_cube.drop_dimension("t")
 
     tree_mask = ~ (tree_cube == 10)
@@ -238,41 +180,11 @@ def generate() -> dict:
         process_graph=saved_result.flat_graph(),
         process_id="udp_obsgession_w23_lai",
         description=(pathlib.Path(__file__).parent / "README.md").read_text(),
-        parameters=[param_AOI, param_start_date, param_end_date, param_binning_period, param_temp_aggregator, param_epsg],
+        parameters=[param_AOI, param_start_date, param_end_date],
         default_job_options=job_options
     )
 
 
 if __name__ == "__main__":
-    process_graph = generate()
-
-    flat_graph = process_graph["process_graph"]
-
-    # Add a text_concat node for dynamic filename prefixes. The GTiff backend expects a string for the filename prefix, so we need to concatenate the different parameters into a single string.
-    flat_graph["textconcat1"] = {
-        "process_id": "text_concat",
-        "arguments": {
-            "data": [
-                "EO4Diversity_LAI_",
-                {"from_parameter": "binning_period"},
-                "_",
-                {"from_parameter": "temp_aggregator"},
-                "_",
-            ]
-        },
-    }
-
-    for node in flat_graph.values():
-        if node.get("process_id") == "save_result":
-            node["arguments"]["options"]["filename_prefix"] = {"from_node": "textconcat1"}
-            break
-
-    # dump to json file to be usable as UDP
-    json_str = json.dumps(process_graph, indent=2)
-    
-    # Replace the literal resolution value with parameter reference
-    json_str = json_str.replace(': 20.0', ': {"from_parameter": "resolution"}')
-
-    with open("udp_obsgession_w23_lai.json", "w") as f:
-        f.write(json_str)
-    print("Process graph saved to udp_obsgession_w23_lai.json")
+    with open("udp_obsgession_w23_lai_simple.json", "w") as f:
+        json.dump(generate(), f, indent=2)
