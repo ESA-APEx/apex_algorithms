@@ -31,7 +31,7 @@
     "contacts": [
       {
         "name": "Marcel Buchhorn",
-        "position": "Researcher",
+        "position": "NCA team",
         "organization": "VITO",
         "links": [
           {
@@ -107,13 +107,13 @@
     "rel": "example-output",
     "type": "image/tif",
     "title": "Example output",
-    "href": ""
+    "href": "https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/EO4Diversity_LAI__2025-06-01Z.tif"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": ""
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/records/thumbnail.png"
     }
   ]
 }
