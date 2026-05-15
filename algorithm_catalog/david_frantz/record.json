@@ -1,0 +1,46 @@
+{
+    "id": "david_frantz",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-05-15T14:00:00Z",
+        "updated": "2026-05-15T14:00:00Z",
+        "type": "algorithm_provider",
+        "title": "David Frantz",
+        "description": "Author ",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": []
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "FORCE documentation",
+            "href": "https://force-eo.readthedocs.io/en/latest/"
+        },
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "University website",
+            "href": "https://www.uni-trier.de/universitaet/fachbereiche-faecher/fachbereich-vi/faecher/geoinformatik/team/prof-dr-d-frantz"
+        }
+    ]
+}
