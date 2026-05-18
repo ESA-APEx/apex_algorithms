@@ -754,12 +754,12 @@
                 "options": {
                     "file_metadata": {
                         "copyright": "OBSGESSION project 2025 / Contains modified Copernicus Sentinel data processed by VITO",
-                        "creation_time": "2026-05-12T10:46:51Z",
+                        "creation_time": "2026-05-18T12:02:52Z",
                         "processing_platform": "openEO platform, {'client': 0.48.0}",
                         "EO_PROCESSING_SOFTWARE": "eo_processing, version 0.5.0",
                         "producer": "VITO NV",
                         "references": "https://obsgession.eu/",
-                        "Band-Composer": "Dr. Marcel Buchhorn",
+                        "Lidar-Luminary": "Dr. Marcel Buchhorn",
                         "description": "Generation of EO4Diversity conform high-resolution temperate forests optimized LAI products based on Sentinel-2 following the OBSGESSION W2.3 benchmarking.",
                         "tiling_grid": "LAEA",
                         "time_start": {
@@ -802,7 +802,7 @@
     "parameters": [
         {
             "name": "spatial_extent",
-            "description": "the AOI should be set as an openEO BBOX dict. It defines the boundaries of the area of interest.\n        The coordinates are given in the order of west, south, east, north.",
+            "description": "The AOI should be set as an openEO BBOX dict. It defines the boundaries of the area of interest.\n        The coordinates are given in the order of west, south, east, north in EPSG:3035. Please make sure to pass the coordinates in meter and not in degree.",
             "schema": {
                 "title": "Bounding Box",
                 "type": "object",
@@ -901,7 +901,7 @@
         },
         {
             "name": "epsg",
-            "description": "The desired output projection system.",
+            "description": "The EPSG is set to 3035 by default.",
             "schema": {
                 "type": "number"
             },

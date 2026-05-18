@@ -45,8 +45,8 @@ def generate() -> dict:
     )
     param_AOI = Parameter(
         name="spatial_extent",
-        description="""the AOI should be set as an openEO BBOX dict. It defines the boundaries of the area of interest.
-        The coordinates are given in the order of west, south, east, north.""",
+        description="""The AOI should be set as an openEO BBOX dict. It defines the boundaries of the area of interest.
+        The coordinates are given in the order of west, south, east, north in EPSG:3035. Please make sure to pass the coordinates in meter and not in degree.""",
         schema= {"title": "Bounding Box",
             "type": "object",
             "subtype": "bounding-box",
@@ -108,7 +108,7 @@ def generate() -> dict:
     )
     param_epsg = Parameter.number(
         name="epsg",
-        description="The desired output projection system.",
+        description="The EPSG is set to 3035 by default.",
         default=3035
     )
 
