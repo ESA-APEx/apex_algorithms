@@ -2,7 +2,7 @@
     {
         "id": "cropsar1d",
         "type": "openeo",
-        "description": "CropSAR 1d is a process that applies the CropSAR 1d model to a given geometry and time range, producing a biophysical parameter (e.g., FAPAR) as output. The process takes as input a geometry (in GeoJSON format), a start date, an end date, and the desired output biophysical parameter. The process is designed to run on the VITO backend and utilizes the OpenEO API for execution.",
+        "description": "CropSAR 1D is a biophysical parameter retrieval algorithm that estimates the Fraction of Absorbed Photosynthetically Active Radiation (FAPAR) for agricultural crops using Sentinel-1 and Sentinel-2 satellite data.",
         "backend": "openeo.vito.be",
         "process_graph": {
             "cropsar1d1": {
