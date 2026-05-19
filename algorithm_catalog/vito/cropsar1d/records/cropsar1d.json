@@ -36,7 +36,7 @@
         ],
         "contacts": [
             {
-                "name": "Pratichhya Sharma",
+                "name": "Hazan Daglayan Sevim",
                 "position": "Researcher",
                 "organization": "VITO",
                 "links": [
@@ -109,10 +109,10 @@
             "href": "../../record.json"
         },
         {
-            "rel": "webapp",
-            "type": "text/html",
-            "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar1d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json&server=https://openeo.vito.be"
+        "rel": "notebook",
+        "type": "application/x-ipynb+json",
+        "title": "Example Jupyter Notebook to calculate the CropSAR products",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/notebooks/cropsar1d.ipynb"
         },
         {
             "rel": "thumbnail",
