@@ -1,0 +1,61 @@
+{
+    "id": "meeo",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-03-02T13:00:00Z",
+        "updated": "2026-05-20T13:00:00Z",
+        "type": "service",
+        "title": "Flood Risk Assessment Service",
+        "description": "Benchmark scenario for a coastal area near Ferrara, Italy. Tests inundation impact on population, built surface, and cereal cropland under SSP5-8.5 with 1.0m storm surge by 2040.",
+        "keywords": [
+            "flood",
+            "flood risk",
+            "disaster risk",
+            "built surface",
+            "population",
+            "agriculture",
+            "cereals",
+            "remote sensing"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@meeo.it"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "MEEO",
+            "href": "https://meeo.it"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.meeo.it/wp-content/uploads/2020/09/logo-meeo-dark2.svg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.meeo.it/wp-content/uploads/2020/09/logo-meeo-dark2.svg"
+        }
+    ]
+}

@@ -1,0 +1,111 @@
+{
+  "process_graph": {
+    "flood_risk_service_node": {
+      "process_id": "flood_risk_service",
+      "arguments": {
+        "area": {
+          "from_parameter": "area"
+        },
+        "year": {
+          "from_parameter": "year"
+        },
+        "ssp": {
+          "from_parameter": "ssp"
+        },
+        "storm_surge": {
+          "from_parameter": "storm_surge"
+        },
+        "confidence": {
+          "from_parameter": "confidence"
+        }
+      },
+      "result": true
+    }
+  },
+  "parameters": {
+    "area": {
+      "description": "Bounding box of the area [west, south, east, north]",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "west": {
+            "type": "number"
+          },
+          "south": {
+            "type": "number"
+          },
+          "east": {
+            "type": "number"
+          },
+          "north": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ]
+      }
+    },
+    "year": {
+      "description": "Year of simulation",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "2020",
+          "2040",
+          "2060",
+          "2080",
+          "2100",
+          "2120",
+          "2150",
+          "all"
+        ]
+      },
+      "default": 2150
+    },
+    "ssp": {
+      "description": "SSP scenario",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "ssp119",
+          "ssp126",
+          "ssp245",
+          "ssp370",
+          "ssp585",
+          "all"
+        ]
+      }
+    },
+    "storm_surge": {
+      "description": "Storm surge level",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "0_0",
+          "0_5",
+          "1_0",
+          "1_5",
+          "2_0",
+          "3_0",
+          "5_0",
+          "all"
+        ]
+      }
+    },
+    "confidence": {
+      "description": "Confidence level",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ]
+      }
+    }
+  }
+}

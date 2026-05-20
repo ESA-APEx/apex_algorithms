@@ -1,0 +1,132 @@
+{
+    "id": "flood_risk_service",
+    "type": "Feature",
+    "conformsTo": [
+      "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+      "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+      "created": "2026-03-02T13:00:00Z",
+      "updated": "2026-05-20T13:00:00Z",
+      "type": "service",
+      "title": "Flood Risk Assessment Service",
+      "description": "Benchmark scenario for a coastal area near Ferrara, Italy. Tests inundation impact on population, built surface, and cereal cropland under SSP5-8.5 with 1.0m storm surge by 2040.",
+      "cost_estimate": 0.0,
+      "cost_unit": null,
+      "keywords": [
+        "flood",
+        "flood risk",
+        "disaster risk",
+        "built surface",
+        "population",
+        "agriculture",
+        "cereals",
+        "remote sensing"
+      ],
+      "language": {
+        "code": "en-US",
+        "name": "English (United States)"
+      },
+      "languages": [
+        {
+          "code": "en-US",
+          "name": "English (United States)"
+        }
+      ],
+      "contacts": [
+        {
+          "name": "Fabio Govoni",
+          "position": "technical manager",
+          "organization": "MEEO",
+          "links": [
+            {
+              "rel": "website",
+              "type": "text/html",
+              "title": "MEEO",
+              "href": "https://meeo.it"
+            }
+          ],
+          "contactInstructions": "Contact via MEEO",
+          "roles": [
+            "principal investigator"
+          ]
+        },
+        {
+          "name": "Alessia Cattozzo",
+          "position": "project manager",
+          "organization": "MEEO",
+          "links": [
+            {
+              "rel": "website",
+              "type": "text/html",
+              "title": "MEEO",
+              "href": "https://meeo.it"
+            }
+          ],
+          "contactInstructions": "Contact via MEEO",
+          "roles": [
+            "support"
+          ]
+        }
+      ],
+      "themes": [
+        {
+          "concepts": [
+            {
+              "id": "flood-risk"
+            },
+            {
+              "id": "land-use"
+            },
+            {
+              "id": "population-exposure"
+            },
+            {
+              "id": "agriculture"
+            }
+          ],
+          "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+        }
+      ],
+      "formats": [
+        {
+          "name": "json"
+        }
+      ],
+      "license": "other"
+    },
+    "linkTemplates": [],
+    "links": [
+      {
+        "rel": "application",
+        "type": "application/vnd.openeo+json;type=process",
+        "title": "openEO Process Definition",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/meeo/flood_service_request/openeo_udp/flood_service_request.json"
+      },
+      {
+        "rel": "service",
+        "type": "application/json",
+        "title": "Flood service",
+        "href": "https://api.ideas.adamplatform.eu/"
+      },
+      {
+        "rel": "provider",
+        "type": "application/json",
+        "title": "MEEO",
+        "href": "../../record.json"
+      },
+      {
+        "rel": "example-output",
+        "type": "application/json",
+        "title": "Example output",
+        "href": "../openeo_udp/output_example.json"
+      },
+      {
+        "rel": "thumbnail",
+        "type": "image/png",
+        "title": "Thumbnail image",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_riks_service/records/thumbnail.jpg"
+      }
+    ]
+  }
