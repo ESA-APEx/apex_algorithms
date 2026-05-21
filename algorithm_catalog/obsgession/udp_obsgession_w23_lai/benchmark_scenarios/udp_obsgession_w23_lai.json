@@ -28,7 +28,7 @@
                     },
                     "start_date": "2025-06-01"
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/openeo_udp/udp_obsgession_w23_lai.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/184bd41069defabd328348f54232d6ae362775fc/algorithm_catalog/obsgession/udp_obsgession_w23_lai/openeo_udp/udp_obsgession_w23_lai.json",
                 "process_id": "udp_obsgession_w23_lai"
             }
         },
