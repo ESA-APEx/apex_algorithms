@@ -1,0 +1,28 @@
+[
+  {
+    "id": "solar_pv_detection",
+    "type": "openeo",
+    "description": "Solar PV detection (ONNX) benchmark over a small AOI in California, inspired by the upstream test_udp_onnx.py.",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "solarpv1": {
+        "process_id": "solar_pv_detection",
+        "namespace": "https://raw.githubusercontent.com/ray-climate/solar_openEO/c4f1b0c7ba6ab9acf2b11cc999c05e6346b6bf21/openeo_udp/process_graph/solar_pv_detection_udp.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": -120.10,
+            "south": 35.38,
+            "east": -120.00,
+            "north": 35.45,
+            "crs": "EPSG:4326"
+          },
+          "temporal_extent": [
+            "2024-05-01",
+            "2024-09-30"
+          ]
+        },
+        "result": true
+      }
+    }
+  }
+]
