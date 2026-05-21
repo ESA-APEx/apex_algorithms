@@ -114,7 +114,7 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/ucl/solar_pv_detection/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/01d6c659d306c479fd3f7578dc38f0337e410539/algorithm_catalog/ucl/solar_pv_detection/records/thumbnail.png"
     }
   ]
 }
