@@ -32,7 +32,7 @@
     "contacts": [
       {
         "name": "Rui Song",
-        "organization": "Earth Ray View",
+        "organization": "University College London",
         "links": [
           {
             "href": "https://github.com/ray-climate/solar_openEO",
@@ -43,7 +43,7 @@
         ],
         "emails": [
           {
-            "value": "ruisong@earthrayview.co.uk"
+            "value": "rui.song@ucl.ac.uk"
           }
         ],
         "contactInstructions": "Contact via email",
@@ -101,7 +101,7 @@
     {
       "rel": "provider",
       "type": "application/json",
-      "title": "Earth Ray View",
+      "title": "University College London",
       "href": "../../record.json"
     },
     {
@@ -114,7 +114,7 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/earthrayview/solar_pv_detection/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/ucl/solar_pv_detection/records/thumbnail.png"
     }
   ]
 }
