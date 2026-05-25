@@ -49,13 +49,13 @@
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-dark.svg"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-light.svg"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-light.svg"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-dark.svg"
         }
     ]
 }
