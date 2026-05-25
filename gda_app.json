@@ -1,0 +1,89 @@
+{
+  "id": "gda_app",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+      "created": "2026-03-02T13:00:00Z",
+      "updated": "2026-05-20T13:00:00Z",
+    "type": "ogc_backend",
+    "title": "Global Development Assistance - Analytics & Processing Platform",
+    "description": "The cloud-based environment developed under ESA GDA programme to harness Earth Observation for development aid operations",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Fabio Govoni",
+        "organization": "MEEO",
+        "position": "technical manager",
+        "roles": [
+          "platform operations",
+          "technical support"
+        ],
+        "links": [
+          {
+            "href": "https://app-gda.esa.int",
+            "title": "GDA APP",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For matters concerning functional or analytical requirements, onboarding your services to the Platform, or enabling premium tier features, please reach out to the Platform's User Engagement Team, overseen by Alessia Cattozzo.",
+        "email": "helpdesk-gdaapp@meeo.it"
+      },
+      {
+        "name": "Alessia",
+        "organization": "MEEO",
+        "position": "project manager",
+        "roles": [
+          "user engagement",
+          "platform onboarding",
+          "platform premium-tier"
+        ],
+        "links": [
+          {
+            "href": "https://app-gda.esa.int",
+            "title": "GDA APP",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "For inquiries on selecting Processing Services from the TAO Portfolio, and on budgeting the processing costs for your study areas, please email the Platform team at CS GROUP - ROMANIA",
+        "email": "engage-gdaapp@meeo.it"
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "MEEO",
+      "href": "https://meeo.it"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "MEEO Logo",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-light.svg"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "MEEO logo",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-dark.svg"
+    }
+  ]
+}

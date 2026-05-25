@@ -102,7 +102,7 @@
         "rel": "application",
         "type": "application/vnd.openeo+json;type=process",
         "title": "openEO Process Definition",
-        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/meeo/flood_service_request/openeo_udp/flood_service_request.json"
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/meeo/flood_risk_service/openeo_udp/flood_risk_service.json"
       },
       {
         "rel": "service",

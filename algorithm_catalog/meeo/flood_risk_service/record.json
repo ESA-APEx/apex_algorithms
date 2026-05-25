@@ -49,13 +49,13 @@
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://www.meeo.it/wp-content/uploads/2020/09/logo-meeo-dark2.svg"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-dark.svg"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://www.meeo.it/wp-content/uploads/2020/09/logo-meeo-dark2.svg"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/meeo/flood_risk_service/records/logo-meeo-light.svg"
         }
     ]
 }
