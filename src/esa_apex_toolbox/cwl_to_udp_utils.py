@@ -75,6 +75,12 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
             if not "default" in arguments:
                 arguments["default"] = None
 
+        if isinstance(cwl_type, list) and len(cwl_type) == 2 and "null" in cwl_type:
+            cwl_type = next(t for t in cwl_type if t != "null")
+            arguments["optional"] = True  # Hack
+            if not "default" in arguments:
+                arguments["default"] = None
+
         if isinstance(cwl_type, str) and cwl_type.endswith("[]"):
             # Make sure array is always in the same complex form when parsing.
             sub_type = cwl_type[:-2]
@@ -100,9 +106,9 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
             )
         elif isinstance(cwl_type, dict) and cwl_type.get("type") == "enum":
             schema = {"type": "string"}
-            if symbols := cwl_input_yaml.get("symbols"):
+            if symbols := cwl_type.get("symbols"):
                 schema["enum"] = symbols
-            elif symbols := cwl_input_yaml.get("type", {}).get("symbols"):
+            elif symbols := cwl_type.get("type", {}).get("symbols"):
                 schema["enum"] = symbols
             return Parameter(
                 **arguments,

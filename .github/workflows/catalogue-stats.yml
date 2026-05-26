@@ -1,0 +1,77 @@
+name: Catalogue Statistics
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - algorithm_catalog/**
+      - .github/scripts/generate_catalogue_stats.py
+      - .github/workflows/catalogue-stats.yml
+  workflow_dispatch:
+
+jobs:
+  generate-catalogue-stats:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      S3_REGION: ${{ vars.OTC_S3_REGION }}
+      S3_DEFAULT_REGION: ${{ vars.OTC_S3_REGION }}
+      S3_ACCESS_KEY_ID: ${{ secrets.OTC_S3_ACCESS_KEY_ID }}
+      S3_SECRET_ACCESS_KEY: ${{ secrets.OTC_S3_SECRET_ACCESS_KEY }}
+      S3_ENDPOINT_URL: ${{ vars.OTC_S3_ENDPOINT_URL }}
+      CATALOGUE_STATS_S3_BUCKET: ${{ vars.CATALOGUE_STATS_S3_BUCKET }}
+      CATALOGUE_STATS_S3_PREFIX: ${{ vars.CATALOGUE_STATS_S3_PREFIX || 'catalogue-stats' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate stats JSON
+        run: |
+          python .github/scripts/generate_catalogue_stats.py \
+            --output catalogue-stats.json
+
+      - name: Show generated JSON
+        run: cat catalogue-stats.json
+
+      - name: Upload stats artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalogue-stats
+          path: catalogue-stats.json
+          if-no-files-found: error
+
+      - name: Upload stats JSON to S3
+        if: github.event_name != 'pull_request'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ env.S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.S3_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.S3_REGION }}
+          AWS_DEFAULT_REGION: ${{ env.S3_DEFAULT_REGION }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: |
+          timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          latest_key="${CATALOGUE_STATS_S3_PREFIX}/catalogue-stats-latest.json"
+          versioned_key="${CATALOGUE_STATS_S3_PREFIX}/catalogue-stats-${timestamp}.json"
+
+          aws s3api put-object --endpoint-url "$S3_ENDPOINT_URL" \
+            --bucket "$CATALOGUE_STATS_S3_BUCKET" \
+            --key "$latest_key" \
+            --body catalogue-stats.json \
+            --acl public-read \
+            --content-type application/json
+
+          aws s3api put-object --endpoint-url "$S3_ENDPOINT_URL" \
+            --bucket "$CATALOGUE_STATS_S3_BUCKET" \
+            --key "$versioned_key" \
+            --body catalogue-stats.json \
+            --acl public-read \
+            --content-type application/json

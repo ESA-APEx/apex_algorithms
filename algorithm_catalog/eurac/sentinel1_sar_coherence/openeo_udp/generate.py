@@ -17,7 +17,7 @@ from esa_apex_toolbox.cwl_to_udp_utils import (
 )
 
 cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_coherence.cwl"
-# cwl_url = "/home/emile/openeo/s1-workflows/cwl/sar_coherence_parallel_temporal_extent.cwl"
+# cwl_url = "/home/emile/openeo/s1-workflows/cwl/sar_coherence.cwl"
 
 
 def generate() -> dict:
@@ -29,7 +29,7 @@ def generate() -> dict:
     for parameter in parameters:
         context[parameter.name] = {"from_parameter": parameter.name}
 
-    connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+    connection = openeo.connect("https://openeofed.dataspace.copernicus.eu").authenticate_oidc()
     # TODO: Use run_cwl_to_stac once https://github.com/cloudinsar/s1-workflows/issues/80 is deployed
     # datacube = StacResource(
     #     graph=PGNode(
