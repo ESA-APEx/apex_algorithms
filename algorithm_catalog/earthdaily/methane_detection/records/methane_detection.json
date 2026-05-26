@@ -131,7 +131,7 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Methane enhancement heatmap thumbnail",
-      "href": "thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b491921dac899201e9cd1d12b9bdf2cd0129ca9/algorithm_catalog/earthdaily/methane_detection/records/thumbnail.png"
     }
   ]
 }
