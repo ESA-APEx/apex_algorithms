@@ -7,7 +7,7 @@
     "process_graph": {
       "worldcerealcropextent1": {
         "process_id": "worldcereal_crop_type",
-        "namespace": "https://worldcereal.github.io/worldcereal-classification/udp/worldcereal_crop_type.json",
+        "namespace": "http://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/heads/main/src/worldcereal/udp/worldcereal_crop_type.json",
         "arguments": {
           "spatial_extent": {
             "west": 622694.5968575787,
@@ -28,7 +28,7 @@
     },
     "reference_data": {
       "worldcereal_crop_type_postprocessed.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22353750758!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_type_!actual/worldcereal_crop_type_postprocessed.tif",
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22353750758!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_type_!actual/job-results.json"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/512!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_type_!actual/job-results.json"
     },
     "reference_options": {
       "atol": 10
