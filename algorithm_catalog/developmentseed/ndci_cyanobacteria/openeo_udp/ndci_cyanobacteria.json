@@ -1780,7 +1780,10 @@
     {
       "name": "time",
       "description": "Temporal range for data acquisition",
-      "schema": {},
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval"
+      },
       "default": [
         "2025-12-01",
         "2026-03-01"
@@ -1789,8 +1792,11 @@
     },
     {
       "name": "bounding_box",
-      "description": "Spatial extent for Peniche Bay",
-      "schema": {},
+      "description": "Spatial extent for data acquisition",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box"
+      },
       "default": {
         "west": -9.42,
         "south": 39.3,
@@ -1802,7 +1808,9 @@
     {
       "name": "cloud_cover",
       "description": "Maximum cloud cover percentage",
-      "schema": {},
+      "schema": {
+        "type": "number"
+      },
       "default": 20,
       "optional": true
     }
