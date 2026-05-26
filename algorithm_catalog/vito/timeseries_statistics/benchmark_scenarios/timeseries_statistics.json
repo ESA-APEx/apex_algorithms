@@ -47,7 +47,10 @@
         "result": true
       }
     },
-    "reference_data": {}
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-24840537125!tests_test_benchmarks.py__test_run_benchmark_timeseries_statistics_s1_dekad_!actual/job-results.json",
+      "timeseries.csv": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-24840537125!tests_test_benchmarks.py__test_run_benchmark_timeseries_statistics_s1_dekad_!actual/timeseries.csv"
+    }
   }
 ]
 
