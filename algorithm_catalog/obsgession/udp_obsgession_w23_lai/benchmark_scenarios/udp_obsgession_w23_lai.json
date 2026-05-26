@@ -1,0 +1,40 @@
+[
+    {
+        "id": "udp_obsgession_w23_lai",
+        "type": "openeo",
+        "description": "Provides leaf area index (LAI) at 10m resolution from 2015 onwards for temperate forests.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "udpobsgessionw23lai1"
+                    },
+                    "format": "GTiff",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            },
+            "udpobsgessionw23lai1": {
+                "arguments": {
+                    "end_date": "2025-07-01",
+                    "spatial_extent": {
+                        "crs": 3035,
+                        "east": 4880000,
+                        "north": 2900000,
+                        "south": 2896000,
+                        "west": 4876000
+                    },
+                    "start_date": "2025-06-01"
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/184bd41069defabd328348f54232d6ae362775fc/algorithm_catalog/obsgession/udp_obsgession_w23_lai/openeo_udp/udp_obsgession_w23_lai.json",
+                "process_id": "udp_obsgession_w23_lai"
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/job-results.json",
+            "EO4Diversity_LAI__2025-06-01Z.tif":"https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/EO4Diversity_LAI__2025-06-01Z.tif"
+        }
+    }
+]
