@@ -118,7 +118,7 @@ class Algorithm:
         data_conforms_to = data.get("conformsTo", [])
         # TODO: Remove http reference once merged to main
         if (("https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to) and
-                ("http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to)):
+                ("https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to)):
             raise InvalidMetadataError(
                 f"Expected an 'OGC API - Records' record object, but got {data.get('conformsTo')!r}."
             )
