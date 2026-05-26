@@ -35,7 +35,6 @@ It can be enabled through the parameters.
 
 Please refer to the APEx Documentation [Documentation](https://esa-apex.github.io/apex_documentation/guides/udp_writer_guide.html) and the [GitHub](https://github.com/ESA-APEx/apex_algorithms)
 
-Notebook example:
 <a href="../notebook_scmap.ipynb" rel="notebook">SCMap Notebook Example</a>
 
 ## Literature references
