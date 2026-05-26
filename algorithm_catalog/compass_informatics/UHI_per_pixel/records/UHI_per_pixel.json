@@ -3,7 +3,7 @@
   "stac_version": "1.0.0",
   "id": "UHI_per_pixel",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
   "properties": {

@@ -71,7 +71,7 @@ class TestAlgorithm:
         data = {
             "id": "minimal",
             "type": "Feature",
-            "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
             "properties": {
                 "type": "service",
             },
@@ -86,7 +86,7 @@ class TestAlgorithm:
         data = {
             "id": "wrong",
             "type": "apex_algorithm",
-            "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
         }
         with pytest.raises(
             InvalidMetadataError, match="Expected a GeoJSON 'Feature' object, but got type 'apex_algorithm'."
@@ -112,7 +112,7 @@ class TestAlgorithm:
         data = {
             "id": "wrong",
             "type": "Feature",
-            "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
             "properties": {
                 "type": "udp",
             },
@@ -124,7 +124,7 @@ class TestAlgorithm:
         data = {
             "id": "basic",
             "type": "Feature",
-            "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
             "properties": {
                 "type": "service",
                 "title": "Basic",
