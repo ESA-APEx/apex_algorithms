@@ -8,13 +8,6 @@ on:
       - algorithm_catalog/**
       - .github/scripts/generate_catalogue_stats.py
       - .github/workflows/catalogue-stats.yml
-  pull_request:
-    branches:
-      - main
-    paths:
-      - algorithm_catalog/**
-      - .github/scripts/generate_catalogue_stats.py
-      - .github/workflows/catalogue-stats.yml
   workflow_dispatch:
 
 jobs:
