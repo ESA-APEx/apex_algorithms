@@ -1,0 +1,46 @@
+{
+  "id": "flood_risk_service",
+  "description": "Benchmark scenario for a coastal area near Ferrara, Italy. Tests inundation impact on population, built surface, and cereal cropland under SSP5-8.5 with 1.0m storm surge by 2040.",
+  "backend": "https://api.ideas.adamplatform.eu/",
+  "endpoint": "POST /",
+  "inputs": {
+    "confidence": "medium",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [12.146707532485465, 44.93552068972261],
+          [12.146707532485465, 44.832178039646664],
+          [12.389998034208674, 44.832178039646664],
+          [12.389998034208674, 44.93552068972261],
+          [12.146707532485465, 44.93552068972261]
+        ]
+      ]
+    },
+    "ssp": "ssp585",
+    "storm_surge": "1_0",
+    "year": 2040
+  },
+  "outputs": {
+    "GHS_BUILT_S_E2020_GLOBE": 2560807.0,
+    "GHS_POP_E2020_GLOBE": 5385.0,
+    "cereals": 26.5,
+    "cereals_rice": 58.4
+  },
+  "tolerance": {
+    "type": "absolute",
+    "value": 0.0,
+    "note": "Results are deterministic given fixed inundation projection layers and static GHS/WorldCereal datasets. Exact match expected."
+  },
+  "performance": {
+    "max_response_time_seconds": 30,
+    "note": "Measured at ~22s on 2026-04-13. Threshold rounded up to 30s."
+  },
+  "links": [
+    {
+      "rel": "about",
+      "href": "https://api.ideas.adamplatform.eu/docs",
+      "title": "ADAM Platform API documentation"
+    }
+  ]
+}
