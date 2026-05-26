@@ -27,6 +27,8 @@
       }
     },
     "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/535!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_interferogram_!actual/job-results.json",
+      "phase_coh_20180128T062713_20180203T062631.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/535!tests_test_benchmarks.py__test_run_benchmark_sentinel1_sar_interferogram_!actual/phase_coh_20180128T062713_20180203T062631.tif"
     }
   }
 ]

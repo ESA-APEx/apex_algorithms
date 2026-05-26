@@ -29,7 +29,7 @@ def generate() -> dict:
     for parameter in parameters:
         context[parameter.name] = {"from_parameter": parameter.name}
 
-    connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+    connection = openeo.connect("https://openeofed.dataspace.copernicus.eu").authenticate_oidc()
     stac_resource = StacResource(
         graph=PGNode(
             "run_cwl_to_stac",
@@ -42,11 +42,21 @@ def generate() -> dict:
         connection=connection,
     )
 
+    returns = {
+        "description": "STAC metadata of the generated interferogram",
+        "schema": {
+            "type": "object",
+            "subtype": "stac"
+        }
+    }
+
     return build_process_dict(
         process_graph=stac_resource,
         process_id="sentinel1_sar_interferogram",
         description=get_cwl_main(cwl_yaml).get("doc").rstrip(),
         parameters=parameters,
+        returns= returns,
+        categories=["sentinel-1", "InSAR"],
     )
 
 

@@ -1,0 +1,52 @@
+{
+    "id": "obsgession",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-03-17T13:00:00Z",
+        "updated": "2026-03-17T13:00:00Z",
+        "type": "algorithm_provider",
+        "title": "OBSGESSION",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@vito.be"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "OBSGESSION",
+            "href": "https://obsgession.eu/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://obsgession.eu/storage/app/uploads/public/660/41a/e5e/66041ae5eaaed608425544.png"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://obsgession.eu/storage/app/uploads/public/660/41b/ae6/66041bae684f0017938846.png"
+        }
+    ]
+}
