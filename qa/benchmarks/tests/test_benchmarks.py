@@ -171,6 +171,15 @@ def test_run_benchmark(
                 )
 
         if resolved_baselines:
+            # Emit baseline metadata so dashboards can visualize baseline tightening
+            for metric_name, baseline in resolved_baselines.items():
+                track_metric(f"baseline:{metric_name}:max", baseline["max"])
+                track_metric(f"baseline:{metric_name}:min", baseline.get("min", 0))
+                track_metric(f"baseline:{metric_name}:median", baseline["median"])
+                track_metric(f"baseline:{metric_name}:mad", baseline["mad"])
+                track_metric(f"baseline:{metric_name}:k", baseline["k"])
+                track_metric(f"baseline:{metric_name}:n_samples", baseline["n_samples"])
+
             violations = check_reference_performance(
                 scenario_id=scenario.id,
                 reference_performance=resolved_baselines,

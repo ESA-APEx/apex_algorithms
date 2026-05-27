@@ -161,8 +161,8 @@ def test_check_reference_performance_missing_metric():
 
 
 def test_compute_adaptive_baselines_single_observation_skipped():
-    """With <2 observations, no baseline is produced (need >= min_samples)."""
-    history = [{"costs": 10.0}]
+    """With <3 observations, no baseline is produced (need >= min_samples)."""
+    history = [{"costs": 10.0}, {"costs": 11.0}]
     baselines = compute_adaptive_baselines(history, metric_names=["costs"])
     assert baselines == {}
 
@@ -174,12 +174,13 @@ def test_compute_adaptive_baselines_per_metric_partial_history():
         {"costs": 10.0, "usage:cpu:cpu-seconds": 100},
         {"costs": 11.0},  # cpu missing here
         {"costs": 10.5, "usage:cpu:cpu-seconds": 105},
+        {"costs": 10.2, "usage:cpu:cpu-seconds": 102},
     ]
     baselines = compute_adaptive_baselines(history)
-    # costs has 3 samples → baseline computed
-    assert baselines["costs"]["n_samples"] == 3
-    # cpu has only 2 samples (still >= min_samples=2) → baseline computed
-    assert baselines["usage:cpu:cpu-seconds"]["n_samples"] == 2
+    # costs has 4 samples → baseline computed
+    assert baselines["costs"]["n_samples"] == 4
+    # cpu has 3 samples (>= min_samples=3) → baseline computed
+    assert baselines["usage:cpu:cpu-seconds"]["n_samples"] == 3
 
 
 def test_compute_adaptive_baselines_age_window():
@@ -193,22 +194,25 @@ def test_compute_adaptive_baselines_age_window():
         {"costs": 11.0, "_datetime": (now - timedelta(days=5)).isoformat()},
     ]
     baselines = compute_adaptive_baselines(
-        history, metric_names=["costs"], max_age_days=90
+        history, metric_names=["costs"], max_age_days=90, min_samples=2
     )
     # The 999.0 outlier is outside the window and must be excluded.
     assert baselines["costs"]["n_samples"] == 2
-    assert baselines["costs"]["mean"] == pytest.approx(10.5)
+    assert baselines["costs"]["median"] == pytest.approx(11.0)
 
 
 def test_compute_adaptive_baselines_two_observations():
-    """With 2 observations, k(2)=4.0 so threshold is very loose."""
+    """With 2 observations and min_samples=2 override, k(2)=4.0 so threshold is very loose."""
     history = [{"costs": 10.0}, {"costs": 12.0}]
-    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"], min_samples=2)
     assert baselines["costs"]["n_samples"] == 2
     assert baselines["costs"]["k"] == 4.0
     assert baselines["costs"]["tolerance"] == 0  # baked into max
-    # mean=11, std~=1.414, threshold = 11 + 4.0*1.414 = ~16.66
-    assert baselines["costs"]["max"] > 16.0
+    # median=12, MAD=1*1.4826=1.4826, threshold = 12 + 4.0*1.4826 = ~17.93
+    assert baselines["costs"]["max"] > 17.0
+    # lower bound: 12 - 4.0*1.4826 = ~6.07
+    assert baselines["costs"]["min"] > 5.0
+    assert baselines["costs"]["min"] < 7.0
 
 
 def test_compute_adaptive_baselines_many_observations():
@@ -216,7 +220,7 @@ def test_compute_adaptive_baselines_many_observations():
     history = [{"costs": 10.0 + i * 0.1} for i in range(20)]
     baselines = compute_adaptive_baselines(history, metric_names=["costs"])
     assert baselines["costs"]["n_samples"] == 10  # capped at 10
-    assert baselines["costs"]["k"] == 2.0  # exactly 2σ at n=10
+    assert baselines["costs"]["k"] == 2.0  # exactly 2σ-equivalent at n=10
 
 
 def test_compute_adaptive_baselines_auto_detect_metrics():
@@ -294,3 +298,52 @@ def test_analyse_results_comparison_exception_derived_from(tmp_path):
         )
 
     assert analyse_results_comparison_exception(exc_info.value) == "derived_from-change"
+
+
+def test_check_reference_performance_lower_bound_anomaly():
+    """Test that suspiciously low values are flagged as anomalies."""
+    tracked = {"costs": 0.5}  # way below expected
+    reference = {
+        "costs": {"max": 15, "min": 5.0, "tolerance": 0},
+    }
+    violations = check_reference_performance(
+        scenario_id="test_scenario",
+        reference_performance=reference,
+        tracked_metrics=tracked,
+    )
+    assert len(violations) == 1
+    assert "anomaly" in violations[0]
+    assert "below expected minimum" in violations[0]
+
+
+def test_check_reference_performance_lower_bound_pass():
+    """Values above min should not trigger lower-bound violation."""
+    tracked = {"costs": 6.0}
+    reference = {
+        "costs": {"max": 15, "min": 5.0, "tolerance": 0},
+    }
+    violations = check_reference_performance(
+        scenario_id="test_scenario",
+        reference_performance=reference,
+        tracked_metrics=tracked,
+    )
+    assert violations == []
+
+
+def test_adaptive_baselines_lower_bound_integration():
+    """Adaptive baselines produce a min that catches broken results."""
+    history = [
+        {"costs": 10.0},
+        {"costs": 11.0},
+        {"costs": 10.5},
+    ]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert "min" in baselines["costs"]
+    # A wildly low value should fail
+    violations = check_reference_performance(
+        scenario_id="test",
+        reference_performance=baselines,
+        tracked_metrics={"costs": 0.01},
+    )
+    assert len(violations) == 1
+    assert "anomaly" in violations[0]

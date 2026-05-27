@@ -40,22 +40,40 @@ def create_s3_filesystem():
     ``APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY``, and
     ``APEX_ALGORITHMS_S3_ENDPOINT_URL`` (with fallback to
     ``AWS_*`` variants).
+
+    :raises EnvironmentError: if required credentials are not set.
     """
     import pyarrow.fs
 
+    access_key = (
+        os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID")
+        or os.environ.get("AWS_ACCESS_KEY_ID")
+    )
+    secret_key = (
+        os.environ.get("APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY")
+        or os.environ.get("AWS_SECRET_ACCESS_KEY")
+    )
+    endpoint = (
+        os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL")
+        or os.environ.get("AWS_ENDPOINT_URL")
+    )
+
+    if not access_key or not secret_key:
+        raise EnvironmentError(
+            "S3 credentials not configured. Set APEX_ALGORITHMS_S3_ACCESS_KEY_ID "
+            "and APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY (or AWS_ACCESS_KEY_ID and "
+            "AWS_SECRET_ACCESS_KEY) environment variables."
+        )
+    if not endpoint:
+        _log.warning(
+            "No S3 endpoint configured (APEX_ALGORITHMS_S3_ENDPOINT_URL / "
+            "AWS_ENDPOINT_URL). Using default AWS endpoint."
+        )
+
     return pyarrow.fs.S3FileSystem(
-        access_key=(
-            os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID")
-            or os.environ.get("AWS_ACCESS_KEY_ID")
-        ),
-        secret_key=(
-            os.environ.get("APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY")
-            or os.environ.get("AWS_SECRET_ACCESS_KEY")
-        ),
-        endpoint_override=(
-            os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL")
-            or os.environ.get("AWS_ENDPOINT_URL")
-        ),
+        access_key=access_key,
+        secret_key=secret_key,
+        endpoint_override=endpoint,
     )
 
 

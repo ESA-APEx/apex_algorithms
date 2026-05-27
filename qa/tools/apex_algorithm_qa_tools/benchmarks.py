@@ -85,7 +85,8 @@ def check_reference_performance(
     Compare tracked metrics against reference performance baselines.
 
     Returns a list of warning/violation messages for metrics that exceed
-    ``max * (1 + tolerance)``.
+    ``max * (1 + tolerance)`` (upper-bound regression) or fall below
+    ``min`` (lower-bound anomaly indicating potentially broken/incomplete results).
 
     Metric names should match exactly as tracked (e.g. ``usage:cpu:cpu-seconds``,
     ``usage:memory:mb-seconds``, ``costs``, ``costs:per_km2``).
@@ -93,6 +94,9 @@ def check_reference_performance(
     violations = []
     for metric_name, ref in reference_performance.items():
         max_val = ref["max"]
+        # Note: for adaptive baselines, tolerance=0 because the adaptive band
+        # (mean + k*σ) is already baked into `max`. For static/manual baselines
+        # the tolerance provides an explicit percentage buffer.
         tolerance = ref.get("tolerance", default_tolerance)
         actual = tracked_metrics.get(metric_name)
         if actual is None:
@@ -104,6 +108,14 @@ def check_reference_performance(
                 f"[{scenario_id}] performance regression in {metric_name!r}: "
                 f"actual={actual} exceeds max={max_val} "
                 f"(with tolerance={tolerance:.0%}, threshold={threshold})"
+            )
+        # Lower-bound anomaly: suspiciously low value may indicate broken job
+        min_val = ref.get("min")
+        if min_val is not None and actual < min_val:
+            violations.append(
+                f"[{scenario_id}] anomaly in {metric_name!r}: "
+                f"actual={actual} is below expected minimum={min_val} "
+                f"(possible incomplete/broken result)"
             )
     return violations
 
@@ -123,7 +135,7 @@ def compute_adaptive_baselines(
     metric_names: list[str] | None = None,
     *,
     max_age_days: int | None = 90,
-    min_samples: int = 2,
+    min_samples: int = 3,
     max_samples: int = 10,
 ) -> dict:
     """
@@ -135,9 +147,10 @@ def compute_adaptive_baselines(
     means partial/incomplete metadata in some runs will only disable the
     affected metric, not the whole regression check.
 
-    Threshold formula: ``mean + k(n) * σ`` where k linearly decreases from
-    4.0 (n=2) to 2.0 (n=10), so few samples → wider band, many samples →
-    tighter 2σ check.
+    Threshold formula: ``median + k(n) * 1.4826 * MAD`` where k linearly
+    decreases from 4.0 (n=2) to 2.0 (n=10), so few samples → wider band,
+    many samples → tighter check. Uses median/MAD instead of mean/std for
+    robustness against single spikes or outliers.
 
     :param historical_values: List of dicts (oldest first). Each dict may
         contain a ``_datetime`` key (ISO 8601 string) for time-window filtering;
@@ -153,7 +166,6 @@ def compute_adaptive_baselines(
     :return: Dict of ``{metric_name: {"max": threshold, "tolerance": 0, ...}}``
         ready for use with :func:`check_reference_performance`.
     """
-    import math
     from datetime import datetime, timedelta, timezone
 
     if not historical_values:
@@ -204,18 +216,32 @@ def compute_adaptive_baselines(
             )
             continue
 
-        mean = sum(values) / n
-        variance = sum((v - mean) ** 2 for v in values) / (n - 1)
-        std = math.sqrt(variance)
-        k = _adaptive_k(n)
-        threshold = mean + k * std
+        # Use median + MAD (robust to single spikes/outliers).
+        # MAD scaled by 1.4826 to be consistent with σ for normal data,
+        # so the k schedule (4.0→2.0) stays interpretable as "number of σ".
+        sorted_vals = sorted(values)
+        median = sorted_vals[n // 2]
+        mad = sorted(abs(v - median) for v in values)[n // 2]
+        scaled_mad = 1.4826 * mad
+
+        k = _adaptive_k(min(n, 10))
+        threshold = median + k * scaled_mad
+
+        # Lower-bound: detect suspiciously low values (possible broken results).
+        # Floored at 0 (metrics like cost/duration can't be negative).
+        min_threshold = max(0, median - k * scaled_mad)
+
         baselines[name] = {
             "max": round(threshold, 4),
-            "tolerance": 0,  # threshold already includes the adaptive band
+            "min": round(min_threshold, 4),
+            # tolerance=0 because the adaptive band (median ± k*MAD) is already
+            # baked into max/min. This avoids double-buffering with the
+            # static tolerance mechanism in check_reference_performance.
+            "tolerance": 0,
             "source": "adaptive",
             "n_samples": n,
-            "mean": round(mean, 4),
-            "std": round(std, 4),
+            "median": round(median, 4),
+            "mad": round(scaled_mad, 4),
             "k": round(k, 2),
         }
 
