@@ -1,0 +1,124 @@
+{
+    "id": "cropsar1d",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-03-19T00:00:00Z",
+        "updated": "2026-03-19T00:00:00Z",
+        "type": "service",
+        "title": "CropSAR 1D",
+        "description": "CropSAR 1D is a biophysical parameter retrieval algorithm that estimates the Fraction of Absorbed Photosynthetically Active Radiation (FAPAR) for agricultural crops using Sentinel-1 and Sentinel-2 satellite data. ",
+        "cost_estimate": 45,
+        "cost_unit": "platform credits",
+        "keywords": [
+            "Sentinel-1",
+            "Sentinel-2",
+            "Agriculture",
+            "Crop monitoring",
+            "Biophysical parameters",
+            "FAPAR",
+            "OpenEO",
+            "VITO"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Hazan Daglayan Sevim",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "Terrascope EOplaza",
+                "links": [
+                    {
+                        "href": "https://portal.terrascope.be/",
+                        "title": "Terrascope EOplaza Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "https://terrascope.be/en/forum",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "AGRICULTURE"
+                    },
+                    {
+                        "id": "FIELD CROP PRODUCTS"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "GeoTIFF"
+            }
+        ],
+        "license": "proprietary"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "VITO openEO backend",
+            "href": "https://openeo.vito.be/openeo"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "notebook",
+            "type": "application/x-ipynb+json",
+            "title": "Example Jupyter Notebook to calculate the CropSAR products",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/notebooks/execute-udp.ipynb"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/records/thumbnail.png"
+        }
+    ]
+}
