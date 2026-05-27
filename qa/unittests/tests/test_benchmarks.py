@@ -208,11 +208,11 @@ def test_compute_adaptive_baselines_two_observations():
     assert baselines["costs"]["n_samples"] == 2
     assert baselines["costs"]["k"] == 4.0
     assert baselines["costs"]["tolerance"] == 0  # baked into max
-    # median=12, MAD=1*1.4826=1.4826, threshold = 12 + 4.0*1.4826 = ~17.93
-    assert baselines["costs"]["max"] > 17.0
-    # lower bound: 12 - 4.0*1.4826 = ~6.07
+    # median=11, MAD=1*1.4826=1.4826, threshold = 11 + 4.0*1.4826 = ~16.93
+    assert baselines["costs"]["max"] > 16.0
+    # lower bound: 11 - 4.0*1.4826 = ~5.07
     assert baselines["costs"]["min"] > 5.0
-    assert baselines["costs"]["min"] < 7.0
+    assert baselines["costs"]["min"] < 6.0
 
 
 def test_compute_adaptive_baselines_many_observations():

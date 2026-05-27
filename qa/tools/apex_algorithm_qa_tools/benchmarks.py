@@ -219,10 +219,10 @@ def compute_adaptive_baselines(
         # Use median + MAD (robust to single spikes/outliers).
         # MAD scaled by 1.4826 to be consistent with σ for normal data,
         # so the k schedule (4.0→2.0) stays interpretable as "number of σ".
-        sorted_vals = sorted(values)
-        median = sorted_vals[n // 2]
-        mad = sorted(abs(v - median) for v in values)[n // 2]
-        scaled_mad = 1.4826 * mad
+        from statistics import median as _median
+
+        median = _median(values)
+        scaled_mad = 1.4826 * _median([abs(v - median) for v in values])
 
         k = _adaptive_k(min(n, 10))
         threshold = median + k * scaled_mad
