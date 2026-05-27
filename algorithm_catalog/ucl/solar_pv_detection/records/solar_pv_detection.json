@@ -1,0 +1,120 @@
+{
+  "id": "solar_pv_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-05-21T00:00:00Z",
+    "updated": "2026-05-21T00:00:00Z",
+    "type": "service",
+    "title": "Solar PV detection",
+    "description": "Detection of solar photovoltaic (PV) installations from Sentinel-2 L1C imagery. The service performs a cloud-free SLIC-based temporal mosaic of Sentinel-2 L1C bands (using Sentinel-2 L2A SCL for cloud masking), normalizes the 13-band composite with training-aligned percentile statistics, and then runs ONNX U-Net inference (256x256 chunks) inside an openEO UDF. Returns a binary 'solar_pv' band and a 'solar_pv_probability' band.",
+    "cost_estimate": 0.1,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "Energy Production/Use",
+      "Solar Energy Production/Use",
+      "Sentinel-2"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Rui Song",
+        "organization": "University College London",
+        "links": [
+          {
+            "href": "https://github.com/ray-climate/solar_openEO",
+            "title": "solar_openEO source repository",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "emails": [
+          {
+            "value": "rui.song@ucl.ac.uk"
+          }
+        ],
+        "contactInstructions": "Contact via email",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          },
+          {
+            "id": "SOLAR ENERGY PRODUCTION/USE"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "proprietary"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ray-climate/solar_openEO/c4f1b0c7ba6ab9acf2b11cc999c05e6346b6bf21/openeo_udp/process_graph/solar_pv_detection_udp.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/ray-climate/solar_openEO"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "University College London",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=solar_pv_detection&wizard~processUrl=https://raw.githubusercontent.com/ray-climate/solar_openEO/c4f1b0c7ba6ab9acf2b11cc999c05e6346b6bf21/openeo_udp/process_graph/solar_pv_detection_udp.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/bap_composite/records/thumbnail.png"
+    }
+  ]
+}
