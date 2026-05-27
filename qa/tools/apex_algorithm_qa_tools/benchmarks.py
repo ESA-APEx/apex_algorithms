@@ -134,61 +134,35 @@ def compute_adaptive_baselines(
     historical_values: list[dict],
     metric_names: list[str] | None = None,
     *,
-    max_age_days: int | None = 90,
     min_samples: int = 3,
     max_samples: int = 10,
 ) -> dict:
     """
     Compute adaptive performance baselines from historical runs.
 
-    Each metric is treated independently: we keep all rows in the time window
-    that actually contain that metric (up to ``max_samples`` most recent), and
-    only compute a baseline if at least ``min_samples`` such rows exist. This
-    means partial/incomplete metadata in some runs will only disable the
-    affected metric, not the whole regression check.
+    Each metric is treated independently: we keep all rows that actually
+    contain that metric (up to ``max_samples`` most recent), and only compute
+    a baseline if at least ``min_samples`` such rows exist. This means
+    partial/incomplete metadata in some runs will only disable the affected
+    metric, not the whole regression check.
 
     Threshold formula: ``median + k(n) * 1.4826 * MAD`` where k linearly
     decreases from 4.0 (n=2) to 2.0 (n=10), so few samples → wider band,
     many samples → tighter check. Uses median/MAD instead of mean/std for
     robustness against single spikes or outliers.
 
-    :param historical_values: List of dicts (oldest first). Each dict may
-        contain a ``_datetime`` key (ISO 8601 string) for time-window filtering;
-        rows with no/unparseable timestamp are kept regardless.
+    :param historical_values: List of dicts (oldest first). Each dict contains
+        metric values from a successful historical run.
     :param metric_names: Metrics to compute baselines for. If None, auto-detects
         numeric metrics present anywhere in the history.
-    :param max_age_days: Only consider runs newer than this many days. Set to
-        ``None`` to disable time filtering.
     :param min_samples: Minimum number of historical observations required to
         compute a baseline for a given metric.
     :param max_samples: Cap on the number of most-recent observations used per
-        metric.
+        metric. This is the single recency mechanism — only the last N runs
+        are considered.
     :return: Dict of ``{metric_name: {"max": threshold, "tolerance": 0, ...}}``
         ready for use with :func:`check_reference_performance`.
     """
-    from datetime import datetime, timedelta, timezone
-
-    if not historical_values:
-        return {}
-
-    # Time-window filter (per-row, not per-metric).
-    if max_age_days is not None:
-        cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
-        kept = []
-        for row in historical_values:
-            dt_str = row.get("_datetime")
-            if dt_str:
-                try:
-                    dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
-                    if dt.tzinfo is None:
-                        dt = dt.replace(tzinfo=timezone.utc)
-                    if dt < cutoff:
-                        continue
-                except (ValueError, TypeError):
-                    pass  # unparseable → keep, better than silently dropping
-            kept.append(row)
-        historical_values = kept
-
     if not historical_values:
         return {}
 

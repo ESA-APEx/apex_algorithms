@@ -183,24 +183,6 @@ def test_compute_adaptive_baselines_per_metric_partial_history():
     assert baselines["usage:cpu:cpu-seconds"]["n_samples"] == 3
 
 
-def test_compute_adaptive_baselines_age_window():
-    """Runs older than max_age_days are excluded."""
-    from datetime import datetime, timedelta, timezone
-
-    now = datetime.now(timezone.utc)
-    history = [
-        {"costs": 999.0, "_datetime": (now - timedelta(days=400)).isoformat()},
-        {"costs": 10.0, "_datetime": (now - timedelta(days=10)).isoformat()},
-        {"costs": 11.0, "_datetime": (now - timedelta(days=5)).isoformat()},
-    ]
-    baselines = compute_adaptive_baselines(
-        history, metric_names=["costs"], max_age_days=90, min_samples=2
-    )
-    # The 999.0 outlier is outside the window and must be excluded.
-    assert baselines["costs"]["n_samples"] == 2
-    assert baselines["costs"]["median"] == pytest.approx(11.0)
-
-
 def test_compute_adaptive_baselines_two_observations():
     """With 2 observations and min_samples=2 override, k(2)=4.0 so threshold is very loose."""
     history = [{"costs": 10.0}, {"costs": 12.0}]
