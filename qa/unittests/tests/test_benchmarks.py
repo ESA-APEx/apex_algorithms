@@ -7,8 +7,10 @@ import openeo.testing.results
 import pytest
 from apex_algorithm_qa_tools.benchmarks import (
     analyse_results_comparison_exception,
+    check_reference_performance,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
+    compute_adaptive_baselines,
 )
 
 
@@ -32,6 +34,7 @@ def test_collect_metrics_from_job_metadata(dummy_tracker):
         "usage": {
             "cpu": {"unit": "cpu-seconds", "value": 123},
             "memory": {"unit": "mb-seconds", "value": 345},
+            "duration": {"unit": "seconds", "value": 9},
         },
     }
     collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
@@ -39,7 +42,31 @@ def test_collect_metrics_from_job_metadata(dummy_tracker):
         ("costs", 42),
         ("usage:cpu:cpu-seconds", 123),
         ("usage:memory:mb-seconds", 345),
+        ("usage:duration:seconds", 9),
+        ("metrics:usage_complete", 1),
+        ("metrics:usage_missing", ""),
     ]
+
+
+def test_collect_metrics_from_job_metadata_incomplete_usage(dummy_tracker):
+    """Missing expected usage keys are flagged but do not raise."""
+    metadata = {
+        "id": "job-2",
+        "costs": 42,
+        "usage": {
+            "duration": {"unit": "seconds", "value": 9},
+        },
+    }
+    collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
+    assert ("metrics:usage_complete", 0) in dummy_tracker.data
+    assert ("metrics:usage_missing", "cpu,memory") in dummy_tracker.data
+
+
+def test_collect_metrics_from_job_metadata_no_usage(dummy_tracker):
+    """Empty usage dict still produces a completeness signal."""
+    metadata = {"id": "job-3", "costs": 1}
+    collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
+    assert ("metrics:usage_complete", 0) in dummy_tracker.data
 
 
 def test_collect_metrics_from_results_metadata_proj_shape(dummy_tracker):
@@ -76,6 +103,95 @@ def test_collect_metrics_from_results_metadata_shape_and_bbox(dummy_tracker):
         ("results:proj:bbox:area:utm:km2", 12 * 8),
     ]
 
+def test_compute_adaptive_baselines_single_observation_skipped():
+def test_compute_adaptive_baselines_single_observation_skipped():
+    """With <3 observations, no baseline is produced (need >= min_samples)."""
+    history = [{"costs": 10.0}, {"costs": 11.0}]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert baselines == {}
+
+
+def test_compute_adaptive_baselines_per_metric_partial_history():
+    """A metric only present in some runs still gets a baseline if enough
+    samples remain; metrics with too few samples are skipped silently."""
+    history = [
+        {"costs": 10.0, "usage:cpu:cpu-seconds": 100},
+        {"costs": 11.0},  # cpu missing here
+        {"costs": 10.5, "usage:cpu:cpu-seconds": 105},
+        {"costs": 10.2, "usage:cpu:cpu-seconds": 102},
+    ]
+    baselines = compute_adaptive_baselines(history)
+    # costs has 4 samples → baseline computed
+    assert baselines["costs"]["n_samples"] == 4
+    # cpu has 3 samples (>= min_samples=3) → baseline computed
+    assert baselines["usage:cpu:cpu-seconds"]["n_samples"] == 3
+
+
+def test_compute_adaptive_baselines_two_observations():
+    """With 2 observations and min_samples=2 override, k(2)=4.0 so threshold is very loose."""
+    history = [{"costs": 10.0}, {"costs": 12.0}]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"], min_samples=2)
+    assert baselines["costs"]["n_samples"] == 2
+    assert baselines["costs"]["k"] == 4.0
+    assert baselines["costs"]["tolerance"] == 0  # baked into max
+    # median=11, MAD=1*1.4826=1.4826, threshold = 11 + 4.0*1.4826 = ~16.93
+    assert baselines["costs"]["max"] > 16.0
+    # lower bound: 11 - 4.0*1.4826 = ~5.07
+    assert baselines["costs"]["min"] > 5.0
+    assert baselines["costs"]["min"] < 6.0
+
+
+def test_compute_adaptive_baselines_many_observations():
+    """With many observations, only last 10 are used, k(10)=2.0."""
+    history = [{"costs": 10.0 + i * 0.1} for i in range(20)]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert baselines["costs"]["n_samples"] == 10  # capped at 10
+    assert baselines["costs"]["k"] == 2.0  # exactly 2σ-equivalent at n=10
+
+
+def test_compute_adaptive_baselines_auto_detect_metrics():
+    """Without explicit metric_names, auto-detects numeric fields."""
+    history = [
+        {"costs": 10.0, "usage:cpu:cpu-seconds": 100, "scenario_id": "foo"},
+        {"costs": 12.0, "usage:cpu:cpu-seconds": 110, "scenario_id": "foo"},
+        {"costs": 11.0, "usage:cpu:cpu-seconds": 105, "scenario_id": "foo"},
+    ]
+    baselines = compute_adaptive_baselines(history)
+    assert "costs" in baselines
+    assert "usage:cpu:cpu-seconds" in baselines
+    # scenario_id is a string, not numeric, so should not appear
+    assert "scenario_id" not in baselines
+
+
+def test_compute_adaptive_baselines_empty():
+    """Empty history returns empty baselines."""
+    assert compute_adaptive_baselines([]) == {}
+
+
+def test_adaptive_baselines_integration():
+    """Adaptive baselines work end-to-end with check_reference_performance."""
+    history = [
+        {"costs": 10.0},
+        {"costs": 11.0},
+        {"costs": 10.5},
+    ]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    # A value within the adaptive band should pass
+    violations = check_reference_performance(
+        scenario_id="test",
+        reference_performance=baselines,
+        tracked_metrics={"costs": 12.0},
+    )
+    assert violations == []
+    # A wildly high value should fail
+    violations = check_reference_performance(
+        scenario_id="test",
+        reference_performance=baselines,
+        tracked_metrics={"costs": 50.0},
+    )
+    assert len(violations) == 1
+    assert "regression" in violations[0]
+
 
 def _create_metadata_file(path: Path, *, links: List[dict] | None):
     metadata = {}
@@ -108,3 +224,22 @@ def test_analyse_results_comparison_exception_derived_from(tmp_path):
         )
 
     assert analyse_results_comparison_exception(exc_info.value) == "derived_from-change"
+
+
+def test_adaptive_baselines_lower_bound_integration():
+    """Adaptive baselines produce a min that catches broken results."""
+    history = [
+        {"costs": 10.0},
+        {"costs": 11.0},
+        {"costs": 10.5},
+    ]
+    baselines = compute_adaptive_baselines(history, metric_names=["costs"])
+    assert "min" in baselines["costs"]
+    # A wildly low value should fail
+    violations = check_reference_performance(
+        scenario_id="test",
+        reference_performance=baselines,
+        tracked_metrics={"costs": 0.01},
+    )
+    assert len(violations) == 1
+    assert "anomaly" in violations[0]
