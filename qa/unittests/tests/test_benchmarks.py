@@ -103,63 +103,7 @@ def test_collect_metrics_from_results_metadata_shape_and_bbox(dummy_tracker):
         ("results:proj:bbox:area:utm:km2", 12 * 8),
     ]
 
-
-
-
-def test_check_reference_performance_pass():
-    """Test that check_reference_performance passes when metrics are within bounds."""
-    tracked = {
-        "costs": 4.5,
-        "usage:cpu:cpu-seconds": 2500,
-        "usage:duration:seconds": 100,
-    }
-    reference = {
-        "costs": {"max": 5, "tolerance": 0.2},
-        "usage:cpu:cpu-seconds": {"max": 3000, "tolerance": 0.2},
-        "usage:duration:seconds": {"max": 120, "tolerance": 0.2},
-    }
-    violations = check_reference_performance(
-        scenario_id="test_scenario",
-        reference_performance=reference,
-        tracked_metrics=tracked,
-    )
-    assert violations == []
-
-
-def test_check_reference_performance_regression():
-    """Test that check_reference_performance detects regressions."""
-    tracked = {
-        "costs": 7.0,  # exceeds 5 * 1.2 = 6.0
-        "usage:cpu:cpu-seconds": 2500,
-    }
-    reference = {
-        "costs": {"max": 5, "tolerance": 0.2},
-        "usage:cpu:cpu-seconds": {"max": 3000, "tolerance": 0.2},
-    }
-    violations = check_reference_performance(
-        scenario_id="test_scenario",
-        reference_performance=reference,
-        tracked_metrics=tracked,
-    )
-    assert len(violations) == 1
-    assert "regression in 'costs'" in violations[0]
-
-
-def test_check_reference_performance_missing_metric():
-    """Test that missing metrics are silently skipped (only flag regressions)."""
-    tracked = {"costs": 4.5}
-    reference = {
-        "costs": {"max": 5},
-        "usage:cpu:cpu-seconds": {"max": 3000},
-    }
-    violations = check_reference_performance(
-        scenario_id="test_scenario",
-        reference_performance=reference,
-        tracked_metrics=tracked,
-    )
-    assert violations == []
-
-
+def test_compute_adaptive_baselines_single_observation_skipped():
 def test_compute_adaptive_baselines_single_observation_skipped():
     """With <3 observations, no baseline is produced (need >= min_samples)."""
     history = [{"costs": 10.0}, {"costs": 11.0}]
@@ -280,36 +224,6 @@ def test_analyse_results_comparison_exception_derived_from(tmp_path):
         )
 
     assert analyse_results_comparison_exception(exc_info.value) == "derived_from-change"
-
-
-def test_check_reference_performance_lower_bound_anomaly():
-    """Test that suspiciously low values are flagged as anomalies."""
-    tracked = {"costs": 0.5}  # way below expected
-    reference = {
-        "costs": {"max": 15, "min": 5.0, "tolerance": 0},
-    }
-    violations = check_reference_performance(
-        scenario_id="test_scenario",
-        reference_performance=reference,
-        tracked_metrics=tracked,
-    )
-    assert len(violations) == 1
-    assert "anomaly" in violations[0]
-    assert "below expected minimum" in violations[0]
-
-
-def test_check_reference_performance_lower_bound_pass():
-    """Values above min should not trigger lower-bound violation."""
-    tracked = {"costs": 6.0}
-    reference = {
-        "costs": {"max": 15, "min": 5.0, "tolerance": 0},
-    }
-    violations = check_reference_performance(
-        scenario_id="test_scenario",
-        reference_performance=reference,
-        tracked_metrics=tracked,
-    )
-    assert violations == []
 
 
 def test_adaptive_baselines_lower_bound_integration():

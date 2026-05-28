@@ -192,7 +192,7 @@ def test_run_benchmark(
         else:
             _log.info(
                 f"No performance baselines available for {scenario.id!r} "
-                f"(no historical data yet)"
+                f"(skipping checks until sufficient history is available)"
             )
 
     with track_phase(phase="download-actual"):

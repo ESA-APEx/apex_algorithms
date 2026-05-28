@@ -78,36 +78,31 @@ def check_reference_performance(
     scenario_id: str,
     reference_performance: dict,
     tracked_metrics: dict,
-    *,
-    default_tolerance: float = 0.2,
 ) -> list[str]:
     """
-    Compare tracked metrics against reference performance baselines.
+    Compare tracked metrics against adaptive performance baselines.
 
     Returns a list of warning/violation messages for metrics that exceed
-    ``max * (1 + tolerance)`` (upper-bound regression) or fall below
-    ``min`` (lower-bound anomaly indicating potentially broken/incomplete results).
+    ``max`` (upper-bound regression) or fall below ``min`` (lower-bound
+    anomaly indicating potentially broken/incomplete results).
+
+    The reference_performance dict should be produced by :func:`compute_adaptive_baselines`,
+    which includes the adaptive thresholds with built-in statistical bands (no tolerance needed).
 
     Metric names should match exactly as tracked (e.g. ``usage:cpu:cpu-seconds``,
-    ``usage:memory:mb-seconds``, ``costs``, ``costs:per_km2``).
+    ``usage:memory:mb-seconds``, ``costs``).
     """
     violations = []
     for metric_name, ref in reference_performance.items():
         max_val = ref["max"]
-        # Note: for adaptive baselines, tolerance=0 because the adaptive band
-        # (mean + k*σ) is already baked into `max`. For static/manual baselines
-        # the tolerance provides an explicit percentage buffer.
-        tolerance = ref.get("tolerance", default_tolerance)
         actual = tracked_metrics.get(metric_name)
         if actual is None:
             # Metric not tracked — skip silently, only flag actual regressions
             continue
-        threshold = max_val * (1 + tolerance)
-        if actual > threshold:
+        if actual > max_val:
             violations.append(
                 f"[{scenario_id}] performance regression in {metric_name!r}: "
-                f"actual={actual} exceeds max={max_val} "
-                f"(with tolerance={tolerance:.0%}, threshold={threshold})"
+                f"actual={actual} exceeds max={max_val}"
             )
         # Lower-bound anomaly: suspiciously low value may indicate broken job
         min_val = ref.get("min")
