@@ -1,22 +1,25 @@
 import json
 import logging
 import re
-import signal
 from pathlib import Path
 
-import openeo
 import pytest
-from apex_algorithm_qa_tools.benchmarks import (
-    analyse_results_comparison_exception,
-    collect_metrics_from_job_metadata,
-    collect_metrics_from_results_metadata,
-)
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
     download_reference_data,
     get_benchmark_scenarios,
 )
 from openeo.testing.results import assert_job_results_allclose
+
+from apex_algorithm_qa_tools.benchmarks.runners.factory import (
+    create_benchmark_runner
+)
+
+from apex_algorithm_qa_tools.benchmarks.common import (
+    analyse_results_comparison_exception, 
+    collect_metrics_from_job_metadata, 
+    collect_metrics_from_results_metadata
+)
 
 _log = logging.getLogger(__name__)
 
@@ -31,7 +34,6 @@ _log = logging.getLogger(__name__)
 )
 def test_run_benchmark(
     scenario: BenchmarkScenario,
-    connection_factory,
     tmp_path: Path,
     track_metric,
     track_phase,
@@ -39,31 +41,24 @@ def test_run_benchmark(
     request,
 ):
     track_metric("scenario_id", scenario.id)
+    track_metric("scenario_type", scenario.type)
 
     with track_phase(phase="connect"):
-        # Check if a backend override has been provided via cli options.
-        override_backend = request.config.getoption("--override-backend")
-        backend_filter = request.config.getoption("--backend-filter")
-        if backend_filter and not re.match(backend_filter, scenario.backend):
-            # TODO apply filter during scenario retrieval, but seems to be hard to retrieve cli param
-            pytest.skip(
-                f"skipping scenario {scenario.id} because backend {scenario.backend} does not match filter {backend_filter!r}"
-            )
-        backend = scenario.backend
-        if override_backend:
-            _log.info(f"Overriding backend URL with {override_backend!r}")
-            backend = override_backend
-
-        connection: openeo.Connection = connection_factory(url=backend)
+        runner = create_benchmark_runner(
+            request=request,
+            scenario=scenario,
+        )
 
     report_path = None
     if request.config.getoption("--upload-benchmark-report"):
         report_path = tmp_path / "benchmark_report.json"
         report_path.write_text(json.dumps({
             "scenario_id": scenario.id,
+            "scenario_type": scenario.type,
             "scenario_description": scenario.description,
             "scenario_backend": scenario.backend,
             "scenario_source": str(scenario.source) if scenario.source else None,
+            "process_id": scenario.process_id,
             "reference_data": scenario.reference_data,
             "reference_options": scenario.reference_options,
         }, indent=2))
@@ -87,50 +82,36 @@ def test_run_benchmark(
 
     track_phase.on_exception = _on_phase_exception
 
-    with track_phase(phase="create-job"):
-        # TODO #14 scenario option to use synchronous instead of batch job mode?
-        job = connection.create_job(
-            process_graph=scenario.process_graph,
-            title=f"APEx benchmark {scenario.id}",
-            additional=scenario.job_options,
-        )
-        track_metric("job_id", job.job_id)
+    artifacts = None
 
-        if report_path is not None:
-            report = json.loads(report_path.read_text())
-            report["job_id"] = job.job_id
-            report_path.write_text(json.dumps(report, indent=2))
+    with track_phase(phase="create-job"):
+        runner.create_job()
 
     with track_phase(phase="run-job"):
-        # TODO: monitor timing and progress
-        # TODO: separate "job started" and run phases?
         max_minutes = request.config.getoption("--maximum-job-time-in-minutes")
-        if max_minutes:
-            def _timeout_handler(signum, frame):
-                raise TimeoutError(
-                    f"Batch job {job.job_id} exceeded maximum allowed time of {max_minutes} minutes"
-                )
-
-            old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
-            signal.alarm(max_minutes * 60)
-        try:
-            job.start_and_wait()
-        finally:
-            if max_minutes:
-                signal.alarm(0)
-                signal.signal(signal.SIGALRM, old_handler)
+        runner.run_job(max_minutes=max_minutes)
 
     with track_phase(phase="collect-metadata"):
-        collect_metrics_from_job_metadata(job, track_metric=track_metric)
+        artifacts = runner.collect_artifacts()
+        if artifacts.job_id:
+            track_metric("job_id", artifacts.job_id)
+            if report_path is not None:
+                report = json.loads(report_path.read_text())
+                report["job_id"] = artifacts.job_id
+                report_path.write_text(json.dumps(report, indent=2))
 
-        results = job.get_results()
-        collect_metrics_from_results_metadata(results, track_metric=track_metric)
+        collect_metrics_from_job_metadata(
+            artifacts.job_metadata,
+            track_metric=track_metric,
+        )
+        collect_metrics_from_results_metadata(
+            artifacts.results_metadata,
+            track_metric=track_metric,
+        )
 
     with track_phase(phase="download-actual"):
-        # Download actual results
         actual_dir = tmp_path / "actual"
-        paths = results.download_files(target=actual_dir, include_stac_metadata=True)
-
+        paths = runner.download_actual(actual_dir=actual_dir)
         # Upload assets on failure
         upload_assets_on_fail(*paths)
 

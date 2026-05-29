@@ -1,5 +1,6 @@
 apex-algorithm-qa-tools
 openeo>=0.48.0.dev
+ogc-api-processes-client>=0.6.0
 pytest>=8.2.0
 requests>=2.32.0
 xarray>=2024.6.0
