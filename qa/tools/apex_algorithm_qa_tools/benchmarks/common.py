@@ -1,20 +1,49 @@
-"""
-Reusable utilities to use in benchmarking
-"""
+from __future__ import annotations
 
+import dataclasses
+import logging
+from pathlib import Path
+from typing import Any
 from typing import Union
 
 from apex_algorithm_qa_tools.pytest.pytest_track_metrics import MetricsTracker
-from openeo.rest.job import BatchJob, JobResults
+
+_log = logging.getLogger(__name__)
+
+@dataclasses.dataclass
+class BenchmarkExecutionArtifacts:
+    """Backend-agnostic benchmark execution artifacts."""
+
+    job_id: str | None
+    job_metadata: dict | Any
+    results_metadata: dict | Any
+    paths: list[Path]
+
+
+def ensure_safe_relative_target(base_dir: Path, relative_path: str) -> Path:
+    """Resolve a relative path under base_dir and reject path traversal."""
+
+    root = base_dir.resolve()
+    target = (base_dir / relative_path).resolve()
+    if not target.is_relative_to(root):
+        raise ValueError(f"Unsafe result path: {relative_path!r}")
+    return target
+
+
+def to_jsonable(value: Any) -> Any:
+    """Convert pydantic/generated client values to plain JSON-serializable data."""
+
+    if hasattr(value, "actual_instance"):
+        value = value.actual_instance
+    if hasattr(value, "to_dict"):
+        return value.to_dict()
+    return value
 
 
 def collect_metrics_from_job_metadata(
-    job_metadata: Union[BatchJob, dict],
+    job_metadata: dict,
     track_metric: MetricsTracker,
 ):
-    if isinstance(job_metadata, BatchJob):
-        job_metadata = job_metadata.describe()
-
     track_metric("costs", job_metadata.get("costs"))
     for usage_metric, usage_data in job_metadata.get("usage", {}).items():
         if "unit" in usage_data and "value" in usage_data:
@@ -24,13 +53,9 @@ def collect_metrics_from_job_metadata(
 
 
 def collect_metrics_from_results_metadata(
-    results_metadata: Union[BatchJob, JobResults, dict], track_metric: MetricsTracker
+    results_metadata: dict, 
+    track_metric: MetricsTracker
 ):
-    if isinstance(results_metadata, BatchJob):
-        results_metadata = results_metadata.get_results().get_metadata()
-    elif isinstance(results_metadata, JobResults):
-        results_metadata = results_metadata.get_metadata()
-
     proj_shape_area_mpx = []
     proj_shape_area_km2 = []
     for asset_name, asset_data in results_metadata.get("assets", {}).items():

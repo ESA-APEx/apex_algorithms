@@ -5,7 +5,7 @@ from typing import List
 import openeo.rest.job
 import openeo.testing.results
 import pytest
-from apex_algorithm_qa_tools.benchmarks import (
+from apex_algorithm_qa_tools.benchmarks.common import (
     analyse_results_comparison_exception,
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,

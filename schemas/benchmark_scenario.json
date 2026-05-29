@@ -1,48 +1,76 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Benchmark Scenario",
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "description": "The unique identifier for the benchmark scenario."
-    },
-    "type": {
-      "type": "string",
-      "description": "The type of the benchmark scenario.",
-      "enum": [
-        "openeo"
+  "$defs": {
+    "common": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the benchmark scenario."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the benchmark scenario.",
+          "enum": [
+            "openeo",
+            "ogcapi-processes"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the benchmark scenario."
+        },
+        "reference_data": {
+          "type": "object",
+          "description": "Reference data of the benchmark, to compare actual results with."
+        },
+        "reference_options": {
+          "type": "object",
+          "description": "Options to fine-tune how actual and reference results should be compared."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "backend"
       ]
     },
-    "description": {
-      "type": "string",
-      "description": "A description of the benchmark scenario."
-    },
-    "backend": {
-      "type": "string",
-      "description": "The openEO backend URL to connect to."
-    },
-    "process_graph": {
+    "openeo": {
       "type": "object",
-      "description": "The openEO process graph to execute."
-    },
-    "job_options": {
-      "type": "object",
-      "description": "Batch job options to use when creating an openEO batch job."
-    },
-    "reference_data": {
-      "type": "object",
-      "description": "Reference data of the benchmark, to compare actual results with."
-    },
-    "reference_options": {
-      "type": "object",
-      "description": "Options to fine-tune how actual and reference results should be compared."
+      "properties": {
+        "type": {
+          "const": "openeo"
+        },
+        "backend": {
+          "type": "string",
+          "description": "The backend URL to connect to."
+        },
+        "process_graph": {
+          "type": "object",
+          "description": "The openEO process graph to execute."
+        },
+        "job_options": {
+          "type": "object",
+          "description": "Batch job options to use when creating an openEO batch job."
+        }
+      },
+      "required": [
+        "process_graph"
+      ]
     }
   },
-  "required": [
-    "id",
-    "type",
-    "backend",
-    "process_graph"
-  ]
+  "oneOf": [
+    {
+      "allOf": [
+        {
+          "$ref": "#/$defs/common"
+        },
+        {
+          "$ref": "#/$defs/openeo"
+        }
+      ]
+    }
+  ],
+  "unevaluatedProperties": false
 }
