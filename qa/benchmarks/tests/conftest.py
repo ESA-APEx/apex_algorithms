@@ -86,9 +86,7 @@ def pytest_collection_modifyitems(session, config, items):
     # based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
     subset_size = config.getoption("--random-subset")
     if subset_size >= 0:
-        _log.info(
-            f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
-        )
+        _log.info(f"Selecting random subset of {subset_size} from {len(items)} benchmarks.")
         if subset_size < len(items):
             selected = random.sample(items, k=subset_size)
             selected_ids = set(item.nodeid for item in selected)
