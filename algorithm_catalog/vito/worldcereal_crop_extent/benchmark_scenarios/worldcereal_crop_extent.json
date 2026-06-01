@@ -7,20 +7,30 @@
     "process_graph": {
       "worldcerealcropextent1": {
         "process_id": "worldcereal_crop_extent",
-        "namespace": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/heads/main/scripts/udp/worldcereal_crop_extent.json",
+        "namespace": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v3.0.0/scripts/udp/worldcereal_crop_extent.json",
         "arguments": {
           "spatial_extent": {
-            "west": 622694.5968575787,
-            "east": 623079.000934101,
-            "south": 5672232.857114074,
-            "north": 5672519.995940826,
+            "west": 664200,
+            "east": 664400,
+            "south": 5611334,
+            "north": 5611534,
             "crs": "EPSG:32631",
             "srs": "EPSG:32631"
           },
           "temporal_extent": [
-            "2018-05-01",
-            "2019-04-30"
-          ]
+            "2020-11-01",
+            "2021-10-31"
+          ],
+          "orbit_state": "DESCENDING",
+          "season_ids": [
+            "tc-s1"
+          ],
+          "season_windows": {
+            "tc-s1": [
+              "2020-12-01",
+              "2021-07-31"
+            ]
+          }
         },
         "result": true
       }
@@ -29,7 +39,6 @@
       "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/512!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_extent_!actual/job-results.json",
       "worldcereal_crop_extent_postprocessed.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22380727532!tests_test_benchmarks.py__test_run_benchmark_worldcereal_crop_extent_!actual/worldcereal_crop_extent_postprocessed.tif"
     },
-
     "reference_options": {
       "atol": 10
     }
