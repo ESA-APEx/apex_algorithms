@@ -107,9 +107,7 @@ def _get_client_credentials_env_var(url: str) -> str:
         "openeo.dataspace.copernicus.eu",
         "openeofed.dataspace.copernicus.eu",
     }:
-        # TODO: env var could just be OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE
-        #       (which should work on both classic CDSE and CDSEfed)
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
+        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"
     elif hostname == "openeo-staging.dataspace.copernicus.eu":
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
