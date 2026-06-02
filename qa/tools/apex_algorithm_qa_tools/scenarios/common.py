@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import dataclasses
 import glob
-import json
 import logging
 import re
 from pathlib import Path
 from typing import List
 
-import jsonschema
 import requests
 from apex_algorithm_qa_tools.common import (
     get_project_root,
@@ -16,9 +13,11 @@ from apex_algorithm_qa_tools.common import (
 from openeo.util import TimingLogger
 
 from apex_algorithm_qa_tools.scenarios.openeo import lint_openeo_fields
+from apex_algorithm_qa_tools.scenarios.ogc import OGCAPIBenchmarkScenario
 from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
 from apex_algorithm_qa_tools.scenarios.factory import read_scenarios_file
 
+_log = logging.getLogger(__name__)
 
 
 def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
@@ -51,8 +50,18 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
 
     if scenario.type == "openeo":
         lint_openeo_fields(scenario=scenario)
+    elif scenario.type in {"ogc_api_process", "ogcapi-processes"}:
+        lint_ogc_fields(scenario=scenario)
     else:
         raise ValueError(f"Unsupported benchmark scenario type: {scenario.type!r}")
+
+
+def lint_ogc_fields(scenario: OGCAPIBenchmarkScenario):
+    assert scenario.backend.startswith(("http://", "https://")), (
+        f"Unsupported OGC endpoint: {scenario.backend!r}"
+    )
+    assert scenario.process_id
+    assert isinstance(scenario.parameters, dict)
 
 
 def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path) -> Path:

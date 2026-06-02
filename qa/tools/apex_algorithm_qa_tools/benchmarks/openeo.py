@@ -87,7 +87,6 @@ def create_openeo_connection(*, backend: str, origin: str | None = None) -> open
     return connection
 
 
-
 def create_openeo_job(*, connection, scenario):
     return connection.create_job(
         process_graph=scenario.process_graph,
@@ -100,11 +99,7 @@ def run_openeo_job(*, job, max_minutes: int | None):
     if max_minutes:
 
         def _timeout_handler(signum, frame):
-            raise TimeoutError(
-                "Batch job "
-                f"{job.job_id} exceeded maximum allowed time "
-                f"of {max_minutes} minutes"
-            )
+            raise TimeoutError(f"Batch job {job.job_id} exceeded maximum allowed time of {max_minutes} minutes")
 
         old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
         signal.alarm(max_minutes * 60)

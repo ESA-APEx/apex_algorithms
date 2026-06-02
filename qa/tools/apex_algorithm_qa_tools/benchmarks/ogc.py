@@ -1,165 +1,290 @@
-# from __future__ import annotations
+from __future__ import annotations
 
-# import importlib
-# import json
-# import time
-# from pathlib import Path
-# from typing import Any
+import dataclasses
+import json
+import logging
+import os
+import re
+import time
+import urllib
+from pathlib import Path
+from urllib.parse import urlparse
 
-# import requests
-# from apex_algorithm_qa_tools.benchmark_execution_shared import (
-#     ensure_safe_relative_target,
-#     to_jsonable,
-# )
+from ogc_api_processes_client.api.result_api import ResultApi
+from ogc_api_processes_client.api_client_wrapper import ApiClientWrapper
+from ogc_api_processes_client.configuration import Configuration
+from ogc_api_processes_client.models import StatusCode
+from ogc_api_processes_client.models.link import Link as OgcLink
+from ogc_api_processes_client.models.input_value_no_object import InputValueNoObject
 
+from stac_pydantic.collection import Collection
 
-# def load_ogc_api_components() -> dict[str, Any]:
-#     try:
-#         package = importlib.import_module("ogc_api_processes_client")
-#         execute_api = importlib.import_module(
-#             "ogc_api_processes_client.api.execute_api"
-#         )
-#         status_api = importlib.import_module(
-#             "ogc_api_processes_client.api.status_api"
-#         )
-#         result_api = importlib.import_module(
-#             "ogc_api_processes_client.api.result_api"
-#         )
-#         execute_model = importlib.import_module(
-#             "ogc_api_processes_client.models.execute"
-#         )
-#     except ModuleNotFoundError as e:
-#         raise RuntimeError(
-#             "OGC API processes benchmark requires dependency "
-#             "'ogc-api-processes-client'"
-#         ) from e
+from apex_algorithm_qa_tools.benchmarks.auth import get_token_with_client_credentials, get_token_with_device_flow
+from apex_algorithm_qa_tools.benchmarks.common import (
+    BenchmarkJobMetadata,
+    download_file,
+    ensure_safe_relative_target,
+    to_jsonable,
+)
+from apex_algorithm_qa_tools.benchmarks.runners.base import BenchmarkResults
+from apex_algorithm_qa_tools.scenarios.ogc import OGCAPIBenchmarkScenario, OGCAPIResults
 
-#     return {
-#         "ApiClient": package.ApiClient,
-#         "Configuration": package.Configuration,
-#         "ExecuteApi": execute_api.ExecuteApi,
-#         "StatusApi": status_api.StatusApi,
-#         "ResultApi": result_api.ResultApi,
-#         "Execute": execute_model.Execute,
-#     }
+from httpx import get as http_get, Response as HTTPXResponse
 
 
-# def create_ogc_api_client(
-#     *,
-#     backend: str,
-#     request_headers: dict | None,
-# ):
-#     components = load_ogc_api_components()
-#     configuration = components["Configuration"](host=backend)
-#     api_client = components["ApiClient"](configuration=configuration)
+_log = logging.getLogger(__name__)
 
-#     if request_headers:
-#         api_client.default_headers.update(request_headers)
+_TERMINAL_JOB_STATUSES = {StatusCode.SUCCESSFUL, StatusCode.FAILED, StatusCode.DISMISSED}
 
-#     return components, api_client
+STAC_COLLECTION_SCHEMA = "https://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
+
+GEOJSON_FEATURECOLLECTION_SCHEMA = (
+    "https://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/featureCollectionGeoJSON.yaml"
+)
 
 
-# def execute_ogc_process(*, scenario, components: dict[str, Any], api_client):
-#     execute_api = components["ExecuteApi"](api_client)
-#     execute_request = {"inputs": scenario.inputs or {}}
-#     if scenario.outputs is not None:
-#         execute_request["outputs"] = scenario.outputs
-#     if scenario.response is not None:
-#         execute_request["response"] = scenario.response
+def get_client_credentials_env_var(url: str) -> str:
+    """
+    Get client credentials env var name for a given backend URL.
+    """
+    if not re.match(r"https?://", url):
+        url = f"https://{url}"
+    parsed = urllib.parse.urlparse(url)
+    hostname = parsed.hostname
 
-#     execute_response = execute_api.execute_with_http_info(
-#         process_id=scenario.process_id,
-#         execute=components["Execute"].from_dict(execute_request),
-#     )
-
-#     if execute_response.status_code == 201:
-#         status_info = execute_response.data
-#         return status_info.job_id, status_info, None
-#     if execute_response.status_code == 200:
-#         return None, None, execute_response.data
-
-#     raise RuntimeError(
-#         "Unexpected HTTP status from OGC execute call: "
-#         f"{execute_response.status_code}"
-#     )
+    if hostname in {
+        "processing.geohazards-tep.eu",
+    }:
+        return "OGC_AUTH_CLIENT_CREDENTIALS_GEOHAZARDS_TEP"
+    else:
+        raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
 
 
-# def wait_for_ogc_job(*, components: dict[str, Any], api_client, job_id: str, max_minutes: int | None):
-#     status_api = components["StatusApi"](api_client)
-#     deadline = None
-#     if max_minutes:
-#         deadline = time.monotonic() + max_minutes * 60
+def get_auth_token(endpoint: str, keycloak_url: str, keycloak_realm: str) -> str:
+    auth_env_var = get_client_credentials_env_var(endpoint)
+    if auth_env_var in os.environ:
+        client_credentials = os.environ[auth_env_var]
+        client_id, sep, client_secret = client_credentials.partition("/")
+        if not sep:
+            raise ValueError(
+                f"Invalid client credentials format in env var {auth_env_var!r}. "
+                "Expected 'client_id/client_secret' or 'client_id/'."
+            )
 
-#     while True:
-#         status_info = status_api.get_status(job_id=job_id)
-#         status = str(status_info.status)
-
-#         if status == "successful":
-#             return status_info
-#         if status in {"failed", "dismissed"}:
-#             raise RuntimeError(
-#                 "OGC API process job "
-#                 f"{job_id} ended in status {status!r}: "
-#                 f"{status_info.message!r}"
-#             )
-#         if deadline is not None and time.monotonic() >= deadline:
-#             raise TimeoutError(
-#                 "OGC API process job "
-#                 f"{job_id} exceeded maximum allowed time "
-#                 f"of {max_minutes} minutes"
-#             )
-
-#         time.sleep(5)
-
-
-# def get_ogc_results(*, components: dict[str, Any], api_client, job_id: str):
-#     result_api = components["ResultApi"](api_client)
-#     return result_api.get_result(job_id=job_id)
-
-
-# def serialize_ogc_results(results: dict[str, Any]) -> dict[str, Any]:
-#     return {name: to_jsonable(item) for name, item in results.items()}
-
-
-# def _extract_result_href(item: Any) -> str | None:
-#     value = to_jsonable(item)
-#     if not isinstance(value, dict):
-#         return None
-#     if isinstance(value.get("href"), str):
-#         return value["href"]
-#     nested = value.get("value")
-#     if isinstance(nested, dict) and isinstance(nested.get("href"), str):
-#         return nested["href"]
-#     return None
+        if client_id and client_secret:
+            return get_token_with_client_credentials(
+                keycloak_url=keycloak_url,
+                realm=keycloak_realm,
+                client_id=client_id,
+                client_secret=client_secret,
+            )
+        elif client_id and not client_secret:
+            return get_token_with_device_flow(
+                keycloak_url=keycloak_url,
+                realm=keycloak_realm,
+                client_id=client_id,
+            )
+        else:
+            raise ValueError(
+                f"Invalid client credentials format in env var {auth_env_var!r}. "
+                f"Expected 'client_id/client_secret' or 'client_id/'. Got: {client_credentials!r}"
+            )
+    else:
+        raise ValueError(
+            f"No authentication credentials found for endpoint {endpoint!r}. "
+            "Please set the environment variable "
+            f"{auth_env_var!r} with value 'client_id/client_secret' or 'client_id/'."
+        )
 
 
-# def download_ogc_results(
-#     *,
-#     results: dict[str, Any],
-#     actual_dir: Path,
-#     request_headers: dict | None,
-# ):
-#     actual_dir.mkdir(parents=True, exist_ok=True)
-#     serialized_results = serialize_ogc_results(results)
+def create_ogc_api_client(*, endpoint: str, namespace: str, user_token: str) -> ApiClientWrapper:
+    config = Configuration(host=f"{endpoint}/{namespace}" if namespace else endpoint)
 
-#     paths = []
-#     metadata_path = actual_dir / "job-results.json"
-#     metadata_path.write_text(json.dumps(serialized_results, indent=2))
-#     paths.append(metadata_path)
+    additional_args = {}
+    additional_args["header_name"] = "Authorization"
+    additional_args["header_value"] = f"Bearer {user_token}"
 
-#     for name, item in results.items():
-#         href = _extract_result_href(item)
-#         if not href:
-#             continue
+    return ApiClientWrapper(configuration=config, **additional_args)
 
-#         target = ensure_safe_relative_target(actual_dir, name)
-#         target.parent.mkdir(parents=True, exist_ok=True)
 
-#         response = requests.get(href, stream=True, headers=request_headers)
-#         response.raise_for_status()
-#         with target.open("wb") as f:
-#             for chunk in response.iter_content(chunk_size=128 * 1024):
-#                 f.write(chunk)
-#         paths.append(target)
+def create_ogc_job(*, scenario) -> dict:
+    return {"inputs": {key: value for key, value in scenario.parameters.items()}}
 
-#     return paths
+
+def _get_job_headers(user_token: str) -> dict:
+    headers = {
+        "accept": "*/*",
+        # "Prefer": "respond-async;return=representation",
+        "Content-Type": "application/json",
+    }
+
+    headers["Authorization"] = f"Bearer {user_token}"
+    return headers
+
+
+def _split_job_id(job_id: str) -> tuple[str, ...]:
+    parts = job_id.split(":", 1)
+    if len(parts) != 2:
+        return ("", job_id)
+    return tuple(parts)
+
+
+def run_ogc_job(
+    *,
+    api_client: ApiClientWrapper,
+    scenario: OGCAPIBenchmarkScenario,
+    user_token: str,
+    job: dict,
+    max_minutes: int | None,
+) -> str:
+    headers = _get_job_headers(user_token=user_token)
+    deadline = time.monotonic() + max_minutes * 60 if max_minutes else None
+
+    # Execute the job
+    content = api_client.execute_simple(process_id=scenario.application, execute=job, _headers=headers)
+    namespace, job_id = _split_job_id(job_id=content.job_id)
+
+    # Check the status
+    status = StatusCode.ACCEPTED
+    while status not in _TERMINAL_JOB_STATUSES:
+        if deadline is not None and time.monotonic() > deadline:
+            raise TimeoutError(f"Batch job {job_id} exceeded maximum allowed time of {max_minutes} minutes")
+        time.sleep(5)
+        status = api_client.get_status(job_id=job_id).status
+        _log.info(f"Job {job_id} is still running with status {status}...")
+    return job_id
+
+
+def collect_ogc_job_metadata(*, api_client: ApiClientWrapper, job_id: str) -> BenchmarkJobMetadata:
+    # status_api = StatusApi(api_client.api_client)
+    # status = status_api.get_status(job_id=job_id)
+    # Currently the status API is not returning any relevant metrics
+    return BenchmarkJobMetadata(cost=None, usage=[])
+
+
+def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token: str) -> BenchmarkResults:
+    result_api = ResultApi(api_client.api_client)
+    results = result_api.get_result(job_id=job_id)
+    assets = {}
+    for result_name, result_value in results.items():
+        if not result_value.actual_instance:
+            _log.debug(f"Ignoring result '{result_name}' with None value")
+            continue
+
+        if isinstance(result_value.actual_instance, InputValueNoObject) or isinstance(
+            result_value.actual_instance, OgcLink
+        ):
+            _log.debug(f"Ignoring result '{result_name}' of unmanaged type {type(result_value)}")
+            continue
+
+        qualified_value = result_value.actual_instance
+        if qualified_value.var_schema and qualified_value.var_schema.actual_instance:
+            schema_reference = qualified_value.var_schema.actual_instance
+            _log.debug(
+                f"Processing result\n* Name: '{result_name}'\n"
+                f"* media type: {qualified_value.media_type}\n"
+                f"* Python type: {type(qualified_value.value)}\n"
+                "* schema {qualified_value.var_schema}..."
+            )
+
+            if not isinstance(schema_reference, str):
+                _log.warning(
+                    f"Processing result name: '{result_name}' can not be processed, "
+                    f"schema of type {type(schema_reference)} not recognized"
+                )
+                continue
+
+            if STAC_COLLECTION_SCHEMA == schema_reference:
+                _log.info(f"STAC Collection found in results: '{result_name}'")
+                collection = Collection.model_validate(qualified_value.value.actual_instance)
+                _log.debug(f"Extracted collection '{collection.id}' with assets: {list(collection.assets.keys())}")
+                assets.update(collection.assets.to_dict())
+            elif GEOJSON_FEATURECOLLECTION_SCHEMA == schema_reference:
+                _log.info(f"GeoJSON FeatureCollection found in results: '{result_name}'")
+                feature_collection = qualified_value.value.oneof_schema_2_validator or {}
+                for feature in feature_collection.get("features", []):
+                    for link in feature.get("links", []):
+                        if "collection" == link.get("rel") and link.get("href"):
+                            collection_link: str = link.get("href")
+                            _log.debug(
+                                f"GeoJSON FeatureCollection results: '{result_name}' "
+                                "points to a valid collection URL: {collection_link}"
+                            )
+
+                            response: HTTPXResponse = http_get(
+                                collection_link,
+                                follow_redirects=True,
+                                headers={"Authorization": f"Bearer {user_token}"},
+                            )
+                            response.raise_for_status()
+                            collection = Collection.model_validate(response.json())
+                            _log.debug(
+                                f"Extracted collection '{collection.id}' with assets: {list(collection.assets.keys())}"
+                            )
+                            assets.update(collection.to_dict().get("assets", {}))
+            else:
+                _log.warning(
+                    f"Processing result: '{result_name}' can not be processed, "
+                    f"schema {schema_reference} not yet managed"
+                )
+    _log.debug(f"Collected {len(assets)} assets from OGC API results: {list(assets.keys())}")
+    return BenchmarkResults(assets=assets)
+
+
+def download_ogc_results(
+    *,
+    results_metadata: BenchmarkResults,
+    actual_dir: Path,
+    user_token: str | None = None,
+    details: OGCAPIResults | None = None,
+) -> list[Path]:
+    actual_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+
+    results_path = actual_dir / "job-results.json"
+    results_path.write_text(json.dumps(dataclasses.asdict(results_metadata), indent=2), encoding="utf8")
+    paths.append(results_path)
+
+    for output_name, output_data in sorted(results_metadata.assets.items()):
+        output_data = to_jsonable(output_data)
+        if isinstance(output_data, dict) and output_data.get("href"):
+            ref = output_data["href"]
+            file_name = _resolve_output_filename(output_name=output_name, href=ref)
+            target = ensure_safe_relative_target(actual_dir, file_name)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            download_file(
+                _convert_s3_href_to_https(ref, s3_endpoint=details.s3_endpoint if details else None),
+                target,
+                user_token=user_token,
+            )
+            paths.append(target)
+        else:
+            target = ensure_safe_relative_target(actual_dir, f"{output_name}.json")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(output_data, indent=2), encoding="utf8")
+            paths.append(target)
+
+    return paths
+
+
+def _convert_s3_href_to_https(href: str, s3_endpoint: str | None) -> str:
+    parsed = urlparse(href)
+    if not s3_endpoint:
+        raise ValueError(f"Cannot convert s3 href to https without s3_endpoint: {href=}, {s3_endpoint=}")
+    if parsed.scheme != "s3":
+        return href
+    bucket = parsed.netloc
+    key = parsed.path.lstrip("/")
+    if not bucket or not key:
+        raise ValueError(f"Invalid s3 href: {href!r}")
+    url = f"https://{bucket}.{s3_endpoint}/{key}"
+    _log.debug(f"Converted s3 href to https: {href} -> {url}")
+    return url
+
+
+def _resolve_output_filename(*, output_name: str, href: str) -> str:
+    parsed = urlparse(href)
+    name = Path(parsed.path).name
+    if name:
+        return name
+    return f"{output_name}.bin"

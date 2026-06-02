@@ -25,4 +25,5 @@ dependencies = [
     # TODO: make some of these dependencies optional
     "boto3>=1.36.5",
     "pyarrow>=17.0.0",
+    "stac-pydantic"
 ]

@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import dataclasses
-import logging
 from pathlib import Path
 from typing import Any
 from typing import Union
+from urllib.parse import urlparse
 
 from apex_algorithm_qa_tools.pytest.pytest_track_metrics import MetricsTracker
+from apex_algorithm_qa_tools.benchmarks.runners.base import BenchmarkJobMetadata, BenchmarkResults
+import requests
 
-_log = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class BenchmarkExecutionArtifacts:
@@ -41,24 +42,19 @@ def to_jsonable(value: Any) -> Any:
 
 
 def collect_metrics_from_job_metadata(
-    job_metadata: dict,
+    job_metadata: BenchmarkJobMetadata,
     track_metric: MetricsTracker,
 ):
-    track_metric("costs", job_metadata.get("costs"))
-    for usage_metric, usage_data in job_metadata.get("usage", {}).items():
-        if "unit" in usage_data and "value" in usage_data:
-            track_metric(
-                f"usage:{usage_metric}:{usage_data['unit']}", usage_data["value"]
-            )
+    track_metric("costs", job_metadata.cost)
+    for usage_metric in job_metadata.usage or []:
+        if usage_metric.unit and usage_metric.value is not None:
+            track_metric(f"usage:{usage_metric.name}:{usage_metric.unit}", usage_metric.value)
 
 
-def collect_metrics_from_results_metadata(
-    results_metadata: dict, 
-    track_metric: MetricsTracker
-):
+def collect_metrics_from_results_metadata(results_metadata: BenchmarkResults, track_metric: MetricsTracker):
     proj_shape_area_mpx = []
     proj_shape_area_km2 = []
-    for asset_name, asset_data in results_metadata.get("assets", {}).items():
+    for asset_name, asset_data in results_metadata.assets.items():
         if "proj:shape" in asset_data:
             y, x = asset_data["proj:shape"][:2]
             proj_shape_area_mpx.append(y * x / 1e6)
@@ -81,3 +77,18 @@ def analyse_results_comparison_exception(exc: Exception) -> Union[str, None]:
     if isinstance(exc, AssertionError):
         if "Differing 'derived_from' links" in str(exc):
             return "derived_from-change"
+
+
+def download_file(href: str, target: Path, user_token: str | None = None):
+    parsed = urlparse(href)
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    if parsed.scheme in {"http", "https"}:
+        headers = {"Authorization": f"Bearer {user_token}"} if user_token else None
+        with requests.get(href, headers=headers, stream=True) as response:
+            response.raise_for_status()
+            with target.open("wb") as fh:
+                for chunk in response.iter_content(chunk_size=1024 * 64):
+                    fh.write(chunk)
+    else:
+        raise ValueError(f"Unsupported URL scheme in href: {href!r}")

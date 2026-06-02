@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
 from apex_algorithm_qa_tools.benchmarks.openeo import (
@@ -16,13 +15,11 @@ from apex_algorithm_qa_tools.benchmarks.runners.base import (
     BenchmarkRunnerArtifacts,
 )
 
-from apex_algorithm_qa_tools.scenarios import BenchmarkScenario
-
-_log = logging.getLogger(__name__)
+from apex_algorithm_qa_tools.scenarios.openeo import openEOBenchmarkScenario
 
 
 class OpenEOBenchmarkRunner(BenchmarkRunner):
-    def __init__(self, *, scenario: BenchmarkScenario, request):
+    def __init__(self, *, scenario: openEOBenchmarkScenario, request):
         super().__init__(scenario=scenario, request=request)
         self.backend = get_openeo_backend(scenario, request)
         self._connection = create_openeo_connection(

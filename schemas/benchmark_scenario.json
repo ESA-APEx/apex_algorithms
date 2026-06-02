@@ -14,7 +14,8 @@
           "description": "The type of the benchmark scenario.",
           "enum": [
             "openeo",
-            "ogcapi-processes"
+            "ogcapi-processes",
+            "ogc_api_process"
           ]
         },
         "description": {
@@ -32,8 +33,7 @@
       },
       "required": [
         "id",
-        "type",
-        "backend"
+        "type"
       ]
     },
     "openeo": {
@@ -56,7 +56,80 @@
         }
       },
       "required": [
+        "backend",
         "process_graph"
+      ]
+    },
+    "ogcapi_process": {
+      "type": "object",
+      "properties": {
+        "type": {
+            "const": "ogc_api_process"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "The OGC API Processes endpoint."
+        },
+        "process_id": {
+          "type": "string",
+          "description": "The process identifier used at execution time."
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Optional namespace for process categorization."
+        },
+        "application": {
+          "type": "string",
+          "description": "Optional process alias used by some backends."
+        },
+        "auth": {
+          "type": "object",
+          "description": "Authentication details for accessing the OGC API endpoint.",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL of the authentication server."
+            },
+            "realm": {
+              "type": "string",
+              "description": "The authentication realm."
+            }
+          },
+          "required": [
+            "url",
+            "realm"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Input parameters passed to the OGC API process."
+        },
+        "results": {
+          "type": "object",
+          "description": "Details for accessing the results of the OGC API process.",
+          "properties": {
+            "s3_endpoint": {
+              "type": "string",
+              "description": "The S3 endpoint where results are stored."
+            }
+          }
+        }
+      },
+      "required": [
+        "endpoint",
+        "parameters"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "process_id"
+          ]
+        },
+        {
+          "required": [
+            "application"
+          ]
+        }
       ]
     }
   },
@@ -68,6 +141,16 @@
         },
         {
           "$ref": "#/$defs/openeo"
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {
+          "$ref": "#/$defs/common"
+        },
+        {
+          "$ref": "#/$defs/ogcapi_process"
         }
       ]
     }
