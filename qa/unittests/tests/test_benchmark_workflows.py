@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from apex_algorithm_qa_tools.scenarios import get_project_root
 
 
