@@ -41,7 +41,7 @@ jobs:
         env:
           BENCHMARK_SCENARIO: ${{ inputs.scenario }}
           OPENEO_AUTH_METHOD: client_credentials
-          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
           OPENEO_AUTH_CLIENT_CREDENTIALS_EGI: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_EGI }}
           OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE }}
           APEX_ALGORITHMS_S3_ACCESS_KEY_ID: ${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}
@@ -91,4 +91,3 @@ jobs:
         with:
           name: report
           path: qa/benchmarks/report/
-
