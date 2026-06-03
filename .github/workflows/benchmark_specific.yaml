@@ -1,13 +1,18 @@
-name: "Benchmarks"
+name: "Benchmark (specific)"
 
 on:
   workflow_dispatch:
-  schedule:
-      - cron: "37 */12 * * *"
+    inputs:
+      scenario:
+        description: "Scenario name filter (passed to pytest -k). For example: 'biopar'"
+        required: true
+        type: string
 
 jobs:
   benchmarks:
     uses: ./.github/workflows/_run_benchmarks.yaml
+    with:
+      scenario: ${{ inputs.scenario }}
     secrets:
       OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
       OPENEO_AUTH_CLIENT_CREDENTIALS_EGI: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_EGI }}
