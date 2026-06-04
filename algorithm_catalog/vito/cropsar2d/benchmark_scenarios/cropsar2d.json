@@ -1,0 +1,68 @@
+[
+    {
+        "id": "cropsar2d",
+        "type": "openeo",
+        "description": "CropSAR 1D is a biophysical parameter retrieval algorithm that estimates the Fraction of Absorbed Photosynthetically Active Radiation (FAPAR) for agricultural crops using Sentinel-1 and Sentinel-2 satellite data.",
+        "backend": "openeo.vito.be",
+        "process_graph": {
+            "cropsar2d1": {
+                "arguments": {
+                    "end_date": "2024-12-31",
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
+                                ],
+                                [
+                                    5.178744792938232,
+                                    51.24672597710759
+                                ],
+                                [
+                                    5.185289382934569,
+                                    51.24504696935156
+                                ],
+                                [
+                                    5.18676996231079,
+                                    51.245342479161295
+                                ],
+                                [
+                                    5.187370777130127,
+                                    51.24918393390799
+                                ],
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "output": "FAPAR",
+                    "start_date": "2024-01-01"
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar2d/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json",
+                "process_id": "cropsar2d"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "cropsar2d1"
+                    },
+                    "format": "GTiff",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "job_options": {
+            "udf-dependency-archives": [
+                "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps",
+                "https://artifactory.vgt.vito.be/artifactory/auxdata-public/cropsar_px/cropsar2d_onnx.zip#cropsar2d_onnx_models"
+            ]
+        },
+        "reference_data": {}
+    }
+]
