@@ -6,7 +6,7 @@
     "process_graph": {
       "waterlines1": {
         "process_id": "waterlines",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/43d0b17c4ae5bed9db5f9cc5df38efcdcdfb7ecf/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json",
         "arguments": {
           "temporal_extent": ["2024-06-01", "2024-06-30"],
           "spatial_extent": {
