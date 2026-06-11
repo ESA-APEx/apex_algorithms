@@ -3,7 +3,7 @@
         "id": "cropsar1d",
         "type": "openeo",
         "description": "CropSAR 1D is a biophysical parameter retrieval algorithm that estimates the Fraction of Absorbed Photosynthetically Active Radiation (FAPAR) for agricultural crops using Sentinel-1 and Sentinel-2 satellite data.",
-        "backend": "openeo.vito.be",
+        "backend": "openeo.terrascope.be",
         "process_graph": {
             "cropsar1d1": {
                 "arguments": {
@@ -59,7 +59,7 @@
         },
         "job_options": {
             "udf-dependency-archives": [
-                "https://artifactory.vgt.vito.be/artifactory/auxdata-public/cropsar_px/cropsar1d/cropsar-2.0.0-py3-none-any_site_packages.zip#cropsar_onnx"
+                "https://artifactory.vgt.vito.be/artifactory/auxdata-public/marketplace/cropsar1d_dependencies.zip#cropsar_onnx"
             ]
         },
         "reference_data": {
