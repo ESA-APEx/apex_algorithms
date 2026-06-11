@@ -108,6 +108,12 @@
             "title": "VITO",
             "href": "../../record.json"
         },
+                {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
         {
             "rel": "notebook",
             "type": "application/x-ipynb+json",
