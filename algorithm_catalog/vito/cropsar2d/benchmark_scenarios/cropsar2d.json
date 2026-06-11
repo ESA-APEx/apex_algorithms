@@ -7,7 +7,7 @@
         "process_graph": {
             "cropsar2d1": {
                 "arguments": {
-                    "end_date": "2024-12-31",
+                    "enddate": "2024-06-30",
                     "geometry": {
                         "coordinates": [
                             [
@@ -40,7 +40,7 @@
                         "type": "Polygon"
                     },
                     "output": "FAPAR",
-                    "start_date": "2024-01-01"
+                    "startdate": "2024-06-01"
                 },
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar2d/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json",
                 "process_id": "cropsar2d"
@@ -59,8 +59,7 @@
         },
         "job_options": {
             "udf-dependency-archives": [
-                "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps",
-                "https://artifactory.vgt.vito.be/artifactory/auxdata-public/cropsar_px/cropsar2d_onnx.zip#cropsar2d_onnx_models"
+                "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps"
             ]
         },
         "reference_data": {}
