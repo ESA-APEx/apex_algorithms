@@ -7,7 +7,7 @@
         "process_graph": {
             "cropsar1d1": {
                 "arguments": {
-                    "end_date": "2024-12-31",
+                    "enddate": "2024-12-31",
                     "geometry": {
                         "coordinates": [
                             [
@@ -40,7 +40,7 @@
                         "type": "Polygon"
                     },
                     "output": "FAPAR",
-                    "start_date": "2024-01-01"
+                    "startdate": "2024-01-01"
                 },
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json",
                 "process_id": "cropsar1d"
