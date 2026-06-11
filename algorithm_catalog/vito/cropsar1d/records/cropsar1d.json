@@ -94,7 +94,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3091373f923c6a301ee73ae49bd16a132b8a1b2c/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
         },
         {
             "rel": "service",
