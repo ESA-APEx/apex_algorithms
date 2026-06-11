@@ -13,7 +13,7 @@
           "from_parameter": "minimal_input_checks"
         },
         "output": {
-          "from_parameter": "biopar_type"
+          "from_parameter": "output"
         },
         "startdate": {
           "from_parameter": "startdate"
@@ -147,7 +147,7 @@
       "optional": true
     },
     {
-      "name": "biopar_type",
+      "name": "output",
       "description": "Type of biophysical parameter to be used.",
       "schema": {
         "type": "string",
