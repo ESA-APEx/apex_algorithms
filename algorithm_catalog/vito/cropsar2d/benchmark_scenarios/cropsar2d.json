@@ -50,7 +50,7 @@
                     "data": {
                         "from_node": "cropsar2d1"
                     },
-                    "format": "GTiff",
+                    "format": "NetCDF",
                     "options": {}
                 },
                 "process_id": "save_result",
@@ -62,6 +62,9 @@
                 "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps"
             ]
         },
-        "reference_data": {}
+        "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar2d/job-results.json",
+      "openEO.nc": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar2d/openEO.nc"
+    }
     }
 ]

@@ -2,7 +2,7 @@
     "id": "cropsar2d",
     "type": "Feature",
     "conformsTo": [
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
         "https://apex.esa.int/core/openeo-udp"
     ],
     "geometry": null,
@@ -11,7 +11,7 @@
         "updated": "2026-03-19T00:00:00Z",
         "type": "service",
         "title": "CropSAR 2D",
-        "description": "is an innovative technique that uses Sentinel-1 radar observations to augment those of Sentinel-2 using advanced AI technology while relying on EO domain expertise. This version of the service works at image level and allows the user to generate consistent and cloud-free image time series of optical outputs at a temporal resolution of 5 days. ",
+        "description": "CropSAR is an innovative technique that uses Sentinel-1 radar observations to augment those of Sentinel-2 using advanced AI technology while relying on EO domain expertise. This version of the service works at image level and allows the user to generate consistent and cloud-free image time series of optical outputs at a temporal resolution of 5 days. ",
         "cost_estimate": 45,
         "cost_unit": "platform credits",
         "keywords": [
@@ -83,7 +83,7 @@
         ],
         "formats": [
             {
-                "name": "GeoTIFF"
+                "name": "NetCDF"
             }
         ],
         "license": "proprietary"
@@ -103,6 +103,12 @@
             "href": "https://openeo.vito.be/openeo"
         },
         {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "Terrascope",
+            "href": "../../../../platform_catalog/terrascope.json"
+        },
+        {
             "rel": "provider",
             "type": "application/json",
             "title": "VITO",
@@ -119,6 +125,12 @@
             "type": "image/png",
             "title": "Thumbnail image",
             "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar2d/algorithm_catalog/vito/cropsar2d/records/thumbnail.png"
+        },
+        {
+            "rel": "example-output",
+            "type": "image/tif",
+            "title": "Example output",
+            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar2d/openEO.nc"
         }
     ]
 }
