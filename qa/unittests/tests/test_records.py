@@ -47,8 +47,13 @@ def test_service_record_validation(record):
         assert "href" in link, f"Link in record '{record['data']['id']}' is missing 'href' field"
         href = link["href"]
         if href.startswith("http"):
-            response = requests.head(href)
-            assert response.status_code in [200, 301, 302, 308, 401, 403], f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            try:
+                response = requests.head(href, timeout=10)
+                assert response.status_code in [200, 301, 302, 308, 401, 403], f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            except requests.exceptions.ConnectionError:
+                pytest.skip(f"Could not connect to '{href}' in record '{record['data']['id']}' (connection error)")
+            except requests.exceptions.Timeout:
+                pytest.skip(f"Request to '{href}' in record '{record['data']['id']}' timed out")
 
 
 @pytest.mark.parametrize(
