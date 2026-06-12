@@ -51,7 +51,6 @@ def test_service_record_validation(record):
             assert response.status_code in [200, 301, 302, 308, 401, 403], f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
 
 
-
 @pytest.mark.parametrize(
     "record",
     [
