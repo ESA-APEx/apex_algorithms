@@ -20,9 +20,7 @@
             "Agriculture",
             "Crop monitoring",
             "Biophysical parameters",
-            "FAPAR",
-            "OpenEO",
-            "VITO"
+            "FAPAR"
         ],
         "language": {
             "code": "en-US",
