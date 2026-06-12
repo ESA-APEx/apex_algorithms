@@ -42,7 +42,7 @@
                     "output": "FAPAR",
                     "startdate": "2024-06-01"
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar2d/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92171ae86087fe8ddde737292032cd1fff167a3f/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json",
                 "process_id": "cropsar2d"
             },
             "saveresult1": {
