@@ -50,7 +50,7 @@
                     "data": {
                         "from_node": "cropsar1d1"
                     },
-                    "format": "GTiff",
+                    "format": "JSON",
                     "options": {}
                 },
                 "process_id": "save_result",

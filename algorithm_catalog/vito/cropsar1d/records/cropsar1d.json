@@ -2,7 +2,7 @@
     "id": "cropsar1d",
     "type": "Feature",
     "conformsTo": [
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
         "https://apex.esa.int/core/openeo-udp"
     ],
     "geometry": null,
@@ -83,7 +83,7 @@
         ],
         "formats": [
             {
-                "name": "GeoTIFF"
+                "name": "JSON"
             }
         ],
         "license": "proprietary"
@@ -103,16 +103,16 @@
             "href": "https://openeo.vito.be/openeo"
         },
         {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "Terrascope",
+            "href": "../../../../platform_catalog/terrascope.json"
+        },
+        {
             "rel": "provider",
             "type": "application/json",
             "title": "VITO",
             "href": "../../record.json"
-        },
-                {
-            "rel": "platform",
-            "type": "application/json",
-            "title": "CDSE openEO federation",
-            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
         },
         {
             "rel": "notebook",
