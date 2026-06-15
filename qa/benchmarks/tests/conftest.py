@@ -106,15 +106,23 @@ def _get_client_credentials_env_var(url: str) -> str:
     if hostname in {
         "openeo.dataspace.copernicus.eu",
         "openeofed.dataspace.copernicus.eu",
+        "openeo.terrascope.be",
     }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"
-    elif hostname == "openeo-staging.dataspace.copernicus.eu":
+    elif hostname in {
+        "openeo-staging.dataspace.copernicus.eu",
+        "openeo-staging.terrascope.be",
+        "openeo-dev.terrascope.be",
+    }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif hostname in {"openeo.cloud", "openeo.eodc.eu"}:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
-    elif hostname in {"openeo-dev.vito.be", "openeo.vito.be", "openeo.terrascope.be"}:
+    elif hostname in {
+        "openeo-dev.vito.be",
+        "openeo.vito.be",
+    }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"
     else:
         raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
