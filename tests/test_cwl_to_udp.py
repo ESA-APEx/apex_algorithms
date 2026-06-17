@@ -30,3 +30,19 @@ def test_cwl_to_udp_array_inputs():
         print(parameter.schema)
         Draft7Validator.check_schema(parameter.schema)
         assert parameter.schema == {'type': 'array', 'items': {'type': 'string'}}
+
+
+def test_cwl_to_udp_optional_union_input():
+    """Test that CWL union types like ["null", "string"] are treated as optional parameters."""
+    path = DATA_ROOT / "optional-union-input.cwl"
+    cwl_yaml = yaml.safe_load(load_string_from_any(path))
+    cwl_inputs = get_cwl_inputs(cwl_yaml)
+    parameters = cwl_input_to_parameters(cwl_inputs)
+    by_name = {p.name: p for p in parameters}
+    # required parameter should not be optional
+    assert by_name["message"].schema == {'type': 'string'}
+    assert not by_name["message"].optional
+    # union ["null", "string"] parameter should be optional with null default
+    assert by_name["optional_label"].schema == {'type': 'string'}
+    assert by_name["optional_label"].optional is True
+    assert by_name["optional_label"].default is None
