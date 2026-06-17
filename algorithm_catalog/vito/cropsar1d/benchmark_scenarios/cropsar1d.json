@@ -59,7 +59,7 @@
         },
         "job_options": {
             "udf-dependency-archives": [
-                "https://artifactory.vgt.vito.be/artifactory/auxdata-public/marketplace/cropsar1d_dependencies.zip#cropsar_onnx"
+                "https://s3.waw3-1.cloudferro.com/project_dependencies/cropsar1d_dependencies.zip#cropsar_onnx"
             ]
         },
         "reference_data": {
