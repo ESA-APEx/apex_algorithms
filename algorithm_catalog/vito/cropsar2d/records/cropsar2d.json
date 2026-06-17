@@ -100,8 +100,8 @@
         {
             "rel": "service",
             "type": "application/json",
-            "title": "VITO openEO backend",
-            "href": "https://openeo.vito.be/openeo"
+            "title": "Terrascope openEO backend",
+            "href": "https://openeo.terrascope.be/openeo"
         },
         {
             "rel": "platform",
@@ -131,7 +131,7 @@
             "rel": "example-output",
             "type": "image/tif",
             "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/cropsar2d/openEO.nc"
+            "href": "https://s3.waw3-1.cloudferro.com/apex-examples/cropsar2d/openEO.nc"
         }
     ]
 }
