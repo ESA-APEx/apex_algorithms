@@ -86,9 +86,7 @@ def pytest_collection_modifyitems(session, config, items):
     # based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
     subset_size = config.getoption("--random-subset")
     if subset_size >= 0:
-        _log.info(
-            f"Selecting random subset of {subset_size} from {len(items)} benchmarks."
-        )
+        _log.info(f"Selecting random subset of {subset_size} from {len(items)} benchmarks.")
         if subset_size < len(items):
             selected = random.sample(items, k=subset_size)
             selected_ids = set(item.nodeid for item in selected)
@@ -108,17 +106,23 @@ def _get_client_credentials_env_var(url: str) -> str:
     if hostname in {
         "openeo.dataspace.copernicus.eu",
         "openeofed.dataspace.copernicus.eu",
+        "openeo.terrascope.be",
     }:
-        # TODO: env var could just be OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE
-        #       (which should work on both classic CDSE and CDSEfed)
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
-    elif hostname == "openeo-staging.dataspace.copernicus.eu":
+        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"
+    elif hostname in {
+        "openeo-staging.dataspace.copernicus.eu",
+        "openeo-staging.terrascope.be",
+        "openeo-dev.terrascope.be",
+    }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
-    elif hostname == "openeo.dev.warsaw.openeo.dataspace.copernicus.eu":
+    elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
-    elif hostname in { "openeo.cloud", "openeo.eodc.eu" }:
+    elif hostname in {"openeo.cloud", "openeo.eodc.eu"}:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
-    elif hostname in {"openeo-dev.vito.be", "openeo.vito.be", "openeo.terrascope.be"}:
+    elif hostname in {
+        "openeo-dev.vito.be",
+        "openeo.vito.be",
+    }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"
     else:
         raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
@@ -144,9 +148,7 @@ def connection_factory(request, capfd) -> Callable[[], openeo.Connection]:
 
         _log.info(f"Connecting to {url!r}")
         connection = openeo.connect(url, auto_validate=False, session=session)
-        connection.default_headers["X-OpenEO-Client-Context"] = (
-            "APEx Algorithm Benchmarks"
-        )
+        connection.default_headers["X-OpenEO-Client-Context"] = "APEx Algorithm Benchmarks"
 
         # Authentication:
         # In production CI context, we want to extract client credentials
@@ -173,9 +175,7 @@ def connection_factory(request, capfd) -> Callable[[], openeo.Connection]:
                 # Use a shorter max poll time by default
                 # to alleviate the default impression that the test seem to hang
                 # because of the OIDC device code poll loop.
-                max_poll_time = int(
-                    os.environ.get("OPENEO_OIDC_DEVICE_CODE_MAX_POLL_TIME") or 30
-                )
+                max_poll_time = int(os.environ.get("OPENEO_OIDC_DEVICE_CODE_MAX_POLL_TIME") or 30)
                 connection.authenticate_oidc(max_poll_time=max_poll_time)
 
         return connection
