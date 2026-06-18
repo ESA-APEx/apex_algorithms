@@ -27,9 +27,18 @@
           },
           "sub_swath": {
             "from_parameter": "sub_swath"
+          },
+          "spatial_extent": {
+            "from_parameter": "spatial_extent"
+          },
+          "temporal_baseline": {
+            "from_parameter": "temporal_baseline"
+          },
+          "temporal_extent": {
+            "from_parameter": "temporal_extent"
           }
         },
-        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/spatial_extent_interferogram/cwl/sar_interferogram.cwl"
       },
       "result": true
     }
@@ -59,14 +68,18 @@
             "type": "string"
           }
         }
-      }
+      },
+      "optional": true,
+      "default": null
     },
     {
       "name": "burst_id",
       "description": "The Sentinel-1 burst identifier. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/input_selection/InSAR_workflow_input_selection.ipynb) to find a fitting `burst_id`.\n Alternatively, the burst id map can be downloaded here: [Burst ID Maps 2022-05-30](https://sar-mpc.eu/files/S1_burstid_20220530.zip).",
       "schema": {
         "type": "integer"
-      }
+      },
+      "optional": true,
+      "default": null
     },
     {
       "name": "coherence_window_rg",
@@ -125,7 +138,137 @@
           "IW2",
           "IW3"
         ]
-      }
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "spatial_extent",
+      "description": "Specifies area where to search for bursts. If multiple bursts are found, the one with the lowest id number will be selected. This parameter can be used instead of `burst_id` and `sub_swath`.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "temporal_baseline",
+      "description": "Should be a multiple of 6. This is used to select how many days the secondary date will be after the primary for each date pair. To be used in combination with `spatial_extent`, replaces `InSAR_pairs` when selecting the burst automatically.",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent as [start_date, end_date], e.g., ['2024-08-01', '2024-09-30']. Specify at least a period equivalent to the selected temporal baseline * 2 to make sure at least one pair gets found. E.g. for a temporal baseline of 12 days, select at least a 24 days interval.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "optional": true,
+      "default": null
     }
   ]
 }
