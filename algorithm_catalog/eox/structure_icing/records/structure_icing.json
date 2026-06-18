@@ -1,0 +1,144 @@
+{
+  "id": "structure_icing",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "visibility": "public",
+    "created": "2026-06-18T00:00:00Z",
+    "updated": "2026-06-18T00:00:00Z",
+    "type": "service",
+    "title": "Structure Icing Index",
+    "description": "Structure Icing Index is a managed OGC API Processes service hosted on EOxHub Workspaces. The service computes an icing predictor index for a selected bounding box and year range and returns raster output suitable for visualization and further analysis. The implementation container is private; users interact with the service through the published OGC API Processes endpoint and public execution metadata.",
+    "cost_estimate": 0.0,
+    "cost_unit": "platform dependent",
+    "keywords": [
+      "Climate",
+      "Natural Hazards",
+      "ECMWF ERA5",
+      "Data Analysis and Visualization"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EOX IT Services GmbH",
+        "organization": "EOX IT Services GmbH",
+        "roles": [
+          "processor"
+        ],
+        "links": [
+          {
+            "href": "https://eox.at/",
+            "title": "EOX website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/gtif-cerulean/cerulean-catalog/blob/main/collections/structureicing.json",
+            "title": "Structure Icing collection definition",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact EOX IT Services GmbH through the public website or EOxHub contact page."
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "CRYOSPHERE"
+          },
+          {
+            "id": "ATMOSPHERE"
+          },
+          {
+            "id": "WEATHER EVENTS"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "JSON"
+      }
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/json",
+      "title": "Structure Icing public OGC API Processes application metadata",
+      "href": "./structure_icing_endpoint_application.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Structure Icing OGC API Processes endpoint",
+      "href": "https://harshness-map.gtif.eox.at/processes/execute-structure-icing-0.5"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "EOxHub Workspaces",
+      "href": "../../../../platform_catalog/eoxhub.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "Structure Icing dashboard",
+      "href": "https://cif.eox.at/uc1dashboard/?x=-16.5000&y=62.0000&z=3.5000&template=light&indicator=structureicing"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "EOX IT Services GmbH",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Structure Icing collection definition",
+      "href": "https://github.com/gtif-cerulean/cerulean-catalog/blob/main/collections/structureicing.json"
+    },
+    {
+      "rel": "example-input",
+      "type": "application/json",
+      "title": "Example execution body template",
+      "href": "https://raw.githubusercontent.com/gtif-cerulean/assets/refs/heads/main/body/structureicing.json"
+    },
+    {
+      "rel": "example-output",
+      "type": "application/json",
+      "title": "Successful Structure Icing sample job",
+      "href": "https://pygeoapi-eoxhub.workspace.cif.hub-otc.eox.at/jobs/f17c3832-3ef0-11f1-99c1-0255ac100087?f=json"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/jpeg",
+      "title": "Structure Icing thumbnail",
+      "href": "./thumbnail.jpeg"
+    }
+  ]
+}
