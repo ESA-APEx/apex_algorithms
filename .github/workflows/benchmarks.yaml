@@ -84,3 +84,18 @@ jobs:
         with:
           name: report
           path: qa/benchmarks/report/
+      - name: Merge Parquet Files and Upload to S3
+        env:
+          APEX_ALGORITHMS_S3_ACCESS_KEY_ID: ${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}
+          APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}
+          APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
+          APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
+        run: |
+          python qa/benchmarks/merge_parquet.py \
+            --s3-client "${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}" \
+            --s3-secret "${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}" \
+            --s3-endpoint "${{ env.APEX_ALGORITHMS_S3_ENDPOINT_URL }}" \
+            --s3-region "${{ env.APEX_ALGORITHMS_S3_DEFAULT_REGION }}" \
+            --s3-bucket "apex-benchmarks" \
+            --output-path "apex-benchmarks/metrics/v1/metrics-merged.parquet" \
+            --s3-output
