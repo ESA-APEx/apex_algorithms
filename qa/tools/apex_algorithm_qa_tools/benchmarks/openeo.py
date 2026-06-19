@@ -16,6 +16,7 @@ def _get_client_credentials_env_var(url: str) -> str:
     """
     Get client credentials env var name for a given backend URL.
     """
+
     if not re.match(r"https?://", url):
         url = f"https://{url}"
     parsed = urllib.parse.urlparse(url)
@@ -23,17 +24,23 @@ def _get_client_credentials_env_var(url: str) -> str:
     if hostname in {
         "openeo.dataspace.copernicus.eu",
         "openeofed.dataspace.copernicus.eu",
+        "openeo.terrascope.be",
     }:
-        # TODO: env var could just be OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE
-        #       (which should work on both classic CDSE and CDSEfed)
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED"
-    elif hostname == "openeo-staging.dataspace.copernicus.eu":
+        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"
+    elif hostname in {
+        "openeo-staging.dataspace.copernicus.eu",
+        "openeo-staging.terrascope.be",
+        "openeo-dev.terrascope.be",
+    }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
     elif hostname in {"openeo.cloud", "openeo.eodc.eu"}:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
-    elif hostname in {"openeo-dev.vito.be", "openeo.vito.be", "openeo.terrascope.be"}:
+    elif hostname in {
+        "openeo-dev.vito.be",
+        "openeo.vito.be",
+    }:
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"
     else:
         raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
