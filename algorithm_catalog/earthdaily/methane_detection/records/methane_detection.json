@@ -9,15 +9,17 @@
   "properties": {
     "visibility": "public",
     "created": "2026-04-24T00:00:00Z",
-    "updated": "2026-04-24T00:00:00Z",
+    "updated": "2026-05-11T00:00:00Z",
     "type": "service",
     "title": "Sentinel-2 Methane Enhancement Detection",
-    "description": "Earth observation methane detection workflow that searches STAC Sentinel-2 imagery, applies a SWIR-band matched-filter algorithm, and produces methane enhancement heatmaps with STAC-packaged GeoTIFF, PNG, and JSON outputs.",
+    "description": "Earth observation methane detection workflow that searches a STAC API for Sentinel-2 L1C scenes over a bbox and time range, pairs matching L2A scenes when available, applies a SWIR-band (B11/B12) matched-filter detector per scene, and aggregates per-scene results into time-signal outputs. Supports multiple STAC backends (Element84 Earth Search, Copernicus Data Space Ecosystem, EarthDaily) and emits a STAC Catalog containing methane enhancement heatmaps as Cloud-Optimized GeoTIFFs, PNG previews, and JSON statistics.",
     "cost_estimate": 0.0,
     "cost_unit": "platform dependent",
     "keywords": [
       "Climate",
       "Sentinel-2",
+      "Methane",
+      "STAC",
       "Data Analysis and Visualization"
     ],
     "language": {
@@ -126,6 +128,12 @@
       "type": "text/html",
       "title": "Source repository",
       "href": "https://github.com/earthdaily/methane-detection"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "GTIF UKIF Client — Methane Detection Explorer",
+      "href": "https://gtif-ukif.github.io/gtif-ukif-client/explore/?x=15.0000&y=48.0000&z=4.0000&template=expert&indicator=EDA-methane-detection&datetime=2026-05-13"
     },
     {
       "rel": "thumbnail",
