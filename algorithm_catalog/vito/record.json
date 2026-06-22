@@ -25,7 +25,7 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@vito.be"]
+            "admin": ["@vito.be", "@solenix.ch", "@esa.int"]
         }
     },
     "linkTemplates": [],
