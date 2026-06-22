@@ -35,6 +35,8 @@ It can be enabled through the parameters.
 
 Please refer to the APEx Documentation [Documentation](https://esa-apex.github.io/apex_documentation/guides/udp_writer_guide.html) and the [GitHub](https://github.com/ESA-APEx/apex_algorithms)
 
+<a href="../notebook_scmap.ipynb" rel="notebook">SCMap Notebook Example</a>
+
 ## Literature references
 [SoilSuite Europe](https://geoservice.dlr.de/web/datasets/soilsuite_eur_5y)
 - Rogge, D., Bauer, A, Zeidler, J., Müller, A., Esch, T. and Heiden, U. (2018). Building an exposed soil composite processor (SCMaP) for mapping spatial and temporal characteristics of soils with Landsat imagery (1984-2014). Remote Sensing of Environment, 205, 1-17. ISSN 0034-4257 DOI: [https://doi.org/10.1016/j.rse.2017.11.004](https://doi.org/10.1016/j.rse.2017.11.004)
@@ -45,11 +47,11 @@ Please refer to the APEx Documentation [Documentation](https://esa-apex.github.i
 CC-BY-NC
 
 ## Authors / Contact
-- Uta Heiden (Producer, Processor) DLR/EOC Imaging Spectroscopy
+- Uta Heiden (Producer, Processor) DLR - The Remote Sensing Technology Institute - Imaging Spectroscopy
 - - uta.heiden@dlr.de
-- Pablo d'Angelo (Producer, Processor) DLR/EOC Photogrammetry and Image Analysis
+- Pablo d'Angelo (Producer, Processor) DLR - The Remote Sensing Technology Institute - Photogrammetry and Image Analysis
 - - pablo.angelo@dlr.de
-- Paul Karlshöfer (Producer, Processor, OpenEO UDP) DLR/EOC Imaging Spectroscopy
+- Paul Karlshöfer (Producer, Processor, OpenEO UDP) DLR - The Remote Sensing Technology Institute - Imaging Spectroscopy
 - - paul.karlshoefer@dlr.de
 
 
