@@ -93,9 +93,6 @@
               "type": "string",
               "subtype": "date",
               "format": "date"
-            },
-            {
-              "type": "null"
             }
           ]
         }
