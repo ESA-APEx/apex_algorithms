@@ -61,16 +61,16 @@ def get_client_credentials_env_var(url: str) -> str:
 
 
 def get_auth_token(endpoint: str, keycloak_url: str, keycloak_realm: str) -> str:
+    # Support direct token via environment variable
+    if "OGC_AUTH_TOKEN" in os.environ:
+        token = os.environ["OGC_AUTH_TOKEN"]
+        _log.info("Using auth token from OGC_AUTH_TOKEN environment variable")
+        return token
+
     auth_env_var = get_client_credentials_env_var(endpoint)
     if auth_env_var in os.environ:
         client_credentials = os.environ[auth_env_var]
-        client_id, sep, client_secret = client_credentials.partition("/")
-        if not sep:
-            raise ValueError(
-                f"Invalid client credentials format in env var {auth_env_var!r}. "
-                "Expected 'client_id/client_secret' or 'client_id/'."
-            )
-
+        client_id, _, client_secret = client_credentials.partition("/")
         if client_id and client_secret:
             return get_token_with_client_credentials(
                 keycloak_url=keycloak_url,
@@ -94,6 +94,7 @@ def get_auth_token(endpoint: str, keycloak_url: str, keycloak_realm: str) -> str
             f"No authentication credentials found for endpoint {endpoint!r}. "
             "Please set the environment variable "
             f"{auth_env_var!r} with value 'client_id/client_secret' or 'client_id/'."
+            "Or set OGC_AUTH_TOKEN with a valid JWT token."
         )
 
 
@@ -152,6 +153,14 @@ def run_ogc_job(
         time.sleep(5)
         status = api_client.get_status(job_id=job_id).status
         _log.info(f"Job {job_id} is still running with status {status}...")
+
+    # Check for job failure
+    if status == StatusCode.FAILED:
+        raise RuntimeError(f"OGC API job {job_id} failed with status {status}")
+    elif status == StatusCode.DISMISSED:
+        raise RuntimeError(f"OGC API job {job_id} was dismissed with status {status}")
+
+    _log.info(f"Job {job_id} completed successfully with status {status}")
     return job_id
 
 
@@ -162,10 +171,67 @@ def collect_ogc_job_metadata(*, api_client: ApiClientWrapper, job_id: str) -> Be
     return BenchmarkJobMetadata(cost=None, usage=[])
 
 
+def _extract_assets_from_feature_collection(feature_collection: dict, *, result_name: str, user_token: str) -> dict:
+    assets: dict = {}
+    for feature in feature_collection.get("features", []):
+        feature_assets = feature.get("assets")
+        if isinstance(feature_assets, dict):
+            assets.update(feature_assets)
+            continue
+
+        # Some providers expose assets through an item link instead of inlining them in the feature.
+        for link in feature.get("links", []):
+            if "collection" == link.get("rel") and link.get("href"):
+                collection_link: str = link.get("href")
+                _log.debug(
+                    f"GeoJSON FeatureCollection results: '{result_name}' "
+                    f"points to a valid collection URL: {collection_link}"
+                )
+
+                response: HTTPXResponse = http_get(
+                    collection_link,
+                    follow_redirects=True,
+                    headers={"Authorization": f"Bearer {user_token}"},
+                )
+                response.raise_for_status()
+                collection = Collection.model_validate(response.json())
+                _log.debug(f"Extracted collection '{collection.id}' with assets: {list(collection.assets.keys())}")
+                assets.update(collection.to_dict().get("assets", {}))
+                break
+    return assets
+
+
+def _extract_qualified_value_payload(qualified_value) -> object | None:
+    value = qualified_value.value
+
+    # Primary path for non-union values.
+    payload = to_jsonable(value)
+    if payload is not None:
+        return payload
+
+    # Fallback for union models where actual_instance is None but oneof validators are populated.
+    for attr in (
+        "oneof_schema_1_validator",
+        "oneof_schema_2_validator",
+        "oneof_schema_3_validator",
+        "oneof_schema_4_validator",
+        "oneof_schema_5_validator",
+        "oneof_schema_6_validator",
+        "oneof_schema_7_validator",
+    ):
+        if hasattr(value, attr):
+            candidate = getattr(value, attr)
+            if candidate is not None:
+                return candidate
+
+    return None
+
+
 def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token: str) -> BenchmarkResults:
     result_api = ResultApi(api_client.api_client)
     results = result_api.get_result(job_id=job_id)
     assets = {}
+    _log.info(f"Collecting OGC API results for job {job_id} with {len(results)} outputs...")
     for result_name, result_value in results.items():
         if not result_value.actual_instance:
             _log.debug(f"Ignoring result '{result_name}' with None value")
@@ -196,32 +262,32 @@ def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token
 
             if STAC_COLLECTION_SCHEMA == schema_reference:
                 _log.info(f"STAC Collection found in results: '{result_name}'")
-                collection = Collection.model_validate(qualified_value.value.actual_instance)
+                collection_payload = _extract_qualified_value_payload(qualified_value)
+                if not isinstance(collection_payload, dict):
+                    _log.warning(
+                        f"Processing result: '{result_name}' can not be processed, "
+                        f"invalid STAC collection payload type {type(collection_payload)}"
+                    )
+                    continue
+                collection = Collection.model_validate(collection_payload)
                 _log.debug(f"Extracted collection '{collection.id}' with assets: {list(collection.assets.keys())}")
                 assets.update(collection.assets.to_dict())
             elif GEOJSON_FEATURECOLLECTION_SCHEMA == schema_reference:
                 _log.info(f"GeoJSON FeatureCollection found in results: '{result_name}'")
-                feature_collection = qualified_value.value.oneof_schema_2_validator or {}
-                for feature in feature_collection.get("features", []):
-                    for link in feature.get("links", []):
-                        if "collection" == link.get("rel") and link.get("href"):
-                            collection_link: str = link.get("href")
-                            _log.debug(
-                                f"GeoJSON FeatureCollection results: '{result_name}' "
-                                "points to a valid collection URL: {collection_link}"
-                            )
-
-                            response: HTTPXResponse = http_get(
-                                collection_link,
-                                follow_redirects=True,
-                                headers={"Authorization": f"Bearer {user_token}"},
-                            )
-                            response.raise_for_status()
-                            collection = Collection.model_validate(response.json())
-                            _log.debug(
-                                f"Extracted collection '{collection.id}' with assets: {list(collection.assets.keys())}"
-                            )
-                            assets.update(collection.to_dict().get("assets", {}))
+                feature_collection = _extract_qualified_value_payload(qualified_value)
+                if not isinstance(feature_collection, dict):
+                    _log.warning(
+                        f"Processing result: '{result_name}' can not be processed, "
+                        f"invalid GeoJSON payload type {type(feature_collection)}"
+                    )
+                    continue
+                assets.update(
+                    _extract_assets_from_feature_collection(
+                        feature_collection,
+                        result_name=result_name,
+                        user_token=user_token,
+                    )
+                )
             else:
                 _log.warning(
                     f"Processing result: '{result_name}' can not be processed, "
@@ -241,12 +307,14 @@ def download_ogc_results(
     actual_dir.mkdir(parents=True, exist_ok=True)
     paths: list[Path] = []
 
+    _log.info(f"Downloading {len(results_metadata.assets)} OGC API results to {actual_dir=}")
     results_path = actual_dir / "job-results.json"
     results_path.write_text(json.dumps(dataclasses.asdict(results_metadata), indent=2), encoding="utf8")
     paths.append(results_path)
 
     for output_name, output_data in sorted(results_metadata.assets.items()):
         output_data = to_jsonable(output_data)
+        _log.debug(f"Downloading OGC API result '{output_name}' to {actual_dir=}")
         if isinstance(output_data, dict) and output_data.get("href"):
             ref = output_data["href"]
             file_name = _resolve_output_filename(output_name=output_name, href=ref)

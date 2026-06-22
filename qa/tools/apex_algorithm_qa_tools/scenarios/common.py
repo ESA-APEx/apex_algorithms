@@ -57,10 +57,10 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
 
 
 def lint_ogc_fields(scenario: OGCAPIBenchmarkScenario):
-    assert scenario.backend.startswith(("http://", "https://")), (
-        f"Unsupported OGC endpoint: {scenario.backend!r}"
+    assert scenario.endpoint.startswith(("http://", "https://")), (
+        f"Unsupported OGC endpoint: {scenario.endpoint!r}"
     )
-    assert scenario.process_id
+    assert scenario.application or scenario.process_id
     assert isinstance(scenario.parameters, dict)
 
 
@@ -76,10 +76,17 @@ def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path) ->
             path.parent.mkdir(parents=True, exist_ok=True)
 
             with TimingLogger(title=f"Downloading {source=} to {path=}", logger=_log.info):
-                # TODO: support other sources than HTTP?
-                resp = requests.get(source, stream=True)
-                with path.open("wb") as f:
-                    for chunk in resp.iter_content(chunk_size=128):
-                        f.write(chunk)
+                # Handle file:// URLs (local files)
+                if source.startswith("file://"):
+                    file_path = source[7:]  # Remove "file://" prefix
+                    with open(file_path, "rb") as src_file:
+                        with path.open("wb") as f:
+                            f.write(src_file.read())
+                else:
+                    # Handle HTTP(S) URLs
+                    resp = requests.get(source, stream=True)
+                    with path.open("wb") as f:
+                        for chunk in resp.iter_content(chunk_size=128):
+                            f.write(chunk)
 
     return reference_dir

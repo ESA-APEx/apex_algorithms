@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from apex_algorithm_qa_tools.benchmarks.ogc import (
@@ -35,6 +36,7 @@ class OGCBenchmarkRunner(BenchmarkRunner):
             namespace=self.namespace,
         )
         self._job = None
+        self._job_id = None
         self._results = None
 
     def create_job(self):
@@ -54,6 +56,7 @@ class OGCBenchmarkRunner(BenchmarkRunner):
         )
 
     def collect_artifacts(self) -> BenchmarkRunnerArtifacts:
+        # TODO: remove after testing
         self._job_id = "opensartoolkit-v2-2-1-k6wp5"
         if self._job_id is None:
             raise RuntimeError("Cannot collect OGC API metadata before run_job().")
