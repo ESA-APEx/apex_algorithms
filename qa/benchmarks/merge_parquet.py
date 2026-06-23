@@ -8,7 +8,7 @@ import pyarrow.dataset
 _log = logging.getLogger(__name__)
 
 def merge_parquet_files(
-    s3_endpoint, s3_client, s3_secret, s3_bucket, s3_region, output_path, s3_output=False
+    s3_endpoint, s3_client, s3_secret, s3_bucket, s3_region, input_path, output_path, s3_output=False
 ):
     """
     Merge multiple parquet files from an S3 bucket.
@@ -19,7 +19,8 @@ def merge_parquet_files(
         s3_secret: S3 secret access key
         s3_bucket: S3 bucket name (e.g., 'bucket-name')
         s3_region: S3 region name (e.g., 'default')
-        output_path: Local file path or S3 path for output
+        input_path: Local file path or S3 path for input parquet files (e.g., ''metrics/v1/metrics.parquet')
+        output_path: Local file path or S3 path for the merged output (e.g., 'metrics/v1/metrics-merged.parquet')
         s3_output: If True, save to S3; if False, save locally
     """
     # Initialize S3 filesystem
@@ -29,13 +30,14 @@ def merge_parquet_files(
 
     # Read the partitioned metadata
     _log.info(f"Reading parquet files from S3 bucket: {s3_bucket}")
+    
     read_partitioning = pyarrow.dataset.partitioning(
         schema=pyarrow.schema(fields=[("test:start:YYYYMM", pyarrow.string())]),
-        flavor=None,
+        flavor=None, # Partitioning flavor `None`` means DirectoryPartitioning (see https://github.com/apache/arrow/issues/43863)  
     )
 
     table = pyarrow.parquet.read_table(
-        f"{s3_bucket}/metrics/v1/metrics.parquet",
+        f"{s3_bucket}/${input_path}",
         filesystem=s3fs,
         schema=pyarrow.schema(
             [
@@ -75,7 +77,7 @@ def merge_parquet_files(
     if s3_output:
         pyarrow.parquet.write_to_dataset(
             table=table,
-            root_path=output_path,
+            root_path=f"{s3_bucket}/{output_path}",
             filesystem=s3fs,
             partitioning=write_partitioning,
             # existing_data_behavior="delete_matching",
@@ -102,7 +104,8 @@ def main():
         type=str,
         help="S3 bucket name (e.g., 'bucket-name')",
     )
-    parser.add_argument("--output-path", type=str, help="Output file path (local or S3)")
+    parser.add_argument("--input-path", type=str, help="Input file path (local or S3, relative to bucket if S3)")
+    parser.add_argument("--output-path", type=str, help="Output file path (local or S3, relative to bucket if S3)")
     parser.add_argument(
         "--s3-output",
         action="store_true",
@@ -117,6 +120,7 @@ def main():
         s3_secret=args.s3_secret,
         s3_bucket=args.s3_bucket,
         s3_region=args.s3_region,
+        input_path=args.input_path,
         output_path=args.output_path,
         s3_output=args.s3_output,
     )

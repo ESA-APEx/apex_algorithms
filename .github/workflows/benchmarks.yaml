@@ -97,5 +97,6 @@ jobs:
             --s3-endpoint "${{ env.APEX_ALGORITHMS_S3_ENDPOINT_URL }}" \
             --s3-region "${{ env.APEX_ALGORITHMS_S3_DEFAULT_REGION }}" \
             --s3-bucket "apex-benchmarks" \
-            --output-path "apex-benchmarks/metrics/v1/metrics-merged.parquet" \
+            --input-path "metrics/v1/metrics.parquet" \
+            --output-path "metrics/v1/metrics-merged.parquet" \
             --s3-output
