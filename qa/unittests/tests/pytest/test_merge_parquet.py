@@ -17,7 +17,7 @@ _spec.loader.exec_module(_mod)
 merge_parquet_files = _mod.merge_parquet_files
 
 # S3 path where the benchmark suite writes its metrics.
-_S3_METRICS_KEY = "metrics/v1/metrics.parquet"
+_S3_METRICS_KEY = "metrics-unittests/v1/metrics-unittests.parquet"
 
 # Schema that merge_parquet_files expects when reading.
 _METRICS_SCHEMA = pyarrow.schema(
@@ -142,6 +142,7 @@ class TestMergeParquetFiles:
             s3_secret="test456",
             s3_bucket=s3_bucket,
             s3_region="us-east-1",
+            input_path=_S3_METRICS_KEY,
             output_path=output_path,
             s3_output=False,
         )
@@ -161,19 +162,20 @@ class TestMergeParquetFiles:
         """Merging to an S3 output path produces a readable dataset with all source rows."""
         _write_test_data_to_s3(s3fs=s3fs, s3_bucket=s3_bucket, rows=[_ROW_PASSED, _ROW_FAILED])
 
-        output_s3_path = f"{s3_bucket}/metrics/v1/metrics-merged.parquet"
+        output_s3_path = "metrics/v1/metrics-merged.parquet"
         merge_parquet_files(
             s3_endpoint=moto_server,
             s3_client="test123",
             s3_secret="test456",
             s3_bucket=s3_bucket,
             s3_region="us-east-1",
+            input_path=_S3_METRICS_KEY,
             output_path=output_s3_path,
             s3_output=True,
         )
 
         result = pyarrow.parquet.read_table(
-            output_s3_path, filesystem=s3fs, partitioning=_YYYYMM_PARTITIONING
+            f"{s3_bucket}/{output_s3_path}", filesystem=s3fs, partitioning=_YYYYMM_PARTITIONING
         )
         assert result.num_rows == 2
         assert set(result.column("scenario_id").to_pylist()) == {"max_ndvi", "biopar"}
@@ -196,6 +198,7 @@ class TestMergeParquetFiles:
             s3_secret="test456",
             s3_bucket=s3_bucket,
             s3_region="us-east-1",
+            input_path=_S3_METRICS_KEY,
             output_path=output_path,
             s3_output=False,
         )
@@ -225,6 +228,7 @@ class TestMergeParquetFiles:
             s3_secret="test456",
             s3_bucket=s3_bucket,
             s3_region="us-east-1",
+            input_path=_S3_METRICS_KEY,
             output_path=output_path,
             s3_output=False,
         )

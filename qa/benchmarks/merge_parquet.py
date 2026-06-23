@@ -37,7 +37,7 @@ def merge_parquet_files(
     )
 
     table = pyarrow.parquet.read_table(
-        f"{s3_bucket}/${input_path}",
+        f"{s3_bucket}/{input_path}",
         filesystem=s3fs,
         schema=pyarrow.schema(
             [
