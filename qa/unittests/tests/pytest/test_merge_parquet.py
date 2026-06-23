@@ -162,7 +162,7 @@ class TestMergeParquetFiles:
         """Merging to an S3 output path produces a readable dataset with all source rows."""
         _write_test_data_to_s3(s3fs=s3fs, s3_bucket=s3_bucket, rows=[_ROW_PASSED, _ROW_FAILED])
 
-        output_s3_path = "metrics/v1/metrics-merged.parquet"
+        output_s3_path = "metrics-unittest/v1/metrics-unittests-merged.parquet"
         merge_parquet_files(
             s3_endpoint=moto_server,
             s3_client="test123",
