@@ -1,7 +1,10 @@
 {
   "id": "wildfire_visualization",
   "type": "Feature",
-  "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
   "geometry": null,
   "properties": {
     "created": "2026-05-27T00:00:00Z",
