@@ -1,48 +1,159 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Benchmark Scenario",
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "description": "The unique identifier for the benchmark scenario."
-    },
-    "type": {
-      "type": "string",
-      "description": "The type of the benchmark scenario.",
-      "enum": [
-        "openeo"
+  "$defs": {
+    "common": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the benchmark scenario."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the benchmark scenario.",
+          "enum": [
+            "openeo",
+            "ogcapi-processes",
+            "ogc_api_process"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the benchmark scenario."
+        },
+        "reference_data": {
+          "type": "object",
+          "description": "Reference data of the benchmark, to compare actual results with."
+        },
+        "reference_options": {
+          "type": "object",
+          "description": "Options to fine-tune how actual and reference results should be compared."
+        }
+      },
+      "required": [
+        "id",
+        "type"
       ]
     },
-    "description": {
-      "type": "string",
-      "description": "A description of the benchmark scenario."
-    },
-    "backend": {
-      "type": "string",
-      "description": "The openEO backend URL to connect to."
-    },
-    "process_graph": {
+    "openeo": {
       "type": "object",
-      "description": "The openEO process graph to execute."
+      "properties": {
+        "type": {
+          "const": "openeo"
+        },
+        "backend": {
+          "type": "string",
+          "description": "The backend URL to connect to."
+        },
+        "process_graph": {
+          "type": "object",
+          "description": "The openEO process graph to execute."
+        },
+        "job_options": {
+          "type": "object",
+          "description": "Batch job options to use when creating an openEO batch job."
+        }
+      },
+      "required": [
+        "backend",
+        "process_graph"
+      ]
     },
-    "job_options": {
+    "ogcapi_process": {
       "type": "object",
-      "description": "Batch job options to use when creating an openEO batch job."
-    },
-    "reference_data": {
-      "type": "object",
-      "description": "Reference data of the benchmark, to compare actual results with."
-    },
-    "reference_options": {
-      "type": "object",
-      "description": "Options to fine-tune how actual and reference results should be compared."
+      "properties": {
+        "type": {
+            "const": "ogc_api_process"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "The OGC API Processes endpoint."
+        },
+        "process_id": {
+          "type": "string",
+          "description": "The process identifier used at execution time."
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Optional namespace for process categorization."
+        },
+        "application": {
+          "type": "string",
+          "description": "Optional process alias used by some backends."
+        },
+        "auth": {
+          "type": "object",
+          "description": "Authentication details for accessing the OGC API endpoint.",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL of the authentication server."
+            },
+            "realm": {
+              "type": "string",
+              "description": "The authentication realm."
+            }
+          },
+          "required": [
+            "url",
+            "realm"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Input parameters passed to the OGC API process."
+        },
+        "results": {
+          "type": "object",
+          "description": "Details for accessing the results of the OGC API process.",
+          "properties": {
+            "s3_endpoint": {
+              "type": "string",
+              "description": "The S3 endpoint where results are stored."
+            }
+          }
+        }
+      },
+      "required": [
+        "endpoint",
+        "parameters"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "process_id"
+          ]
+        },
+        {
+          "required": [
+            "application"
+          ]
+        }
+      ]
     }
   },
-  "required": [
-    "id",
-    "type",
-    "backend",
-    "process_graph"
-  ]
+  "oneOf": [
+    {
+      "allOf": [
+        {
+          "$ref": "#/$defs/common"
+        },
+        {
+          "$ref": "#/$defs/openeo"
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {
+          "$ref": "#/$defs/common"
+        },
+        {
+          "$ref": "#/$defs/ogcapi_process"
+        }
+      ]
+    }
+  ],
+  "unevaluatedProperties": false
 }
