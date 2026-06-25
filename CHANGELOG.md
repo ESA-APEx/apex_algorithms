@@ -27,7 +27,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   opens or updates GitHub issues for detected cost regressions.
 
 ### Changed
-- S3 Parquet key bumped from `metrics/v0/` to `metrics/v1/`.
 - Performance regression logic (`compute_baselines`,
   `check_reference_performance`) was moved to a dedicated
   `benchmark_regression` module.
