@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import logging
+import mimetypes
 import os
 import re
 import time
@@ -41,6 +42,10 @@ STAC_COLLECTION_SCHEMA = "https://schemas.stacspec.org/v1.0.0/collection-spec/js
 GEOJSON_FEATURECOLLECTION_SCHEMA = (
     "https://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/featureCollectionGeoJSON.yaml"
 )
+
+MIMETYPE_EXTENSION_MAP = {
+    "image/tiff; application=geotiff; profile=cloud-optimized": ".tif"
+}
 
 
 def get_client_credentials_env_var(url: str) -> str:
@@ -250,7 +255,7 @@ def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token
                 f"Processing result\n* Name: '{result_name}'\n"
                 f"* media type: {qualified_value.media_type}\n"
                 f"* Python type: {type(qualified_value.value)}\n"
-                "* schema {qualified_value.var_schema}..."
+                f"* schema {qualified_value.var_schema}..."
             )
 
             if not isinstance(schema_reference, str):
@@ -297,6 +302,24 @@ def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token
     return BenchmarkResults(assets=assets)
 
 
+def _extract_download_link_from_asset(asset: dict) -> str | None:
+    """
+    Extracts the download link from an asset dictionary. Checks if the `href` field is present and contains an HTTPS URL.
+    If this is not the case, look for an alternative link in `alternate` field. If no valid link is found, return None.
+
+    Args:
+        asset (dict): The asset dictionary.
+
+    Returns:
+        str | None: The download link if available, otherwise None.
+    """
+    refs = [asset.get("href"), asset.get("alternate", {}).get("https", {}).get("href")]
+    for href in refs:
+        if href and href.startswith("https://"):
+            return href
+    return None
+
+
 def download_ogc_results(
     *,
     results_metadata: BenchmarkResults,
@@ -315,13 +338,18 @@ def download_ogc_results(
     for output_name, output_data in sorted(results_metadata.assets.items()):
         output_data = to_jsonable(output_data)
         _log.debug(f"Downloading OGC API result '{output_name}' to {actual_dir=}")
-        if isinstance(output_data, dict) and output_data.get("href"):
-            ref = output_data["href"]
-            file_name = _resolve_output_filename(output_name=output_name, href=ref)
+        if isinstance(output_data, dict):
+            ref = _extract_download_link_from_asset(output_data)
+            mimetype = output_data.get("type")
+            if not ref:
+                _log.warning(f"Result '{output_name}' does not contain a valid download link, skipping download.")
+                continue
+
+            file_name = _resolve_output_filename(output_name=output_name, href=ref, mimetype=mimetype)
             target = ensure_safe_relative_target(actual_dir, file_name)
             target.parent.mkdir(parents=True, exist_ok=True)
             download_file(
-                _convert_s3_href_to_https(ref, s3_endpoint=details.s3_endpoint if details else None),
+                ref,
                 target,
                 user_token=user_token,
             )
@@ -335,24 +363,23 @@ def download_ogc_results(
     return paths
 
 
-def _convert_s3_href_to_https(href: str, s3_endpoint: str | None) -> str:
-    parsed = urlparse(href)
-    if not s3_endpoint:
-        raise ValueError(f"Cannot convert s3 href to https without s3_endpoint: {href=}, {s3_endpoint=}")
-    if parsed.scheme != "s3":
-        return href
-    bucket = parsed.netloc
-    key = parsed.path.lstrip("/")
-    if not bucket or not key:
-        raise ValueError(f"Invalid s3 href: {href!r}")
-    url = f"https://{bucket}.{s3_endpoint}/{key}"
-    _log.debug(f"Converted s3 href to https: {href} -> {url}")
-    return url
-
-
-def _resolve_output_filename(*, output_name: str, href: str) -> str:
+def _resolve_output_filename(*, output_name: str, href: str, mimetype: str | None = None) -> str:
     parsed = urlparse(href)
     name = Path(parsed.path).name
     if name:
-        return name
+        has_extension = bool(Path(name).suffix)
+        _log.debug(f"Result '{output_name}' download link '{href}' has filename '{name}' with extension: {has_extension}")
+        if has_extension:
+            return name
+        else:
+            _log.warning(
+                f"Result '{output_name}' download link '{href}' does not contain a file extension, "
+                f"falling back to using output name with mimetype-based extension using mimetype '{mimetype}'."
+            )
+            extension = MIMETYPE_EXTENSION_MAP.get(mimetype)
+            if not extension and mimetype:
+                extension = mimetypes.guess_extension(mimetype)
+                _log.debug(f"Result '{output_name}' mimetype '{mimetype}' maps to extension: {extension}")
+            if extension:
+                return f"{output_name}{extension}"
     return f"{output_name}.bin"

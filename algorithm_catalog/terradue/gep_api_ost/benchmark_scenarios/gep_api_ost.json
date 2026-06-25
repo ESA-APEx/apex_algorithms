@@ -51,11 +51,9 @@
         ]
       }
     },
-    "results": {
-      "s3_endpoint": "s3.waw3-1.cloudferro.com"
-    },
     "reference_data": {
-      "job-results.json": "file:///Users/bramjanssen/projects/apex/apex_algorithms/qa/benchmarks/data/job-results.json"
+      "job-results.json": "file:///Users/bramjanssen/projects/apex/apex_algorithms/qa/benchmarks/data/job-results.json",
+      "ost-ard-cog.tif": "file:///Users/bramjanssen/projects/apex/apex_algorithms/qa/benchmarks/data/ost-ard-cog.tif"
     },
     "reference_options": {
       "atol": 1
