@@ -28,40 +28,22 @@ def check_reference_performance(
     return violations
 
 
-def _compute_threshold(values: list[float]) -> dict:
-    """Compute adaptive threshold with median and scaled MAD."""
-    n = len(values)
+def _compute_threshold(values: list[float]) -> float:
+    """Compute adaptive threshold with median and scaled MAD (k=3.5)."""
     median = _median(values)
     scaled_mad = max(1.0, 1.4826 * _median([abs(v - median) for v in values]))
-    k = 3.5
-    threshold = median + k * scaled_mad
-
-    return {
-        "max": round(threshold, 4),
-        "n_samples": n,
-        "median": round(median, 4),
-        "mad": round(scaled_mad, 4),
-        "k": k,
-    }
+    return round(median + 3.5 * scaled_mad, 4)
 
 
 def compute_baselines(
     historical_values: list[dict],
-    metric_names: list[str] | None = None,
+    metric_names: list[str],
     min_samples: int = 3,
     max_samples: int = 20,
 ) -> dict:
     """Compute adaptive baselines from historical benchmark values."""
     if not historical_values:
         return {}
-
-    if metric_names is None:
-        names = set()
-        for row in historical_values:
-            for k, v in row.items():
-                if isinstance(v, (int, float)) and not k.startswith("_"):
-                    names.add(k)
-        metric_names = sorted(names)
 
     baselines = {}
     for name in metric_names:
@@ -78,6 +60,6 @@ def compute_baselines(
             )
             continue
 
-        baselines[name] = _compute_threshold(values)
+        baselines[name] = {"max": _compute_threshold(values)}
 
     return baselines

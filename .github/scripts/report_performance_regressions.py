@@ -17,8 +17,9 @@ import sys
 
 import pyarrow.dataset as ds
 
-from apex_algorithm_qa_tools.benchmark_history import create_s3_filesystem, load_scenario_history
+from apex_algorithm_qa_tools.benchmark_history import load_scenario_history
 from apex_algorithm_qa_tools.benchmark_regression import check_reference_performance, compute_baselines
+from apex_algorithm_qa_tools.common import create_s3_filesystem
 from apex_algorithm_qa_tools.github_issue_handler import GithubApi, GithubContext, PerformanceRegressionInfo
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
 
@@ -56,7 +57,7 @@ def main():
             continue
 
         # Baselines from all history; latest run is the check target
-        baselines = compute_baselines(history)
+        baselines = compute_baselines(history, metric_names=["costs"])
         cost_baseline = baselines.get("costs")
         if not cost_baseline:
             rows.append(f"- **{scenario_id}**: no cost baseline available")
@@ -71,13 +72,30 @@ def main():
         if violations:
             regressions.extend(violations)
             rows.append(f"- **{scenario_id}**: regression — {violations[0]}")
-            _report_regression_issue(
-                scenario_id=scenario_id,
-                violation=violations[0],
-                baseline=cost_baseline,
-                latest=latest,
-                scenario=benchmark_scenarios.get(scenario_id),
-            )
+            
+            # Report issue
+            ctx = GithubContext()
+            if ctx.token and ctx.repository:
+                regression_info = PerformanceRegressionInfo(
+                    scenario_id=scenario_id,
+                    github_context=ctx,
+                    violation=violations[0],
+                    baseline=cost_baseline,
+                    latest_metrics=latest,
+                    scenario=benchmark_scenarios.get(scenario_id),
+                )
+                api = GithubApi(repository=ctx.repository, token=ctx.token)
+                title = regression_info.issue_title()
+                body = regression_info.build_issue_body()
+                labels = regression_info.issue_labels()
+                existing = next(
+                    (i for i in api.list_issues(labels=[_ISSUE_LABEL]) if i["title"] == title),
+                    None,
+                )
+                if existing:
+                    api.create_issue_comment(existing["number"], body)
+                else:
+                    api.create_issue(title=title, body=body, labels=labels)
         else:
             rows.append(f"- **{scenario_id}**: ok (costs={latest.get('costs', 'n/a')})")
 
@@ -97,42 +115,6 @@ def main():
     if regressions:
         print(f"\n{len(regressions)} regression(s) detected.", file=sys.stderr)
         sys.exit(1)
-
-
-def _report_regression_issue(
-    scenario_id: str,
-    violation: str,
-    baseline: dict,
-    latest: dict,
-    scenario=None,
-) -> None:
-    """Open or update a per-scenario GitHub issue tracking a performance regression."""
-    ctx = GithubContext()
-    if not ctx.token or not ctx.repository:
-        return
-
-    regression_info = PerformanceRegressionInfo(
-        scenario_id=scenario_id,
-        github_context=ctx,
-        violation=violation,
-        baseline=baseline,
-        latest_metrics=latest,
-        scenario=scenario,
-    )
-
-    api = GithubApi(repository=ctx.repository, token=ctx.token)
-    title = regression_info.issue_title()
-    body = regression_info.build_issue_body()
-    labels = regression_info.issue_labels()
-
-    existing = next(
-        (i for i in api.list_issues(labels=[_ISSUE_LABEL]) if i["title"] == title),
-        None,
-    )
-    if existing:
-        api.create_issue_comment(existing["number"], body)
-    else:
-        api.create_issue(title=title, body=body, labels=labels)
 
 
 if __name__ == "__main__":
