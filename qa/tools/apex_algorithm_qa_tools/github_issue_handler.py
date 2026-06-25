@@ -275,6 +275,30 @@ class PytestReportParser:
         return logs
 
 
+def _get_contacts(scenario: BenchmarkScenario | None) -> list | None:
+    """Get contact information from corresponding OGC API record."""
+    if scenario and isinstance(scenario.source, Path):
+        paths = list((scenario.source.parent.parent / "records").glob("*.json"))
+        for path in paths:
+            try:
+                with path.open("r", encoding="utf8") as f:
+                    if contacts := json.load(f).get("properties", {}).get("contacts"):
+                        return contacts
+            except Exception:
+                pass
+    return None
+
+
+def _get_scenario_link(scenario: BenchmarkScenario | None, github_context: GithubContext) -> str | None:
+    """Generate URL to the scenario definition file at the specific commit."""
+    if scenario and isinstance(scenario.source, Path):
+        path = scenario.source
+        if path.is_absolute():
+            path = path.relative_to(get_project_root())
+        return github_context.get_file_permalink(path)
+    return None
+
+
 @dataclasses.dataclass(frozen=True)
 class ScenarioRunInfo:
     """Information about a benchmark scenario run"""
@@ -286,32 +310,11 @@ class ScenarioRunInfo:
 
     def get_contacts(self) -> list | None:
         """Get contact information from corresponding OGC API record."""
-        # Guess records path from benchmark scenario source.
-        if isinstance(self.scenario.source, Path):
-            paths = list(
-                (self.scenario.source.parent.parent / "records").glob("*.json")
-            )
-            logger.info(
-                f"Looking up contact info for {self.scenario.id} in {paths=} (from {self.scenario.source})"
-            )
-            for path in paths:
-                try:
-                    with path.open("r", encoding="utf8") as f:
-                        record = json.load(f)
-                    if contacts := record.get("properties", {}).get("contacts"):
-                        return contacts
-                except Exception as e:
-                    logger.warning(f"Failed to read contacts from {path}: {e!r}")
+        return _get_contacts(self.scenario)
 
     def get_scenario_link(self) -> str | None:
-        """
-        Generate a URL to the scenario definition file at the specific commit.
-        """
-        if isinstance(self.scenario.source, Path):
-            path = self.scenario.source
-            if path.is_absolute():
-                path = path.relative_to(get_project_root())
-            return self.github_context.get_file_permalink(path)
+        """Generate a URL to the scenario definition file at the specific commit."""
+        return _get_scenario_link(self.scenario, self.github_context)
 
     def _get_failed_phase(self) -> str | None:
         """Extract the base phase name from ``test:phase:exception``.
@@ -455,60 +458,41 @@ class PerformanceRegressionInfo:
     def issue_labels(self) -> List[str]:
         return ["performance-regression", BENCHMARK_LABEL]
 
-    def get_scenario_link(self) -> str | None:
-        if self.scenario and isinstance(self.scenario.source, Path):
-            path = self.scenario.source
-            if path.is_absolute():
-                path = path.relative_to(get_project_root())
-            return self.github_context.get_file_permalink(path)
-
-    def get_contacts(self) -> list | None:
-        if self.scenario and isinstance(self.scenario.source, Path):
-            paths = list(
-                (self.scenario.source.parent.parent / "records").glob("*.json")
-            )
-            for path in paths:
-                try:
-                    with path.open("r", encoding="utf8") as f:
-                        if contacts := json.load(f).get("properties", {}).get("contacts"):
-                            return contacts
-                except Exception:
-                    pass
-
     def build_issue_body(self) -> str:
-        scenario_link = self.get_scenario_link()
-        workflow_run_url = self.github_context.get_workflow_run_url()
+        parts = [f"**Scenario**: `{self.scenario_id}`"]
         
-        body = f"**Scenario**: `{self.scenario_id}`\n"
-        if scenario_link:
-            body += f"**Definition**: {scenario_link}\n"
+        if link := _get_scenario_link(self.scenario, self.github_context):
+            parts.append(f"**Definition**: {link}")
         if self.scenario:
-            body += f"**Backend**: {self.scenario.backend}\n"
-        if workflow_run_url:
-            body += f"**Workflow run**: {workflow_run_url}\n"
+            parts.append(f"**Backend**: {self.scenario.backend}")
+        if url := self.github_context.get_workflow_run_url():
+            parts.append(f"**Workflow run**: {url}")
         
-        body += f"\n### Regression\n\n{self.violation}\n"
+        parts.append(f"\n### Regression\n\n{self.violation}")
         
-        body += "\n### Cost Trend\n\n"
-        body += f"| Metric | Baseline | Latest |\n"
-        body += f"|--------|----------|--------|\n"
-        body += f"| costs  | {self.baseline.get('value', 'n/a')} | {self.latest_metrics.get('costs', 'n/a')} |\n"
+        baseline_val = self.baseline.get("max", self.baseline.get("value", "n/a"))
+        latest_val = self.latest_metrics.get("costs", "n/a")
+        parts.append(f"""
+### Cost Trend
+
+| Metric | Baseline | Latest |
+|--------|----------|--------|
+| costs  | {baseline_val} | {latest_val} |""")
         
-        if contacts := self.get_contacts():
-            contact = contacts[0]
-            name = contact.get("name", "n/a")
-            org = contact.get("organization", "n/a")
-            contact_info = contact.get("contactInstructions", "")
-            if contact.get("links"):
-                links = [f"[{link.get('title', 'link')}]({link.get('href', '#')})" 
-                         for link in contact.get("links", [])]
-                contact_info += " (" + ", ".join(links) + ")"
-            body += f"\n### Contact\n\n"
-            body += f"| Name | Organization | Contact |\n"
-            body += f"|------|--------------|----------|\n"
-            body += f"| {name} | {org} | {contact_info} |\n"
+        if contacts := _get_contacts(self.scenario):
+            c = contacts[0]
+            info = c.get("contactInstructions", "")
+            if c.get("links"):
+                links = [f"[{l.get('title', 'link')}]({l.get('href', '#')})" for l in c["links"]]
+                info += " (" + ", ".join(links) + ")"
+            parts.append(f"""
+### Contact
+
+| Name | Organization | Contact |
+|------|--------------|---------|
+| {c.get('name', 'n/a')} | {c.get('organization', 'n/a')} | {info} |""")
         
-        return body
+        return "\n".join(parts)
 
 
 class GithubIssueHandler:
