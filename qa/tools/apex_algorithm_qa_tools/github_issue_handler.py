@@ -438,6 +438,79 @@ class ScenarioRunInfo:
         return "Report of latest run:\n" + self.build_workflow_run_overview()
 
 
+@dataclasses.dataclass(frozen=True)
+class PerformanceRegressionInfo:
+    """Information about a performance regression for a benchmark scenario"""
+
+    scenario_id: str
+    github_context: GithubContext
+    violation: str
+    baseline: dict
+    latest_metrics: dict
+    scenario: BenchmarkScenario | None = None
+
+    def issue_title(self) -> str:
+        return f"Performance regression: {self.scenario_id}"
+
+    def issue_labels(self) -> List[str]:
+        return ["performance-regression", BENCHMARK_LABEL]
+
+    def get_scenario_link(self) -> str | None:
+        if self.scenario and isinstance(self.scenario.source, Path):
+            path = self.scenario.source
+            if path.is_absolute():
+                path = path.relative_to(get_project_root())
+            return self.github_context.get_file_permalink(path)
+
+    def get_contacts(self) -> list | None:
+        if self.scenario and isinstance(self.scenario.source, Path):
+            paths = list(
+                (self.scenario.source.parent.parent / "records").glob("*.json")
+            )
+            for path in paths:
+                try:
+                    with path.open("r", encoding="utf8") as f:
+                        if contacts := json.load(f).get("properties", {}).get("contacts"):
+                            return contacts
+                except Exception:
+                    pass
+
+    def build_issue_body(self) -> str:
+        scenario_link = self.get_scenario_link()
+        workflow_run_url = self.github_context.get_workflow_run_url()
+        
+        body = f"**Scenario**: `{self.scenario_id}`\n"
+        if scenario_link:
+            body += f"**Definition**: {scenario_link}\n"
+        if self.scenario:
+            body += f"**Backend**: {self.scenario.backend}\n"
+        if workflow_run_url:
+            body += f"**Workflow run**: {workflow_run_url}\n"
+        
+        body += f"\n### Regression\n\n{self.violation}\n"
+        
+        body += "\n### Cost Trend\n\n"
+        body += f"| Metric | Baseline | Latest |\n"
+        body += f"|--------|----------|--------|\n"
+        body += f"| costs  | {self.baseline.get('value', 'n/a')} | {self.latest_metrics.get('costs', 'n/a')} |\n"
+        
+        if contacts := self.get_contacts():
+            contact = contacts[0]
+            name = contact.get("name", "n/a")
+            org = contact.get("organization", "n/a")
+            contact_info = contact.get("contactInstructions", "")
+            if contact.get("links"):
+                links = [f"[{link.get('title', 'link')}]({link.get('href', '#')})" 
+                         for link in contact.get("links", [])]
+                contact_info += " (" + ", ".join(links) + ")"
+            body += f"\n### Contact\n\n"
+            body += f"| Name | Organization | Contact |\n"
+            body += f"|------|--------------|----------|\n"
+            body += f"| {name} | {org} | {contact_info} |\n"
+        
+        return body
+
+
 class GithubIssueHandler:
     def __init__(
         self,
