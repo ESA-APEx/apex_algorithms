@@ -1,0 +1,60 @@
+{
+  "id": "structure_icing_endpoint_application",
+  "title": "Structure Icing public OGC API Processes application metadata",
+  "description": "Public, interface-only metadata for the hosted Structure Icing OGC API Processes service. The implementation container and internal execution package are private and are not distributed through APEx.",
+  "type": "ogc-api-processes-managed-service",
+  "service": {
+    "process_description": "https://harshness-map.gtif.eox.at/processes/execute-structure-icing-0.5",
+    "execute": "https://harshness-map.gtif.eox.at/processes/execute-structure-icing-0.5/execution",
+    "method": "POST",
+    "process_id_public_endpoint": "execute-structure-icing-0.5",
+    "sample_job": "https://pygeoapi-eoxhub.workspace.cif.hub-otc.eox.at/jobs/f17c3832-3ef0-11f1-99c1-0255ac100087"
+  },
+  "inputs": {
+    "date_start": {
+      "type": "string",
+      "description": "Start year",
+      "enum": [
+        "2020",
+        "2021",
+        "2022"
+      ]
+    },
+    "date_end": {
+      "type": "string",
+      "description": "End year",
+      "enum": [
+        "2020",
+        "2021",
+        "2022"
+      ]
+    },
+    "bbox": {
+      "type": "array",
+      "description": "Bounding box in EPSG:4326",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 4,
+      "maxItems": 4
+    }
+  },
+  "public_supporting_metadata": {
+    "catalog_collection_definition": "https://raw.githubusercontent.com/gtif-cerulean/cerulean-catalog/main/collections/structureicing.json",
+    "json_form": "https://raw.githubusercontent.com/gtif-cerulean/assets/refs/heads/main/jsonforms/structureicing.json",
+    "example_execute_body_template": "https://raw.githubusercontent.com/gtif-cerulean/assets/refs/heads/main/body/structureicing.json",
+    "flatstyle": "https://raw.githubusercontent.com/gtif-cerulean/assets/refs/heads/main/styles/structureicing.json"
+  },
+  "outputs": [
+    {
+      "name": "Structure Icing Index",
+      "mediaType": "image/tiff",
+      "description": "Raster output containing icing predictor index values."
+    },
+    {
+      "name": "job status",
+      "mediaType": "application/json",
+      "description": "OGC API Processes job status and results links."
+    }
+  ]
+}
