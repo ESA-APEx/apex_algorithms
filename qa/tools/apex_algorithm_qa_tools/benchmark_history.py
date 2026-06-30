@@ -4,11 +4,11 @@ and extracting per-scenario metric histories for baseline computation.
 
 Usage::
 
-    from apex_algorithm_qa_tools.benchmark_history import load_scenario_history
+    from apex_algorithm_qa_tools.benchmark_history import load_scenario_metrics
     from apex_algorithm_qa_tools.common import create_s3_filesystem
 
     fs = create_s3_filesystem()
-    history = load_scenario_history(
+    history = load_scenario_metrics(
         parquet_path="bucket/metrics/v1/metrics.parquet",
         scenario_id="max_ndvi_composite",
         filesystem=fs,
@@ -24,17 +24,27 @@ import pyarrow.dataset as ds
 _log = logging.getLogger(__name__)
 
 
-def load_scenario_history(
+def load_scenario_metrics(
     parquet_path: str,
     scenario_id: str,
     *,
     filesystem=None,
     metric_names: list[str] | None = None,
     test_outcome: str | None = "passed",
-    max_age_days: int | None = 90,
+    max_age_days: int | None = 60,
 ) -> list[dict]:
     """
     Load historical metric values for a specific scenario from Parquet.
+
+    Args:
+        parquet_path: S3/object-store path to the Parquet dataset.
+        scenario_id: Scenario identifier to filter rows by.
+        filesystem: Optional pyarrow filesystem used to access the dataset.
+        metric_names: Optional metric columns to extract. If omitted, costs and
+            usage:* columns are auto-detected.
+        test_outcome: Optional pytest outcome filter (for example "passed").
+            Set to None to keep all outcomes.
+        max_age_days: Optional age filter in days. Older runs are discarded.
 
     Returns a list of dicts (one per run), each containing the metric values.
     Sorted by run time ascending (oldest first).

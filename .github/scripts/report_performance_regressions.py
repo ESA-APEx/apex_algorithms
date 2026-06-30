@@ -17,16 +17,20 @@ import sys
 
 import pyarrow.dataset as ds
 
-from apex_algorithm_qa_tools.benchmark_history import load_scenario_history
+from apex_algorithm_qa_tools.benchmark_history import load_scenario_metrics
 from apex_algorithm_qa_tools.benchmark_regression import check_reference_performance, compute_baselines
 from apex_algorithm_qa_tools.common import create_s3_filesystem
 from apex_algorithm_qa_tools.github_issue_handler import GithubApi, GithubContext, PerformanceRegressionInfo
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
 
-_ISSUE_LABEL = "performance-regression"
-
 
 def main():
+    """Run weekly performance regression checks and report findings.
+
+    CLI params:
+        --s3-bucket: Required bucket name containing metrics parquet.
+        --s3-key: Optional key/path to parquet data inside the bucket.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--s3-bucket", required=True)
     parser.add_argument("--s3-key", default="metrics/v1/metrics.parquet")
@@ -44,17 +48,23 @@ def main():
         .tolist()
     )
 
-    # Load benchmark scenarios for rich metadata
-    benchmark_scenarios = {s.id: s for s in get_benchmark_scenarios()}
-
     regressions = []
     rows = []
+    benchmark_scenarios = None
+
+    ctx = GithubContext()
+    api = None
+    if ctx.token and ctx.repository:
+        api = GithubApi(repository=ctx.repository, token=ctx.token)
 
     for scenario_id in sorted(scenario_ids):
-        history = load_scenario_history(parquet_path, scenario_id, filesystem=fs)
-        if len(history) < 3:
-            rows.append(f"- **{scenario_id}**: insufficient history ({len(history)} runs)")
+        scenario_metrics = load_scenario_metrics(parquet_path, scenario_id, filesystem=fs)
+        if len(scenario_metrics) < 3:
+            rows.append(f"- **{scenario_id}**: insufficient history ({len(scenario_metrics)} runs)")
             continue
+
+        history = scenario_metrics[:-1]
+        latest = scenario_metrics[-1]
 
         # Baselines from all history; latest run is the check target
         baselines = compute_baselines(history, metric_names=["costs"])
@@ -63,7 +73,7 @@ def main():
             rows.append(f"- **{scenario_id}**: no cost baseline available")
             continue
 
-        latest = history[-1]
+        
         violations = check_reference_performance(
             scenario_id=scenario_id,
             reference_performance={"costs": cost_baseline},
@@ -72,10 +82,11 @@ def main():
         if violations:
             regressions.extend(violations)
             rows.append(f"- **{scenario_id}**: regression — {violations[0]}")
-            
+
             # Report issue
-            ctx = GithubContext()
-            if ctx.token and ctx.repository:
+            if api:
+                if benchmark_scenarios is None:
+                    benchmark_scenarios = {s.id: s for s in get_benchmark_scenarios()}
                 regression_info = PerformanceRegressionInfo(
                     scenario_id=scenario_id,
                     github_context=ctx,
@@ -84,12 +95,11 @@ def main():
                     latest_metrics=latest,
                     scenario=benchmark_scenarios.get(scenario_id),
                 )
-                api = GithubApi(repository=ctx.repository, token=ctx.token)
                 title = regression_info.issue_title()
                 body = regression_info.build_issue_body()
                 labels = regression_info.issue_labels()
                 existing = next(
-                    (i for i in api.list_issues(labels=[_ISSUE_LABEL]) if i["title"] == title),
+                    (i for i in api.list_issues(labels=["performance-regression"]) if i["title"] == title),
                     None,
                 )
                 if existing:

@@ -13,9 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   MAD with floor of 1.0) for robust threshold computation.
 - New `check_reference_performance()` function to compare tracked metrics against
   computed baselines.
-- New `benchmark_history` module (`load_scenario_history`, `create_s3_filesystem`)
-  for loading per-scenario metric history from Parquet on S3.
-- `max_age_days` parameter in `load_scenario_history` to discard stale historical runs.
+- New `benchmark_history` module (`load_scenario_metrics`) for loading
+  per-scenario metric history from Parquet on S3.
+- `max_age_days` parameter in `load_scenario_metrics` to discard stale
+  historical runs.
 - `github_issue_handler` now includes `ScenarioRunInfo` and
   `PerformanceRegressionInfo` for formatting benchmark and regression issue markdown.
 - `PerformanceRegressionInfo` now includes scenario metadata (definition
