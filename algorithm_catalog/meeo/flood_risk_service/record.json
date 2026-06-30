@@ -11,14 +11,9 @@
         "title": "Flood Risk Assessment Service",
         "description": "Benchmark scenario for a coastal area near Ferrara, Italy. Tests inundation impact on population, built surface, and cereal cropland under SSP5-8.5 with 1.0m storm surge by 2040.",
         "keywords": [
-            "flood",
-            "flood risk",
-            "disaster risk",
-            "built surface",
-            "population",
-            "agriculture",
-            "cereals",
-            "remote sensing"
+            "natural hazards",
+            "hazards planning",
+            "data analysis"
         ],
         "language": {
             "code": "en-US",
