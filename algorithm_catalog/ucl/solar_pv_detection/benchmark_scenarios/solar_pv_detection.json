@@ -20,8 +20,10 @@
             "north": 35.45,
             "crs": "EPSG:4326"
           },
-          "end_date": "2024-09-30",
-          "months": 3
+          "temporal_extent": [
+            "2024-06-30",
+            "2024-09-30"
+          ]
         },
         "result": true
       }

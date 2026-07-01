@@ -22,10 +22,9 @@ The model and ONNX runtime are loaded from openEO `udf-dependency-archives`.
 ## Inputs
 
 - `spatial_extent`: bounding box (`west`, `south`, `east`, `north`) of the area of interest.
-- `end_date`: end date (ISO-8601, `YYYY-MM-DD`) of the temporal window used to build the cloud-free mosaic.
-- `months`: number of months before `end_date` to include in the mosaic window (default: **3**).
-  Use **3 months** during summer or in regions with predominantly clear skies.
-  Use **6 months** during winter or in persistently cloudy areas to ensure enough cloud-free acquisitions.
+- `temporal_extent`: time window as [`start_date`, `end_date`] (ISO-8601, `YYYY-MM-DD`) used to build the cloud-free mosaic.
+  For summer or predominantly clear-sky periods, use a **3-month window** (for example `2024-06-30` to `2024-09-30`).
+  For winter or persistently cloudy periods, use a **6-month window** to increase the chance of enough clear observations.
 
 ## Outputs
 
