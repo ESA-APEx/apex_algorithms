@@ -108,13 +108,13 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=solar_pv_detection&wizard~processUrl=https://raw.githubusercontent.com/ray-climate/solar_openEO/4aff50b20deae00834d0046f11ad6849e8e3d545/openeo_udp/process_graph/solar_pv_detection_udp.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=solar_pv_detection&wizard~processUrl=https://raw.githubusercontent.com/ray-climate/solar_openEO/main/openeo_udp/process_graph/solar_pv_detection_udp.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/vito/bap_composite/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/ucl/solar_pv_detection/records/thumbnail.png"
     }
   ]
 }
