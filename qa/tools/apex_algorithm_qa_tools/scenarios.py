@@ -101,6 +101,7 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
         r"^(https:\/\/)?openeofed\.dataspace\.copernicus\.eu(\/.*)?$",
         r"^(https:\/\/)?openeo\.cloud(\/.*)?$",
         r"^(https:\/\/)?openeo\.vito\.be(\/.*)?$",
+        r"^(https:\/\/)?openeo\.terrascope\.be(\/.*)?$",
         r"^(https:\/\/)?openeo\.eodc\.eu(\/.*)?$",
     ]
     assert any(re.fullmatch(p, scenario.backend) for p in backend_patterns), f"Unsupported backend: {scenario.backend!r}"
