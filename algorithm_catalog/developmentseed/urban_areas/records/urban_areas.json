@@ -92,7 +92,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/urban_areas/openeo_udp/urban_areas.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/algorithm_catalog/developmentseed/urban_areas/openeo_udp/urban_areas.json"
     },
     {
       "rel": "code",
@@ -104,7 +104,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=urban_areas&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/urban_areas/openeo_udp/urban_areas.json&server=https://openeo.ds.io/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=urban_areas&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/algorithm_catalog/developmentseed/urban_areas/openeo_udp/urban_areas.json&server=https://openeo.ds.io/"
     },
     {
       "rel": "service",
@@ -134,13 +134,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Urban Areas Visualization",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/urban_areas/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/algorithm_catalog/developmentseed/urban_areas/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/urban_areas/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/algorithm_catalog/developmentseed/urban_areas/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
