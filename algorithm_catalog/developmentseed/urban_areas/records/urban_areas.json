@@ -104,19 +104,19 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=urban_areas&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/algorithm_catalog/developmentseed/urban_areas/openeo_udp/urban_areas.json&server=https://openeo.ds.io/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=urban_areas&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/algorithm_catalog/developmentseed/urban_areas/openeo_udp/urban_areas.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "Development Seed OpenEO Backend",
-      "href": "https://openeo.ds.io/"
+      "title": "Copernicus Data Space - Production API",
+      "href": "https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "notebook",
       "type": "application/x-ipynb+json",
       "title": "Algorithm to Visualize Urban Areas and Buildings notebook",
-      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/refs/heads/main/notebooks/sentinel/sentinel-1/land-cover/urban_areas.ipynb"
+      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/42ed3780a0d8ad1bf20442817a68d2ff29e5250a/notebooks/sentinel/sentinel-1/land-cover/urban_areas.ipynb"
     },
     {
       "rel": "platform",
