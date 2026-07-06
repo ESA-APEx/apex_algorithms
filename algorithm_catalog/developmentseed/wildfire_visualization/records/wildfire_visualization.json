@@ -2,7 +2,7 @@
   "id": "wildfire_visualization",
   "type": "Feature",
   "conformsTo": [
-    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
@@ -105,19 +105,19 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wildfire_visualization&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4a73fbd84a6ab05bb92853f1ac6306aa65320f6c/algorithm_catalog/developmentseed/wildfire_visualization/openeo_udp/wildfire_visualization.json&server=https://api.explorer.eopf.copernicus.eu/openeo"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wildfire_visualization&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4a73fbd84a6ab05bb92853f1ac6306aa65320f6c/algorithm_catalog/developmentseed/wildfire_visualization/openeo_udp/wildfire_visualization.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "EOPF Explorer",
-      "href": "https://api.explorer.eopf.copernicus.eu/openeo/"
+      "title": "Copernicus Data Space - Production API",
+      "href": "https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "notebook",
       "type": "application/x-ipynb+json",
       "title": "Algorithm to Visualize Wildfire-Affected Areas notebook",
-      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/8fbad2b6d1959793e204e02550949e9fcd9576cc/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/wildfire_visualization.ipynb"
+      "href": "https://raw.githubusercontent.com/developmentseed/openeo-udp/068cef713c13e0fe472fffa212b1fa3b75d0b50d/notebooks/sentinel/sentinel-2/fire_and_disaster_monitoring/wildfire_visualization.ipynb"
     },
     {
       "rel": "platform",
