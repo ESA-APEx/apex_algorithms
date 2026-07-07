@@ -132,6 +132,12 @@
             "type": "image/tif",
             "title": "Example output",
             "href": "https://s3.waw3-1.cloudferro.com/apex-examples/cropsar2d/openEO.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar2d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar2d/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json&server=https://openeo.terrascope.be"
         }
     ]
 }
