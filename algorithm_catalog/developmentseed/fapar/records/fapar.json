@@ -94,7 +94,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/fapar/openeo_udp/fapar.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/880698e78de0781de1281b5406680c7c69c62f29/algorithm_catalog/developmentseed/fapar/openeo_udp/fapar.json"
     },
     {
       "rel": "code",
@@ -106,7 +106,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=fapar&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/fapar/openeo_udp/fapar.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=fapar&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/880698e78de0781de1281b5406680c7c69c62f29/algorithm_catalog/developmentseed/fapar/openeo_udp/fapar.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -136,13 +136,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "FAPAR Calculation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/fapar/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/880698e78de0781de1281b5406680c7c69c62f29/algorithm_catalog/developmentseed/fapar/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/fapar/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/880698e78de0781de1281b5406680c7c69c62f29/algorithm_catalog/developmentseed/fapar/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
