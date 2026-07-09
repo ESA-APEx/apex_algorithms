@@ -212,7 +212,10 @@
     {
       "name": "time",
       "description": "Temporal range for data acquisition",
-      "schema": {},
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval"
+      },
       "default": [
         "2025-05-10",
         "2025-05-12"
@@ -222,7 +225,10 @@
     {
       "name": "bounding_box",
       "description": "Spatial extent for the \u010cepi\u0107 plain agricultural area",
-      "schema": {},
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box"
+      },
       "default": {
         "west": 14.09,
         "east": 14.27,

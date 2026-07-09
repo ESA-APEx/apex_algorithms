@@ -733,7 +733,10 @@
     {
       "name": "time",
       "description": "Temporal range for data acquisition",
-      "schema": {},
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval"
+      },
       "default": [
         "2025-05-12",
         "2025-05-13"
@@ -743,7 +746,10 @@
     {
       "name": "bounding_box",
       "description": "Spatial extent for Umag Town, Istria Coast, Croatia",
-      "schema": {},
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box"
+      },
       "default": {
         "west": 13.4986,
         "south": 45.4166,
