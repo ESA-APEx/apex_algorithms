@@ -34,7 +34,25 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--s3-bucket", required=True)
     parser.add_argument("--s3-key", default="metrics/v1/metrics.parquet")
+    parser.add_argument(
+        "--metric-name",
+        required=True,
+        help="Metric used for baseline and regression checks.",
+    )
+    parser.add_argument(
+        "--test-outcome",
+        required=True,
+        help="Outcome filter for historical runs (for example: passed). Use 'any' to disable.",
+    )
+    parser.add_argument(
+        "--max-age-days",
+        required=True,
+        type=int,
+        help="Maximum age of historical runs to consider.",
+    )
     args = parser.parse_args()
+    metric_name = args.metric_name
+    test_outcome = None if args.test_outcome.lower() == "any" else args.test_outcome
 
     fs = create_s3_filesystem()
     parquet_path = f"{args.s3_bucket}/{args.s3_key}"
@@ -48,7 +66,7 @@ def main():
         .tolist()
     )
 
-    regressions = []
+    regression_messages = []
     rows = []
     benchmark_scenarios = None
 
@@ -58,7 +76,14 @@ def main():
         api = GithubApi(repository=ctx.repository, token=ctx.token)
 
     for scenario_id in sorted(scenario_ids):
-        scenario_metrics = load_scenario_metrics(parquet_path, scenario_id, filesystem=fs)
+        scenario_metrics = load_scenario_metrics(
+            parquet_path,
+            scenario_id,
+            filesystem=fs,
+            metric_names=[metric_name],
+            test_outcome=test_outcome,
+            max_age_days=args.max_age_days,
+        )
         if len(scenario_metrics) < 3:
             rows.append(f"- **{scenario_id}**: insufficient history ({len(scenario_metrics)} runs)")
             continue
@@ -67,21 +92,21 @@ def main():
         latest = scenario_metrics[-1]
 
         # Baselines from all history; latest run is the check target
-        baselines = compute_baselines(history, metric_names=["costs"])
-        cost_baseline = baselines.get("costs")
-        if not cost_baseline:
-            rows.append(f"- **{scenario_id}**: no cost baseline available")
+        baselines = compute_baselines(history, metric_names=[metric_name])
+        metric_baseline = baselines.get(metric_name)
+        if not metric_baseline:
+            rows.append(f"- **{scenario_id}**: no {metric_name} baseline available")
             continue
 
-        
         violations = check_reference_performance(
             scenario_id=scenario_id,
-            reference_performance={"costs": cost_baseline},
+            reference_performance={metric_name: metric_baseline},
             tracked_metrics=latest,
         )
         if violations:
-            regressions.extend(violations)
-            rows.append(f"- **{scenario_id}**: regression — {violations[0]}")
+            regression_messages.extend(violations)
+            violation_text = "; ".join(violations)
+            rows.append(f"- **{scenario_id}**: regression — {violation_text}")
 
             # Report issue
             if api:
@@ -90,8 +115,8 @@ def main():
                 regression_info = PerformanceRegressionInfo(
                     scenario_id=scenario_id,
                     github_context=ctx,
-                    violation=violations[0],
-                    baseline=cost_baseline,
+                    violation=violation_text,
+                    baseline=metric_baseline,
                     latest_metrics=latest,
                     scenario=benchmark_scenarios.get(scenario_id),
                 )
@@ -107,23 +132,23 @@ def main():
                 else:
                     api.create_issue(title=title, body=body, labels=labels)
         else:
-            rows.append(f"- **{scenario_id}**: ok (costs={latest.get('costs', 'n/a')})")
+            rows.append(f"- **{scenario_id}**: ok ({metric_name}={latest.get(metric_name, 'n/a')})")
 
     # Write GitHub step summary
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_path:
         with open(summary_path, "a") as f:
             f.write("## Performance Regression Check\n\n")
-            if regressions:
-                f.write(f"**{len(regressions)} regression(s) detected.**\n\n")
+            if regression_messages:
+                f.write(f"**{len(regression_messages)} regression(s) detected.**\n\n")
             else:
                 f.write("**No regressions detected.**\n\n")
             f.write("\n".join(rows) + "\n")
 
     print("\n".join(rows))
 
-    if regressions:
-        print(f"\n{len(regressions)} regression(s) detected.", file=sys.stderr)
+    if regression_messages:
+        print(f"\n{len(regression_messages)} regression(s) detected.", file=sys.stderr)
         sys.exit(1)
 
 
