@@ -1,0 +1,151 @@
+{
+  "id": "force",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-06-26T11:00:00Z",
+    "updated": "2026-06-26T11:00:00Z",
+    "type": "service",
+    "title": "Framework for Operational Radiometric Correction for Environmental monitoring",
+    "description": "",
+    "keywords": [
+      "Sentinel-2",
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "David Frantz",
+        "position": "Professor",
+        "organization": "Geoinformatics - Spatial Data Science, Trier University",
+        "email": "david.frantz@uni-trier.de",
+        "roles": [
+            "principal investigator"
+        ],
+        "links": [
+            {
+                "href": "https://www.uni-trier.de/universitaet/fachbereiche-faecher/fachbereich-vi/faecher/geoinformatik",
+                "title": "Fachverbund Geoinformatik - Universität Trier",
+                "rel": "about",
+                "type": "text/html"
+            },
+            {
+                "href": "https://github.com/davidfrantz/force",
+                "title": "FORCE source code repository - Github",
+                "rel": "about",
+                "type": "text/html"
+            },
+            {
+                "href": "https://force-eo.readthedocs.io/",
+                "title": "FORCE documentation",
+                "rel": "about",
+                "type": "text/html"
+            },
+        ]
+
+      },
+      {
+        "name": "Hannes Neuschmidt",
+        "position": "Software Engineer",
+        "organization": "Brockmann Consult GmbH",
+        "links": [
+          {
+            "href": "https://www.brockmann-consult.de/",
+            "title": "Brockmann Consult GmbH website",
+            "rel": "about",
+            "type": "text/html"
+          },
+        ],
+        "contactInstructions": "Contact via Brockmann Consult GmbH",
+        "roles": [
+          "implementor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          },
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+    ],
+    "license": "GPLV3.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+        "rel": "about",
+        "type": "text/html",
+        "title": "Scientific Publication",
+        "href": "https://doi.org/10.3390/rs16111833"
+    },
+    {
+        "rel": "code",
+        "type": "text/html",
+        "title": "Source code repository used to generate the process graph",
+        "href": "https://github.com/bcdev/apex-efast-openeo"
+    },
+    {
+        "rel": "notebook",
+        "type": "application/x-ipynb+json",
+        "title": "Example notebook, describing parameters and use of the UDP",
+        "href": "https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/notebooks/EFAST_example_jupyterlite.ipynb"
+    },
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/process_graph.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Brockmann Consult GmbH",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=efast&wizard~processUrl=https://raw.githubusercontent.com/bcdev/efast-process-graph/refs/heads/main/process_graph.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+        "rel": "thumbnail",
+        "type": "image/png",
+        "title": "Thumbnail image",
+        "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/dhi/efast/records/thumbnail.png"
+    }
+  ]
+}
