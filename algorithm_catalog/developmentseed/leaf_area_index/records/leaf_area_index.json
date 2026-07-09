@@ -94,7 +94,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/leaf_area_index/openeo_udp/leaf_area_index.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9ce5b44189a16a8c3b4d26839e5261a2e09883ef/algorithm_catalog/developmentseed/leaf_area_index/openeo_udp/leaf_area_index.json"
     },
     {
       "rel": "code",
@@ -106,7 +106,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=leaf_area_index&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/leaf_area_index/openeo_udp/leaf_area_index.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=leaf_area_index&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9ce5b44189a16a8c3b4d26839e5261a2e09883ef/algorithm_catalog/developmentseed/leaf_area_index/openeo_udp/leaf_area_index.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -136,13 +136,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Leaf Area Index Calculation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/leaf_area_index/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9ce5b44189a16a8c3b4d26839e5261a2e09883ef/algorithm_catalog/developmentseed/leaf_area_index/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/leaf_area_index/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9ce5b44189a16a8c3b4d26839e5261a2e09883ef/algorithm_catalog/developmentseed/leaf_area_index/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
