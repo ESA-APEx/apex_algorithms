@@ -93,7 +93,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4a73fbd84a6ab05bb92853f1ac6306aa65320f6c/algorithm_catalog/developmentseed/wildfire_visualization/openeo_udp/wildfire_visualization.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/wildfire_visualization/openeo_udp/wildfire_visualization.json"
     },
     {
       "rel": "code",
@@ -105,7 +105,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wildfire_visualization&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4a73fbd84a6ab05bb92853f1ac6306aa65320f6c/algorithm_catalog/developmentseed/wildfire_visualization/openeo_udp/wildfire_visualization.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=wildfire_visualization&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/wildfire_visualization/openeo_udp/wildfire_visualization.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -135,13 +135,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Wildfire Visualization",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4a73fbd84a6ab05bb92853f1ac6306aa65320f6c/algorithm_catalog/developmentseed/wildfire_visualization/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/wildfire_visualization/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4a73fbd84a6ab05bb92853f1ac6306aa65320f6c/algorithm_catalog/developmentseed/wildfire_visualization/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/wildfire_visualization/records/thumbnail.png"
     },
     {
       "rel": "cite-as",

@@ -419,7 +419,10 @@
     {
       "name": "time",
       "description": "Temporal range for data acquisition",
-      "schema": {},
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval"
+      },
       "default": [
         "2025-08-19",
         "2025-08-22"
@@ -429,7 +432,10 @@
     {
       "name": "bounding_box",
       "description": "Spatial extent for a plain in central Portugal",
-      "schema": {},
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box"
+      },
       "default": {
         "west": -7.91,
         "south": 40.14,
@@ -441,7 +447,9 @@
     {
       "name": "cloud_cover",
       "description": "Maximum cloud cover percentage",
-      "schema": {},
+      "schema": {
+        "type": "number"
+      },
       "default": 30,
       "optional": true
     }
