@@ -1,0 +1,65 @@
+{
+    "id": "ucl",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-05-21T00:00:00Z",
+        "updated": "2026-05-21T00:00:00Z",
+        "type": "algorithm_provider",
+        "title": "University College London",
+        "description": "University College London (UCL) is a public research university in London, United Kingdom. The solar PV detection service is contributed by researchers at UCL using machine-learning techniques on Sentinel-2 imagery.",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Rui Song",
+                "organization": "University College London",
+                "emails": [
+                    {
+                        "value": "rui.song@ucl.ac.uk"
+                    }
+                ],
+                "roles": [
+                    "principal investigator"
+                ]
+            }
+        ],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@ucl.ac.uk"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "UCL",
+            "href": "https://www.ucl.ac.uk/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.hdruk.ac.uk/wp-content/uploads/2022/05/UCL-Partners-1-300x169.png"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.hdruk.ac.uk/wp-content/uploads/2022/05/UCL-Partners-1-300x169.png"
+        }
+    ]
+}

@@ -100,8 +100,8 @@
         {
             "rel": "service",
             "type": "application/json",
-            "title": "VITO openEO backend",
-            "href": "https://openeo.vito.be/openeo"
+            "title": "Terrascope openEO backend",
+            "href": "https://openeo.terrascope.be/openeo"
         },
         {
             "rel": "platform",
