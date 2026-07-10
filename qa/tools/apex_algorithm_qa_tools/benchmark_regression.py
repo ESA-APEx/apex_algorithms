@@ -7,6 +7,26 @@ from statistics import median as _median
 _log = logging.getLogger(__name__)
 
 
+def compute_threshold_stats(
+    values: list[float], *, k: float = 3.5, min_scaled_mad: float = 1.0
+) -> dict[str, float]:
+    """Compute MAD-based threshold statistics for one metric sample series."""
+    median = _median(values)
+    mad_raw = _median([abs(v - median) for v in values])
+    mad_scaled_raw = 1.4826 * mad_raw
+    mad_scaled = max(min_scaled_mad, mad_scaled_raw)
+    threshold = round(median + k * mad_scaled, 4)
+    return {
+        "observations": float(len(values)),
+        "median": float(median),
+        "mad_raw": float(mad_raw),
+        "mad_scaled_raw": float(mad_scaled_raw),
+        "mad_scaled": float(mad_scaled),
+        "k": float(k),
+        "threshold": float(threshold),
+    }
+
+
 def check_reference_performance(
     scenario_id: str,
     reference_performance: dict,
@@ -47,9 +67,7 @@ def _compute_threshold(values: list[float]) -> float:
     Returns:
         Regression threshold upper bound.
     """
-    median = _median(values)
-    scaled_mad = max(1.0, 1.4826 * _median([abs(v - median) for v in values]))
-    return round(median + 3.5 * scaled_mad, 4)
+    return compute_threshold_stats(values)["threshold"]
 
 
 def compute_baselines(
