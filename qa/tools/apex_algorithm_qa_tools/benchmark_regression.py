@@ -15,7 +15,8 @@ def compute_threshold_stats(
     mad_raw = _median([abs(v - median) for v in values])
     mad_scaled_raw = 1.4826 * mad_raw
     mad_scaled = max(min_scaled_mad, mad_scaled_raw)
-    threshold = round(median + k * mad_scaled, 4)
+    upper_limit = round(median + k * mad_scaled, 4)
+    lower_limit = round(max(0.0, median - k * mad_scaled), 4)
     return {
         "observations": float(len(values)),
         "median": float(median),
@@ -23,7 +24,9 @@ def compute_threshold_stats(
         "mad_scaled_raw": float(mad_scaled_raw),
         "mad_scaled": float(mad_scaled),
         "k": float(k),
-        "threshold": float(threshold),
+        "threshold": float(upper_limit),
+        "upper_limit": float(upper_limit),
+        "lower_limit": float(lower_limit),
     }
 
 
@@ -48,6 +51,12 @@ def check_reference_performance(
         actual = tracked_metrics.get(metric_name)
         if actual is None:
             continue
+
+        if "min" in ref and actual < ref["min"]:
+            violations.append(
+                f"[{scenario_id}] regression in {metric_name!r}: "
+                f"actual={actual} below min={ref['min']}"
+            )
 
         if actual > ref["max"]:
             violations.append(
@@ -105,6 +114,12 @@ def compute_baselines(
             )
             continue
 
-        baselines[name] = {"max": _compute_threshold(values)}
+        stats = compute_threshold_stats(values)
+        baselines[name] = {
+            "max": stats["upper_limit"],
+            "min": stats["lower_limit"],
+            "median": stats["median"],
+            "mad_scaled": stats["mad_scaled"],
+        }
 
     return baselines
