@@ -1,9 +1,12 @@
-name: "Performance Regression Analysis"
+name: "Regression Testing"
 
 on:
-  schedule:
-    - cron: "0 6 * * 1"  # Every Monday at 06:00 UTC
+  push:
+    branches:
+      - hv_regresion_benchmark
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
 
 jobs:
   regression-analysis:
