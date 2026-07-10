@@ -140,12 +140,19 @@ def main():
             if api:
                 if benchmark_scenarios is None:
                     benchmark_scenarios = {s.id: s for s in get_benchmark_scenarios()}
+                history_values = [
+                    float(row[metric_name])
+                    for row in history
+                    if isinstance(row.get(metric_name), (int, float))
+                ]
                 regression_info = PerformanceRegressionInfo(
                     scenario_id=scenario_id,
                     github_context=ctx,
                     violation=violation_text,
                     baseline=metric_baseline,
                     latest_metrics=latest,
+                    history_values=history_values,
+                    metric_name=metric_name,
                     scenario=benchmark_scenarios.get(scenario_id),
                 )
                 title = regression_info.issue_title()

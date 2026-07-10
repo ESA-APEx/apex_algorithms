@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
+from apex_algorithm_qa_tools.benchmark_regression import compute_threshold_stats
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
     get_benchmark_scenarios,
@@ -450,6 +451,8 @@ class PerformanceRegressionInfo:
     violation: str
     baseline: dict
     latest_metrics: dict
+    history_values: List[float] = dataclasses.field(default_factory=list)
+    metric_name: str = "costs"
     scenario: BenchmarkScenario | None = None
 
     def issue_title(self) -> str:
@@ -457,6 +460,85 @@ class PerformanceRegressionInfo:
 
     def issue_labels(self) -> List[str]:
         return ["performance-regression", BENCHMARK_LABEL]
+
+    @staticmethod
+    def _format_number(value: Any) -> str:
+        if isinstance(value, (int, float)):
+            return f"{float(value):.4f}".rstrip("0").rstrip(".")
+        return "n/a"
+
+    @staticmethod
+    def _decision_stats(values: List[float]) -> Dict[str, float] | None:
+        if not values:
+            return None
+        return compute_threshold_stats(values)
+
+    def _build_mermaid_cost_chart(self, baseline_val: Any, latest_val: Any) -> str:
+        history = [float(v) for v in self.history_values if isinstance(v, (int, float))]
+        latest = float(latest_val) if isinstance(latest_val, (int, float)) else None
+        baseline = float(baseline_val) if isinstance(baseline_val, (int, float)) else None
+        stats = self._decision_stats(history)
+
+        observed = list(history)
+        labels = [f"h{i+1}" for i in range(len(history))]
+        if latest is not None:
+            observed.append(latest)
+            labels.append("latest")
+
+        if len(observed) < 2:
+            return ""
+
+        threshold = stats["threshold"] if stats else baseline
+        median_val = stats["median"] if stats else None
+        mad_upper = median_val + stats["mad_scaled"] if stats else None
+        mad_lower = max(0.0, median_val - stats["mad_scaled"]) if stats else None
+        hist_max = max(history) if history else None
+
+        threshold_series = [threshold] * len(observed) if threshold is not None else []
+        median_series = [median_val] * len(observed) if median_val is not None else []
+        mad_upper_series = [mad_upper] * len(observed) if mad_upper is not None else []
+        mad_lower_series = [mad_lower] * len(observed) if mad_lower is not None else []
+        hist_max_series = [hist_max] * len(observed) if hist_max is not None else []
+
+        ymax_candidates = (
+            observed
+            + threshold_series
+            + median_series
+            + mad_upper_series
+            + mad_lower_series
+            + hist_max_series
+        )
+        ymax = max(ymax_candidates) if ymax_candidates else 1.0
+        ymax = max(1.0, ymax * 1.1)
+
+        labels_text = ", ".join(f'"{x}"' for x in labels)
+        observed_text = ", ".join(self._format_number(v) for v in observed)
+        threshold_text = ", ".join(self._format_number(v) for v in threshold_series)
+        median_text = ", ".join(self._format_number(v) for v in median_series)
+        mad_upper_text = ", ".join(self._format_number(v) for v in mad_upper_series)
+        mad_lower_text = ", ".join(self._format_number(v) for v in mad_lower_series)
+        hist_max_text = ", ".join(self._format_number(v) for v in hist_max_series)
+
+        lines = [
+            "```mermaid",
+            "xychart-beta",
+            f'    title "{self.metric_name} trend ({self.scenario_id})"',
+            f"    x-axis [{labels_text}]",
+            f'    y-axis "{self.metric_name}" 0 --> {self._format_number(ymax)}',
+            f"    line [{observed_text}]",
+        ]
+        if threshold_series:
+            lines.append(f"    line [{threshold_text}]")
+        if median_series:
+            lines.append(f"    line [{median_text}]")
+        if mad_upper_series:
+            lines.append(f"    line [{mad_upper_text}]")
+        if mad_lower_series:
+            lines.append(f"    line [{mad_lower_text}]")
+        if hist_max_series:
+            lines.append(f"    line [{hist_max_text}]")
+        lines.append("```")
+        return "\n".join(lines)
 
     def build_issue_body(self) -> str:
         parts = [f"**Scenario**: `{self.scenario_id}`"]
@@ -471,13 +553,36 @@ class PerformanceRegressionInfo:
         parts.append(f"\n### Regression\n\n{self.violation}")
         
         baseline_val = self.baseline.get("max", self.baseline.get("value", "n/a"))
-        latest_val = self.latest_metrics.get("costs", "n/a")
+        latest_val = self.latest_metrics.get(self.metric_name, "n/a")
+        obs = len(self.history_values)
+        stats = self._decision_stats(self.history_values)
+        hist_min = min(self.history_values) if obs else None
+        hist_max = max(self.history_values) if obs else None
+        median_val = stats["median"] if stats else None
+
         parts.append(f"""
 ### Cost Trend
 
 | Metric | Baseline | Latest |
 |--------|----------|--------|
-| costs  | {baseline_val} | {latest_val} |""")
+| {self.metric_name} | {self._format_number(baseline_val)} | {self._format_number(latest_val)} |""")
+
+        parts.append(f"""
+    ### Summary
+
+    | Observations | Median | Min | Max | Current |
+    |--------------|--------|-----|-----|---------|
+    | {obs} | {self._format_number(median_val)} | {self._format_number(hist_min)} | {self._format_number(hist_max)} | {self._format_number(latest_val)} |""")
+
+        mermaid_chart = self._build_mermaid_cost_chart(baseline_val=baseline_val, latest_val=latest_val)
+        if mermaid_chart:
+            parts.append(f"""
+### Cost Plot (history + latest)
+
+Legend: observed, threshold, median, MAD upper, MAD lower, historical max.
+
+{mermaid_chart}
+""")
         
         if contacts := _get_contacts(self.scenario):
             c = contacts[0]
