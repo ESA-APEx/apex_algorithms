@@ -24,6 +24,15 @@ from apex_algorithm_qa_tools.github_issue_handler import GithubApi, GithubContex
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
 
 
+def _scenario_id_from_nodeid(nodeid: str) -> str:
+    """Derive scenario identifier from a pytest nodeid string."""
+    if "[" in nodeid and nodeid.endswith("]"):
+        return nodeid.rsplit("[", 1)[1][:-1]
+    if "::" in nodeid:
+        return nodeid.rsplit("::", 1)[1]
+    return nodeid
+
+
 def main():
     """Run weekly performance regression checks and report findings.
 
@@ -44,11 +53,19 @@ def main():
     fs = create_s3_filesystem()
     parquet_path = f"{args.s3_bucket}/{args.s3_key}"
 
+    dataset = ds.dataset(parquet_path, filesystem=fs)
+    if "test:nodeid" not in dataset.schema.names:
+        print(
+            "No test:nodeid column found in benchmark metrics dataset.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     scenario_ids = (
-        ds.dataset(parquet_path, filesystem=fs)
-        .to_table(columns=["scenario_id"])
-        .to_pandas()["scenario_id"]
+        dataset.to_table(columns=["test:nodeid"])
+        .to_pandas()["test:nodeid"]
         .dropna()
+        .astype(str)
+        .map(_scenario_id_from_nodeid)
         .unique()
         .tolist()
     )
