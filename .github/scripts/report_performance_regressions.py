@@ -12,12 +12,12 @@ Usage::
 """
 
 import argparse
+import datetime
 import os
 import sys
 
 import pyarrow.dataset as ds
 
-from apex_algorithm_qa_tools.benchmark_history import load_scenario_metrics
 from apex_algorithm_qa_tools.benchmark_regression import check_reference_performance, compute_baselines
 from apex_algorithm_qa_tools.common import create_s3_filesystem
 from apex_algorithm_qa_tools.github_issue_handler import GithubApi, GithubContext, PerformanceRegressionInfo
@@ -54,21 +54,39 @@ def main():
     parquet_path = f"{args.s3_bucket}/{args.s3_key}"
 
     dataset = ds.dataset(parquet_path, filesystem=fs)
-    if "test:nodeid" not in dataset.schema.names:
+    required_columns = ["test:nodeid", metric_name, "test:outcome", "test:start"]
+    missing_columns = [c for c in required_columns if c not in dataset.schema.names]
+    if missing_columns:
         print(
-            "No test:nodeid column found in benchmark metrics dataset.",
+            f"Benchmark metrics schema mismatch. Missing required column(s): {', '.join(missing_columns)}.",
             file=sys.stderr,
         )
         sys.exit(1)
-    scenario_ids = (
-        dataset.to_table(columns=["test:nodeid"])
-        .to_pandas()["test:nodeid"]
-        .dropna()
-        .astype(str)
-        .map(_scenario_id_from_nodeid)
-        .unique()
-        .tolist()
-    )
+
+    metrics_df = dataset.to_table(columns=required_columns).to_pandas()
+    metrics_df = metrics_df[metrics_df["test:outcome"] == test_outcome]
+
+    if metrics_df.empty:
+        print("No benchmark rows found after applying filters.")
+        return
+
+    metrics_df["scenario_id"] = metrics_df["test:nodeid"].astype(str).map(_scenario_id_from_nodeid)
+    metrics_df["test:start"] = metrics_df["test:start"].astype(float)
+    cutoff_epoch = (
+        datetime.datetime.now(tz=datetime.timezone.utc)
+        - datetime.timedelta(days=max_age_days)
+    ).timestamp()
+    metrics_df = metrics_df[metrics_df["test:start"] >= cutoff_epoch]
+    metrics_df = metrics_df.sort_values("test:start")
+
+    if metrics_df.empty:
+        print("No benchmark rows found after applying filters.")
+        return
+
+    scenario_metrics_by_id = {
+        scenario_id: group[[metric_name]].to_dict("records")
+        for scenario_id, group in metrics_df.groupby("scenario_id", sort=True)
+    }
 
     regression_messages = []
     rows = []
@@ -79,15 +97,8 @@ def main():
     if ctx.token and ctx.repository:
         api = GithubApi(repository=ctx.repository, token=ctx.token)
 
-    for scenario_id in sorted(scenario_ids):
-        scenario_metrics = load_scenario_metrics(
-            parquet_path,
-            scenario_id,
-            filesystem=fs,
-            metric_names=[metric_name],
-            test_outcome=test_outcome,
-            max_age_days=max_age_days,
-        )
+    for scenario_id in sorted(scenario_metrics_by_id):
+        scenario_metrics = scenario_metrics_by_id[scenario_id]
         if len(scenario_metrics) < 3:
             rows.append(f"- **{scenario_id}**: insufficient history ({len(scenario_metrics)} runs)")
             continue
