@@ -49,10 +49,12 @@ def main():
     metric_name = "costs"
     test_outcome = "passed"
     max_age_days = 60
+    print(f"[progress] Starting regression check for {args.s3_bucket}/{args.s3_key}")
 
     fs = create_s3_filesystem()
     parquet_path = f"{args.s3_bucket}/{args.s3_key}"
 
+    print("[progress] Loading dataset schema")
     dataset = ds.dataset(parquet_path, filesystem=fs)
     required_columns = ["test:nodeid", metric_name, "test:outcome", "test:start"]
     missing_columns = [c for c in required_columns if c not in dataset.schema.names]
@@ -63,8 +65,11 @@ def main():
         )
         sys.exit(1)
 
+    print("[progress] Reading required columns into memory")
     metrics_df = dataset.to_table(columns=required_columns).to_pandas()
+    print(f"[progress] Loaded {len(metrics_df)} total row(s)")
     metrics_df = metrics_df[metrics_df["test:outcome"] == test_outcome]
+    print(f"[progress] Rows after outcome filter ({test_outcome}): {len(metrics_df)}")
 
     if metrics_df.empty:
         print("No benchmark rows found after applying filters.")
@@ -78,6 +83,7 @@ def main():
     ).timestamp()
     metrics_df = metrics_df[metrics_df["test:start"] >= cutoff_epoch]
     metrics_df = metrics_df.sort_values("test:start")
+    print(f"[progress] Rows after age filter ({max_age_days} days): {len(metrics_df)}")
 
     if metrics_df.empty:
         print("No benchmark rows found after applying filters.")
@@ -87,6 +93,8 @@ def main():
         scenario_id: group[[metric_name]].to_dict("records")
         for scenario_id, group in metrics_df.groupby("scenario_id", sort=True)
     }
+    total_scenarios = len(scenario_metrics_by_id)
+    print(f"[progress] Evaluating {total_scenarios} scenario(s)")
 
     regression_messages = []
     rows = []
@@ -96,8 +104,13 @@ def main():
     api = None
     if ctx.token and ctx.repository:
         api = GithubApi(repository=ctx.repository, token=ctx.token)
+        print("[progress] GitHub issue reporting is enabled")
+    else:
+        print("[progress] GitHub issue reporting is disabled")
 
-    for scenario_id in sorted(scenario_metrics_by_id):
+    for i, scenario_id in enumerate(sorted(scenario_metrics_by_id), start=1):
+        if i == 1 or i % 25 == 0 or i == total_scenarios:
+            print(f"[progress] Processing scenario {i}/{total_scenarios}: {scenario_id}")
         scenario_metrics = scenario_metrics_by_id[scenario_id]
         if len(scenario_metrics) < 3:
             rows.append(f"- **{scenario_id}**: insufficient history ({len(scenario_metrics)} runs)")
@@ -161,6 +174,7 @@ def main():
             f.write("\n".join(rows) + "\n")
 
     print("\n".join(rows))
+    print(f"[progress] Completed. Regressions detected: {len(regression_messages)}")
 
     if regression_messages:
         print(f"\n{len(regression_messages)} regression(s) detected.", file=sys.stderr)
