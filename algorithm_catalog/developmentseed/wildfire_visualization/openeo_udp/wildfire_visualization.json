@@ -29,15 +29,11 @@
           }
         },
         "spatial_extent": {
-          "west": -7.91,
-          "south": 40.14,
-          "east": -7.62,
-          "north": 40.35
+          "from_parameter": "bounding_box"
         },
-        "temporal_extent": [
-          "2025-08-19",
-          "2025-08-22"
-        ]
+        "temporal_extent": {
+          "from_parameter": "time"
+        }
       }
     },
     "maskpolygon1": {

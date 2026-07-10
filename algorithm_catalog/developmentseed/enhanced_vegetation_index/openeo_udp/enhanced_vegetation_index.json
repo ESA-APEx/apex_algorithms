@@ -9,15 +9,11 @@
         ],
         "id": "SENTINEL2_L2A",
         "spatial_extent": {
-          "west": 13.4986,
-          "south": 45.4166,
-          "east": 13.5876,
-          "north": 45.4558
+          "from_parameter": "bounding_box"
         },
-        "temporal_extent": [
-          "2025-05-12",
-          "2025-05-13"
-        ]
+        "temporal_extent": {
+          "from_parameter": "time"
+        }
       }
     },
     "maskpolygon1": {
