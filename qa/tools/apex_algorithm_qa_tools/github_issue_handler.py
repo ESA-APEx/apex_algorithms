@@ -567,7 +567,9 @@ class PerformanceRegressionInfo:
                 [
                     "### Summary",
                     "",
-                    f"current {self._format_number(latest_val)}, median {self._format_number(median_val)}, upper_limit {self._format_number(upper_limit)}, lower_limit {self._format_number(lower_limit)}, number_of_obs {obs}",
+                    "| current | median | upper_limit | lower_limit | number_of_obs |",
+                    "|---------|--------|-------------|-------------|---------------|",
+                    f"| {self._format_number(latest_val)} | {self._format_number(median_val)} | {self._format_number(upper_limit)} | {self._format_number(lower_limit)} | {obs} |",
                 ]
             )
         )
