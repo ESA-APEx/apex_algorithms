@@ -6,7 +6,7 @@ and checks the most recent run per scenario for cost regressions.
 
 Usage::
 
-    python check_performance_regressions.py \
+    python report_performance_regressions.py \
         --s3-bucket apex-benchmarks \
         --s3-key metrics/v1/metrics.parquet
 """
@@ -30,29 +30,16 @@ def main():
     CLI params:
         --s3-bucket: Required bucket name containing metrics parquet.
         --s3-key: Optional key/path to parquet data inside the bucket.
+        Filtering is fixed to passed runs in the most recent 60 days.
+        Metric is fixed to costs.
     """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--s3-bucket", required=True)
     parser.add_argument("--s3-key", default="metrics/v1/metrics.parquet")
-    parser.add_argument(
-        "--metric-name",
-        required=True,
-        help="Metric used for baseline and regression checks.",
-    )
-    parser.add_argument(
-        "--test-outcome",
-        required=True,
-        help="Outcome filter for historical runs (for example: passed). Use 'any' to disable.",
-    )
-    parser.add_argument(
-        "--max-age-days",
-        required=True,
-        type=int,
-        help="Maximum age of historical runs to consider.",
-    )
     args = parser.parse_args()
-    metric_name = args.metric_name
-    test_outcome = None if args.test_outcome.lower() == "any" else args.test_outcome
+    metric_name = "costs"
+    test_outcome = "passed"
+    max_age_days = 60
 
     fs = create_s3_filesystem()
     parquet_path = f"{args.s3_bucket}/{args.s3_key}"
@@ -82,7 +69,7 @@ def main():
             filesystem=fs,
             metric_names=[metric_name],
             test_outcome=test_outcome,
-            max_age_days=args.max_age_days,
+            max_age_days=max_age_days,
         )
         if len(scenario_metrics) < 3:
             rows.append(f"- **{scenario_id}**: insufficient history ({len(scenario_metrics)} runs)")
