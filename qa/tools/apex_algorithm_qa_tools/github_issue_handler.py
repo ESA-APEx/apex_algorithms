@@ -452,6 +452,8 @@ class PerformanceRegressionInfo:
     baseline: dict
     latest_metrics: dict
     history_values: List[float] = dataclasses.field(default_factory=list)
+    history_labels: List[str] = dataclasses.field(default_factory=list)
+    latest_label: str = "latest"
     metric_name: str = "costs"
     scenario: BenchmarkScenario | None = None
 
@@ -486,10 +488,12 @@ class PerformanceRegressionInfo:
         stats = self._decision_stats(history)
 
         observed = list(history)
-        labels = [f"h{i+1}" for i in range(len(history))]
+        labels = list(self.history_labels)
+        if len(labels) != len(history):
+            labels = [f"h{i+1}" for i in range(len(history))]
         if latest is not None:
             observed.append(latest)
-            labels.append("latest")
+            labels.append(self.latest_label)
 
         if len(observed) < 2:
             return ""
@@ -497,42 +501,41 @@ class PerformanceRegressionInfo:
         median_val = stats["median"] if stats else None
         mad_upper = median_val + stats["mad_scaled"] if stats else None
         mad_lower = max(0.0, median_val - stats["mad_scaled"]) if stats else None
+        mad_series = [median_val] * len(observed) if median_val is not None else []
 
         mad_upper_series = [mad_upper] * len(observed) if mad_upper is not None else []
         mad_lower_series = [mad_lower] * len(observed) if mad_lower is not None else []
-        latest_marker_series = []
-        if latest is not None:
-            latest_marker_series = [0.0] * (len(observed) - 1) + [latest]
 
         ymax_candidates = (
             observed
+            + mad_series
             + mad_upper_series
             + mad_lower_series
-            + latest_marker_series
         )
         ymax = max(ymax_candidates) if ymax_candidates else 1.0
         ymax = max(1.0, ymax * 1.1)
 
         labels_text = ", ".join(f'"{x}"' for x in labels)
         observed_text = self._format_mermaid_series(observed, label="observed")
+        mad_text = self._format_mermaid_series(mad_series, label="mad")
         mad_upper_text = self._format_mermaid_series(mad_upper_series, label="mad upper")
         mad_lower_text = self._format_mermaid_series(mad_lower_series, label="mad lower")
-        latest_marker_text = self._format_mermaid_series(latest_marker_series, label="latest")
 
         lines = [
             "```mermaid",
+            "%%{init: {'theme':'base','themeVariables':{'xyChart':{'plotColorPalette':'#111111,#d32f2f,#f57c00,#1976d2'}}}}%%",
             "xychart-beta",
             f'    title "{self.metric_name} trend ({self.scenario_id})"',
             f"    x-axis [{labels_text}]",
             f'    y-axis "{self.metric_name}" 0 --> {self._format_number(ymax)}',
             f"    line [{observed_text}]",
         ]
+        if mad_series:
+            lines.append(f"    line [{mad_text}]")
         if mad_upper_series:
             lines.append(f"    line [{mad_upper_text}]")
         if mad_lower_series:
             lines.append(f"    line [{mad_lower_text}]")
-        if latest_marker_series:
-            lines.append(f"    line [{latest_marker_text}]")
         lines.append("```")
         return "\n".join(lines)
 
@@ -557,18 +560,11 @@ class PerformanceRegressionInfo:
         median_val = stats["median"] if stats else None
 
         parts.append(f"""
-### Cost Trend
-
-| Metric | Baseline | Latest |
-|--------|----------|--------|
-| {self.metric_name} | {self._format_number(baseline_val)} | {self._format_number(latest_val)} |""")
-
-        parts.append(f"""
     ### Summary
 
-    | Observations | Median | Min | Max | Current |
-    |--------------|--------|-----|-----|---------|
-    | {obs} | {self._format_number(median_val)} | {self._format_number(hist_min)} | {self._format_number(hist_max)} | {self._format_number(latest_val)} |""")
+    | Metric | Baseline | Current | Observations | Median | Min | Max |
+    |--------|----------|---------|--------------|--------|-----|-----|
+    | {self.metric_name} | {self._format_number(baseline_val)} | {self._format_number(latest_val)} | {obs} | {self._format_number(median_val)} | {self._format_number(hist_min)} | {self._format_number(hist_max)} |""")
 
         mermaid_chart = self._build_mermaid_cost_chart(baseline_val=baseline_val, latest_val=latest_val)
         if mermaid_chart:
@@ -577,9 +573,9 @@ class PerformanceRegressionInfo:
 
 Legend:
 - line 1: observed values (history + latest)
-- line 2: MAD upper limit
-- line 3: MAD lower limit
-- bar: latest value highlight
+- line 2: MAD
+- line 3: MAD upper limit
+- line 4: MAD lower limit
 
 {mermaid_chart}
 """)

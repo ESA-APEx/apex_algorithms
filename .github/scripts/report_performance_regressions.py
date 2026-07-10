@@ -48,7 +48,7 @@ def main():
     args = parser.parse_args()
     metric_name = "costs"
     test_outcome = "passed"
-    max_age_days = 60
+    max_age_days = 90
     print(f"[progress] Starting regression check for {args.s3_bucket}/{args.s3_key}")
 
     fs = create_s3_filesystem()
@@ -90,7 +90,7 @@ def main():
         return
 
     scenario_metrics_by_id = {
-        scenario_id: group[[metric_name]].to_dict("records")
+        scenario_id: group[[metric_name, "test:start"]].to_dict("records")
         for scenario_id, group in metrics_df.groupby("scenario_id", sort=True)
     }
     total_scenarios = len(scenario_metrics_by_id)
@@ -145,6 +145,19 @@ def main():
                     for row in history
                     if isinstance(row.get(metric_name), (int, float))
                 ]
+                history_labels = [
+                    datetime.datetime.fromtimestamp(float(row["test:start"]), tz=datetime.timezone.utc).strftime(
+                        "%Y-%m-%d"
+                    )
+                    for row in history
+                    if row.get("test:start") is not None
+                ]
+                latest_start = latest.get("test:start")
+                latest_label = "latest"
+                if latest_start is not None:
+                    latest_label = datetime.datetime.fromtimestamp(
+                        float(latest_start), tz=datetime.timezone.utc
+                    ).strftime("%Y-%m-%d")
                 regression_info = PerformanceRegressionInfo(
                     scenario_id=scenario_id,
                     github_context=ctx,
@@ -152,6 +165,8 @@ def main():
                     baseline=metric_baseline,
                     latest_metrics=latest,
                     history_values=history_values,
+                    history_labels=history_labels,
+                    latest_label=latest_label,
                     metric_name=metric_name,
                     scenario=benchmark_scenarios.get(scenario_id),
                 )
