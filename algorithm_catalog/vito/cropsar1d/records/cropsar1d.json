@@ -94,7 +94,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3091373f923c6a301ee73ae49bd16a132b8a1b2c/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3200aac34ba267b106a79b1d83dbb02a40da86f/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
         },
         {
             "rel": "service",
@@ -130,7 +130,7 @@
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar1d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json&server=https://openeo.terrascope.be"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar1d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3200aac34ba267b106a79b1d83dbb02a40da86f/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json&server=https://openeo.terrascope.be"
         }
     ]
 }
