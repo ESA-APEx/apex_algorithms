@@ -1,9 +1,6 @@
 name: "Regression Testing"
 
 on:
-  push:
-    branches:
-      - hv_regresion_benchmark
   workflow_dispatch:
   schedule:
     - cron: "0 6 * * 1"
