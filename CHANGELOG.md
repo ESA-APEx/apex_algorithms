@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   runs (stored in S3 Parquet) are used to compute statistical baselines and detect
   regressions automatically.
 - New `compute_baselines()` function using median + MAD (k=3.5, scaled
-  MAD with floor of 1.0) for robust threshold computation.
+  MAD with an explicit minimum absolute decision band: `max(2.0, k * scaled_MAD)`)
+  for robust threshold computation.
 - New `check_reference_performance()` function to compare tracked metrics against
   computed baselines.
 - New `benchmark_history` module (`load_scenario_metrics`) for loading
@@ -35,6 +36,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   TODO markers for future extraction of API, parser, and formatting pieces.
 - `report_performance_regressions.py` now delegates all GitHub issue formatting
   to `PerformanceRegressionInfo` instead of building issue bodies inline.
+- Regression checks now enforce both upper and lower limits (actual above `max`
+  or below `min` is treated as a violation).
+- Regression issue summaries now include compact threshold values
+  (`current`, `median`, `upper_limit`, `lower_limit`, observation count)
+  and a Mermaid trend plot.
 - Unit tests were updated to match the current benchmark API naming
   (`compute_baselines`) and current GitHub issue handler structure.
 
