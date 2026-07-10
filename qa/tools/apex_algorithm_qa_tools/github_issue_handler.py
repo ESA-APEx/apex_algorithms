@@ -473,10 +473,16 @@ class PerformanceRegressionInfo:
             return None
         return compute_threshold_stats(values)
 
+    def _format_mermaid_series(self, values: List[float], label: str | None = None) -> str:
+        """Format Mermaid xychart series and optionally annotate the first point."""
+        formatted = [self._format_number(v) for v in values]
+        if label and formatted:
+            formatted[0] = f'{formatted[0]} "{label}"'
+        return ", ".join(formatted)
+
     def _build_mermaid_cost_chart(self, baseline_val: Any, latest_val: Any) -> str:
         history = [float(v) for v in self.history_values if isinstance(v, (int, float))]
         latest = float(latest_val) if isinstance(latest_val, (int, float)) else None
-        baseline = float(baseline_val) if isinstance(baseline_val, (int, float)) else None
         stats = self._decision_stats(history)
 
         observed = list(history)
@@ -488,36 +494,30 @@ class PerformanceRegressionInfo:
         if len(observed) < 2:
             return ""
 
-        threshold = stats["threshold"] if stats else baseline
         median_val = stats["median"] if stats else None
         mad_upper = median_val + stats["mad_scaled"] if stats else None
         mad_lower = max(0.0, median_val - stats["mad_scaled"]) if stats else None
-        hist_max = max(history) if history else None
 
-        threshold_series = [threshold] * len(observed) if threshold is not None else []
-        median_series = [median_val] * len(observed) if median_val is not None else []
         mad_upper_series = [mad_upper] * len(observed) if mad_upper is not None else []
         mad_lower_series = [mad_lower] * len(observed) if mad_lower is not None else []
-        hist_max_series = [hist_max] * len(observed) if hist_max is not None else []
+        latest_marker_series = []
+        if latest is not None:
+            latest_marker_series = [0.0] * (len(observed) - 1) + [latest]
 
         ymax_candidates = (
             observed
-            + threshold_series
-            + median_series
             + mad_upper_series
             + mad_lower_series
-            + hist_max_series
+            + latest_marker_series
         )
         ymax = max(ymax_candidates) if ymax_candidates else 1.0
         ymax = max(1.0, ymax * 1.1)
 
         labels_text = ", ".join(f'"{x}"' for x in labels)
-        observed_text = ", ".join(self._format_number(v) for v in observed)
-        threshold_text = ", ".join(self._format_number(v) for v in threshold_series)
-        median_text = ", ".join(self._format_number(v) for v in median_series)
-        mad_upper_text = ", ".join(self._format_number(v) for v in mad_upper_series)
-        mad_lower_text = ", ".join(self._format_number(v) for v in mad_lower_series)
-        hist_max_text = ", ".join(self._format_number(v) for v in hist_max_series)
+        observed_text = self._format_mermaid_series(observed, label="observed")
+        mad_upper_text = self._format_mermaid_series(mad_upper_series, label="mad upper")
+        mad_lower_text = self._format_mermaid_series(mad_lower_series, label="mad lower")
+        latest_marker_text = self._format_mermaid_series(latest_marker_series, label="latest")
 
         lines = [
             "```mermaid",
@@ -527,16 +527,12 @@ class PerformanceRegressionInfo:
             f'    y-axis "{self.metric_name}" 0 --> {self._format_number(ymax)}',
             f"    line [{observed_text}]",
         ]
-        if threshold_series:
-            lines.append(f"    line [{threshold_text}]")
-        if median_series:
-            lines.append(f"    line [{median_text}]")
         if mad_upper_series:
             lines.append(f"    line [{mad_upper_text}]")
         if mad_lower_series:
             lines.append(f"    line [{mad_lower_text}]")
-        if hist_max_series:
-            lines.append(f"    line [{hist_max_text}]")
+        if latest_marker_series:
+            lines.append(f"    line [{latest_marker_text}]")
         lines.append("```")
         return "\n".join(lines)
 
@@ -579,7 +575,11 @@ class PerformanceRegressionInfo:
             parts.append(f"""
 ### Cost Plot (history + latest)
 
-Legend: observed, threshold, median, MAD upper, MAD lower, historical max.
+Legend:
+- line 1: observed values (history + latest)
+- line 2: MAD upper limit
+- line 3: MAD lower limit
+- bar: latest value highlight
 
 {mermaid_chart}
 """)
