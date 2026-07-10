@@ -119,7 +119,7 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "Example Jupyter Notebook to calculate the CropSAR products",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar2d/algorithm_catalog/vito/cropsar2d/notebooks/cropsar2d.ipynb"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/78a0b08ee39177849435f0700013d31a2498a4cf/algorithm_catalog/vito/cropsar2d/notebooks/cropsar2d.ipynb"
         },
         {
             "rel": "thumbnail",
