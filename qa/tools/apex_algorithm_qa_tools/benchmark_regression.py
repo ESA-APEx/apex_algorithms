@@ -8,15 +8,19 @@ _log = logging.getLogger(__name__)
 
 
 def compute_threshold_stats(
-    values: list[float], *, k: float = 3.5, min_scaled_mad: float = 1.0
+    values: list[float], *, k: float = 3.5, min_band: float = 2.0
 ) -> dict[str, float]:
-    """Compute MAD-based threshold statistics for one metric sample series."""
+    """Compute MAD-based threshold statistics for one metric sample series.
+
+    The acceptance band is defined as ``max(min_band, k * scaled_MAD)``.
+    """
     median = _median(values)
     mad_raw = _median([abs(v - median) for v in values])
     mad_scaled_raw = 1.4826 * mad_raw
-    mad_scaled = max(min_scaled_mad, mad_scaled_raw)
-    upper_limit = round(median + k * mad_scaled, 4)
-    lower_limit = round(max(0.0, median - k * mad_scaled), 4)
+    band = max(min_band, k * mad_scaled_raw)
+    mad_scaled = band / k
+    upper_limit = round(median + band, 4)
+    lower_limit = round(max(0.0, median - band), 4)
     return {
         "observations": float(len(values)),
         "median": float(median),
@@ -24,6 +28,8 @@ def compute_threshold_stats(
         "mad_scaled_raw": float(mad_scaled_raw),
         "mad_scaled": float(mad_scaled),
         "k": float(k),
+        "min_band": float(min_band),
+        "band": float(band),
         "threshold": float(upper_limit),
         "upper_limit": float(upper_limit),
         "lower_limit": float(lower_limit),
