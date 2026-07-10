@@ -24,6 +24,15 @@ import pyarrow.dataset as ds
 _log = logging.getLogger(__name__)
 
 
+def _scenario_id_from_nodeid(nodeid: str) -> str:
+    """Derive scenario identifier from a pytest nodeid string."""
+    if "[" in nodeid and nodeid.endswith("]"):
+        return nodeid.rsplit("[", 1)[1][:-1]
+    if "::" in nodeid:
+        return nodeid.rsplit("::", 1)[1]
+    return nodeid
+
+
 def load_scenario_metrics(
     parquet_path: str,
     scenario_id: str,
@@ -62,11 +71,14 @@ def load_scenario_metrics(
         _log.warning(f"Could not load benchmark history from {parquet_path}", exc_info=True)
         return []
 
-    if df.empty or "scenario_id" not in df.columns:
+    if df.empty:
         return []
 
-    # Filter to scenario
-    df = df[df["scenario_id"] == scenario_id]
+    # Filter to scenario via test nodeid (single supported schema)
+    if "test:nodeid" not in df.columns:
+        return []
+    derived_scenario_ids = df["test:nodeid"].astype(str).map(_scenario_id_from_nodeid)
+    df = df[derived_scenario_ids == scenario_id]
 
     # Filter by test outcome
     if test_outcome and "test:outcome" in df.columns:
