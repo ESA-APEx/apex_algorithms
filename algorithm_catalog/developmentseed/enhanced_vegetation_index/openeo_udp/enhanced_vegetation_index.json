@@ -669,38 +669,13 @@
         }
       }
     },
-    "apply2": {
-      "process_id": "apply",
-      "arguments": {
-        "data": {
-          "from_node": "applydimension1"
-        },
-        "process": {
-          "process_graph": {
-            "linearscalerange1": {
-              "process_id": "linear_scale_range",
-              "arguments": {
-                "inputMax": 1,
-                "inputMin": 0,
-                "outputMax": 255,
-                "outputMin": 0,
-                "x": {
-                  "from_parameter": "x"
-                }
-              },
-              "result": true
-            }
-          }
-        }
-      }
-    },
     "saveresult1": {
       "process_id": "save_result",
       "arguments": {
         "data": {
-          "from_node": "apply2"
+          "from_node": "applydimension1"
         },
-        "format": "PNG",
+        "format": "GTiff",
         "options": {}
       },
       "result": true
