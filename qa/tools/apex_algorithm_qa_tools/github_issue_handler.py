@@ -475,11 +475,14 @@ class PerformanceRegressionInfo:
             return None
         return compute_threshold_stats(values)
 
-    def _format_mermaid_series(self, values: List[float], label: str | None = None) -> str:
-        """Format Mermaid xychart series and optionally annotate the first point."""
+    def _format_mermaid_series(
+        self, values: List[float], label: str | None = None, *, label_at_end: bool = False
+    ) -> str:
+        """Format Mermaid xychart series and optionally annotate first or last point."""
         formatted = [self._format_number(v) for v in values]
         if label and formatted:
-            formatted[0] = f'{formatted[0]} "{label}"'
+            idx = -1 if label_at_end else 0
+            formatted[idx] = f'{formatted[idx]} "{label}"'
         return ", ".join(formatted)
 
     def _build_mermaid_cost_chart(self, baseline_val: Any, latest_val: Any) -> str:
@@ -499,8 +502,8 @@ class PerformanceRegressionInfo:
             return ""
 
         median_val = stats["median"] if stats else None
-        mad_upper = median_val + stats["mad_scaled"] if stats else None
-        mad_lower = max(0.0, median_val - stats["mad_scaled"]) if stats else None
+        mad_upper = stats["upper_limit"] if stats else None
+        mad_lower = stats["lower_limit"] if stats else None
         mad_series = [median_val] * len(observed) if median_val is not None else []
 
         mad_upper_series = [mad_upper] * len(observed) if mad_upper is not None else []
@@ -516,10 +519,10 @@ class PerformanceRegressionInfo:
         ymax = max(1.0, ymax * 1.1)
 
         labels_text = ", ".join(f'"{x}"' for x in labels)
-        observed_text = self._format_mermaid_series(observed, label="observed")
-        mad_text = self._format_mermaid_series(mad_series, label="mad")
-        mad_upper_text = self._format_mermaid_series(mad_upper_series, label="mad upper")
-        mad_lower_text = self._format_mermaid_series(mad_lower_series, label="mad lower")
+        observed_text = self._format_mermaid_series(observed, label="observed", label_at_end=True)
+        mad_text = self._format_mermaid_series(mad_series, label="mad", label_at_end=True)
+        mad_upper_text = self._format_mermaid_series(mad_upper_series, label="mad upper", label_at_end=True)
+        mad_lower_text = self._format_mermaid_series(mad_lower_series, label="mad lower", label_at_end=True)
 
         lines = [
             "```mermaid",
@@ -555,27 +558,24 @@ class PerformanceRegressionInfo:
         latest_val = self.latest_metrics.get(self.metric_name, "n/a")
         obs = len(self.history_values)
         stats = self._decision_stats(self.history_values)
-        hist_min = min(self.history_values) if obs else None
-        hist_max = max(self.history_values) if obs else None
         median_val = stats["median"] if stats else None
+        upper_limit = stats["upper_limit"] if stats else baseline_val
+        lower_limit = stats["lower_limit"] if stats else None
 
-        parts.append(f"""
-    ### Summary
-
-    | Metric | Baseline | Current | Observations | Median | Min | Max |
-    |--------|----------|---------|--------------|--------|-----|-----|
-    | {self.metric_name} | {self._format_number(baseline_val)} | {self._format_number(latest_val)} | {obs} | {self._format_number(median_val)} | {self._format_number(hist_min)} | {self._format_number(hist_max)} |""")
+        parts.append(
+            "\n".join(
+                [
+                    "### Summary",
+                    "",
+                    f"current {self._format_number(latest_val)}, median {self._format_number(median_val)}, upper_limit {self._format_number(upper_limit)}, lower_limit {self._format_number(lower_limit)}, number_of_obs {obs}",
+                ]
+            )
+        )
 
         mermaid_chart = self._build_mermaid_cost_chart(baseline_val=baseline_val, latest_val=latest_val)
         if mermaid_chart:
             parts.append(f"""
 ### Cost Plot (history + latest)
-
-Legend:
-- line 1: observed values (history + latest)
-- line 2: MAD
-- line 3: MAD upper limit
-- line 4: MAD lower limit
 
 {mermaid_chart}
 """)
