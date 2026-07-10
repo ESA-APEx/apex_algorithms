@@ -200,6 +200,16 @@
             }
           }
         }
+      }
+    },
+    "saveresult1": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "apply2"
+        },
+        "format": "GTiff",
+        "options": {}
       },
       "result": true
     }
