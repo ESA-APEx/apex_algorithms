@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 #: Label applied to every benchmark issue — use this to filter all benchmark issues.
 BENCHMARK_LABEL = "benchmark"
+REGRESSION_LABEL = "regression"
 #: Prefix for the per-phase label, e.g. ``benchmark-phase:run-job``.
 BENCHMARK_PHASE_LABEL_PREFIX = "benchmark-phase"
 
@@ -461,7 +462,7 @@ class PerformanceRegressionInfo:
         return f"Performance regression: {self.scenario_id}"
 
     def issue_labels(self) -> List[str]:
-        return ["performance-regression", BENCHMARK_LABEL]
+        return ["performance-regression", REGRESSION_LABEL]
 
     @staticmethod
     def _format_number(value: Any) -> str:
@@ -567,7 +568,7 @@ class PerformanceRegressionInfo:
                 [
                     "### Summary",
                     "",
-                    "| current | median | upper_limit | lower_limit | number_of_obs |",
+                    "| current | median | upper_limit | lower_limit | nr_observations |",
                     "|---------|--------|-------------|-------------|---------------|",
                     f"| {self._format_number(latest_val)} | {self._format_number(median_val)} | {self._format_number(upper_limit)} | {self._format_number(lower_limit)} | {obs} |",
                 ]
@@ -577,7 +578,7 @@ class PerformanceRegressionInfo:
         mermaid_chart = self._build_mermaid_cost_chart(baseline_val=baseline_val, latest_val=latest_val)
         if mermaid_chart:
             parts.append(f"""
-### Cost Plot (history + latest)
+### Cost Plot 
 
 {mermaid_chart}
 """)
