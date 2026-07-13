@@ -14,7 +14,6 @@
           "description": "The type of the benchmark scenario.",
           "enum": [
             "openeo",
-            "ogcapi-processes",
             "ogc_api_process"
           ]
         },
@@ -70,10 +69,6 @@
           "type": "string",
           "description": "The OGC API Processes endpoint."
         },
-        "process_id": {
-          "type": "string",
-          "description": "The process identifier used at execution time."
-        },
         "namespace": {
           "type": "string",
           "description": "Optional namespace for process categorization."
@@ -117,20 +112,9 @@
       },
       "required": [
         "endpoint",
+        "application",
         "parameters"
-      ],
-      "anyOf": [
-        {
-          "required": [
-            "process_id"
-          ]
-        },
-        {
-          "required": [
-            "application"
-          ]
-        }
-      ]
+      ] 
     }
   },
   "oneOf": [
