@@ -11,6 +11,9 @@ from apex_algorithm_qa_tools.benchmarks.openeo import (
     run_openeo_job,
 )
 from apex_algorithm_qa_tools.benchmarks.runners.base import (
+    BenchmarkJobMetadata,
+    BenchmarkMetric,
+    BenchmarkResults,
     BenchmarkRunner,
     BenchmarkRunnerArtifacts,
 )
@@ -45,10 +48,21 @@ class OpenEOBenchmarkRunner(BenchmarkRunner):
             raise RuntimeError("Cannot collect openEO metadata before create_job().")
 
         self._results = collect_openeo_metadata(job=self._job)
+        metadata = self._job.describe()
+        usage_metrics = [
+            BenchmarkMetric(name=name, unit=metric.get("unit"), value=metric.get("value"))
+            for name, metric in (metadata.get("usage") or {}).items()
+            if isinstance(metric, dict)
+        ]
         return BenchmarkRunnerArtifacts(
             job_id=self._job.job_id,
-            job_metadata=self._job.describe(),
-            results_metadata=self._results.get_metadata(),
+            job_metadata=BenchmarkJobMetadata(
+                cost=metadata.get("costs"),
+                usage=usage_metrics,
+            ),
+            results_metadata=BenchmarkResults(
+                assets=(self._results.get_metadata() or {}).get("assets", {}),
+            ),
         )
 
     def download_actual(self, *, actual_dir: Path) -> list[Path]:

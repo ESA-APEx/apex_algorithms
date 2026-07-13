@@ -10,6 +10,11 @@ from apex_algorithm_qa_tools.benchmarks.common import (
     collect_metrics_from_job_metadata,
     collect_metrics_from_results_metadata,
 )
+from apex_algorithm_qa_tools.benchmarks.runners.base import (
+    BenchmarkJobMetadata,
+    BenchmarkMetric,
+    BenchmarkResults,
+)
 
 
 class DummyTracker:
@@ -26,14 +31,13 @@ def dummy_tracker() -> DummyTracker:
 
 
 def test_collect_metrics_from_job_metadata(dummy_tracker):
-    metadata = {
-        "id": "job-1",
-        "costs": 42,
-        "usage": {
-            "cpu": {"unit": "cpu-seconds", "value": 123},
-            "memory": {"unit": "mb-seconds", "value": 345},
-        },
-    }
+    metadata = BenchmarkJobMetadata(
+        cost=42,
+        usage=[
+            BenchmarkMetric(name="cpu", unit="cpu-seconds", value=123),
+            BenchmarkMetric(name="memory", unit="mb-seconds", value=345),
+        ],
+    )
     collect_metrics_from_job_metadata(metadata, track_metric=dummy_tracker)
     assert dummy_tracker.data == [
         ("costs", 42),
@@ -43,15 +47,13 @@ def test_collect_metrics_from_job_metadata(dummy_tracker):
 
 
 def test_collect_metrics_from_results_metadata_proj_shape(dummy_tracker):
-    metadata = {
-        "type": "Collection",
-        "id": "j-240911a7fc064f64abd5a62bd8ef42ce",
-        "assets": {
+    metadata = BenchmarkResults(
+        assets={
             "openEO.nc": {
                 "proj:shape": [1200, 800],
             }
-        },
-    }
+        }
+    )
     collect_metrics_from_results_metadata(metadata, track_metric=dummy_tracker)
     assert dummy_tracker.data == [
         ("results:proj:shape:area:megapixel", 1.2 * 0.8),
@@ -59,17 +61,15 @@ def test_collect_metrics_from_results_metadata_proj_shape(dummy_tracker):
 
 
 def test_collect_metrics_from_results_metadata_shape_and_bbox(dummy_tracker):
-    metadata = {
-        "type": "Collection",
-        "id": "j-240911a7fc064f64abd5a62bd8ef42ce",
-        "assets": {
+    metadata = BenchmarkResults(
+        assets={
             "openEO.nc": {
                 "proj:bbox": [500000, 5645000, 508000, 5657000],
                 "proj:epsg": 32631,
                 "proj:shape": [1200, 800],
             }
-        },
-    }
+        }
+    )
     collect_metrics_from_results_metadata(metadata, track_metric=dummy_tracker)
     assert dummy_tracker.data == [
         ("results:proj:shape:area:megapixel", 1.2 * 0.8),

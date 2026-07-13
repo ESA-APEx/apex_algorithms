@@ -25,7 +25,6 @@ class OGCAPIResults:
 @dataclasses.dataclass(kw_only=True)
 class OGCAPIBenchmarkScenario(BenchmarkScenario):
     endpoint: str
-    process_id: str
     parameters: dict
     namespace: str | None = None
     application: str | None = None
@@ -40,7 +39,6 @@ class OGCAPIBenchmarkScenario(BenchmarkScenario):
     ) -> BenchmarkScenario:
         jsonschema.validate(instance=data, schema=get_benchmark_scenario_schema())
 
-        process_id = data.get("process_id")
         application = data.get("application")
         namespace = data.get("namespace")
         auth = OGCAPIAuth(**data.get("auth", {}))
@@ -51,7 +49,6 @@ class OGCAPIBenchmarkScenario(BenchmarkScenario):
             type=data["type"],
             description=data.get("description"),
             endpoint=data["endpoint"],
-            process_id=process_id,
             parameters=data.get("parameters", {}),
             auth=auth,
             namespace=namespace,

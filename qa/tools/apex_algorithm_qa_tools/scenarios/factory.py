@@ -24,7 +24,7 @@ def _benchmark_factory(item: dict, path: str | Path) -> BenchmarkScenario:
     assert item["type"] is not None, "Missing required 'type' field in benchmark scenario"
     if item["type"] == "openeo":
         return openEOBenchmarkScenario.from_dict(data=item, source=path)
-    elif item["type"] in {"ogc_api_process", "ogcapi-processes"}:
+    elif item["type"] == "ogc_api_process":
         return OGCAPIBenchmarkScenario.from_dict(data=item, source=path)
     else:
         raise ValueError(f"Unsupported benchmark scenario type: {item['type']}")
