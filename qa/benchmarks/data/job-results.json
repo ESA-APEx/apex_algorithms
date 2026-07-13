@@ -1,9 +1,0 @@
-{
-  "assets": {
-    "test_output": {
-      "href": "s3://apex-benchmarks/test-output.tif",
-      "type": "image/tiff; application=geotiff",
-      "title": "Test Output"
-    }
-  }
-}
