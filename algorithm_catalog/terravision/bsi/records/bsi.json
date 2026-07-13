@@ -121,7 +121,7 @@
             "rel": "example-output",
             "type": "application/x-netcdf",
             "title": "BSI example output",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/bsi/notebooks/openEO.nc"
+            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP96!tests_test_benchmarks.py__test_run_benchmark_bsi_!actual/openEO.nc"
         },
         {
             "rel": "webapp",
@@ -133,7 +133,7 @@
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92171ae86087fe8ddde737292032cd1fff167a3f/algorithm_catalog/vito/cropsar2d/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7f1bc73312dbd291cf971a557dfe7f234af573fd/algorithm_catalog/terravision/bsi/records/thumbnail.png"
         }
     ]
 }
