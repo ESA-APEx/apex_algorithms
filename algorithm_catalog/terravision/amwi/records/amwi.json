@@ -108,13 +108,7 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "AMWI example notebook",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/amwi/notebooks/amwi.ipynb"
-        },
-        {
-            "rel": "example-input",
-            "type": "application/json",
-            "title": "AMWI example job results",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/amwi/notebooks/job-results.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9d9a31eaa56afa5909e8293f132570fe18f14d4a/algorithm_catalog/terravision/amwi/notebooks/amwi.ipynb"
         },
         {
             "rel": "example-output",
