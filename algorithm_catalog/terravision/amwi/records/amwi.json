@@ -1,0 +1,139 @@
+﻿{
+    "id": "amwi",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-07-13T00:00:00Z",
+        "updated": "2026-07-13T00:00:00Z",
+        "type": "service",
+        "title": "Anomaly Weighted Index (AMWI)",
+        "description": "Calculates the Anomaly Weighted Index (AMWI) from Sentinel-2 imagery.",
+        "keywords": [
+            "Soils",
+            "Sentinel-2",
+            "Data Analysis and Visualization"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "SOILS"
+                    },
+                    {
+                        "id": "REMOTE SENSING"
+                    },
+                    {
+                        "id": "Sentinel-2 MSI"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "NetCDF"
+            }
+        ],
+        "license": "Proprietary",
+        "version": "1.0.0",
+        "publisher": {
+            "name": "TERRAVISION"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/b848749026d3397cd89969e549712e21e992d4a7/src/main/python/utils/openeo_udp/amwi.json"
+        },
+        {
+            "rel": "code",
+            "type": "text/html",
+            "title": "TERRAVISION source code",
+            "href": "https://github.com/ITA-TECNOLOGIA/Ard-Terravision"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO Federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO Federation processing backend",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "TERRAVISION",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "notebook",
+            "type": "application/x-ipynb+json",
+            "title": "AMWI example notebook",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/amwi/notebooks/amwi.ipynb"
+        },
+        {
+            "rel": "example-input",
+            "type": "application/json",
+            "title": "AMWI example job results",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/amwi/notebooks/job-results.json"
+        },
+        {
+            "rel": "example-output",
+            "type": "application/x-netcdf",
+            "title": "AMWI example output",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/amwi/notebooks/openEO.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=AMWI&wizard%7EprocessUrl=https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/b848749026d3397cd89969e549712e21e992d4a7/src/main/python/utils/openeo_udp/amwi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92171ae86087fe8ddde737292032cd1fff167a3f/algorithm_catalog/vito/cropsar2d/records/thumbnail.png"
+        }
+    ]
+  }
+}
