@@ -50,7 +50,7 @@ def lint_benchmark_scenario(scenario: BenchmarkScenario):
 
     if scenario.type == "openeo":
         lint_openeo_fields(scenario=scenario)
-    elif scenario.type in {"ogc_api_process", "ogcapi-processes"}:
+    elif scenario.type == "ogc_api_process":
         lint_ogc_fields(scenario=scenario)
     else:
         raise ValueError(f"Unsupported benchmark scenario type: {scenario.type!r}")
@@ -60,7 +60,7 @@ def lint_ogc_fields(scenario: OGCAPIBenchmarkScenario):
     assert scenario.endpoint.startswith(("http://", "https://")), (
         f"Unsupported OGC endpoint: {scenario.endpoint!r}"
     )
-    assert scenario.application or scenario.process_id
+    assert scenario.application
     assert isinstance(scenario.parameters, dict)
 
 
