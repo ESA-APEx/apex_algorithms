@@ -18,6 +18,7 @@ BACKEND_PATTERNS = [
     r"^(https://)?openeofed\.dataspace\.copernicus\.eu(/.*)?$",
     r"^(https://)?openeo\.cloud(/.*)?$",
     r"^(https://)?openeo\.vito\.be(/.*)?$",
+    r"^(https:\/\/)?openeo\.terrascope\.be(\/.*)?$",
     r"^(https://)?openeo\.eodc\.eu(/.*)?$",
 ]
 
