@@ -41,6 +41,12 @@
             "type": "image/png",
             "title": "Logo",
             "href": "https://terravision-project.eu/wp-content/uploads/2024/02/terravision_positive_logo_other_color_variation_big.png"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://terravision-project.eu/wp-content/uploads/2024/02/terravision_positive_logo_other_color_variation_big.png"
         }
     ]
 }
