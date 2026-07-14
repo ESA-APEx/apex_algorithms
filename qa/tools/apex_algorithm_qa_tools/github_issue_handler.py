@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 #: Label applied to every benchmark issue — use this to filter all benchmark issues.
 BENCHMARK_LABEL = "benchmark"
-REGRESSION_LABEL = "regression"
 #: Prefix for the per-phase label, e.g. ``benchmark-phase:run-job``.
 BENCHMARK_PHASE_LABEL_PREFIX = "benchmark-phase"
 
@@ -462,7 +461,7 @@ class PerformanceRegressionInfo:
         return f"Performance regression: {self.scenario_id}"
 
     def issue_labels(self) -> List[str]:
-        return ["performance-regression", REGRESSION_LABEL]
+        return ["performance-regression", BENCHMARK_LABEL]
 
     @staticmethod
     def _format_number(value: Any) -> str:
