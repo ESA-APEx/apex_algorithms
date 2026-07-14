@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
-from apex_algorithm_qa_tools.benchmark_regression import compute_threshold_stats
+from apex_algorithm_qa_tools.metrics.performance_baselines import compute_threshold_stats
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
     get_benchmark_scenarios,
