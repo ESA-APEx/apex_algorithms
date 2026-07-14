@@ -94,7 +94,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1b82a4888bc00a624d9fc80147a16a14e494ab1e/algorithm_catalog/developmentseed/kernel_ndvi/openeo_udp/kernel_ndvi.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f8c3e80a122110f2654e424735b23330569f3653/algorithm_catalog/developmentseed/kernel_ndvi/openeo_udp/kernel_ndvi.json"
     },
     {
       "rel": "code",
@@ -106,7 +106,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=kernel_ndvi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1b82a4888bc00a624d9fc80147a16a14e494ab1e/algorithm_catalog/developmentseed/kernel_ndvi/openeo_udp/kernel_ndvi.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=kernel_ndvi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f8c3e80a122110f2654e424735b23330569f3653/algorithm_catalog/developmentseed/kernel_ndvi/openeo_udp/kernel_ndvi.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -136,13 +136,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "kNDVI Visualization",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1b82a4888bc00a624d9fc80147a16a14e494ab1e/algorithm_catalog/developmentseed/kernel_ndvi/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f8c3e80a122110f2654e424735b23330569f3653/algorithm_catalog/developmentseed/kernel_ndvi/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1b82a4888bc00a624d9fc80147a16a14e494ab1e/algorithm_catalog/developmentseed/kernel_ndvi/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f8c3e80a122110f2654e424735b23330569f3653/algorithm_catalog/developmentseed/kernel_ndvi/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
