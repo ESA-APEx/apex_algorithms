@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] - 2026-07-14
 
 ### Added
 - Adaptive performance regression testing for benchmarks: metrics from historical
@@ -14,9 +15,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   for robust threshold computation.
 - New `check_reference_performance()` function to compare tracked metrics against
   computed baselines.
-- New `benchmark_history` module (`load_scenario_metrics`) for loading
-  per-scenario metric history from Parquet on S3.
-- `max_age_days` parameter in `load_scenario_metrics` to discard stale
+- New `metrics.parquet_metrics` module (`load_scenario_metrics`,
+  `load_recent_scenario_metrics_map`) for loading per-scenario metric history
+  from Parquet on S3.
+- `max_age_days` parameter in history loading helpers to discard stale
   historical runs.
 - `github_issue_handler` now includes `ScenarioRunInfo` and
   `PerformanceRegressionInfo` for formatting benchmark and regression issue markdown.
@@ -28,20 +30,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Weekly `performance-analysis.yml` workflow that reads S3 Parquet history and
   opens or updates GitHub issues for detected cost regressions.
 
-### Changed
-- Performance regression logic (`compute_baselines`,
-  `check_reference_performance`) was moved to a dedicated
-  `benchmark_regression` module.
-- GitHub issue handling stays consolidated in `github_issue_handler` while keeping
-  TODO markers for future extraction of API, parser, and formatting pieces.
-- `report_performance_regressions.py` now delegates all GitHub issue formatting
-  to `PerformanceRegressionInfo` instead of building issue bodies inline.
-- Regression checks now enforce both upper and lower limits (actual above `max`
-  or below `min` is treated as a violation).
-- Regression issue summaries now include compact threshold values
-  (`current`, `median`, `upper_limit`, `lower_limit`, observation count)
-  and a Mermaid trend plot.
-- Unit tests were updated to match the current benchmark API naming
-  (`compute_baselines`) and current GitHub issue handler structure.
 
 ### Fixed

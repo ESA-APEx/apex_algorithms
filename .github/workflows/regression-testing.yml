@@ -24,7 +24,7 @@ jobs:
 
       - name: Check for performance regressions
         run: |
-          python .github/scripts/report_performance_regressions.py \
+          python -m apex_algorithm_qa_tools.report_performance_regressions \
             --s3-bucket apex-benchmarks \
             --s3-key metrics/v1/metrics.parquet
         env:
