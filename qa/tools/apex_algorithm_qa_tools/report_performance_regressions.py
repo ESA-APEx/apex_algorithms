@@ -14,8 +14,8 @@ from apex_algorithm_qa_tools.github_issue_handler import (
 )
 from apex_algorithm_qa_tools.metrics.parquet_metrics import load_recent_scenario_metrics_map
 from apex_algorithm_qa_tools.metrics.performance_baselines import (
-    check_reference_performance,
-    compute_baselines,
+    _check_reference_performance,
+    _compute_baselines,
 )
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
 
@@ -75,17 +75,17 @@ def main() -> None:
         history = scenario_metrics[:-1]
         latest = scenario_metrics[-1]
 
-        baselines = compute_baselines(history, metric_names=[metric_name])
+        baselines = _compute_baselines(history, metric_names=[metric_name])
         metric_baseline = baselines.get(metric_name)
         if not metric_baseline:
             rows.append(f"- **{scenario_id}**: no {metric_name} baseline available")
             continue
 
-        violations = check_reference_performance(
+        violations = _check_reference_performance(
             scenario_id=scenario_id,
             reference_performance={metric_name: metric_baseline},
             tracked_metrics=latest,
-        )
+)
 
         if not violations:
             rows.append(f"- **{scenario_id}**: ok ({metric_name}={latest.get(metric_name, 'n/a')})")

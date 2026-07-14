@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
-from apex_algorithm_qa_tools.metrics.performance_baselines import compute_threshold_stats
+from apex_algorithm_qa_tools.metrics.performance_baselines import _compute_threshold_stats
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
     get_benchmark_scenarios,
@@ -473,7 +473,7 @@ class PerformanceRegressionInfo:
     def _decision_stats(values: List[float]) -> Dict[str, float] | None:
         if not values:
             return None
-        return compute_threshold_stats(values)
+        return _compute_threshold_stats(values)
 
     def _format_mermaid_series(
         self, values: List[float], label: str | None = None, *, label_at_end: bool = False
@@ -554,7 +554,7 @@ class PerformanceRegressionInfo:
         
         parts.append(f"\n### Regression\n\n{self.violation}")
         
-        baseline_val = self.baseline.get("max", self.baseline.get("value", "n/a"))
+        baseline_val = self.baseline.get("upper_limit", self.baseline.get("value", "n/a"))
         latest_val = self.latest_metrics.get(self.metric_name, "n/a")
         obs = len(self.history_values)
         stats = self._decision_stats(self.history_values)

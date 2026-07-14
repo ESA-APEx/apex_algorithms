@@ -7,20 +7,20 @@ from statistics import median
 _log = logging.getLogger(__name__)
 
 
-def compute_threshold_stats(
-    values: list[float], *, k: float = 3.0, min_band: float = 2.0
+def _compute_threshold_stats(
+    values: list[float], *, k: float = 3.0, min_margin: float = 2.0
 ) -> dict[str, float | int]:
     """Compute MAD-based threshold statistics for one metric sample series.
 
-    The acceptance band is defined as ``max(min_band, k * scaled_MAD)``.
+    The acceptance margin is defined as ``max(min_margin, k * scaled_MAD)``.
     """
     median_value = median(values)
     mad_raw = median([abs(value - median_value) for value in values])
     mad_scaled_raw = 1.4826 * mad_raw
-    band = max(min_band, k * mad_scaled_raw)
-    mad_scaled = band / k
-    upper_limit = round(median_value + band, 4)
-    lower_limit = round(max(0.0, median_value - band), 4)
+    margin = max(min_margin, k * mad_scaled_raw)
+    mad_scaled = margin / k
+    upper_limit = round(median_value + margin, 4)
+    lower_limit = round(max(0.0, median_value - margin), 4)
     return {
         "observations": len(values),
         "median": median_value,
@@ -28,15 +28,15 @@ def compute_threshold_stats(
         "mad_scaled_raw": mad_scaled_raw,
         "mad_scaled": mad_scaled,
         "k": k,
-        "min_band": min_band,
-        "band": band,
+        "min_margin": min_margin,
+        "margin": margin,
         "threshold": upper_limit,
         "upper_limit": upper_limit,
         "lower_limit": lower_limit,
     }
 
 
-def check_reference_performance(
+def _check_reference_performance(
     scenario_id: str,
     reference_performance: dict,
     tracked_metrics: dict,
@@ -48,22 +48,25 @@ def check_reference_performance(
         if actual is None:
             continue
 
-        if "min" in ref and actual < ref["min"]:
+        lower_limit = ref.get("lower_limit")
+        upper_limit = ref.get("upper_limit")
+
+        if lower_limit is not None and actual < lower_limit:
             violations.append(
                 f"[{scenario_id}] regression in {metric_name!r}: "
-                f"actual={actual} below min={ref['min']}"
+                f"actual={actual} below lower_limit={lower_limit}"
             )
 
-        if actual > ref["max"]:
+        if upper_limit is not None and actual > upper_limit:
             violations.append(
                 f"[{scenario_id}] regression in {metric_name!r}: "
-                f"actual={actual} exceeds max={ref['max']}"
+                f"actual={actual} exceeds upper_limit={upper_limit}"
             )
 
     return violations
 
 
-def compute_baselines(
+def _compute_baselines(
     historical_values: list[dict],
     metric_names: list[str],
     min_samples: int = 3,
@@ -90,10 +93,10 @@ def compute_baselines(
             )
             continue
 
-        stats = compute_threshold_stats(values)
+        stats = _compute_threshold_stats(values)
         baselines[name] = {
-            "max": stats["upper_limit"],
-            "min": stats["lower_limit"],
+            "upper_limit": stats["upper_limit"],
+            "lower_limit": stats["lower_limit"],
             "median": stats["median"],
             "mad_scaled": stats["mad_scaled"],
         }
