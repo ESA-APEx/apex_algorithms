@@ -4,6 +4,7 @@ import datetime
 import logging
 
 import pyarrow
+import pyarrow.compute
 import pyarrow.dataset
 
 _log = logging.getLogger(__name__)
@@ -28,37 +29,56 @@ def load_recent_scenario_metrics_map(
 ) -> dict[str, list[dict]]:
     """Load recent metric histories grouped by scenario id."""
     try:
-        tables = [
-            fragment.to_table()
-            for fragment in pyarrow.dataset.dataset(
-                parquet_path,
-                filesystem=filesystem,
-            ).get_fragments()
-        ]
-        if not tables:
+        dataset = pyarrow.dataset.dataset(
+            parquet_path,
+            filesystem=filesystem,
+        )
+        schema_names = set(dataset.schema.names)
+
+        if "test:nodeid" not in schema_names:
             return {}
-        dataframe = pyarrow.concat_tables(
-            tables,
-            promote_options="permissive",
-        ).to_pandas()
+
+        time_col = next(
+            (
+                candidate
+                for candidate in ("test:start", "test:start:datetime")
+                if candidate in schema_names
+            ),
+            None,
+        )
+
+        if metric_names is None:
+            metric_names = sorted(
+                {
+                    column_name
+                    for column_name in schema_names
+                    if column_name.startswith("usage:") or column_name == "costs"
+                }
+            )
+
+        missing_metrics = [name for name in metric_names if name not in schema_names]
+        if missing_metrics:
+            _log.warning("Missing metric columns in history dataset: %s", ", ".join(missing_metrics))
+            return {}
+
+        selected_columns = ["test:nodeid"] + metric_names
+        if time_col:
+            selected_columns.append(time_col)
+        if test_outcome and "test:outcome" in schema_names:
+            selected_columns.append("test:outcome")
+
+        scan_filter = None
+        if test_outcome and "test:outcome" in schema_names:
+            scan_filter = pyarrow.compute.field("test:outcome") == test_outcome
+
+        table = dataset.to_table(columns=selected_columns, filter=scan_filter)
+        dataframe = table.to_pandas()
     except Exception:
         _log.warning("Could not load benchmark history from %s", parquet_path, exc_info=True)
         return {}
 
     if dataframe.empty or "test:nodeid" not in dataframe.columns:
         return {}
-
-    if test_outcome and "test:outcome" in dataframe.columns:
-        dataframe = dataframe[dataframe["test:outcome"] == test_outcome]
-
-    time_col = next(
-        (
-            candidate
-            for candidate in ("test:start", "test:start:datetime")
-            if candidate in dataframe.columns
-        ),
-        None,
-    )
 
     if time_col and max_age_days and not dataframe.empty:
         cutoff_epoch = (
@@ -69,20 +89,6 @@ def load_recent_scenario_metrics_map(
         dataframe = dataframe[dataframe[time_col] >= cutoff_epoch]
 
     if dataframe.empty:
-        return {}
-
-    if metric_names is None:
-        metric_names = sorted(
-            {
-                column_name
-                for column_name in dataframe.columns
-                if column_name.startswith("usage:") or column_name == "costs"
-            }
-        )
-
-    missing_metrics = [name for name in metric_names if name not in dataframe.columns]
-    if missing_metrics:
-        _log.warning("Missing metric columns in history dataset: %s", ", ".join(missing_metrics))
         return {}
 
     dataframe["scenario_id"] = dataframe["test:nodeid"].astype(str).map(scenario_id_from_nodeid)
