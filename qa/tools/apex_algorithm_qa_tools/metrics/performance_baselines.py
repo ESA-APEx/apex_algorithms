@@ -8,7 +8,7 @@ _log = logging.getLogger(__name__)
 
 
 def compute_threshold_stats(
-    values: list[float], *, k: float = 3.5, min_band: float = 2.0
+    values: list[float], *, k: float = 3.0, min_band: float = 2.0
 ) -> dict[str, float | int]:
     """Compute MAD-based threshold statistics for one metric sample series.
 
