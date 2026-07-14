@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
+from apex_algorithm_qa_tools.metrics.performance_baselines import _compute_threshold_stats
 
 from apex_algorithm_qa_tools.common import get_project_root
 from apex_algorithm_qa_tools.scenarios.common import get_benchmark_scenarios
@@ -274,6 +275,30 @@ class PytestReportParser:
         return logs
 
 
+def _get_contacts(scenario: BenchmarkScenario | None) -> list | None:
+    """Get contact information from corresponding OGC API record."""
+    if scenario and isinstance(scenario.source, Path):
+        paths = list((scenario.source.parent.parent / "records").glob("*.json"))
+        for path in paths:
+            try:
+                with path.open("r", encoding="utf8") as f:
+                    if contacts := json.load(f).get("properties", {}).get("contacts"):
+                        return contacts
+            except Exception:
+                pass
+    return None
+
+
+def _get_scenario_link(scenario: BenchmarkScenario | None, github_context: GithubContext) -> str | None:
+    """Generate URL to the scenario definition file at the specific commit."""
+    if scenario and isinstance(scenario.source, Path):
+        path = scenario.source
+        if path.is_absolute():
+            path = path.relative_to(get_project_root())
+        return github_context.get_file_permalink(path)
+    return None
+
+
 @dataclasses.dataclass(frozen=True)
 class ScenarioRunInfo:
     """Information about a benchmark scenario run"""
@@ -285,32 +310,11 @@ class ScenarioRunInfo:
 
     def get_contacts(self) -> list | None:
         """Get contact information from corresponding OGC API record."""
-        # Guess records path from benchmark scenario source.
-        if isinstance(self.scenario.source, Path):
-            paths = list(
-                (self.scenario.source.parent.parent / "records").glob("*.json")
-            )
-            logger.info(
-                f"Looking up contact info for {self.scenario.id} in {paths=} (from {self.scenario.source})"
-            )
-            for path in paths:
-                try:
-                    with path.open("r", encoding="utf8") as f:
-                        record = json.load(f)
-                    if contacts := record.get("properties", {}).get("contacts"):
-                        return contacts
-                except Exception as e:
-                    logger.warning(f"Failed to read contacts from {path}: {e!r}")
+        return _get_contacts(self.scenario)
 
     def get_scenario_link(self) -> str | None:
-        """
-        Generate a URL to the scenario definition file at the specific commit.
-        """
-        if isinstance(self.scenario.source, Path):
-            path = self.scenario.source
-            if path.is_absolute():
-                path = path.relative_to(get_project_root())
-            return self.github_context.get_file_permalink(path)
+        """Generate a URL to the scenario definition file at the specific commit."""
+        return _get_scenario_link(self.scenario, self.github_context)
 
     def _get_failed_phase(self) -> str | None:
         """Extract the base phase name from ``test:phase:exception``.
@@ -435,6 +439,162 @@ class ScenarioRunInfo:
     def build_comment_body(self) -> str:
         """Build the comment body for an existing issue"""
         return "Report of latest run:\n" + self.build_workflow_run_overview()
+
+
+@dataclasses.dataclass(frozen=True)
+class PerformanceRegressionInfo:
+    """Information about a performance regression for a benchmark scenario"""
+
+    scenario_id: str
+    github_context: GithubContext
+    violation: str
+    baseline: dict
+    latest_metrics: dict
+    history_values: List[float] = dataclasses.field(default_factory=list)
+    history_labels: List[str] = dataclasses.field(default_factory=list)
+    latest_label: str = "latest"
+    metric_name: str = "costs"
+    scenario: BenchmarkScenario | None = None
+
+    def issue_title(self) -> str:
+        return f"Performance regression: {self.scenario_id}"
+
+    def issue_labels(self) -> List[str]:
+        return ["performance-regression", BENCHMARK_LABEL]
+
+    @staticmethod
+    def _format_number(value: Any) -> str:
+        if isinstance(value, (int, float)):
+            return f"{float(value):.4f}".rstrip("0").rstrip(".")
+        return "n/a"
+
+    @staticmethod
+    def _decision_stats(values: List[float]) -> Dict[str, float] | None:
+        if not values:
+            return None
+        return _compute_threshold_stats(values)
+
+    def _format_mermaid_series(
+        self, values: List[float], label: str | None = None, *, label_at_end: bool = False
+    ) -> str:
+        """Format Mermaid xychart series and optionally annotate first or last point."""
+        formatted = [self._format_number(v) for v in values]
+        if label and formatted:
+            idx = -1 if label_at_end else 0
+            formatted[idx] = f'{formatted[idx]} "{label}"'
+        return ", ".join(formatted)
+
+    def _build_mermaid_cost_chart(self, baseline_val: Any, latest_val: Any) -> str:
+        history = [float(v) for v in self.history_values if isinstance(v, (int, float))]
+        latest = float(latest_val) if isinstance(latest_val, (int, float)) else None
+        stats = self._decision_stats(history)
+
+        observed = list(history)
+        labels = list(self.history_labels)
+        if len(labels) != len(history):
+            labels = [f"h{i+1}" for i in range(len(history))]
+        if latest is not None:
+            observed.append(latest)
+            labels.append(self.latest_label)
+
+        if len(observed) < 2:
+            return ""
+
+        median_val = stats["median"] if stats else None
+        mad_upper = stats["upper_limit"] if stats else None
+        mad_lower = stats["lower_limit"] if stats else None
+        mad_series = [median_val] * len(observed) if median_val is not None else []
+
+        mad_upper_series = [mad_upper] * len(observed) if mad_upper is not None else []
+        mad_lower_series = [mad_lower] * len(observed) if mad_lower is not None else []
+
+        ymax_candidates = (
+            observed
+            + mad_series
+            + mad_upper_series
+            + mad_lower_series
+        )
+        ymax = max(ymax_candidates) if ymax_candidates else 1.0
+        ymax = max(1.0, ymax * 1.1)
+
+        labels_text = ", ".join(f'"{x}"' for x in labels)
+        observed_text = self._format_mermaid_series(observed, label="observed", label_at_end=True)
+        mad_text = self._format_mermaid_series(mad_series, label="mad", label_at_end=True)
+        mad_upper_text = self._format_mermaid_series(mad_upper_series, label="mad upper", label_at_end=True)
+        mad_lower_text = self._format_mermaid_series(mad_lower_series, label="mad lower", label_at_end=True)
+
+        lines = [
+            "```mermaid",
+            "%%{init: {'theme':'base','themeVariables':{'xyChart':{'plotColorPalette':'#111111,#d32f2f,#f57c00,#1976d2'}}}}%%",
+            "xychart-beta",
+            f'    title "{self.metric_name} trend ({self.scenario_id})"',
+            f"    x-axis [{labels_text}]",
+            f'    y-axis "{self.metric_name}" 0 --> {self._format_number(ymax)}',
+            f"    line [{observed_text}]",
+        ]
+        if mad_series:
+            lines.append(f"    line [{mad_text}]")
+        if mad_upper_series:
+            lines.append(f"    line [{mad_upper_text}]")
+        if mad_lower_series:
+            lines.append(f"    line [{mad_lower_text}]")
+        lines.append("```")
+        return "\n".join(lines)
+
+    def build_issue_body(self) -> str:
+        parts = [f"**Scenario**: `{self.scenario_id}`"]
+        
+        if link := _get_scenario_link(self.scenario, self.github_context):
+            parts.append(f"**Definition**: {link}")
+        if self.scenario:
+            parts.append(f"**Backend**: {self.scenario.backend}")
+        if url := self.github_context.get_workflow_run_url():
+            parts.append(f"**Workflow run**: {url}")
+        
+        parts.append(f"\n### Regression\n\n{self.violation}")
+        
+        baseline_val = self.baseline.get("upper_limit", self.baseline.get("value", "n/a"))
+        latest_val = self.latest_metrics.get(self.metric_name, "n/a")
+        obs = len(self.history_values)
+        stats = self._decision_stats(self.history_values)
+        median_val = stats["median"] if stats else None
+        upper_limit = stats["upper_limit"] if stats else baseline_val
+        lower_limit = stats["lower_limit"] if stats else None
+
+        parts.append(
+            "\n".join(
+                [
+                    "### Summary",
+                    "",
+                    "| current | median | upper_limit | lower_limit | nr_observations |",
+                    "|---------|--------|-------------|-------------|---------------|",
+                    f"| {self._format_number(latest_val)} | {self._format_number(median_val)} | {self._format_number(upper_limit)} | {self._format_number(lower_limit)} | {obs} |",
+                ]
+            )
+        )
+
+        mermaid_chart = self._build_mermaid_cost_chart(baseline_val=baseline_val, latest_val=latest_val)
+        if mermaid_chart:
+            parts.append(f"""
+### Cost Plot 
+
+{mermaid_chart}
+""")
+        
+        if contacts := _get_contacts(self.scenario):
+            c = contacts[0]
+            info = c.get("contactInstructions", "")
+            if c.get("links"):
+                links = [f"[{l.get('title', 'link')}]({l.get('href', '#')})" for l in c["links"]]
+                info += " (" + ", ".join(links) + ")"
+            parts.append(f"""
+### Contact
+
+| Name | Organization | Contact |
+|------|--------------|---------|
+| {c.get('name', 'n/a')} | {c.get('organization', 'n/a')} | {info} |""")
+        
+        return "\n".join(parts)
 
 
 class GithubIssueHandler:
