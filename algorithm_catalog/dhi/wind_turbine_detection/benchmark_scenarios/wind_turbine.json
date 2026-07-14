@@ -3,7 +3,7 @@
     "id": "wind_turbine-terrascope",
     "type": "openeo",
     "description": "Wind turbine detection",
-    "backend": "openeo.vito.be",
+    "backend": "openeo.terrascope.be",
     "process_graph": {
       "wind_turbine": {
         "arguments": {
