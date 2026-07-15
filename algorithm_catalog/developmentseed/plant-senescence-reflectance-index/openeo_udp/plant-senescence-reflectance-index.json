@@ -9,6 +9,22 @@
           "B06"
         ],
         "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 30
+                },
+                "result": true
+              }
+            }
+          }
+        },
         "spatial_extent": {
           "from_parameter": "bounding_box"
         },
@@ -194,7 +210,7 @@
                 "y": 0.4
               }
             },
-            "lte1": {
+            "lte2": {
               "process_id": "lte",
               "arguments": {
                 "x": {
@@ -210,7 +226,7 @@
                   "from_node": "gt2"
                 },
                 "y": {
-                  "from_node": "lte1"
+                  "from_node": "lte2"
                 }
               }
             },
@@ -235,7 +251,7 @@
                 "y": -0.2
               }
             },
-            "lte2": {
+            "lte3": {
               "process_id": "lte",
               "arguments": {
                 "x": {
@@ -251,7 +267,7 @@
                   "from_node": "gt3"
                 },
                 "y": {
-                  "from_node": "lte2"
+                  "from_node": "lte3"
                 }
               }
             },
@@ -269,7 +285,7 @@
                 }
               }
             },
-            "lte3": {
+            "lte4": {
               "process_id": "lte",
               "arguments": {
                 "x": {
@@ -286,7 +302,7 @@
                   "from_node": "if3"
                 },
                 "value": {
-                  "from_node": "lte3"
+                  "from_node": "lte4"
                 }
               },
               "result": true
@@ -295,29 +311,14 @@
         }
       }
     },
-    "apply2": {
-      "process_id": "apply",
+    "saveresult1": {
+      "process_id": "save_result",
       "arguments": {
         "data": {
           "from_node": "applydimension1"
         },
-        "process": {
-          "process_graph": {
-            "linearscalerange1": {
-              "process_id": "linear_scale_range",
-              "arguments": {
-                "inputMax": 1,
-                "inputMin": 0,
-                "outputMax": 255,
-                "outputMin": 0,
-                "x": {
-                  "from_parameter": "x"
-                }
-              },
-              "result": true
-            }
-          }
-        }
+        "format": "GTiff",
+        "options": {}
       },
       "result": true
     }
@@ -349,6 +350,15 @@
         "south": 45.174,
         "north": 45.25
       },
+      "optional": true
+    },
+    {
+      "name": "cloud_cover",
+      "description": "Maximum cloud cover percentage",
+      "schema": {
+        "type": "number"
+      },
+      "default": 30,
       "optional": true
     }
   ],
