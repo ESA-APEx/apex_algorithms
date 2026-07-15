@@ -92,7 +92,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cloudless_mosaic/openeo_udp/cloudless_mosaic.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bb60ae6da312b24b65b85c6d1e0dfd09a35b24bd/algorithm_catalog/developmentseed/cloudless_mosaic/openeo_udp/cloudless_mosaic.json"
     },
     {
       "rel": "code",
@@ -104,7 +104,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cloudless_mosaic&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cloudless_mosaic/openeo_udp/cloudless_mosaic.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cloudless_mosaic&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bb60ae6da312b24b65b85c6d1e0dfd09a35b24bd/algorithm_catalog/developmentseed/cloudless_mosaic/openeo_udp/cloudless_mosaic.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -134,13 +134,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Cloudless Mosaic Visualization",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cloudless_mosaic/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bb60ae6da312b24b65b85c6d1e0dfd09a35b24bd/algorithm_catalog/developmentseed/cloudless_mosaic/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cloudless_mosaic/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bb60ae6da312b24b65b85c6d1e0dfd09a35b24bd/algorithm_catalog/developmentseed/cloudless_mosaic/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
