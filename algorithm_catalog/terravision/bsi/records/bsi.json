@@ -1,0 +1,133 @@
+{
+    "id": "bsi",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-07-13T00:00:00Z",
+        "updated": "2026-07-13T00:00:00Z",
+        "type": "service",
+        "title": "Bare Soil Index (BSI)",
+        "description": "Estimates the Bare Soil Index (BSI) for agricultural fields from Sentinel-2 satellite imagery.",
+        "keywords": [
+            "Agriculture",
+            "Soils",
+            "Sentinel-2",
+            "Data Analysis and Visualization"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Pratichhya Sharma",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "AGRICULTURE"
+                    },
+                    {
+                        "id": "SOILS"
+                    },
+                    {
+                        "id": "REMOTE SENSING"
+                    },
+                    {
+                        "id": "Sentinel-2 MSI"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "NetCDF"
+            }
+        ],
+        "license": "MIT"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/b848749026d3397cd89969e549712e21e992d4a7/src/main/python/utils/openeo_udp/bsi.json"
+        },
+        {
+            "rel": "code",
+            "type": "text/html",
+            "title": "TERRAVISION source code",
+            "href": "https://github.com/ITA-TECNOLOGIA/Ard-Terravision"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO Federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO Federation processing backend",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "TERRAVISION",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "notebook",
+            "type": "application/x-ipynb+json",
+            "title": "BSI example notebook",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9d9a31eaa56afa5909e8293f132570fe18f14d4a/algorithm_catalog/terravision/bsi/notebooks/bsi.ipynb"
+        },
+        {
+            "rel": "example-output",
+            "type": "application/x-netcdf",
+            "title": "BSI example output",
+            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP96!tests_test_benchmarks.py__test_run_benchmark_bsi_!actual/openEO.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=BSI&wizard%7EprocessUrl=https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/b848749026d3397cd89969e549712e21e992d4a7/src/main/python/utils/openeo_udp/bsi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7f1bc73312dbd291cf971a557dfe7f234af573fd/algorithm_catalog/terravision/bsi/records/thumbnail.png"
+        }
+    ]
+}

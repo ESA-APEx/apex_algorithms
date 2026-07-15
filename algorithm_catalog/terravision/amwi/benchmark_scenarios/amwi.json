@@ -1,0 +1,41 @@
+[
+    {
+        "id": "amwi",
+        "type": "openeo",
+        "description": "This process calculates the Anomaly Weighted Index (ANWI) from Sentinel-2 data.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "AMWI1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "east": 5.1,
+                        "north": 51.23,
+                        "south": 51.21,
+                        "west": 5.05
+                    },
+                    "temporal_extent": [
+                        "2025-05-01",
+                        "2025-05-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/b848749026d3397cd89969e549712e21e992d4a7/src/main/python/utils/openeo_udp/amwi.json",
+                "process_id": "AMWI"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "AMWI1"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP97!tests_test_benchmarks.py__test_run_benchmark_amwi_!actual/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP97!tests_test_benchmarks.py__test_run_benchmark_amwi_!actual/openEO.nc"
+        }
+    }
+]
