@@ -92,7 +92,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/openeo_udp/cohen_braaten_yang_cloud_detection.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bec4d6ce52a704a2d8f703b10146283a3ede7768/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/openeo_udp/cohen_braaten_yang_cloud_detection.json"
     },
     {
       "rel": "code",
@@ -104,7 +104,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cohen_braaten_yang_cloud_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/openeo_udp/cohen_braaten_yang_cloud_detection.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cohen_braaten_yang_cloud_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bec4d6ce52a704a2d8f703b10146283a3ede7768/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/openeo_udp/cohen_braaten_yang_cloud_detection.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -134,13 +134,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "BCY Cloud Detection",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bec4d6ce52a704a2d8f703b10146283a3ede7768/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/bec4d6ce52a704a2d8f703b10146283a3ede7768/algorithm_catalog/developmentseed/cohen_braaten_yang_cloud_detection/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
