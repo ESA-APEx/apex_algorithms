@@ -92,7 +92,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/barren_soil/openeo_udp/barren_soil.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7273deeafcc582b1d855d6e9675e867855c89d80/algorithm_catalog/developmentseed/barren_soil/openeo_udp/barren_soil.json"
     },
     {
       "rel": "code",
@@ -104,7 +104,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=barren_soil&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/barren_soil/openeo_udp/barren_soil.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=barren_soil&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7273deeafcc582b1d855d6e9675e867855c89d80/algorithm_catalog/developmentseed/barren_soil/openeo_udp/barren_soil.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -134,13 +134,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Barren Soil Detection",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/barren_soil/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7273deeafcc582b1d855d6e9675e867855c89d80/algorithm_catalog/developmentseed/barren_soil/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/barren_soil/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7273deeafcc582b1d855d6e9675e867855c89d80/algorithm_catalog/developmentseed/barren_soil/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
