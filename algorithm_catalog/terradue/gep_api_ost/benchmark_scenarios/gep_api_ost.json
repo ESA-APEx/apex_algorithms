@@ -1,0 +1,62 @@
+[
+  {
+    "id": "gep_api_ost",
+    "type": "ogc_api_process",
+    "description": "Benchmark for the GEP API OST process",
+    "endpoint": "https://processing.geohazards-tep.eu",
+    "namespace": "44454d3235313539",
+    "application": "opensartoolkit-v2-2-1",
+    "auth": {
+      "url": "https://iam.terradue.com/",
+      "realm": "master"
+    },
+    "parameters": {
+      "resolution": 100,
+      "ard-type": "OST_GTC",
+      "with-speckle-filter": "NO-FILTER",
+      "resampling-method": "BILINEAR_INTERPOLATION",
+      "target_datetime": "2024-11-12T00:00:00Z",
+      "bbox": {
+        "class": "https://raw.githubusercontent.com/eoap/schemas/main/geojson.yaml#Polygon",
+        "type": "Polygon",
+        "bbox": [
+          12.146,
+          41.701,
+          12.629,
+          41.967
+        ],
+        "coordinates": [
+          [
+            [
+              12.146,
+              41.701
+            ],
+            [
+              12.629,
+              41.701
+            ],
+            [
+              12.629,
+              41.967
+            ],
+            [
+              12.146,
+              41.967
+            ],
+            [
+              12.146,
+              41.701
+            ]
+          ]
+        ]
+      }
+    },
+    "reference_data": {
+      "job-results.json": "file:///Users/bramjanssen/projects/apex/apex_algorithms/qa/benchmarks/data/job-results.json",
+      "ost-ard-cog.tif": "file:///Users/bramjanssen/projects/apex/apex_algorithms/qa/benchmarks/data/ost-ard-cog.tif"
+    },
+    "reference_options": {
+      "atol": 1
+    }
+  }
+]
