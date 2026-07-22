@@ -92,7 +92,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndsi/openeo_udp/ndsi.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92b77a4997e35889f3f1cc3a9f1dc1820235b5d1/algorithm_catalog/developmentseed/ndsi/openeo_udp/ndsi.json"
     },
     {
       "rel": "code",
@@ -104,7 +104,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ndsi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndsi/openeo_udp/ndsi.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ndsi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92b77a4997e35889f3f1cc3a9f1dc1820235b5d1/algorithm_catalog/developmentseed/ndsi/openeo_udp/ndsi.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -134,13 +134,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Snow Classification",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndsi/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92b77a4997e35889f3f1cc3a9f1dc1820235b5d1/algorithm_catalog/developmentseed/ndsi/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndsi/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92b77a4997e35889f3f1cc3a9f1dc1820235b5d1/algorithm_catalog/developmentseed/ndsi/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
