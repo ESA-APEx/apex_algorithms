@@ -63,7 +63,7 @@
         "name": "GeoTiff"
       }
     ],
-    "license": "proprietary"
+    "license": "MIT"
   },
   "linkTemplates": [],
   "links": [
