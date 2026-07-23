@@ -107,7 +107,7 @@
             "rel": "platform",
             "type": "application/json",
             "title": "VITO",
-            "href": "../../../../platform_catalog/vito.json"
+            "href": "../../../../platform_catalog/terrascope.json"
         },
         {
             "rel": "provider",
