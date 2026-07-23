@@ -38,7 +38,7 @@
             "from_parameter": "temporal_extent"
           }
         },
-        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/323c29a8a793558795847e3dbdfc051fdfe233af/cwl/sar_interferogram.cwl"
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/7c81445d8d2929a15df57bc41e666121dc670c18/cwl/sar_interferogram.cwl"
       },
       "result": true
     }
