@@ -8,6 +8,22 @@
           "B04"
         ],
         "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": 30
+                },
+                "result": true
+              }
+            }
+          }
+        },
         "spatial_extent": {
           "from_parameter": "bounding_box"
         },
@@ -16,46 +32,11 @@
         }
       }
     },
-    "maskpolygon1": {
-      "process_id": "mask_polygon",
-      "arguments": {
-        "data": {
-          "from_node": "loadcollection1"
-        },
-        "mask": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [
-                13.5876,
-                45.4166
-              ],
-              [
-                13.5876,
-                45.4558
-              ],
-              [
-                13.4986,
-                45.4558
-              ],
-              [
-                13.4986,
-                45.4166
-              ],
-              [
-                13.5876,
-                45.4166
-              ]
-            ]
-          ]
-        }
-      }
-    },
     "reducedimension1": {
       "process_id": "reduce_dimension",
       "arguments": {
         "data": {
-          "from_node": "maskpolygon1"
+          "from_node": "loadcollection1"
         },
         "dimension": "t",
         "reducer": {
@@ -688,38 +669,13 @@
         }
       }
     },
-    "apply2": {
-      "process_id": "apply",
-      "arguments": {
-        "data": {
-          "from_node": "applydimension1"
-        },
-        "process": {
-          "process_graph": {
-            "linearscalerange1": {
-              "process_id": "linear_scale_range",
-              "arguments": {
-                "inputMax": 1,
-                "inputMin": 0,
-                "outputMax": 255,
-                "outputMin": 0,
-                "x": {
-                  "from_parameter": "x"
-                }
-              },
-              "result": true
-            }
-          }
-        }
-      }
-    },
     "saveresult1": {
       "process_id": "save_result",
       "arguments": {
         "data": {
-          "from_node": "apply2"
+          "from_node": "applydimension1"
         },
-        "format": "PNG",
+        "format": "GTiff",
         "options": {}
       },
       "result": true
@@ -752,6 +708,15 @@
         "east": 13.5876,
         "north": 45.4558
       },
+      "optional": true
+    },
+    {
+      "name": "cloud_cover",
+      "description": "Maximum cloud cover percentage",
+      "schema": {
+        "type": "number"
+      },
+      "default": 30,
       "optional": true
     }
   ],
