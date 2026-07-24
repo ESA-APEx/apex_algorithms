@@ -103,27 +103,24 @@ def _get_client_credentials_env_var(url: str) -> str:
         url = f"https://{url}"
     parsed = urllib.parse.urlparse(url)
     hostname = parsed.hostname
-    if hostname in {
-        "openeo.dataspace.copernicus.eu",
-        "openeofed.dataspace.copernicus.eu",
-        "openeo.terrascope.be",
-    }:
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"
-    elif hostname in {
-        "openeo-staging.dataspace.copernicus.eu",
-        "openeo-staging.terrascope.be",
-        "openeo-dev.terrascope.be",
-    }:
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
+
+    if var := {
+        # TODO: move this mapping to a config file
+        #       instead of trying to keep this up to date for different environments.
+        "openeo.dataspace.copernicus.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
+        "openeo-staging.dataspace.copernicus.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG",
+        "openeofed.dataspace.copernicus.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
+        "openeo.vito.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE",
+        "openeo-dev.vito.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE",
+        "openeo.terrascope.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
+        "openeo-staging.terrascope.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
+        "openeo-dev.terrascope.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
+        "openeo.cloud": "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI",
+        "openeo.eodc.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI",
+    }.get(hostname):
+        return var
     elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
         return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
-    elif hostname in {"openeo.cloud", "openeo.eodc.eu"}:
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"
-    elif hostname in {
-        "openeo-dev.vito.be",
-        "openeo.vito.be",
-    }:
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"
     else:
         raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
 

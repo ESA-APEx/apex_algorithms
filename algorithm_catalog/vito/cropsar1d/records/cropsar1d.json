@@ -1,0 +1,136 @@
+{
+    "id": "cropsar1d",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-03-19T00:00:00Z",
+        "updated": "2026-03-19T00:00:00Z",
+        "type": "service",
+        "title": "CropSAR 1D",
+        "description": "CropSAR 1D is a biophysical parameter retrieval algorithm that estimates the Fraction of Absorbed Photosynthetically Active Radiation (FAPAR) for agricultural crops using Sentinel-1 and Sentinel-2 satellite data. ",
+        "cost_estimate": 45,
+        "cost_unit": "platform credits",
+        "keywords": [
+            "Agriculture",
+            "Vegetation",
+            "Leaf Area Index (LAI)",
+            "Fraction of Absorbed Photosynthetic Active Radiation (fAPAR)",
+            "Fraction of Vegetation Coverage (fCOVER)",
+            "Sentinel-2",
+            "Sentinel-1",
+            "Normalized Difference Vegetation Index (NDVI)"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Hazan Daglayan Sevim",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            },
+            {
+                "name": "Terrascope EOplaza",
+                "links": [
+                    {
+                        "href": "https://portal.terrascope.be/",
+                        "title": "Terrascope EOplaza Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "https://terrascope.be/en/forum",
+                "roles": [
+                    "processor"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "AGRICULTURE"
+                    },
+                    {
+                        "id": "FIELD CROP PRODUCTS"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "JSON"
+            }
+        ],
+        "license": "proprietary"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3200aac34ba267b106a79b1d83dbb02a40da86f/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "Terrascope openEO backend",
+            "href": "https://openeo.terrascope.be/openeo"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "Terrascope",
+            "href": "../../../../platform_catalog/terrascope.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "VITO",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "notebook",
+            "type": "application/x-ipynb+json",
+            "title": "Example Jupyter Notebook to calculate the CropSAR products",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/78a0b08ee39177849435f0700013d31a2498a4cf/algorithm_catalog/vito/cropsar1d/notebooks/cropsar1d.ipynb"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/cropsar1d/algorithm_catalog/vito/cropsar1d/records/thumbnail.png"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar1d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3200aac34ba267b106a79b1d83dbb02a40da86f/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json&server=https://openeo.terrascope.be"
+        }
+    ]
+}

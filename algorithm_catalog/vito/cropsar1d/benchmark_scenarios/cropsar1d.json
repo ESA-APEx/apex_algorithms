@@ -1,0 +1,65 @@
+[
+    {
+        "id": "cropsar1d",
+        "type": "openeo",
+        "description": "CropSAR 1D is a biophysical parameter retrieval algorithm that estimates the Fraction of Absorbed Photosynthetically Active Radiation (FAPAR) for agricultural crops using Sentinel-1 and Sentinel-2 satellite data.",
+        "backend": "openeo.terrascope.be",
+        "process_graph": {
+            "cropsar1d1": {
+                "arguments": {
+                    "enddate": "2024-12-31",
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
+                                ],
+                                [
+                                    5.178744792938232,
+                                    51.24672597710759
+                                ],
+                                [
+                                    5.185289382934569,
+                                    51.24504696935156
+                                ],
+                                [
+                                    5.18676996231079,
+                                    51.245342479161295
+                                ],
+                                [
+                                    5.187370777130127,
+                                    51.24918393390799
+                                ],
+                                [
+                                    5.179324150085449,
+                                    51.2498689148547
+                                ]
+                            ]
+                        ],
+                        "type": "Polygon"
+                    },
+                    "output": "FAPAR",
+                    "startdate": "2024-01-01"
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3200aac34ba267b106a79b1d83dbb02a40da86f/algorithm_catalog/vito/cropsar1d/openeo_udp/cropsar1d.json",
+                "process_id": "cropsar1d"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "cropsar1d1"
+                    },
+                    "format": "JSON",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "result.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP54!tests_test_benchmarks.py__test_run_benchmark_cropsar1d_!actual/result.json",
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP54!tests_test_benchmarks.py__test_run_benchmark_cropsar1d_!benchmark_report.json"
+        }
+    }
+]
