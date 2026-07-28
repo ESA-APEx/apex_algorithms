@@ -96,7 +96,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/openeo_udp/apa_aquatic_plants_algae.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ded25a7887e8486e5eccf06c51c92a5f5024c97b/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/openeo_udp/apa_aquatic_plants_algae.json"
     },
     {
       "rel": "code",
@@ -108,7 +108,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=apa_aquatic_plants_algae&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/openeo_udp/apa_aquatic_plants_algae.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=apa_aquatic_plants_algae&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ded25a7887e8486e5eccf06c51c92a5f5024c97b/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/openeo_udp/apa_aquatic_plants_algae.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -138,13 +138,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Aquatic Plants and Algae (APA)",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ded25a7887e8486e5eccf06c51c92a5f5024c97b/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ded25a7887e8486e5eccf06c51c92a5f5024c97b/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
