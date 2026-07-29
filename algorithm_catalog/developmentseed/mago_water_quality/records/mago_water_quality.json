@@ -95,7 +95,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/mago_water_quality/openeo_udp/mago_water_quality.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0baf429c4ed96a1de8cfcd7b61198e5c2b61d470/algorithm_catalog/developmentseed/mago_water_quality/openeo_udp/mago_water_quality.json"
     },
     {
       "rel": "code",
@@ -107,7 +107,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=mago_water_quality&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/mago_water_quality/openeo_udp/mago_water_quality.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=mago_water_quality&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0baf429c4ed96a1de8cfcd7b61198e5c2b61d470/algorithm_catalog/developmentseed/mago_water_quality/openeo_udp/mago_water_quality.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -137,13 +137,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Water Quality (MAGO)",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/mago_water_quality/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0baf429c4ed96a1de8cfcd7b61198e5c2b61d470/algorithm_catalog/developmentseed/mago_water_quality/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/mago_water_quality/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/0baf429c4ed96a1de8cfcd7b61198e5c2b61d470/algorithm_catalog/developmentseed/mago_water_quality/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
