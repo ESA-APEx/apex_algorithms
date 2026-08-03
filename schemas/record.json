@@ -419,6 +419,78 @@
         "license": {
           "type": "string",
           "description": "License that is applicable for the APEx service."
+        },
+        "validation": {
+          "type": "object",
+          "description": "Optional metadata describing the validation document status for this service.",
+          "required": [
+            "status",
+            "document"
+          ],
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Validation review status used for certification derivation.",
+              "enum": [
+                "pending",
+                "accepted"
+              ]
+            },
+            "document": {
+              "type": "object",
+              "description": "Reference to the validation document.",
+              "required": [
+                "href"
+              ],
+              "properties": {
+                "href": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL to the validation report or equivalent validation evidence."
+                },
+                "reviewed_by": {
+                  "type": "string",
+                  "description": "Reviewer organization that accepted the validation document.",
+                  "enum": [
+                    "ESA"
+                  ]
+                },
+                "review_date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date on which the validation document was accepted."
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "accepted"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "document": {
+                    "required": [
+                      "href",
+                      "reviewed_by",
+                      "review_date"
+                    ]
+                  }
+                },
+                "required": [
+                  "document"
+                ]
+              }
+            }
+          ]
         }
       }
     },

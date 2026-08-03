@@ -87,7 +87,15 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "other"
+    "license": "other",
+    "validation": {
+      "status": "accepted",
+      "document": {
+        "href": "https://doi.org/10.1038/s43016-023-00841-7",
+        "reviewed_by": "ESA",
+        "review_date": "2025-01-28"
+      }
+    }
   },
   "linkTemplates": [],
   "links": [

@@ -57,6 +57,45 @@ The following sections demonstrate how the various sections from the record are 
 
 In those cases where the service is not intended to be publicly available, the `properties.visibility` property in the record can be set to `private`. This ensures that the service will not be listed in the [APEx Algorithm Catalogue](https://algorithm-catalogue.apex.esa.int/). The default value for this property is `public`, meaning that if it is not specified, the service will be visible in the catalogue.
 
+## Validation Metadata and Certification
+
+Certification in the catalogue is derived from optional validation metadata in the service record. If this field is omitted, the service is treated as **Contributed** by default.
+
+Use `properties.validation` when a validation document exists:
+
+```json
+"validation": {
+  "status": "pending",
+  "document": {
+    "href": "https://.../validation-report.pdf"
+  }
+}
+```
+
+When ESA has reviewed and accepted the validation document, set `status` to `accepted` and include ESA review metadata:
+
+```json
+"validation": {
+  "status": "accepted",
+  "document": {
+    "href": "https://.../validation-report.pdf",
+    "reviewed_by": "ESA",
+    "review_date": "2026-05-01"
+  }
+}
+```
+
+A service can only be considered **ESA-validated** when:
+
+1. `properties.validation.status` is `accepted` with `document.reviewed_by = "ESA"`, and
+2. at least one benchmark scenario JSON file exists in the service's `benchmark_scenarios/` folder.
+
+Suggested review flow:
+
+1. Algorithm PI adds `validation.status = "pending"` and the validation document URL.
+2. ESA reviewer verifies the document and benchmark readiness.
+3. ESA reviewer updates the record to `status = "accepted"` and sets `reviewed_by` and `review_date`.
+
 ## Services Overview
 
 @tbl-overview-mapping illustrates how the various sections from the record are connected to the general overview of all the services in the APEx Service Catalogue as shown in @fig-overview.

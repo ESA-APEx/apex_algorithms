@@ -2,6 +2,7 @@ import jsonschema
 import requests
 
 import pytest
+from copy import deepcopy
 from apex_algorithm_qa_tools.common import get_project_root
 from pathlib import Path
 from apex_algorithm_qa_tools.records import (
@@ -86,3 +87,51 @@ def test_algorithm_provider_records_():
 )
 def test_provider_record_validation(record):
     jsonschema.validate(instance=record["data"], schema=get_provider_ogc_record_schema())
+
+
+def _has_benchmark_scenarios(record_path: str) -> bool:
+    service_dir = Path(record_path).parent.parent
+    benchmark_dir = service_dir / "benchmark_scenarios"
+    return benchmark_dir.exists() and any(benchmark_dir.glob("*.json"))
+
+
+@pytest.mark.parametrize(
+    "record",
+    [
+        pytest.param(record, id=record["data"]["id"])
+        for record in get_service_ogc_records()
+        if record["data"].get("properties", {}).get("validation", {}).get("status")
+        == "accepted"
+    ],
+)
+def test_service_record_with_accepted_validation_requires_benchmark_scenarios(record):
+    assert _has_benchmark_scenarios(record["path"]), (
+        f"Service '{record['data']['id']}' has validation.status='accepted' but no benchmark scenario files in "
+        f"{Path(record['path']).parent.parent / 'benchmark_scenarios'}"
+    )
+
+
+@pytest.mark.parametrize(
+    "invalid_validation",
+    [
+        {"status": "accepted"},
+        {"status": "accepted", "document": {"href": "https://example.com/validation-report.pdf"}},
+        {
+            "status": "accepted",
+            "document": {
+                "href": "https://example.com/validation-report.pdf",
+                "reviewed_by": "Other",
+                "review_date": "2025-01-01",
+            },
+        },
+        {"status": "reviewed", "document": {"href": "https://example.com/validation-report.pdf"}},
+    ],
+)
+def test_service_record_validation_rejects_malformed_validation_metadata(
+    invalid_validation,
+):
+    record = deepcopy(get_service_ogc_records()[0]["data"])
+    record["properties"]["validation"] = invalid_validation
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())
