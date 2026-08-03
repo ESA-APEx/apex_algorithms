@@ -47,13 +47,13 @@
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/rayview/logo.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/5b07012daaa0eb6a1c2da25e21adb72f0d0670f3/algorithm_catalog/rayview/logo.png"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/rayview/logo.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/5b07012daaa0eb6a1c2da25e21adb72f0d0670f3/algorithm_catalog/rayview/logo.png"
         }
     ]
 }
