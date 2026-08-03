@@ -1,5 +1,5 @@
 {
-    "id": "ucl",
+    "id": "rayview",
     "type": "Feature",
     "conformsTo": [
         "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
@@ -8,8 +8,8 @@
         "created": "2026-05-21T00:00:00Z",
         "updated": "2026-05-21T00:00:00Z",
         "type": "algorithm_provider",
-        "title": "University College London",
-        "description": "University College London (UCL) is a public research university in London, United Kingdom. The solar PV detection service is contributed by researchers at UCL using machine-learning techniques on Sentinel-2 imagery.",
+        "title": "Earth RayView Ltd",
+        "description": "",
         "keywords": [],
         "language": {
             "code": "en-US",
@@ -24,10 +24,10 @@
         "contacts": [
             {
                 "name": "Rui Song",
-                "organization": "University College London",
+                "organization": "Earth RayView Ltd",
                 "emails": [
                     {
-                        "value": "rui.song@ucl.ac.uk"
+                        "value": "ruisong@earthrayview.co.uk"
                     }
                 ],
                 "roles": [
@@ -38,28 +38,22 @@
         "themes": [],
         "license": "other",
         "acl": {
-            "admin": ["@ucl.ac.uk"]
+            "admin": ["@earthrayview.co.uk"]
         }
     },
     "linkTemplates": [],
     "links": [
         {
-            "rel": "website",
-            "type": "text/html",
-            "title": "UCL",
-            "href": "https://www.ucl.ac.uk/"
-        },
-        {
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://www.hdruk.ac.uk/wp-content/uploads/2022/05/UCL-Partners-1-300x169.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/rayview/logo.png"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "https://www.hdruk.ac.uk/wp-content/uploads/2022/05/UCL-Partners-1-300x169.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/rayview/logo.png"
         }
     ]
 }

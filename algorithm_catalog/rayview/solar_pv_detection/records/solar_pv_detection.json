@@ -32,7 +32,7 @@
     "contacts": [
       {
         "name": "Rui Song",
-        "organization": "University College London",
+        "organization": "Earth RayView Ltd",
         "links": [
           {
             "href": "https://github.com/ray-climate/solar_openEO",
@@ -43,7 +43,7 @@
         ],
         "emails": [
           {
-            "value": "rui.song@ucl.ac.uk"
+            "value": "ruisong@earthrayview.co.uk"
           }
         ],
         "contactInstructions": "Contact via email",
