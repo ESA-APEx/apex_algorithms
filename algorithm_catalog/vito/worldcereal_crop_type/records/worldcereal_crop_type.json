@@ -89,7 +89,6 @@
     ],
     "license": "other",
     "validation": {
-      "status": "accepted",
       "document": {
         "href": "https://doi.org/10.1038/s43016-023-00841-7",
         "reviewed_by": "ESA",

@@ -65,18 +65,16 @@ Use `properties.validation` when a validation document exists:
 
 ```json
 "validation": {
-  "status": "pending",
   "document": {
     "href": "https://.../validation-report.pdf"
   }
 }
 ```
 
-When ESA has reviewed and accepted the validation document, set `status` to `accepted` and include ESA review metadata:
+When ESA has reviewed and accepted the validation document, include ESA review metadata:
 
 ```json
 "validation": {
-  "status": "accepted",
   "document": {
     "href": "https://.../validation-report.pdf",
     "reviewed_by": "ESA",
@@ -87,14 +85,14 @@ When ESA has reviewed and accepted the validation document, set `status` to `acc
 
 A service can only be considered **ESA-validated** when:
 
-1. `properties.validation.status` is `accepted` with `document.reviewed_by = "ESA"`, and
+1. `properties.validation.document.reviewed_by = "ESA"` with `document.review_date`, and
 2. at least one benchmark scenario JSON file exists in the service's `benchmark_scenarios/` folder.
 
 Suggested review flow:
 
-1. Algorithm PI adds `validation.status = "pending"` and the validation document URL.
+1. Algorithm PI adds the validation document URL in `validation.document.href`.
 2. ESA reviewer verifies the document and benchmark readiness.
-3. ESA reviewer updates the record to `status = "accepted"` and sets `reviewed_by` and `review_date`.
+3. ESA reviewer updates the record with `reviewed_by` and `review_date`.
 
 ## Services Overview
 

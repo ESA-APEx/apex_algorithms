@@ -100,13 +100,17 @@ def _has_benchmark_scenarios(record_path: str) -> bool:
     [
         pytest.param(record, id=record["data"]["id"])
         for record in get_service_ogc_records()
-        if record["data"].get("properties", {}).get("validation", {}).get("status")
-        == "accepted"
+        if record["data"]
+        .get("properties", {})
+        .get("validation", {})
+        .get("document", {})
+        .get("reviewed_by")
+        == "ESA"
     ],
 )
-def test_service_record_with_accepted_validation_requires_benchmark_scenarios(record):
+def test_service_record_with_esa_reviewed_validation_requires_benchmark_scenarios(record):
     assert _has_benchmark_scenarios(record["path"]), (
-        f"Service '{record['data']['id']}' has validation.status='accepted' but no benchmark scenario files in "
+        f"Service '{record['data']['id']}' has ESA-reviewed validation metadata but no benchmark scenario files in "
         f"{Path(record['path']).parent.parent / 'benchmark_scenarios'}"
     )
 
@@ -114,17 +118,15 @@ def test_service_record_with_accepted_validation_requires_benchmark_scenarios(re
 @pytest.mark.parametrize(
     "invalid_validation",
     [
-        {"status": "accepted"},
-        {"status": "accepted", "document": {"href": "https://example.com/validation-report.pdf"}},
         {
-            "status": "accepted",
             "document": {
                 "href": "https://example.com/validation-report.pdf",
                 "reviewed_by": "Other",
                 "review_date": "2025-01-01",
             },
         },
-        {"status": "reviewed", "document": {"href": "https://example.com/validation-report.pdf"}},
+        {"document": {"href": "https://example.com/validation-report.pdf", "reviewed_by": "ESA"}},
+        {"document": {"href": "https://example.com/validation-report.pdf", "review_date": "2025-01-01"}},
     ],
 )
 def test_service_record_validation_rejects_malformed_validation_metadata(
