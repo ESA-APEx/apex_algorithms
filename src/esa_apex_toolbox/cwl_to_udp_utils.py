@@ -87,7 +87,7 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
             cwl_type = {"type": "array", "items": sub_type}
 
         if name == "spatial_extent":
-            return Parameter.spatial_extent(**arguments)
+            return Parameter.bounding_box(**arguments)
         if name == "temporal_extent":
             return Parameter.temporal_interval(**arguments)
         elif cwl_type == "string":
