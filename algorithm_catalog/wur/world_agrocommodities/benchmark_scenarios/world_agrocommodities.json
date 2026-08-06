@@ -7,7 +7,7 @@
     "process_graph": {
       "worldagrocommodities1": {
         "process_id": "world_agrocommodities",
-        "namespace": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.6/src/world_agrocommodities/udp/world_agrocommodities.json",
+        "namespace": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.7/src/world_agrocommodities/udp/world_agrocommodities.json",
         "arguments": {
           "spatial_extent": {
             "west": 817475.0741295104,
@@ -21,6 +21,7 @@
             "2025-12-31"
           ],
           "crs": "EPSG:32634",
+          "resolution": 10,
           "model_id": "WorldAgriCommodities_Africa_v1"
         },
         "result": true

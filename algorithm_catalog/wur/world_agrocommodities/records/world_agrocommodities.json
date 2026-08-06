@@ -117,7 +117,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=world_agrocommodities&wizard~processUrl=https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.6/src/world_agrocommodities/udp/world_agrocommodities.json&server=https://openeo.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=world_agrocommodities&wizard~processUrl=https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.7/src/world_agrocommodities/udp/world_agrocommodities.json&server=https://openeo.dataspace.copernicus.eu"
     }
   ]
 }
