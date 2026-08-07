@@ -2,7 +2,7 @@
     {
         "id": "amwi",
         "type": "openeo",
-        "description": "This process calculates the Anomaly Weighted Index (ANWI) from Sentinel-2 data.",
+        "description": "The Anomaly Weighted Index (ANWI) from Sentinel-2 imagery to identify areas that deviate from their expected spectral behaviour. ANWI highlights potential anomalies related to vegetation stress, crop damage, land degradation, environmental disturbances, flooding impacts, and other surface changes. In other words, it compares red and blue light reflected from the ground to highlight areas that stand out from their surroundings, such as dust, smoke, algae blooms, or unusual land surfaces, making it easier to spot potential anomalies at a glance.\n\n- **Positive AMWI values** indicate surfaces where red reflectance dominates over blue (e.g. vegetated or soil-dominated areas, or scenes with reduced blue-band scattering).\n- **Negative AMWI values** indicate surfaces or conditions where blue reflectance dominates (e.g. water bodies, shadow, haze/aerosol-affected pixels, or certain built-up materials).\n- **Values near zero** suggest a balanced red-blue response, typical of neutral or mixed surfaces.",
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "AMWI1": {

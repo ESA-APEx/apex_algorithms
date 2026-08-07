@@ -2,7 +2,7 @@
     {
         "id": "bsi",
         "type": "openeo",
-        "description": "BSI is a biophysical parameter retrieval algorithm that estimates the Bare Soil Index (BSI) for agricultural fields using Sentinel-2 satellite data.",
+        "description": "The Bare Soil Index (BSI) process uses Sentinel-2 imagery to identify patches of land that are bare (exposed soil) versus those covered by vegetation. It works by combining four different bands of light captured by the satellite: blue (B02), red (B04), near-infrared (B08), and shortwave infrared (B11), using the formula: \n $$BSI = ((B11 + B04) - (B02 + B08)) / ((B11 + B04) + (B02 + B08))$$. Bare soil and vegetation reflect these different wavelengths of light in distinct ways, healthy plants strongly reflect near-infrared light and absorb red and blue light, while bare soil reflects red and shortwave infrared light more evenly and lacks the strong near-infrared signature of plants. By comparing the combined red and shortwave-infrared signal against the combined blue and near-infrared signal, and then scaling the result so it always falls between -1 and 1, BSI produces a value that is easy to compare across different fields, dates, and lighting conditions. In general, higher (more positive) BSI values indicate bare or exposed soil, such as freshly plowed fields, fallow land, or areas with sparse crop cover, while lower (more negative) values indicate healthy, dense vegetation. This makes BSI especially useful in agriculture for monitoring field conditions, tracking planting and harvest cycles, detecting soil erosion, or identifying areas that may need attention before the next growing season.",
         "backend": "openeofed.dataspace.copernicus.eu",
         "process_graph": {
             "BSI1": {
