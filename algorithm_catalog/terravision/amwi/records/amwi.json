@@ -71,6 +71,7 @@
         "version": "1.0.0",
         "publisher": {
             "name": "TERRAVISION"
+        }
     },
     "linkTemplates": [],
     "links": [
@@ -126,8 +127,7 @@
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7f1bc73312dbd291cf971a557dfe7f234af573fd/algorithm_catalog/terravision/amwi/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/a4d505f3b98865bd452ffe5ff45e130f8d86cdad/algorithm_catalog/terravision/amwi/thumbnail.png"
         }
     ]
-  }
 }
