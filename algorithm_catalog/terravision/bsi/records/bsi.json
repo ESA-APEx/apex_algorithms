@@ -109,7 +109,7 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "BSI example notebook",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9d9a31eaa56afa5909e8293f132570fe18f14d4a/algorithm_catalog/terravision/bsi/notebooks/bsi.ipynb"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4641a97855d00dbe243acf4a4fe8cfd8d8c984e0/algorithm_catalog/terravision/bsi/notebooks/bsi.ipynb"
         },
         {
             "rel": "example-output",
