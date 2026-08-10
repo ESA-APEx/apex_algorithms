@@ -90,7 +90,7 @@
       "rel": "application",
       "type": "application/json",
       "title": "Structure Icing public OGC API Processes application metadata",
-      "href": "./structure_icing_endpoint_application.json"
+      "href": "../application/structure_icing_endpoint_application.json"
     },
     {
       "rel": "service",
