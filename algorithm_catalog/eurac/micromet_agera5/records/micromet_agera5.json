@@ -1,0 +1,140 @@
+{
+  "id": "micromet_agera5",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-03-20T00:00:00Z",
+    "updated": "2026-03-20T00:00:00Z",
+    "type": "service",
+    "title": "Downscaling of AGERA5 to 30m resolution using MicroMet",
+    "description": "Computes meteo variables at 30m resolution based on AGERA5 data and the MicroMet model. Currently provides temperature, relative humidity and shortwave radiation.",
+    "cost_estimate": 0.01,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Valentina Premier",
+        "position": "Researcher",
+        "organization": "Eurac Research",
+        "links": [
+          {
+            "href": "https://www.eurac.edu/",
+            "title": "EURAC Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/clausmichele",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via EURAC",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "AIR TEMPERATURE"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/SNOWCOP/meteo_downscaling_openeo/refs/heads/main/src/meteo_downscaling_openeo/udp/agera_meteo_mountain_downscaling.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/SNOWCOP/meteo_downscaling_openeo"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Eurac Research",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=agera_meteo_mountain_downscaling&wizard~processUrl=https://raw.githubusercontent.com/SNOWCOP/meteo_downscaling_openeo/refs/heads/main/src/meteo_downscaling_openeo/udp/agera_meteo_mountain_downscaling.json&server=https://openeo.vito.be"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Liston, G.E., & Elder, K. (2006)..: A Meteorological Distribution System for High-Resolution Terrestrial Modeling (MicroMet).",
+      "href": "https://doi.org/10.1175/JHM486.1"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/eurac_pv_farm_detection/records/thumbnail.png"
+    }
+  ]
+}
