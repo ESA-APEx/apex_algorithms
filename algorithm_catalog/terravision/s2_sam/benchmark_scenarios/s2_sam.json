@@ -1,0 +1,38 @@
+[
+  {
+    "id": "s2_sam",
+    "type": "openeo",
+    "description": "Run Sentinel-2 based Spectral Angle Mapping (S2-SAM) on a monthly BAP composite and return the best matching USGS spectral library class index per pixel.",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "s2sam1": {
+        "process_id": "s2_sam",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": 5.05,
+            "south": 51.21,
+            "east": 5.1,
+            "north": 51.23
+          },
+          "temporal_extent": [
+            "2025-05-01",
+            "2025-05-31"
+          ]
+        }
+      },
+      "saveresult1": {
+        "process_id": "save_result",
+        "arguments": {
+          "data": {
+            "from_node": "s2sam1"
+          },
+          "format": "NetCDF",
+          "options": {}
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  }
+]
