@@ -1,0 +1,468 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B08",
+          "SCL"
+        ],
+        "id": "SENTINEL2_L2A",
+        "properties": {
+          "eo:cloud_cover": {
+            "process_graph": {
+              "lte1": {
+                "process_id": "lte",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "max_cloud_coverage"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        }
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "method": "near",
+        "projection": 3857
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 2
+              }
+            },
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": -997
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": -992
+              }
+            },
+            "or1": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "eq1"
+                },
+                "y": {
+                  "from_node": "eq2"
+                }
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement1"
+                },
+                "y": -991
+              }
+            },
+            "or2": {
+              "process_id": "or",
+              "arguments": {
+                "x": {
+                  "from_node": "or1"
+                },
+                "y": {
+                  "from_node": "eq3"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask1": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "mask": {
+          "from_node": "reducedimension1"
+        }
+      }
+    },
+    "filterbands1": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B08"
+        ],
+        "data": {
+          "from_node": "mask1"
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement2": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 0
+              }
+            },
+            "arrayelement3": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "index": 1
+              }
+            },
+            "subtract1": {
+              "process_id": "subtract",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement2"
+                },
+                "y": {
+                  "from_node": "arrayelement3"
+                }
+              }
+            },
+            "add1": {
+              "process_id": "add",
+              "arguments": {
+                "x": {
+                  "from_node": "arrayelement2"
+                },
+                "y": {
+                  "from_node": "arrayelement3"
+                }
+              }
+            },
+            "divide1": {
+              "process_id": "divide",
+              "arguments": {
+                "x": {
+                  "from_node": "subtract1"
+                },
+                "y": {
+                  "from_node": "add1"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "mask2": {
+      "process_id": "mask",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "mask": {
+          "from_node": "reducedimension1"
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "mask2"
+        },
+        "process": {
+          "process_graph": {
+            "gt1": {
+              "process_id": "gt",
+              "arguments": {
+                "x": {
+                  "from_parameter": "x"
+                },
+                "y": {
+                  "from_parameter": "ndwi_threshold"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "apply2": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "process": {
+          "process_graph": {
+            "if1": {
+              "process_id": "if",
+              "arguments": {
+                "accept": 1,
+                "reject": 0,
+                "value": {
+                  "from_parameter": "x"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "iterations": {
+            "from_parameter": "iterations"
+          }
+        },
+        "data": {
+          "from_node": "apply2"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "# /// script\n# dependencies = [\n#   \"scikit-image\",\n#   \"scipy\",\n# ]\n# ///\n\nfrom openeo.udf import XarrayDataCube, inspect\nimport numpy as np\nimport xarray as xr\nfrom scipy.ndimage import binary_fill_holes, binary_opening\n\nDEFAULT_WATER_VALUE = 1\n\n\ndef _build_coastal_water_mask(\n    arr: np.ndarray,\n    water_value: int = DEFAULT_WATER_VALUE,\n    nodata: float | None = 999,\n    iterations: int = 1,\n) -> np.ndarray:\n    \"\"\"\n    Build coastal-water-only mask from land/water mask.\n    Inland water is filled.\n\n    Returns:\n        0/1 mask where 1 is coastal water and 0 is land\n    \"\"\"\n    water = arr == water_value\n    if nodata is not None:\n        water = water & (arr != nodata)\n\n    # Remove small estuaries\n    water = binary_opening(water, iterations=iterations)\n\n    # Remove bridges\n    land = ~water\n    land = binary_opening(land, iterations=iterations)\n\n    land_filled = binary_fill_holes(land)\n    water_filled = ~land_filled\n    return water_filled.astype(np.uint8)\n\n\ndef apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:\n    \"\"\"Apply morphological algorithms on DataCube\"\"\"\n\n    cube_array: xr.DataArray = cube.get_array()\n    inspect(data=[cube_array.shape], message=\"Input UDF cube_array shape\")\n\n    cube_array = cube_array.astype(np.uint8)\n\n    cube_array_3d = cube_array.squeeze(dim=\"bands\")\n\n    modified = xr.apply_ufunc(\n        _build_coastal_water_mask,\n        cube_array_3d,\n        input_core_dims=[[\"y\", \"x\"]],\n        output_core_dims=[[\"y\", \"x\"]],\n        vectorize=True,\n        dask=\"parallelized\",\n        output_dtypes=[np.uint8],\n        kwargs={\n            \"water_value\": DEFAULT_WATER_VALUE,\n            \"nodata\": 999,\n            \"iterations\": context[\"iterations\"],\n        },\n    )\n\n    modified_da = xr.DataArray(\n        modified,\n        coords={\n            \"t\": cube_array.coords[\"t\"],\n            \"y\": cube_array.coords[\"y\"],\n            \"x\": cube_array.coords[\"x\"],\n        },\n        dims=[\"t\", \"y\", \"x\"],\n    )\n    modified_da = modified_da.expand_dims(dim={\"bands\": cube_array.coords[\"bands\"]})\n    modified_da = modified_da.transpose(\"t\", \"bands\", \"y\", \"x\")\n\n    return XarrayDataCube(modified_da)\n"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "rastertovector1": {
+      "process_id": "raster_to_vector",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        }
+      }
+    },
+    "applydimension2": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "simplify_tolerance": {
+            "from_parameter": "simplify_tolerance"
+          }
+        },
+        "data": {
+          "from_node": "rastertovector1"
+        },
+        "dimension": "geometry",
+        "process": {
+          "process_graph": {
+            "runudf2": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "from typing import Iterable, Union, Any\nimport numpy as np\nimport geopandas as gpd\nfrom shapely.geometry import (\n    box,\n    LineString,\n    MultiLineString,\n    Polygon,\n    Point,\n    GeometryCollection,\n)\nfrom openeo.udf import inspect\nfrom openeo.udf.feature_collection import FeatureCollection\nfrom openeo.udf.udf_data import UdfData\n\nGeometryLike = Union[LineString, MultiLineString, GeometryCollection]\n\nDEFAULT_OUT_LAYER = \"waterline\"\nDEFAULT_TIME_DIM = \"time\"\nDEFAULT_VAR_NAME = \"var\"\nDEFAULT_SEA_DIRECTION_8_COLUMN = \"sea_direction_8\"\nDEFAULT_SEA_AZIMUTH_DEG_COLUMN = \"sea_azimuth_deg\"\nDEFAULT_MIN_DANGLING_LENGTH = 10000\nDEFAULT_MIN_HOLE_AREA = 1000000\n\n\ndef _iter_lines(geom: GeometryLike) -> Iterable[LineString]:\n    \"\"\"Recursively yield all LineString objects contained in a geometry.\"\"\"\n    if geom.is_empty:\n        return\n\n    if isinstance(geom, LineString):\n        yield geom\n    elif isinstance(geom, (MultiLineString, GeometryCollection)):\n        for subgeom in geom.geoms:\n            yield from _iter_lines(subgeom)\n\n\ndef split_into_segments(geom: GeometryLike) -> list[LineString]:\n    \"\"\"\n    Split a geometry into 2-point LineStrings representing individual segments\n    between consecutive vertices.\n\n    Args:\n        geom: Input geometry.\n\n    Returns: List of non-zero-length segments.\n    \"\"\"\n    segments: list[LineString] = []\n\n    for line in _iter_lines(geom):\n        coords = list(line.coords)\n        for start, end in zip(coords[:-1], coords[1:]):\n            if start != end:  # Avoid zero-length segments\n                segments.append(LineString([start, end]))\n\n    return segments\n\n\ndef _remove_small_interiors(geom: Polygon, min_hole_area: float = DEFAULT_MIN_HOLE_AREA) -> Polygon:\n    \"\"\"Remove small interior rings from polygon.\"\"\"\n    if geom.is_empty:\n        return geom\n\n    kept_holes = []\n    for ring in geom.interiors:\n        if Polygon(ring).area >= min_hole_area:\n            kept_holes.append(ring)\n\n    return Polygon(geom.exterior, holes=kept_holes)\n\n\ndef _remove_extent_intersections(waterline: LineString, bounds, buffer: float = 600) -> list[LineString]:\n    \"\"\"Return 2-point segments that do NOT intersect the raster extent boundary.\"\"\"\n    extent_edge = box(*bounds).boundary\n    edges = split_into_segments(waterline)\n    extent_edge_buffered = extent_edge.buffer(buffer)\n    return [e for e in edges if not e.within(extent_edge_buffered)]\n\n\ndef _remove_short_dangling_segments(\n    segments: list[LineString],\n    min_dangling_length: float = 0.0,\n) -> list[LineString]:\n    \"\"\"Remove short isolated segments (both endpoints occur only once).\"\"\"\n    if not segments or min_dangling_length <= 0:\n        return segments\n\n    endpoint_counts: dict[Any, int] = {}\n    for seg in segments:\n        a, b = seg.coords[0], seg.coords[-1]\n        endpoint_counts[a] = endpoint_counts.get(a, 0) + 1\n        endpoint_counts[b] = endpoint_counts.get(b, 0) + 1\n\n    kept: list[LineString] = []\n    for seg in segments:\n        if seg.length >= min_dangling_length:\n            kept.append(seg)\n            continue\n\n        a, b = seg.coords[0], seg.coords[-1]\n        if endpoint_counts.get(a, 0) > 1 or endpoint_counts.get(b, 0) > 1:\n            kept.append(seg)\n\n    return kept\n\n\ndef _clean_waterline_segments(\n    waterline: LineString,\n    bounds,\n    min_dangling_length: float = DEFAULT_MIN_DANGLING_LENGTH,\n) -> list[LineString]:\n    \"\"\"\n    Clean waterline and return as a *list of 2-point segments* (one per edge).\n    \"\"\"\n    segments = _remove_extent_intersections(waterline, bounds)\n    if not segments:\n        return []\n\n    segments = _remove_short_dangling_segments(\n        segments,\n        min_dangling_length=min_dangling_length,\n    )\n    if not segments:\n        return []\n\n    return segments\n\n\ndef _get_sea_direction_for_segment(water_poly: Polygon, seg: LineString) -> tuple[str, float | None]:\n    \"\"\"\n    Determine where the sea (water polygon side) lies relative to a segment.\n\n    Returns:\n        sea_dir: General sea direction (N, S, NS etc) and detailed sea dir in degrees.\n    \"\"\"\n    if seg.is_empty or seg.length == 0:\n        return \"unknown\", None\n\n    # Get first and last coordinates of the segment\n    a = np.asarray(seg.coords[0], dtype=float)\n    b = np.asarray(seg.coords[-1], dtype=float)\n\n    # Compute direction vector and length\n    v = b - a\n    norm = np.linalg.norm(v)\n    if norm == 0:\n        return \"unknown\", None\n\n    # Unit tangent and left normal vector\n    t = v / norm\n    n_left = np.array([-t[1], t[0]], dtype=float)\n\n    # Segment midpoint\n    mid = (a + b) / 2.0\n\n    # How far to step away from the segment (1 perc of segment len.)\n    eps = max(0.5, min(5.0, float(seg.length) * 0.01))\n\n    # Probe points\n    left_pt = mid + eps * n_left\n    right_pt = mid - eps * n_left\n\n    left_in = water_poly.contains(Point(left_pt))\n    right_in = water_poly.contains(Point(right_pt))\n\n    if left_in and not right_in:\n        sea_vec = n_left\n    elif right_in and not left_in:\n        sea_vec = -n_left\n    else:\n        return \"unknown\", None\n\n    # Map-based 8-way direction from sea_vec (x=east, y=north)\n    x, y = float(sea_vec[0]), float(sea_vec[1])\n\n    # Compute angle\n    angle = np.degrees(np.arctan2(y, x))\n    angle = (angle + 360.0) % 360.0\n\n    # 8-sector compass, centered on E=0\u00b0, NE=45\u00b0, N=90\u00b0, ...\n    dirs = [\"E\", \"NE\", \"N\", \"NW\", \"W\", \"SW\", \"S\", \"SE\"]\n    idx = int(((angle + 22.5) % 360) // 45)\n\n    return dirs[idx], float(angle)\n\n\ndef _segments_for_water_mask(\n    gdf_water_one_timestamp,\n    bounds,\n    simplify_tolerance: float | None = None,\n) -> tuple[list[LineString], Polygon] | None:\n    \"\"\"Converts water land mask for single timestamp to cleaned waterline segments.\"\"\"\n\n    # Remove small interiors\n    gdf_water_one_timestamp[\"geometry\"] = gdf_water_one_timestamp[\"geometry\"].apply(_remove_small_interiors)\n\n    # Remove small polygons\n    gdf_water_one_timestamp = gdf_water_one_timestamp[gdf_water_one_timestamp[\"geometry\"].area > DEFAULT_MIN_HOLE_AREA]\n\n    # Merge all polygons\n    water_poly = gdf_water_one_timestamp.union_all()\n\n    if simplify_tolerance is not None:\n        water_poly = water_poly.simplify(simplify_tolerance, preserve_topology=True)\n\n    boundary = water_poly.boundary\n\n    # boundary can be MultiLineString/LineString -> convert to a single multilinestring-ish\n    if isinstance(boundary, LineString):\n        cleaned_segments = _clean_waterline_segments(boundary, bounds=bounds)\n    elif isinstance(boundary, MultiLineString):\n        cleaned_segments = []\n        for part in boundary.geoms:\n            cleaned_segments.extend(_clean_waterline_segments(part, bounds=bounds))\n    else:\n        return None\n\n    return cleaned_segments, water_poly\n\n\ndef waterline_from_vectorized_water_raster(\n    gdf: gpd.GeoDataFrame,\n    simplify_tolerance: float | None = None,\n) -> gpd.GeoDataFrame:\n    \"\"\"\n    Generate waterline segments for each time step from a vectorized land/water mask.\n    The input gdf is the output of openEO raster_to_vector() process.\n    Args:\n        gdf: GeoDataFrame containing polygon geometries and one non-geometry column\n            per timestamp. For each timestamp column, values indicate whether a\n            polygon belongs to water or land at that time:\n            - null: polygon not present for that timestamp\n            - 0: land polygon\n            - non-zero: water polygon\n        simplify_tolerance: Optional tolerance for geometry simplification. If\n            provided, merged water geometries are simplified before extracting\n            boundary segments.\n\n    Returns:\n        A GeoDataFrame with columns:\n            - time: Time step associated with each geometry.\n            - type: Feature classification.\n            - sea_direction_8: Direction toward the sea expressed as one of\n              eight cardinal/inter-cardinal directions (N, NE, E, SE, S, SW, W, NW).\n            - sea_azimuth_deg: Direction toward the sea in degrees (azimuth,\n              typically measured clockwise from north).\n            - geometry: Waterline geometry (LineString or MultiLineString).\n    Raises:\n        ValueError if no waterlines segments extracted.\n    \"\"\"\n\n    records: list[dict[str, Any]] = []\n\n    # Identify time columns\n    time_stamps = gdf.loc[:, gdf.columns != \"geometry\"].columns.to_list()\n    inspect(data=[time_stamps], message=\"Input time stamps.\")\n\n    if not time_stamps:\n        inspect(data=[\"No time columns found\"], message=\"Empty input\")\n        return gpd.GeoDataFrame(geometry=[], crs=gdf.crs)\n\n    bounds = gdf.total_bounds\n\n    for time_stamp in time_stamps:\n        inspect(data=[time_stamp], message=\"Processing timestamp\")\n\n        # Drop NaNs\n        one_time_stamp_gdf = gdf[[time_stamp, \"geometry\"]].dropna(subset=[time_stamp])\n\n        if one_time_stamp_gdf.empty:\n            inspect(data=[time_stamp], message=\"All values NaN, skipping\")\n            continue\n\n        # Keep only water polygons\n        water_gdf = one_time_stamp_gdf[one_time_stamp_gdf[time_stamp] != 0]\n\n        if water_gdf.empty:\n            inspect(data=[time_stamp], message=\"No water polygons, skipping\")\n            continue\n\n        # Remove invalid geometries early\n        water_gdf = water_gdf[~water_gdf.geometry.is_empty & water_gdf.geometry.notna()]\n\n        if water_gdf.empty:\n            inspect(data=[time_stamp], message=\"No valid geometries after cleaning\")\n            continue\n\n        # Process water mask \u2192 segments\n        res = _segments_for_water_mask(\n            water_gdf.copy(),\n            bounds=bounds,\n            simplify_tolerance=simplify_tolerance,\n        )\n\n        if res is None:\n            inspect(data=[time_stamp], message=\"No boundary extracted (None), skipping\")\n            continue\n\n        segments, water_poly = res\n\n        if not segments:\n            inspect(data=[time_stamp], message=\"No segments found, skipping\")\n            continue\n\n        inspect(data=[len(segments)], message=\"Segments found\")\n\n        for seg in segments:\n            if seg.is_empty or seg.length == 0:\n                continue\n\n            sea_direction = _get_sea_direction_for_segment(water_poly, seg)\n\n            records.append(\n                {\n                    \"time\": time_stamp,\n                    \"type\": \"waterline_segment\",\n                    DEFAULT_SEA_DIRECTION_8_COLUMN: sea_direction[0],\n                    DEFAULT_SEA_AZIMUTH_DEG_COLUMN: sea_direction[1],\n                    \"geometry\": seg,\n                }\n            )\n\n    # \ud83d\udd11 CRITICAL CHANGE: never crash on empty result\n    if len(records) == 0:\n        inspect(\n            data=[\"No waterline segments found for any timestamp\"],\n            message=\"Returning empty GeoDataFrame\",\n        )\n\n        return gpd.GeoDataFrame(\n            columns=[\n                \"time\",\n                \"type\",\n                DEFAULT_SEA_DIRECTION_8_COLUMN,\n                DEFAULT_SEA_AZIMUTH_DEG_COLUMN,\n                \"geometry\",\n            ],\n            geometry=\"geometry\",\n            crs=gdf.crs,\n        )\n\n    inspect(data=[len(records)], message=\"Total segments created\")\n\n    result_gdf = gpd.GeoDataFrame(records, geometry=\"geometry\", crs=gdf.crs)\n    result_gdf = result_gdf[\n        ~result_gdf.geometry.isna() & ~result_gdf.geometry.is_empty\n    ].reset_index(drop=True)\n\n    return result_gdf\n\ndef apply_udf_data(udf_data: UdfData) -> UdfData:\n\n    feature_collection = udf_data.get_feature_collection_list()[0]\n    gdf = feature_collection.data\n    inspect(data=[gdf], message=\"Input gdf data inspection\")\n\n    user_context = udf_data.user_context or {}\n    simplify_tolerance = user_context.get(\"simplify_tolerance\", 10)\n\n    inspect(\n        data=[simplify_tolerance],\n        message=\"Simplify tolerance resolved\"\n    )\n\n    gdf = waterline_from_vectorized_water_raster(\n        gdf=gdf,\n        simplify_tolerance=simplify_tolerance,\n    )\n\n    inspect(data=[gdf], message=\"Output gdf data inspection\")\n\n    udf_data.set_feature_collection_list([\n        FeatureCollection(id=\"_\", data=gdf)\n    ])\n\n    return udf_data\n"
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "waterlines_v1",
+  "summary": "Waterlines extracted from Sentinel-2 using NDWI.",
+  "description": "# Waterlines openEO UDP\n## Purpose\nExtract coastline waterlines from Sentinel-2 imagery using NDWI-based water detection, morphological refinement, and UDF-based conversion from water polygons to coast waterlines.\n\n## Methodology\n### Water/Land Classification\nWater masks are generated using the **Normalized Difference Water Index (NDWI)**, where pixels are classified as water when **NDWI > threshold**. The default threshold is **0.01**, but it can be adjusted using the `ndwi_threshold` parameter.\n\nNDWI is computed as the normalized difference between the Sentinel-2 **Green** band (B03) and **Near-Infrared** band (B08), defined as the difference between these bands divided by their sum.\n\n*This MVP supports only one method (**S2_NDWI**). Originally, multiple methods were selectable via a parameter, but this required openEO `if_()` logic, which converts the result into a `ProcessBuilder` instead of a `DataCube`.\nThis breaks the `raster_to_vector()` step needed for waterline extraction.*\n\n### Morphological Processing\nFor each timestamp, the water/land mask is refined using morphological operations to remove small isolated objects, fill small holes, smooth boundaries and reduce artifacts such as narrow bridges and estuaries. This improves the quality and stability of the resulting waterlines.\n\n### Waterline Extraction\nThe cleaned masks are vectorized using the built-in openEO function `raster_to_vector()`. The resulting water polygons are then transformed into waterlines via a UDF, producing time-resolved geometries for each timestep.\n\nThe output is a vector cube of coastline waterlines with the following properties:\n- **time**: Acquisition timestamp (Sentinel-2 datetime)  \n- **type**: Feature type (`waterline_segment`)  \n- **sea_direction_8**: Sea direction (N, NE, E, SE, S, SW, W, NW)  \n- **sea_azimuth_deg**: Sea direction in degrees (azimuth, clockwise from north)  \n- **geometry**: Waterline geometry (LineString or MultiLineString) in EPSG:3857  \n\nThe **sea_azimuth_deg** property is particularly useful for downstream processing, as it can be used to shift the waterline and derive a shoreline (*a waterline normalized for beach slope and tidal conditions*).\n\n## Authors / Contact\n- **Milena Napiorkowska** (openEO UDP) Argans Ltd  \n  mnapiorkowska@argans.co.uk  \n\n- **Martin Jones** (Project Manager) Argans Ltd  \n  mjones@argans.co.uk  \n\n- **Holly Baxter** (Methodology) Argans Ltd  \n  hbaxtar@argans.co.uk  \n\n- **Cameron Mackenzie** (Methodology, openEO UDP) Argans Ltd\n  cmackenzie@argans.co.uk  \n\n## Acknowledgments\nThis work was developed as part of an ESA-funded **Fast Track** project.\n\n## Known Limitations\n- Results are most reliable for scenes with low cloud coverage  \n- NoData areas may introduce artifacts, particularly along boundaries between valid and invalid pixels  \n- NDWI might be less reliable in turbid waters",
+  "categories": [
+    "sentinel-2",
+    "coastline",
+    "waterlines"
+  ],
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Bounding box of the area of interest. Defined as west, south, east, north in EPSG:4326.",
+      "schema": {
+        "type": "object",
+        "subtype": "bounding-box",
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "properties": {
+          "west": {
+            "type": "number",
+            "description": "West (lower left corner, coordinate axis 1)."
+          },
+          "south": {
+            "type": "number",
+            "description": "South (lower left corner, coordinate axis 2)."
+          },
+          "east": {
+            "type": "number",
+            "description": "East (upper right corner, coordinate axis 1)."
+          },
+          "north": {
+            "type": "number",
+            "description": "North (upper right corner, coordinate axis 2)."
+          },
+          "crs": {
+            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "subtype": "epsg-code",
+                "title": "EPSG Code",
+                "minimum": 1000
+              },
+              {
+                "type": "string",
+                "subtype": "wkt2-definition",
+                "title": "WKT2 definition"
+              }
+            ],
+            "default": 4326
+          }
+        }
+      }
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Date range over which to extract waterlines.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "default": [
+        "2025-01-01",
+        "2025-12-31"
+      ],
+      "optional": true
+    },
+    {
+      "name": "max_cloud_coverage",
+      "description": "Maximum allowed cloud coverage.",
+      "schema": {
+        "type": "number"
+      },
+      "default": 10,
+      "optional": true
+    },
+    {
+      "name": "iterations",
+      "description": "Number of iterations for morphological operations.",
+      "schema": {
+        "type": "integer"
+      },
+      "default": 2,
+      "optional": true
+    },
+    {
+      "name": "ndwi_threshold",
+      "description": "NDWI threshold (water if NDWI > threshold).",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.01,
+      "optional": true
+    },
+    {
+      "name": "simplify_tolerance",
+      "description": "Tolerance used to simplify vectorized water polygons before extracting waterlines.",
+      "schema": {
+        "type": "number"
+      },
+      "default": 10,
+      "optional": true
+    }
+  ]
+}

@@ -135,7 +135,8 @@
               "Land Surface Temperature",
               "Climate",
               "Soils",
-              "Radar"
+              "Radar",
+              "Coastal"
             ]
           },
           "minItems": 1,
