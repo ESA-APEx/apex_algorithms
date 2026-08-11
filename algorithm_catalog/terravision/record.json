@@ -1,0 +1,52 @@
+{
+    "id": "terravision",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-07-13T09:00:00Z",
+        "updated": "2026-07-13T09:00:00Z",
+        "type": "algorithm_provider",
+        "title": "TERRAVISION",
+        "description": "Integrated Earth Observation based platform for novel services to enhance the raw-materials mining life cycle.",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@vito.be"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "TERRAVISION",
+            "href": "https://terravision-project.eu/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://terravision-project.eu/wp-content/uploads/2024/02/terravision_positive_logo_other_color_variation_big.png"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://terravision-project.eu/wp-content/uploads/2024/02/terravision_positive_logo_other_color_variation_big.png"
+        }
+    ]
+}
