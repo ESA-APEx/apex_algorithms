@@ -20,7 +20,8 @@
             "2025-01-01",
             "2025-12-31"
           ],
-          "model_id": "WorldAgriCommodities_Africa_v1"
+          "model_id": "WorldAgriCommodities_Africa_v1",
+          "crs": "EPSG:32734"
         },
         "result": true
       }
