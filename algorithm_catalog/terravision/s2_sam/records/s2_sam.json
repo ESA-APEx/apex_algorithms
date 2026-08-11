@@ -85,7 +85,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json"
         },
         {
             "rel": "code",
@@ -115,13 +115,13 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "S2-SAM example notebook",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/s2_sam/notebook/s2_sam.ipynb"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/notebook/s2_sam.ipynb"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=s2_sam&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=s2_sam&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
         }
     ]
 }
