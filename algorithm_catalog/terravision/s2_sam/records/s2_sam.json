@@ -115,7 +115,7 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "S2-SAM example notebook",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/notebook/s2_sam.ipynb"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/dc4fe8715fc01539896db75f751278fe6189a59d/algorithm_catalog/terravision/s2_sam/notebook/s2_sam.ipynb"
         },
         {
             "rel": "webapp",
@@ -127,7 +127,7 @@
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/dc4fe8715fc01539896db75f751278fe6189a59d/algorithm_catalog/terravision/s2_sam/records/thumbnail.png"
         }
     ]
 }
