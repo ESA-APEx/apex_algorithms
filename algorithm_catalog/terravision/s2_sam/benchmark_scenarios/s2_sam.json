@@ -1,0 +1,85 @@
+[
+    {
+        "id": "s2_sam",
+        "type": "openeo",
+        "description": "Run Sentinel-2 based Spectral Angle Mapping (S2-SAM) on a monthly BAP composite and return the best matching USGS spectral library class index per pixel.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "s2sam1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "geometry": {
+                            "coordinates": [
+                                [
+                                    [
+                                        -15.487987,
+                                        27.813076
+                                    ],
+                                    [
+                                        -15.489753,
+                                        27.814047
+                                    ],
+                                    [
+                                        -15.493856,
+                                        27.809741
+                                    ],
+                                    [
+                                        -15.492555,
+                                        27.808545
+                                    ],
+                                    [
+                                        -15.487809,
+                                        27.806311
+                                    ],
+                                    [
+                                        -15.485954,
+                                        27.809176
+                                    ],
+                                    [
+                                        -15.484348,
+                                        27.812444
+                                    ],
+                                    [
+                                        -15.48635,
+                                        27.81229
+                                    ],
+                                    [
+                                        -15.487987,
+                                        27.813076
+                                    ]
+                                ]
+                            ],
+                            "type": "Polygon"
+                        },
+                        "properties": {
+                            "CNTR_ID": "ES",
+                            "ID": "598"
+                        },
+                        "type": "Feature"
+                    },
+                    "temporal_extent": [
+                        "2024-05-01",
+                        "2024-05-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json",
+                "process_id": "s2_sam"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "s2sam1"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP120!tests_test_benchmarks.py__test_run_benchmark_s2_sam_!actual/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP120!tests_test_benchmarks.py__test_run_benchmark_s2_sam_!actual/openEO.nc"
+        }
+    }
+]

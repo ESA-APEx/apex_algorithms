@@ -1,0 +1,196 @@
+{
+    "process_graph": {
+        "bapcomposite1": {
+            "process_id": "bap_composite",
+            "arguments": {
+                "bands": [
+                    "B01",
+                    "B02",
+                    "B03",
+                    "B04",
+                    "B05",
+                    "B06",
+                    "B07",
+                    "B08",
+                    "B8A",
+                    "B09",
+                    "B11",
+                    "B12"
+                ],
+                "geometry": {
+                    "from_parameter": "spatial_extent"
+                },
+                "max_cloud_cover": 80,
+                "temporal_extent": {
+                    "from_parameter": "temporal_extent"
+                }
+            },
+            "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/bap_composite/openeo_udp/bap_composite.json"
+        },
+        "aggregatetemporalperiod1": {
+            "process_id": "aggregate_temporal_period",
+            "arguments": {
+                "data": {
+                    "from_node": "bapcomposite1"
+                },
+                "period": "month",
+                "reducer": {
+                    "process_graph": {
+                        "first1": {
+                            "process_id": "first",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "data"
+                                }
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            }
+        },
+        "apply1": {
+            "process_id": "apply",
+            "arguments": {
+                "data": {
+                    "from_node": "aggregatetemporalperiod1"
+                },
+                "process": {
+                    "process_graph": {
+                        "runudf1": {
+                            "process_id": "run_udf",
+                            "arguments": {
+                                "data": {
+                                    "from_parameter": "x"
+                                },
+                                "runtime": "Python",
+                                "udf": "import xarray\nimport numpy as np\nimport pandas as pd\n\nfrom openeo.udf import inspect\n\n\"\"\"Spectral Angle Mapping UDF for Sentinel-2 based material matching.\n\nThis UDF compares each pixel spectrum against a USGS-derived reference library\nand returns the index of the best matching reference signature.\n\"\"\"\n\n\ndef compute_sam_w_nan(\n    img: np.ndarray,\n    usgs_df: pd.DataFrame,\n    min_bands: int=12,\n) -> np.ndarray:\n    \"\"\"Compute SAM\n\n    Only overlapping finite bands are used for each pixel-reference pair.\n    Pixels with fewer than min_bands valid overlaps are marked as no match.\n    \"\"\"\n    bands, height, width = img.shape\n    # Flatten spatial dimensions so SAM can be computed in matrix form.\n    pixel_spectra = img.reshape(bands, -1).T\n    # Transpose library so each row corresponds to one reference signature.\n    usgs_matrix = usgs_df.T.values\n\n    n_pix = pixel_spectra.shape[0]\n    n_mat = usgs_matrix.shape[0]\n\n    # Pre-fill with +inf so non-computable matches remain easy to detect.\n    angles = np.full((n_pix, n_mat), np.inf, dtype=np.float32)\n\n    # Compute pixel finite mask once and reuse it for all reference signatures.\n    Xfinite = np.isfinite(pixel_spectra)\n\n    for j in range(n_mat):\n        y = usgs_matrix[j]\n        yfinite = np.isfinite(y)\n\n        valid = Xfinite & yfinite[None, :]\n        n_valid = valid.sum(axis=1)\n\n        # Enforce a minimum number of overlapping bands per pixel-match pair.\n        ok = n_valid >= min_bands\n        if not np.any(ok):\n            continue\n\n        # Compute dot product and norms only over valid overlap.\n        Xv = np.where(valid, pixel_spectra, 0.0)\n        yv = np.where(yfinite, y, 0.0)\n\n        dot = (Xv * yv[None, :]).sum(axis=1)\n        nx = np.sqrt((Xv * Xv).sum(axis=1))\n        ny = np.sqrt((yv * yv).sum())\n\n        # Add a small epsilon to keep the denominator numerically safe.\n        denom = nx * ny + 1e-12\n        cosang = np.clip(dot / denom, -1.0, 1.0)\n\n        # Convert cosine similarity to spectral angle in radians.\n        ang = np.arccos(cosang).astype(np.float32)\n        angles[ok, j] = ang[ok]\n\n    # Select the reference with minimum angle for each pixel.\n    best = np.argmin(angles, axis=1).reshape(height, width)\n    # Pixels that never reached the min_bands threshold remain as no match.\n    best[np.isinf(angles).all(axis=1).reshape(height, width)] = -1\n    return best\n\ndef compute_sam_wo_nan(img: np.ndarray, usgs_df: pd.DataFrame) -> np.array:\n    \"\"\"Compute SAM for fully valid arrays without missing values.\"\"\"\n    bands, height, width = img.shape\n    inspect(data=img.shape, message=\"SAM no-NaN path: input image shape\", level='debug')\n    # Flatten to [pixels, bands] to vectorize pairwise comparisons.\n    pixel_spectra = img.reshape(bands, -1).T\n\n    # Normalize each pixel vector so comparison focuses on spectral shape.\n    pixel_norms = np.linalg.norm(pixel_spectra, axis=1, keepdims=True)\n    inspect(data=pixel_norms.shape, message=\"SAM no-NaN path: pixel norms shape\", level='debug')\n    pixel_spectra_norm = pixel_spectra / (pixel_norms + 1e-10)\n    inspect(data=pixel_spectra_norm.shape, message=\"SAM no-NaN path: normalized pixel spectra shape\", level='debug')\n\n    # Normalize each reference signature with the same convention.\n    inspect(data=usgs_df.shape, message=\"SAM no-NaN path: USGS dataframe shape\", level='debug')\n    usgs_matrix = usgs_df.T.values\n    inspect(data=usgs_matrix.shape, message=\"SAM no-NaN path: USGS matrix shape\", level='debug')\n    usgs_norms = np.linalg.norm(usgs_matrix, axis=1, keepdims=True)\n    inspect(data=usgs_norms.shape, message=\"SAM no-NaN path: USGS norms shape\", level='debug')\n    usgs_matrix_norm = usgs_matrix / (usgs_norms + 1e-10)\n    inspect(data=usgs_matrix_norm.shape, message=\"SAM no-NaN path: normalized USGS matrix shape\", level='debug')\n    # Compute cosine similarity between each pixel and each reference spectrum.\n    dot_product = np.dot(\n        pixel_spectra_norm, usgs_matrix_norm.T\n    )\n    inspect(data=dot_product.shape, message=\"SAM no-NaN path: dot product shape\", level='debug')\n    # Convert similarities to angles for SAM-based ranking.\n    angles = np.arccos(np.clip(dot_product, -1.0, 1.0))\n    inspect(data=angles.shape, message=\"SAM no-NaN path: angle matrix shape\", level='debug')\n    # Lower angle means closer spectral match.\n    best_match_indices = np.argmin(angles, axis=1)\n    inspect(data=best_match_indices.shape, message=\"SAM no-NaN path: best match index vector shape\", level='debug')\n    # Restore the original 2D spatial layout.\n    match_index_map = best_match_indices.reshape(height, width)\n    inspect(data=match_index_map.shape, message=\"SAM no-NaN path: output map shape\", level='debug')\n    return match_index_map\n\n\n\n# UDF entry point\ndef apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:\n    \"\"\"openEO UDF entry point.\n\n    Expects an input cube with band-first layout and returns a 2D class-index map.\n    \"\"\"\n    inspect(data=cube.dims, message=\"SAM UDF: input cube dimensions\", level='debug')\n    inspect(data=cube.shape, message=\"SAM UDF: input cube shape\", level='debug')\n    # External reference library used for spectral matching.\n    csv_url = \"https://artifactory.vgt.vito.be/artifactory/auxdata-public/openEO_terravision/S2_USGS_library498.csv\"\n    usgs_df = pd.read_csv(csv_url, sep=\";\")\n    inspect(data=usgs_df.shape, message=\"SAM UDF: loaded USGS dataframe shape\", level='debug')\n\n    # Use the NaN-aware path only when needed.\n    if np.isnan(cube.values).any():\n        result_cube = compute_sam_w_nan(cube.values, usgs_df, 12)\n    else:\n        result_cube = compute_sam_wo_nan(cube.values, usgs_df)\n\n    # Return only spatial dimensions, with class index per pixel.\n    return xarray.DataArray(result_cube, dims=cube.dims[1:], coords={dim: cube.coords[dim] for dim in cube.dims[1:]})"
+                            },
+                            "result": true
+                        }
+                    }
+                }
+            },
+            "result": true
+        }
+    },
+    "id": "s2_sam",
+    "description": "# Sentinel-2 based Spectral Angle Mapping (S2-SAM)\n\nThis service applies Spectral Angle Mapping (SAM) to Sentinel-2 Level-2A reflectance data.\nFor each pixel, the algorithm compares the pixel spectrum to a spectral reference library and selects the closest match based on the smallest spectral angle.\n\n## What this service does\n\nSAM measures similarity in spectral *shape* (not absolute brightness):\n\n$$\nÎ¸ = \\cos^{-1}\\left(\\frac{x \\cdot y}{\\|x\\|\\|y\\|}\\right)\n$$\n\nwhere:\n- $x$ is the pixel spectrum.\n- $y$ is a reference spectrum from the library.\n- smaller $\\theta$ means a better match.\n\nThe output is a raster of class indices, where each pixel value is the index of the best-matching reference signature.\n\n## Sentinel-2 bands used\n\nThe service uses only the Sentinel-2 L2A bands provided by the BAP composite input, not all L2A layers.\nThe band subset is (B01, B02, B03, B04, B05, B06, B07, B08, B8A, B09, B11, B12).\n\nInput compositing is based on the BAP process:\n[https://algorithm-catalogue.apex.esa.int/apps/bap_composite](https://algorithm-catalogue.apex.esa.int/apps/bap_composite)\n\n## Reference spectral library\n\nThe reference library is based on a Sentinel-2-resampled USGS mineral/material collection.\nIt includes a broad set of geology and mining-related targets (e.g. iron oxides, clays, sulfates, silicates, carbonates, and related materials).\n\nThe CSV used by the service contains:\n- 498 named reference signatures (material columns).\n- 1 `cwvl` column with central wavelength values.\n\nExamples of included targets are minerals such as Acmite, Actinolite, Alunite, Jarosite, Kaolinite, Hematite, Goethite, Pyrite, Chalcopyrite, and many more variants.\n\n## Notes on interpretation\n\n- The product reports the **closest spectral match** in the selected library, not a definitive mineral identification.\n- Similar materials can produce similar spectra at Sentinel-2 spectral resolution.\n- Results are most useful when combined with geological context, ancillary data, and expert validation.\n\n## Missing data handling\n\nIf some bands are missing (`NaN`) at a pixel, the implementation computes SAM using only the available bands, with a minimum valid-band threshold.\nPixels without enough valid information are marked as no match.\n\n",
+    "parameters": [
+        {
+            "name": "spatial_extent",
+            "description": "Limits the data to process to the specified bounding box or polygons.\\n\\nFor raster data, the process loads the pixel into the data cube if the point at the pixel center intersects with the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC).\\nFor vector data, the process loads the geometry into the data cube if the geometry is fully within the bounding box or any of the polygons (as defined in the Simple Features standard by the OGC). Empty geometries may only be in the data cube if no spatial extent has been provided.\\n\\nEmpty geometries are ignored.\\nSet this parameter to null to set no limit for the spatial extent.",
+            "schema": [
+                {
+                    "title": "Bounding Box",
+                    "type": "object",
+                    "subtype": "bounding-box",
+                    "required": [
+                        "west",
+                        "south",
+                        "east",
+                        "north"
+                    ],
+                    "properties": {
+                        "west": {
+                            "description": "West (lower left corner, coordinate axis 1).",
+                            "type": "number"
+                        },
+                        "south": {
+                            "description": "South (lower left corner, coordinate axis 2).",
+                            "type": "number"
+                        },
+                        "east": {
+                            "description": "East (upper right corner, coordinate axis 1).",
+                            "type": "number"
+                        },
+                        "north": {
+                            "description": "North (upper right corner, coordinate axis 2).",
+                            "type": "number"
+                        },
+                        "base": {
+                            "description": "Base (optional, lower left corner, coordinate axis 3).",
+                            "type": [
+                                "number",
+                                "null"
+                            ],
+                            "default": null
+                        },
+                        "height": {
+                            "description": "Height (optional, upper right corner, coordinate axis 3).",
+                            "type": [
+                                "number",
+                                "null"
+                            ],
+                            "default": null
+                        },
+                        "crs": {
+                            "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+                            "anyOf": [
+                                {
+                                    "title": "EPSG Code",
+                                    "type": "integer",
+                                    "subtype": "epsg-code",
+                                    "minimum": 1000,
+                                    "examples": [
+                                        3857
+                                    ]
+                                },
+                                {
+                                    "title": "WKT2",
+                                    "type": "string",
+                                    "subtype": "wkt2-definition"
+                                }
+                            ],
+                            "default": 4326
+                        }
+                    }
+                },
+                {
+                    "title": "Vector data cube",
+                    "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+                    "type": "object",
+                    "subtype": "datacube",
+                    "dimensions": [
+                        {
+                            "type": "geometry"
+                        }
+                    ]
+                },
+                {
+                    "title": "No filter",
+                    "description": "Don't filter spatially. All data is included in the data cube.",
+                    "type": "null"
+                }
+            ]
+        },
+        {
+            "name": "temporal_extent",
+            "description": "Temporal extent specified as two-element array with start and end date/date-time.",
+            "schema": {
+                "type": "array",
+                "subtype": "temporal-interval",
+                "uniqueItems": true,
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "subtype": "date-time",
+                            "format": "date-time"
+                        },
+                        {
+                            "type": "string",
+                            "subtype": "date",
+                            "format": "date"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
