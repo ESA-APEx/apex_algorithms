@@ -59,14 +59,19 @@ def test_run_benchmark(
     report_path = None
     if request.config.getoption("--upload-benchmark-report"):
         report_path = tmp_path / "benchmark_report.json"
-        report_path.write_text(json.dumps({
-            "scenario_id": scenario.id,
-            "scenario_description": scenario.description,
-            "scenario_backend": scenario.backend,
-            "scenario_source": str(scenario.source) if scenario.source else None,
-            "reference_data": scenario.reference_data,
-            "reference_options": scenario.reference_options,
-        }, indent=2))
+        report_path.write_text(
+            json.dumps(
+                {
+                    "scenario_id": scenario.id,
+                    "scenario_description": scenario.description,
+                    "scenario_backend": scenario.backend,
+                    "scenario_source": str(scenario.source) if scenario.source else None,
+                    "reference_data": scenario.reference_data,
+                    "reference_options": scenario.reference_options,
+                },
+                indent=2,
+            )
+        )
         upload_assets_on_fail(report_path)
 
     def _on_phase_exception(phase: str, exc: Exception):
@@ -78,9 +83,7 @@ def test_run_benchmark(
             report_path.write_text(json.dumps(report, indent=2))
             cwd_report_dir = Path("benchmark_reports")
             cwd_report_dir.mkdir(exist_ok=True)
-            (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
-                json.dumps(report, indent=2)
-            )
+            (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(json.dumps(report, indent=2))
             report_url = upload_assets_on_fail.get_url(report_path)
             if report_url:
                 exc.add_note(f"Benchmark report: {report_url}")
@@ -106,10 +109,9 @@ def test_run_benchmark(
         # TODO: separate "job started" and run phases?
         max_minutes = request.config.getoption("--maximum-job-time-in-minutes")
         if max_minutes:
+
             def _timeout_handler(signum, frame):
-                raise TimeoutError(
-                    f"Batch job {job.job_id} exceeded maximum allowed time of {max_minutes} minutes"
-                )
+                raise TimeoutError(f"Batch job {job.job_id} exceeded maximum allowed time of {max_minutes} minutes")
 
             old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
             signal.alarm(max_minutes * 60)
@@ -137,20 +139,20 @@ def test_run_benchmark(
     # Pre-compute S3 URLs for actual files (used in error messages and benchmark reports)
     actual_s3_urls = {
         str(p.relative_to(actual_dir)): upload_assets_on_fail.get_url(p)
-        for p in sorted(actual_dir.rglob("*")) if p.is_file()
+        for p in sorted(actual_dir.rglob("*"))
+        if p.is_file()
     }
     actual_s3_urls = {k: v for k, v in actual_s3_urls.items() if v is not None}
 
     with track_phase(phase="download-reference"):
-        reference_dir = download_reference_data(
-            scenario=scenario, reference_dir=tmp_path / "reference"
-        )
+        reference_dir = download_reference_data(scenario=scenario, reference_dir=tmp_path / "reference")
 
     if report_path is not None:
         report = json.loads(report_path.read_text())
         report["actual_files"] = {
             str(p.relative_to(actual_dir)): f"{p.stat().st_size / 1024:.1f} kb"
-            for p in sorted(actual_dir.rglob("*")) if p.is_file()
+            for p in sorted(actual_dir.rglob("*"))
+            if p.is_file()
         }
         ref_files = {}
         for p in sorted(reference_dir.rglob("*")):
@@ -171,13 +173,9 @@ def test_run_benchmark(
         # Also write to CWD so the report is accessible on Jenkins workspace
         cwd_report_dir = Path("benchmark_reports")
         cwd_report_dir.mkdir(exist_ok=True)
-        (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(
-            json.dumps(report, indent=2)
-        )
+        (cwd_report_dir / f"{scenario.id}_benchmark_report.json").write_text(json.dumps(report, indent=2))
 
-    with track_phase(
-        phase="compare", describe_exception=analyse_results_comparison_exception
-    ):
+    with track_phase(phase="compare", describe_exception=analyse_results_comparison_exception):
         # Compare actual results with reference data
         try:
             assert_job_results_allclose(
