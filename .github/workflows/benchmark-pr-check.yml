@@ -37,7 +37,10 @@ jobs:
         env:
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE }}
         run: |
-          pytest -q "qa/benchmarks/tests/test_benchmarks.py::test_run_benchmark[${{ matrix.benchmark_id }}]" \
+          pytest  \
+            -vv \
+            --log-cli-level=INFO \
+            -q "qa/benchmarks/tests/test_benchmarks.py::test_run_benchmark[${{ matrix.benchmark_id }}]" \
             --maximum-job-time-in-minutes 30 \
             --track-metrics-parquet "${RUNNER_TEMP}/benchmark-e2e-${{ matrix.benchmark_id }}-metrics.parquet"
 
