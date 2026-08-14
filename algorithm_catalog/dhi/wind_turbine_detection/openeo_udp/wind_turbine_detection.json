@@ -1,10 +1,10 @@
 {
   "process_graph": {
     "detection": {
-      "process_id": "wind_turbine_detection",
+      "process_id": "wind_turbine_detection_v2",
       "namespace": "apex",
       "arguments": {
-        "bbox": {"from_parameter": "spatial_extent"},
+        "spatial_extent": {"from_parameter": "spatial_extent"},
         "year": {"from_parameter": "year"}
       },
       "result": true
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "default": "2024",
+      "default": "2025",
       "description": "The year for wind turbine detection.",
       "name": "year",
       "optional": true,
