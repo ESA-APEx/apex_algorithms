@@ -25,15 +25,11 @@
           }
         },
         "spatial_extent": {
-          "west": 146.55,
-          "south": -37.79,
-          "east": 146.9,
-          "north": -37.55
+          "from_parameter": "bounding_box"
         },
-        "temporal_extent": [
-          "2019-03-04",
-          "2019-03-07"
-        ]
+        "temporal_extent": {
+          "from_parameter": "time"
+        }
       }
     },
     "reducedimension1": {

@@ -93,7 +93,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/50de41b98bed0179d273629dc970696cac6787bc/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/openeo_udp/plant-senescence-reflectance-index.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3fbed3d22098e2bb5b3b7e614b597a5a47225529/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/openeo_udp/plant-senescence-reflectance-index.json"
     },
     {
       "rel": "code",
@@ -105,7 +105,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=plant-senescence-reflectance-index&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/50de41b98bed0179d273629dc970696cac6787bc/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/openeo_udp/plant-senescence-reflectance-index.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=plant-senescence-reflectance-index&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3fbed3d22098e2bb5b3b7e614b597a5a47225529/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/openeo_udp/plant-senescence-reflectance-index.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -135,13 +135,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "PSRI Calculation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/50de41b98bed0179d273629dc970696cac6787bc/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3fbed3d22098e2bb5b3b7e614b597a5a47225529/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/50de41b98bed0179d273629dc970696cac6787bc/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3fbed3d22098e2bb5b3b7e614b597a5a47225529/algorithm_catalog/developmentseed/plant-senescence-reflectance-index/records/thumbnail.png"
     },
     {
       "rel": "cite-as",

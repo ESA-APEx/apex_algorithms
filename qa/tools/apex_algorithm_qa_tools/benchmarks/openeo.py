@@ -12,6 +12,25 @@ import signal
 _log = logging.getLogger(__name__)
 
 
+# TODO: move this mapping to a config file
+#       instead of trying to keep this up to date for different environments.
+_BACKEND_CREDENTIALS = [
+    # (hostname_regex_pattern, env_var_name)
+    (r"openeo\.dataspace\.copernicus\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo-staging\.dataspace\.copernicus\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"),
+    (r"openeofed\.dataspace\.copernicus\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo-dev\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"),
+    (r"openeo\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo-staging\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo-dev\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo\.cloud", "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"),
+    (r"openeo\.eodc\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"),
+    (r"openeo\.dev\.[a-z0-9-]+\.openeo-int\.v1\.dataspace\.copernicus\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"),
+    (r"[a-z0-9-]+\.hadoop\.rscluster\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+]
+
+
 def _get_client_credentials_env_var(url: str) -> str:
     """
     Get client credentials env var name for a given backend URL.
@@ -21,25 +40,11 @@ def _get_client_credentials_env_var(url: str) -> str:
     parsed = urllib.parse.urlparse(url)
     hostname = parsed.hostname
 
-    if var := {
-        # TODO: move this mapping to a config file
-        #       instead of trying to keep this up to date for different environments.
-        "openeo.dataspace.copernicus.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
-        "openeo-staging.dataspace.copernicus.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG",
-        "openeofed.dataspace.copernicus.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
-        "openeo.vito.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE",
-        "openeo-dev.vito.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE",
-        "openeo.terrascope.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
-        "openeo-staging.terrascope.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
-        "openeo-dev.terrascope.be": "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE",
-        "openeo.cloud": "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI",
-        "openeo.eodc.eu": "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI",
-    }.get(hostname):
-        return var
-    elif re.fullmatch(r"openeo\.dev\.([a-z0-9-]+)\.openeo-int\.v1\.dataspace\.copernicus\.eu", hostname):
-        return "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"
-    else:
-        raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
+    for pattern, env_var in _BACKEND_CREDENTIALS:
+        if re.fullmatch(pattern, hostname):
+            return env_var
+
+    raise ValueError(f"Unsupported backend: {url=} ({hostname=})")
 
 
 def get_openeo_backend(scenario, request):
