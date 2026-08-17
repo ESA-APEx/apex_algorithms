@@ -1,11 +1,13 @@
 import argparse
 import logging
+
 import pyarrow
-import pyarrow.parquet
-import pyarrow.fs
 import pyarrow.dataset
+import pyarrow.fs
+import pyarrow.parquet
 
 _log = logging.getLogger(__name__)
+
 
 def merge_parquet_files(
     s3_endpoint, s3_client, s3_secret, s3_bucket, s3_region, input_path, output_path, s3_output=False
@@ -30,10 +32,10 @@ def merge_parquet_files(
 
     # Read the partitioned metadata
     _log.info(f"Reading parquet files from S3 bucket: {s3_bucket}")
-    
+
     read_partitioning = pyarrow.dataset.partitioning(
         schema=pyarrow.schema(fields=[("test:start:YYYYMM", pyarrow.string())]),
-        flavor=None, # Partitioning flavor `None`` means DirectoryPartitioning (see https://github.com/apache/arrow/issues/43863)  
+        flavor=None,  # Partitioning flavor `None`` means DirectoryPartitioning (see https://github.com/apache/arrow/issues/43863)
     )
 
     table = pyarrow.parquet.read_table(
