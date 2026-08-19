@@ -100,7 +100,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/openeo_udp/sand_oriented_land_cover_classification.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/eb52fb5d55ddc8bd725fbe8fd3c3368945ca3d93/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/openeo_udp/sand_oriented_land_cover_classification.json"
     },
     {
       "rel": "code",
@@ -112,7 +112,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sand_oriented_land_cover_classification&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/openeo_udp/sand_oriented_land_cover_classification.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sand_oriented_land_cover_classification&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/eb52fb5d55ddc8bd725fbe8fd3c3368945ca3d93/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/openeo_udp/sand_oriented_land_cover_classification.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -142,13 +142,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Sand-Oriented Land Cover Classification",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/eb52fb5d55ddc8bd725fbe8fd3c3368945ca3d93/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/eb52fb5d55ddc8bd725fbe8fd3c3368945ca3d93/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
