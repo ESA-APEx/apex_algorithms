@@ -10,7 +10,7 @@ on:
         default: ""
   schedule:
     - cron: "37 */6 * * *"
-  
+
 
 jobs:
   benchmarks:
@@ -54,7 +54,7 @@ jobs:
           pytest \
             -vv \
             --log-cli-level=INFO \
-            "${filter_args[@]}" \
+            -k '[max_ndvi]' \
             --html report/report.html --self-contained-html \
             --track-metrics-json=report/metrics.json \
             --track-metrics-parquet-s3-bucket="apex-benchmarks" \

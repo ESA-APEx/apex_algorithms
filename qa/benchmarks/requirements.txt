@@ -1,6 +1,7 @@
 apex-algorithm-qa-tools
 httpx>=0.27.0
-openeo>=0.48.0.dev
+# openeo>=0.52.0 is not released yet, so install straight from github:
+git+https://github.com/Open-EO/openeo-python-client.git@9e9646c45b8b31d65bd081b2b0d89bc0114fe3a7
 ogc-api-processes-client>=0.6.0
 pytest>=8.2.0
 requests>=2.32.0
