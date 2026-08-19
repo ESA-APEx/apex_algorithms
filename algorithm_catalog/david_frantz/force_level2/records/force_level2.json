@@ -13,7 +13,7 @@
     "title": "FORCE level 2",
     "description": "Framework for Operational Radiometric Correction for Environmental monitoring (FORCE) Level 2 processor to generate Analysis Ready Data Cubes from Sentinel-2 products",
     "keywords": [
-      "Sentinel-2",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
