@@ -147,7 +147,6 @@
       "description": "Specifies area where to search for bursts. If multiple bursts are found, the one with the lowest id number will be selected. This parameter can be used instead of `burst_id` and `sub_swath`.",
       "schema": [
         {
-          "title": "Bounding Box",
           "type": "object",
           "subtype": "bounding-box",
           "required": [
@@ -158,69 +157,39 @@
           ],
           "properties": {
             "west": {
-              "description": "West (lower left corner, coordinate axis 1).",
-              "type": "number"
+              "type": "number",
+              "description": "West (lower left corner, coordinate axis 1)."
             },
             "south": {
-              "description": "South (lower left corner, coordinate axis 2).",
-              "type": "number"
+              "type": "number",
+              "description": "South (lower left corner, coordinate axis 2)."
             },
             "east": {
-              "description": "East (upper right corner, coordinate axis 1).",
-              "type": "number"
+              "type": "number",
+              "description": "East (upper right corner, coordinate axis 1)."
             },
             "north": {
-              "description": "North (upper right corner, coordinate axis 2).",
-              "type": "number"
-            },
-            "base": {
-              "description": "Base (optional, lower left corner, coordinate axis 3).",
-              "type": [
-                "number",
-                "null"
-              ],
-              "default": null
-            },
-            "height": {
-              "description": "Height (optional, upper right corner, coordinate axis 3).",
-              "type": [
-                "number",
-                "null"
-              ],
-              "default": null
+              "type": "number",
+              "description": "North (upper right corner, coordinate axis 2)."
             },
             "crs": {
-              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "description": "Coordinate reference system of the extent, specified as [WKT2 CRS string](https://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
               "anyOf": [
                 {
-                  "title": "EPSG Code",
                   "type": "integer",
                   "subtype": "epsg-code",
-                  "minimum": 1000,
-                  "examples": [
-                    3857
-                  ]
+                  "title": "EPSG Code",
+                  "minimum": 1000
                 },
                 {
-                  "title": "WKT2",
                   "type": "string",
-                  "subtype": "wkt2-definition"
+                  "subtype": "wkt2-definition",
+                  "title": "WKT2 definition"
                 }
               ],
               "default": 4326
             }
           }
-        },
-        {
-          "title": "Vector data cube",
-          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
-          "type": "object",
-          "subtype": "datacube",
-          "dimensions": [
-            {
-              "type": "geometry"
-            }
-          ]
         },
         {
           "title": "No filter",

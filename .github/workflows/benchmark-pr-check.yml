@@ -1,0 +1,53 @@
+name: Benchmark PR Check
+
+on:
+  pull_request:
+    paths:
+      - qa/tools/apex_algorithm_qa_tools/benchmarks/**
+      - .github/workflows/benchmark-pr-check.yml
+
+jobs:
+  benchmark-e2e:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - benchmark_id: max_ndvi
+          # Add more scenario ids here as needed.
+          # - benchmark_id: max_ndvi_large
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install qa/tools
+          python -m pip install -r qa/benchmarks/requirements.txt
+
+      - name: Run benchmark e2e
+        env:
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE }}
+        run: |
+          pytest  \
+            -vv \
+            --log-cli-level=INFO \
+            -q "qa/benchmarks/tests/test_benchmarks.py::test_run_benchmark[${{ matrix.benchmark_id }}]" \
+            --maximum-job-time-in-minutes 30 \
+            --track-metrics-parquet "${RUNNER_TEMP}/benchmark-e2e-${{ matrix.benchmark_id }}-metrics.parquet"
+
+      - name: Upload benchmark metrics artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-e2e-metrics-${{ matrix.benchmark_id }}
+          path: ${{ runner.temp }}/benchmark-e2e-${{ matrix.benchmark_id }}-metrics.parquet
+          if-no-files-found: warn

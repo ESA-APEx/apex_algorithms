@@ -13,11 +13,10 @@ from typing import Any, Dict, List, Optional, Union
 
 import requests
 from apex_algorithm_qa_tools.metrics.performance_baselines import _compute_threshold_stats
-from apex_algorithm_qa_tools.scenarios import (
-    BenchmarkScenario,
-    get_benchmark_scenarios,
-    get_project_root,
-)
+
+from apex_algorithm_qa_tools.common import get_project_root
+from apex_algorithm_qa_tools.scenarios.common import get_benchmark_scenarios
+from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
 
 logger = logging.getLogger(__name__)
 
