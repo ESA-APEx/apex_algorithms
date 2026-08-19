@@ -99,7 +99,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ship_detection/openeo_udp/ship_detection.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/469727a7ddd98c74a0d61e8966b55bbd2f6630ad/algorithm_catalog/developmentseed/ship_detection/openeo_udp/ship_detection.json"
     },
     {
       "rel": "code",
@@ -111,7 +111,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ship_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ship_detection/openeo_udp/ship_detection.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ship_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/469727a7ddd98c74a0d61e8966b55bbd2f6630ad/algorithm_catalog/developmentseed/ship_detection/openeo_udp/ship_detection.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -141,13 +141,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Ship Detection (S1/S2 Fusion)",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ship_detection/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/469727a7ddd98c74a0d61e8966b55bbd2f6630ad/algorithm_catalog/developmentseed/ship_detection/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ship_detection/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/469727a7ddd98c74a0d61e8966b55bbd2f6630ad/algorithm_catalog/developmentseed/ship_detection/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
