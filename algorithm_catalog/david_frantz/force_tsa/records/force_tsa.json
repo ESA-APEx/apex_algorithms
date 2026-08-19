@@ -13,7 +13,7 @@
     "title": "FORCE Time Series Analysis",
     "description": "Framework for Operational Radiometric Correction for Environmental monitoring (FORCE) Time Series Analysis processor to generate time series statistics from FORCE level 2 data cubes",
     "keywords": [
-      "Sentinel-2",
+      "Sentinel-2"
     ],
     "language": {
       "code": "en-US",
