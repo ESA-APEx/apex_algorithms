@@ -53,7 +53,6 @@ import contextlib
 import dataclasses
 import datetime
 import json
-import os
 import warnings
 from pathlib import Path
 from typing import Any, Callable, List, Tuple, Union
@@ -63,6 +62,7 @@ import pyarrow.dataset
 import pyarrow.fs
 import pyarrow.parquet
 import pytest
+from apex_algorithm_qa_tools.common import create_s3_filesystem
 from apex_algorithm_qa_tools.pytest import get_run_id
 from openeo.util import repr_truncate
 
@@ -195,11 +195,7 @@ class TrackMetricsReporter:
             )
 
         if self._parquet_s3:
-            fs = pyarrow.fs.S3FileSystem(
-                access_key=os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID"),
-                secret_key=os.environ.get("APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY"),
-                endpoint_override=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL"),
-            )
+            fs = create_s3_filesystem()
             root_path = f"{self._parquet_s3.bucket}/{self._parquet_s3.key}"
             self._write_parquet(
                 location=root_path,

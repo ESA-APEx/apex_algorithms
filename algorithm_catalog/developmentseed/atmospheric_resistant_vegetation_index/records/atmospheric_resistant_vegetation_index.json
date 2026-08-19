@@ -94,7 +94,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/aa7aafc68950de64d3942a15cac3eab7e984c9e3/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/openeo_udp/atmospheric_resistant_vegetation_index.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/openeo_udp/atmospheric_resistant_vegetation_index.json"
     },
     {
       "rel": "code",
@@ -106,7 +106,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=atmospheric_resistant_vegetation_index&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/aa7aafc68950de64d3942a15cac3eab7e984c9e3/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/openeo_udp/atmospheric_resistant_vegetation_index.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=atmospheric_resistant_vegetation_index&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/openeo_udp/atmospheric_resistant_vegetation_index.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -136,13 +136,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "ARVI Calculation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/aa7aafc68950de64d3942a15cac3eab7e984c9e3/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/aa7aafc68950de64d3942a15cac3eab7e984c9e3/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/algorithm_catalog/developmentseed/atmospheric_resistant_vegetation_index/records/thumbnail.png"
     },
     {
       "rel": "cite-as",

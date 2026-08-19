@@ -223,7 +223,7 @@
       "result": true
     }
   },
-  "id": "sentinel1_mcd",
+  "id": "sentinel1_changedetection",
   "summary": "Sentinel-1 change detection 20m resolution.",
   "description": "Description: This algorithm detects significant changes in Sentinel-1 backscatter observations and supports the identification of potential forest disturbance. For each analysis, a time series of 10 backscatter observations is used, with five acquisitions representing the past state and five acquisitions representing the future state.\n\nA set of statistical features is derived from these observations to characterize differences between the two periods. The method exploits Sentinel-1 VV and VH polarizations together with the VV/VH ratio, enabling detection of both absolute and relative changes in radar backscatter. These features are evaluated through a rule-based decision tree to determine whether a significant change has occurred. Processing is carried out separately for ascending and descending orbit data, after which the detections are combined into a consolidated change result. The workflow also includes an AI-based model that detects changed pixels independently from the rule-based statistical approach. These AI-derived detections are included in the output as an additional change layer.\n\nWhen combined with an existing forest mask, the detected changes can be interpreted as forest disturbance triggers and used as indicators of possible deforestation.",
   "returns": {

@@ -1,14 +1,29 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 from pathlib import Path
 from typing import Iterator
+
+import pyarrow.fs
 
 # TODO #15 Flatten apex_algorithm_qa_tools to a single module and push as much functionality to https://github.com/ESA-APEx/esa-apex-toolbox-python
 
 
 _log = logging.getLogger(__name__)
+
+
+def create_s3_filesystem() -> pyarrow.fs.S3FileSystem:
+    """Build S3 filesystem using APEx env vars with AWS fallbacks."""
+    return pyarrow.fs.S3FileSystem(
+        access_key=os.environ.get("APEX_ALGORITHMS_S3_ACCESS_KEY_ID")
+        or os.environ.get("AWS_ACCESS_KEY_ID"),
+        secret_key=os.environ.get("APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY")
+        or os.environ.get("AWS_SECRET_ACCESS_KEY"),
+        endpoint_override=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL")
+        or os.environ.get("AWS_ENDPOINT_URL"),
+    )
 
 
 def get_project_root() -> Path:
