@@ -52,7 +52,7 @@
                 "title": "FORCE documentation",
                 "rel": "about",
                 "type": "text/html"
-            },
+            }
         ]
 
       },
@@ -66,7 +66,7 @@
             "title": "Brockmann Consult GmbH website",
             "rel": "about",
             "type": "text/html"
-          },
+          }
         ],
         "contactInstructions": "Contact via Brockmann Consult GmbH",
         "roles": [
@@ -79,7 +79,7 @@
         "concepts": [
           {
             "id": "Sentinel-2 MSI"
-          },
+          }
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
@@ -87,7 +87,7 @@
     "formats": [
       {
         "name": "GeoTIFF"
-      },
+      }
     ],
     "license": "GPLV3.0"
   },
