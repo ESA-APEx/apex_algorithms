@@ -101,7 +101,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/flood_detection/openeo_udp/flood_detection.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9f17ad672fa4227806ec42b3d9c59b172318d998/algorithm_catalog/developmentseed/flood_detection/openeo_udp/flood_detection.json"
     },
     {
       "rel": "code",
@@ -113,7 +113,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=flood_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/flood_detection/openeo_udp/flood_detection.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=flood_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9f17ad672fa4227806ec42b3d9c59b172318d998/algorithm_catalog/developmentseed/flood_detection/openeo_udp/flood_detection.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -143,13 +143,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Flood Detection (S1/S2 Fusion)",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/flood_detection/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9f17ad672fa4227806ec42b3d9c59b172318d998/algorithm_catalog/developmentseed/flood_detection/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/flood_detection/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9f17ad672fa4227806ec42b3d9c59b172318d998/algorithm_catalog/developmentseed/flood_detection/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
