@@ -1,0 +1,69 @@
+{
+  "id": "eox",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-06-18T00:00:00Z",
+    "updated": "2026-06-18T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "EOX IT Services GmbH",
+    "description": "Earth observation and geospatial software provider operating EOxHub Workspaces and related OGC API services.",
+    "keywords": [
+      "Earth Observation",
+      "Geospatial",
+      "OGC API Processes"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EOX IT Services GmbH",
+        "organization": "EOX IT Services GmbH",
+        "roles": [
+          "processor"
+        ],
+        "links": [
+          {
+            "href": "https://eox.at/",
+            "title": "EOX website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://hub.eox.at/contact",
+            "title": "EOxHub contact",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact EOX IT Services GmbH through the public EOX or EOxHub contact page."
+      }
+    ],
+    "themes": [],
+    "license": "other",
+    "acl": {
+      "admin": [
+        "@eox.at"
+      ]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "EOX IT Services GmbH",
+      "href": "https://eox.at/"
+    }
+  ]
+}
