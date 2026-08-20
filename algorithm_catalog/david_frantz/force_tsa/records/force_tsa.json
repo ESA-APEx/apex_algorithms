@@ -1,0 +1,145 @@
+{
+  "id": "force_tsa",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-06-26T11:00:00Z",
+    "updated": "2026-08-19T11:37:00Z",
+    "type": "service",
+    "title": "FORCE Time Series Analysis",
+    "description": "Framework for Operational Radiometric Correction for Environmental monitoring (FORCE) Time Series Analysis processor to generate time series statistics from FORCE level 2 data cubes",
+    "keywords": [
+      "Sentinel-2"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "David Frantz",
+        "position": "Professor",
+        "organization": "Geoinformatics - Spatial Data Science, Trier University",
+        "email": "david.frantz@uni-trier.de",
+        "roles": [
+            "principal investigator"
+        ],
+        "links": [
+            {
+                "href": "https://www.uni-trier.de/universitaet/fachbereiche-faecher/fachbereich-vi/faecher/geoinformatik",
+                "title": "Fachverbund Geoinformatik - Universität Trier",
+                "rel": "about",
+                "type": "text/html"
+            },
+            {
+                "href": "https://github.com/davidfrantz/force",
+                "title": "FORCE source code repository - Github",
+                "rel": "about",
+                "type": "text/html"
+            },
+            {
+                "href": "https://force-eo.readthedocs.io/",
+                "title": "FORCE documentation",
+                "rel": "about",
+                "type": "text/html"
+            }
+        ]
+
+      },
+      {
+        "name": "Hannes Neuschmidt",
+        "position": "Software Engineer",
+        "organization": "Brockmann Consult GmbH",
+        "links": [
+          {
+            "href": "https://www.brockmann-consult.de/",
+            "title": "Brockmann Consult GmbH website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Brockmann Consult GmbH",
+        "roles": [
+          "implementor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2 MSI"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "GPLV3.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+        "rel": "about",
+        "type": "text/html",
+        "title": "Scientific Publication: FORCE - Landsat + Sentinel-2 Analysis Ready Data and Beyond",
+        "href": "https://doi.org/10.3390/rs11091124"
+    },
+    {
+        "rel": "code",
+        "type": "text/html",
+        "title": "Source code repository of the FORCE EO Application Package implementing this process",
+        "href": "https://github.com/bcdev/apex-force-openeo"
+    },
+    {
+        "rel": "notebook",
+        "type": "application/x-ipynb+json",
+        "title": "Example notebook: Query, process, download results",
+        "href": "https://github.com/bcdev/apex-force-openeo/blob/main/examples/run-level2-and-tsa/FORCE_level2_and_TSA.ipynb"
+    },
+    {
+        "rel": "application",
+        "type": "application/x-ipynb+json",
+        "title": "Example notebook: Query, process, download results",
+        "href": "https://github.com/bcdev/apex-force-openeo/blob/main/examples/run-level2-and-tsa/FORCE_level2_and_TSA.ipynb"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "David Frantz",
+      "href": "../../record.json"
+    },
+    {
+        "rel": "thumbnail",
+        "type": "image/png",
+        "title": "Thumbnail image",
+        "href": "./thumbnail.png"
+    }
+  ]
+}
