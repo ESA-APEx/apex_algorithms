@@ -2,7 +2,7 @@
     "id": "david_frantz",
     "type": "Feature",
     "conformsTo": [
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
     ],
     "properties": {
         "created": "2026-05-15T14:00:00Z",
@@ -41,6 +41,24 @@
             "type": "text/html",
             "title": "University website",
             "href": "https://www.uni-trier.de/universitaet/fachbereiche-faecher/fachbereich-vi/faecher/geoinformatik/team/prof-dr-d-frantz"
+        },
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "FORCE source code repository",
+            "href": "https://github.com/davidfrantz/force"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.uni-trier.de/typo3conf/ext/zimktheme_unitrier/Resources/Public/Logos/Logo_Universitaet.svg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.uni-trier.de/typo3conf/ext/zimktheme_unitrier/Resources/Public/Logos/Logo_Universitaet.svg"
         }
     ]
 }
