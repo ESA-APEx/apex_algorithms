@@ -1,5 +1,5 @@
 {
-  "id": "force",
+  "id": "force_tsa",
   "type": "Feature",
   "conformsTo": [
     "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
@@ -107,6 +107,12 @@
     },
     {
         "rel": "notebook",
+        "type": "application/x-ipynb+json",
+        "title": "Example notebook: Query, process, download results",
+        "href": "https://github.com/bcdev/apex-force-openeo/blob/main/examples/run-level2-and-tsa/FORCE_level2_and_TSA.ipynb"
+    },
+    {
+        "rel": "application",
         "type": "application/x-ipynb+json",
         "title": "Example notebook: Query, process, download results",
         "href": "https://github.com/bcdev/apex-force-openeo/blob/main/examples/run-level2-and-tsa/FORCE_level2_and_TSA.ipynb"
