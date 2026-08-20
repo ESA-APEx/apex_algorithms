@@ -427,6 +427,49 @@
         "license": {
           "type": "string",
           "description": "License that is applicable for the APEx service."
+        },
+        "validation": {
+          "type": "object",
+          "description": "Optional metadata describing the validation document for this service.",
+          "required": [
+            "document"
+          ],
+          "properties": {
+            "document": {
+              "type": "object",
+              "description": "Reference to the validation document.",
+              "required": [
+                "href"
+              ],
+              "properties": {
+                "href": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL to the validation report or equivalent validation evidence."
+                },
+                "reviewed_by": {
+                  "type": "string",
+                  "description": "Reviewer organization that accepted the validation document.",
+                  "enum": [
+                    "ESA"
+                  ]
+                },
+                "review_date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date on which the validation document was accepted."
+                }
+              },
+              "dependentRequired": {
+                "reviewed_by": [
+                  "review_date"
+                ],
+                "review_date": [
+                  "reviewed_by"
+                ]
+              }
+            }
+          }
         }
       }
     },
