@@ -1,13 +1,13 @@
 import logging
 import os
 import re
+import signal
+import urllib
+from pathlib import Path
 
 import openeo
 import pytest
 import requests
-import urllib
-from pathlib import Path
-import signal
 
 _log = logging.getLogger(__name__)
 
@@ -22,12 +22,12 @@ _BACKEND_CREDENTIALS = [
     (r"openeo\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
     (r"openeo-dev\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE"),
     (r"openeo\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
-    (r"openeo-staging\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
-    (r"openeo-dev\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"openeo-staging\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"),
+    (r"openeo-dev\.terrascope\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"),
     (r"openeo\.cloud", "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"),
     (r"openeo\.eodc\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_EGI"),
     (r"openeo\.dev\.[a-z0-9-]+\.openeo-int\.v1\.dataspace\.copernicus\.eu", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"),
-    (r"[a-z0-9-]+\.hadoop\.rscluster\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"),
+    (r"[a-z0-9-]+\.hadoop\.rscluster\.vito\.be", "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSESTAG"),
 ]
 
 
