@@ -55,11 +55,11 @@
                         "type": "FeatureCollection"
                     },
                     "temporal_extent": [
-                        "2024-05-01",
-                        "2024-05-31"
+                        "2024-04-01",
+                        "2024-04-30"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/1fba3ba1bb02cc42c8758a60880b90adf8b54a10/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json",
                 "process_id": "s2_sam"
             },
             "saveresult1": {
@@ -67,7 +67,7 @@
                     "data": {
                         "from_node": "s2sam1"
                     },
-                    "format": "NetCDF",
+                    "format": "GTiff",
                     "options": {}
                 },
                 "process_id": "save_result",
@@ -76,7 +76,7 @@
         },
         "reference_data": {
             "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP120!tests_test_benchmarks.py__test_run_benchmark_s2_sam_!actual/job-results.json",
-            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP120!tests_test_benchmarks.py__test_run_benchmark_s2_sam_!actual/openEO.nc"
+            "openEO_2024-04-01Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-22934889391!tests_test_benchmarks.py__test_run_benchmark_s2_sam_!actual/openEO_2024-04-01Z.tif"
         }
     }
 ]
