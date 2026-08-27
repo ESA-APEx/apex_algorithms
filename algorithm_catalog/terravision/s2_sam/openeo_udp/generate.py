@@ -28,12 +28,10 @@ def generate():
             bands = ['B01','B02','B03','B04','B05','B06','B07','B08','B8A','B09','B11','B12'],
             max_cloud_cover = 80
             )
-    composite = bap_cube.aggregate_temporal_period("month","first")
-
     udf = openeo.UDF.from_file(
         Path(__file__).parent / "sam_udf.py",
     )
-    processed_cube = composite.apply(process=udf)
+    processed_cube = bap_cube.apply(process=udf)
     
 
     return build_process_dict(

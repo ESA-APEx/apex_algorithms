@@ -5,16 +5,9 @@ For each pixel, the algorithm compares the pixel spectrum to a spectral referenc
 
 ## What this service does
 
-SAM measures similarity in spectral *shape* (not absolute brightness):
-
-$$
-θ = \cos^{-1}\left(\frac{x \cdot y}{\|x\|\|y\|}\right)
-$$
-
-where:
-- $x$ is the pixel spectrum.
-- $y$ is a reference spectrum from the library.
-- smaller $\theta$ means a better match.
+SAM measures similarity in spectral *shape* (not absolute brightness). For each pixel,
+it compares the values across the selected bands with every reference spectrum in the
+library. The reference with the smallest spectral angle is selected as the best match.
 
 The output is a raster of class indices, where each pixel value is the index of the best-matching reference signature.
 

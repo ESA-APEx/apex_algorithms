@@ -27,33 +27,11 @@
             },
             "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/bap_composite/openeo_udp/bap_composite.json"
         },
-        "aggregatetemporalperiod1": {
-            "process_id": "aggregate_temporal_period",
-            "arguments": {
-                "data": {
-                    "from_node": "bapcomposite1"
-                },
-                "period": "month",
-                "reducer": {
-                    "process_graph": {
-                        "first1": {
-                            "process_id": "first",
-                            "arguments": {
-                                "data": {
-                                    "from_parameter": "data"
-                                }
-                            },
-                            "result": true
-                        }
-                    }
-                }
-            }
-        },
         "apply1": {
             "process_id": "apply",
             "arguments": {
                 "data": {
-                    "from_node": "aggregatetemporalperiod1"
+                    "from_node": "bapcomposite1"
                 },
                 "process": {
                     "process_graph": {
@@ -75,7 +53,7 @@
         }
     },
     "id": "s2_sam",
-    "description": "# Sentinel-2 based Spectral Angle Mapping (S2-SAM)\n\nThis service applies Spectral Angle Mapping (SAM) to Sentinel-2 Level-2A reflectance data.\nFor each pixel, the algorithm compares the pixel spectrum to a spectral reference library and selects the closest match based on the smallest spectral angle.\n\n## What this service does\n\nSAM measures similarity in spectral *shape* (not absolute brightness):\n\n$$\nÎ¸ = \\cos^{-1}\\left(\\frac{x \\cdot y}{\\|x\\|\\|y\\|}\\right)\n$$\n\nwhere:\n- $x$ is the pixel spectrum.\n- $y$ is a reference spectrum from the library.\n- smaller $\\theta$ means a better match.\n\nThe output is a raster of class indices, where each pixel value is the index of the best-matching reference signature.\n\n## Sentinel-2 bands used\n\nThe service uses only the Sentinel-2 L2A bands provided by the BAP composite input, not all L2A layers.\nThe band subset is (B01, B02, B03, B04, B05, B06, B07, B08, B8A, B09, B11, B12).\n\nInput compositing is based on the BAP process:\n[https://algorithm-catalogue.apex.esa.int/apps/bap_composite](https://algorithm-catalogue.apex.esa.int/apps/bap_composite)\n\n## Reference spectral library\n\nThe reference library is based on a Sentinel-2-resampled USGS mineral/material collection.\nIt includes a broad set of geology and mining-related targets (e.g. iron oxides, clays, sulfates, silicates, carbonates, and related materials).\n\nThe CSV used by the service contains:\n- 498 named reference signatures (material columns).\n- 1 `cwvl` column with central wavelength values.\n\nExamples of included targets are minerals such as Acmite, Actinolite, Alunite, Jarosite, Kaolinite, Hematite, Goethite, Pyrite, Chalcopyrite, and many more variants.\n\n## Notes on interpretation\n\n- The product reports the **closest spectral match** in the selected library, not a definitive mineral identification.\n- Similar materials can produce similar spectra at Sentinel-2 spectral resolution.\n- Results are most useful when combined with geological context, ancillary data, and expert validation.\n\n## Missing data handling\n\nIf some bands are missing (`NaN`) at a pixel, the implementation computes SAM using only the available bands, with a minimum valid-band threshold.\nPixels without enough valid information are marked as no match.\n\n",
+    "description": "# Sentinel-2 based Spectral Angle Mapping (S2-SAM)\n\nThis service applies Spectral Angle Mapping (SAM) to Sentinel-2 Level-2A reflectance data.\nFor each pixel, the algorithm compares the pixel spectrum to a spectral reference library and selects the closest match based on the smallest spectral angle.\n\n## What this service does\n\nSAM measures similarity in spectral *shape* (not absolute brightness). For each pixel,\nit compares the values across the selected bands with every reference spectrum in the\nlibrary. The reference with the smallest spectral angle is selected as the best match.\n\nThe output is a raster of class indices, where each pixel value is the index of the best-matching reference signature.\n\n## Sentinel-2 bands used\n\nThe service uses only the Sentinel-2 L2A bands provided by the BAP composite input, not all L2A layers.\nThe band subset is (B01, B02, B03, B04, B05, B06, B07, B08, B8A, B09, B11, B12).\n\nInput compositing is based on the BAP process:\n[https://algorithm-catalogue.apex.esa.int/apps/bap_composite](https://algorithm-catalogue.apex.esa.int/apps/bap_composite)\n\n## Reference spectral library\n\nThe reference library is based on a Sentinel-2-resampled USGS mineral/material collection.\nIt includes a broad set of geology and mining-related targets (e.g. iron oxides, clays, sulfates, silicates, carbonates, and related materials).\n\nThe CSV used by the service contains:\n- 498 named reference signatures (material columns).\n- 1 `cwvl` column with central wavelength values.\n\nExamples of included targets are minerals such as Acmite, Actinolite, Alunite, Jarosite, Kaolinite, Hematite, Goethite, Pyrite, Chalcopyrite, and many more variants.\n\n## Notes on interpretation\n\n- The product reports the **closest spectral match** in the selected library, not a definitive mineral identification.\n- Similar materials can produce similar spectra at Sentinel-2 spectral resolution.\n- Results are most useful when combined with geological context, ancillary data, and expert validation.\n\n## Missing data handling\n\nIf some bands are missing (`NaN`) at a pixel, the implementation computes SAM using only the available bands, with a minimum valid-band threshold.\nPixels without enough valid information are marked as no match.\n\n",
     "parameters": [
         {
             "name": "spatial_extent",
