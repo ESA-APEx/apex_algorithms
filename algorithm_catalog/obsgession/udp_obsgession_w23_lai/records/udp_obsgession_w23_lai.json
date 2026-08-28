@@ -101,7 +101,7 @@
       "rel": "notebook",
       "type": "application/x-ipynb+json",
       "title": "Example Jupyter Notebook to calculate the LAI products",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/notebooks/execute-udp.ipynb"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/notebooks/execute-obsgession-lai-udp.ipynb"
     },
     {
     "rel": "example-output",
