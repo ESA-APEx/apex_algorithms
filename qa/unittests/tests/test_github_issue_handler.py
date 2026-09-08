@@ -12,7 +12,9 @@ from apex_algorithm_qa_tools.github_issue_handler import (
     TerminalReportSection,
     TestMetricsData,
 )
-from apex_algorithm_qa_tools.scenarios import BenchmarkScenario
+
+from apex_algorithm_qa_tools.scenarios.factory import read_scenarios_file
+from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
 
 
 class TestGithubApi:
@@ -323,7 +325,7 @@ class TestScenarioRunInfo:
             / "benchmark_scenarios"
             / "add3x.json"
         )
-        return BenchmarkScenario.read_scenarios_file(path)[0]
+        return read_scenarios_file(path)[0]
 
     @pytest.fixture
     def metrics_data(self) -> TestMetricsData:

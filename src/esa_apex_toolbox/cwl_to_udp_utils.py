@@ -31,6 +31,12 @@ def load_string_from_any(content: Union[str, Path]) -> str:
         return content
 
 
+def normalize_cwl_doc(doc: Any) -> str:
+    if isinstance(doc, list):
+        return "\n\n".join(str(d).rstrip() for d in doc)
+    return str(doc).rstrip()
+
+
 def get_cwl_main(cwl_yaml):
     if isinstance(cwl_yaml, str):
         cwl_yaml = yaml.safe_load(cwl_yaml)
@@ -66,7 +72,7 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
         arguments["default"] = None
 
     if doc := cwl_input_yaml.get("doc"):
-        arguments["description"] = str(doc).rstrip()
+        arguments["description"] = normalize_cwl_doc(doc)
 
     def cwl_type_to_openeo_param(cwl_type: Any) -> Parameter:
         if isinstance(cwl_type, str) and cwl_type.endswith("?"):
