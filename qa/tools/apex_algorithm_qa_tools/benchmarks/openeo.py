@@ -122,6 +122,3 @@ def run_openeo_job(*, job, max_minutes: int | None):
 def collect_openeo_metadata(*, job):
     return job.get_results()
 
-
-def download_openeo_results(*, results, actual_dir: Path):
-    return results.download_files(target=actual_dir, include_stac_metadata=True)
