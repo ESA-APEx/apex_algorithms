@@ -1,0 +1,111 @@
+{
+  "id": "biodiversity-sensitive-areas",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-07-13T00:00:00Z",
+    "updated": "2026-07-13T00:00:00Z",
+    "type": "service",
+    "title": "Sites in or near Biodiversity-Sensitive Areas",
+    "description": "This process identifies sites in or near biodiversity-sensitive areas and calculates the overlap area for reporting and auditability. Inputs: a GeoJSON FeatureCollection of sites, a location name field pointer, a site type field pointer, and an area unit (ha or m2). Site types office, agriculture, marine, mining, and other are mapped to impact radii of 5 km, 10 km, 20 km, 50 km, and 20 km, respectively. Outputs include a biodiversity-sensitive areas result table, documentation sources for audit, processing errors, and an echo of input parameters. This enables compliance with VSME B5 paragraph 33, which requires disclosing the number and area (in hectares) of sites the undertaking owns, leases, or manages in or near biodiversity-sensitive areas.",
+    "keywords": [
+      "Data Analysis and Visualization",
+      "Statistics",
+      "Land Use/Land Cover Change"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Geo Engine GmbH",
+        "organization": "Geo Engine GmbH",
+        "roles": ["operator"],
+        "links": [
+          {
+            "href": "https://www.geoengine.de/en/",
+            "title": "Geo Engine",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact info@geoengine.de for access and support.",
+        "emails": [
+          {
+            "value": "info@geoengine.de",
+            "roles": ["support"]
+          }
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "BIODIVERSITY"
+          },
+          {
+            "id": "SUSTAINABILITY"
+          },
+          {
+            "id": "ESG REPORTING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "JSON"
+      },
+      {
+        "name": "CSV"
+      }
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "BioIS",
+      "href": "../../../../platform_catalog/biois.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Geo Engine GmbH",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "application",
+      "type": "application/json",
+      "title": "OGC API Process Description",
+      "href": "https://biois.app.geoengine.io/api/processes/biodiversity-sensitive-areas"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "OGC API Process Execute Endpoint",
+      "href": "https://biois.app.geoengine.io/api/processes/biodiversity-sensitive-areas/execution"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "BioIS Application",
+      "href": "https://biois.app.geoengine.io/app"
+    }
+  ]
+}
