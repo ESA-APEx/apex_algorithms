@@ -59,7 +59,7 @@
         },
         "reference_data": {
             "result.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP54!tests_test_benchmarks.py__test_run_benchmark_cropsar1d_!actual/result.json",
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP54!tests_test_benchmarks.py__test_run_benchmark_cropsar1d_!benchmark_report.json"
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/17-terrascope!tests_test_benchmarks.py__test_run_benchmark_cropsar1d_!actual/job-results.json"
         }
     }
 ]
