@@ -1,16 +1,16 @@
-import jsonschema
-import requests
-
-import pytest
-from apex_algorithm_qa_tools.common import get_project_root
 from pathlib import Path
+
+import jsonschema
+import pytest
+import requests
+from apex_algorithm_qa_tools.common import get_project_root
 from apex_algorithm_qa_tools.records import (
-    get_service_ogc_records,
-    get_service_ogc_record_schema,
-    get_platform_ogc_records,
     get_platform_ogc_record_schema,
-    get_provider_ogc_records,
+    get_platform_ogc_records,
     get_provider_ogc_record_schema,
+    get_provider_ogc_records,
+    get_service_ogc_record_schema,
+    get_service_ogc_records,
 )
 
 
@@ -37,8 +37,10 @@ def test_get_platform_ogc_records():
 )
 def test_service_record_validation(record):
     ## Validate if record file is located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'
-    assert record["path"].endswith(f"{record['data']['id']}/records/{record['data']['id']}.json"), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
-    
+    assert record["path"].endswith(
+        f"{record['data']['id']}/records/{record['data']['id']}.json"
+    ), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
+
     ## Validate record against the service OGC record schema.
     jsonschema.validate(instance=record["data"], schema=get_service_ogc_record_schema())
 
@@ -47,8 +49,13 @@ def test_service_record_validation(record):
         assert "href" in link, f"Link in record '{record['data']['id']}' is missing 'href' field"
         href = link["href"]
         if href.startswith("http"):
-            response = requests.head(href)
-            assert response.status_code in [200, 301, 302, 308, 401, 403], f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            try:
+                response = requests.head(href, timeout=10)
+            except requests.RequestException as e:
+                raise Exception(f"Failed to request {href=}: {e}") from e
+            assert (
+                response.status_code in [200, 301, 302, 308, 401, 403]
+            ), f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
 
 
 @pytest.mark.parametrize(
@@ -61,7 +68,9 @@ def test_service_record_validation(record):
 )
 def test_platform_record_validation(record):
     record_name = Path(record["path"]).name
-    assert record_name == f"{record['data']['id']}.json", f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    assert (
+        record_name == f"{record['data']['id']}.json"
+    ), f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
     jsonschema.validate(instance=record["data"], schema=get_platform_ogc_record_schema())
 
 

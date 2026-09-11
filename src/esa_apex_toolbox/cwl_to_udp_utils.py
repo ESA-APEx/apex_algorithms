@@ -31,6 +31,12 @@ def load_string_from_any(content: Union[str, Path]) -> str:
         return content
 
 
+def normalize_cwl_doc(doc: Any) -> str:
+    if isinstance(doc, list):
+        return "\n\n".join(str(d).rstrip() for d in doc)
+    return str(doc).rstrip()
+
+
 def get_cwl_main(cwl_yaml):
     if isinstance(cwl_yaml, str):
         cwl_yaml = yaml.safe_load(cwl_yaml)
@@ -66,7 +72,7 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
         arguments["default"] = None
 
     if doc := cwl_input_yaml.get("doc"):
-        arguments["description"] = str(doc).rstrip()
+        arguments["description"] = normalize_cwl_doc(doc)
 
     def cwl_type_to_openeo_param(cwl_type: Any) -> Parameter:
         if isinstance(cwl_type, str) and cwl_type.endswith("?"):
@@ -87,7 +93,55 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
             cwl_type = {"type": "array", "items": sub_type}
 
         if name == "spatial_extent":
-            return Parameter.spatial_extent(**arguments)
+            arguments["schema"] = [
+                {
+                    "type": "object",
+                    "subtype": "bounding-box",
+                    "required": ["west", "south", "east", "north"],
+                    "properties": {
+                        "west": {
+                            "type": "number",
+                            "description": "West (lower left corner, coordinate axis 1).",
+                        },
+                        "south": {
+                            "type": "number",
+                            "description": "South (lower left corner, coordinate axis 2).",
+                        },
+                        "east": {
+                            "type": "number",
+                            "description": "East (upper right corner, coordinate axis 1).",
+                        },
+                        "north": {
+                            "type": "number",
+                            "description": "North (upper right corner, coordinate axis 2).",
+                        },
+                        "crs": {
+                            "description": "Coordinate reference system of the extent, specified as [WKT2 CRS string](https://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+                            "anyOf": [
+                                {
+                                    "type": "integer",
+                                    "subtype": "epsg-code",
+                                    "title": "EPSG Code",
+                                    "minimum": 1000,
+                                },
+                                {
+                                    "type": "string",
+                                    "subtype": "wkt2-definition",
+                                    "title": "WKT2 definition",
+                                },
+                            ],
+                            "default": 4326,
+                        },
+                        # TODO: support base and height?
+                    },
+                },
+                {
+                    "title": "No filter",
+                    "description": "Don't filter spatially. All data is included in the data cube.",
+                    "type": "null"
+                }
+            ]
+            return Parameter(**arguments)
         if name == "temporal_extent":
             return Parameter.temporal_interval(**arguments)
         elif cwl_type == "string":
