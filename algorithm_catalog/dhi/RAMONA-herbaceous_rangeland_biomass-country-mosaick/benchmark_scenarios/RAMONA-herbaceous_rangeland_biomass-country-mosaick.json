@@ -13,7 +13,7 @@
           "country": "benin"
         },
         "result": true,
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8efbe040499e0108a6ed7fce5ca92a3f08115a7f/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/openeo_udp/RAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3588a4ae6b8e26fc17ea89640c16b15b092ecd1c/algorithm_catalog/dhi/RAMONA-herbaceous_rangeland_biomass-country-mosaick/openeo_udp/RAMONA-herbaceous_rangeland_biomass-country-mosaick.json"
       }
     },
     "reference_data": {
