@@ -1,0 +1,145 @@
+{
+  "id": "methane_detection",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/ogc-api-processes"
+  ],
+  "geometry": null,
+  "properties": {
+    "visibility": "public",
+    "created": "2026-04-24T00:00:00Z",
+    "updated": "2026-05-11T00:00:00Z",
+    "type": "service",
+    "title": "Sentinel-2 Methane Enhancement Detection",
+    "description": "Earth observation methane detection workflow that searches a STAC API for Sentinel-2 L1C scenes over a bbox and time range, pairs matching L2A scenes when available, applies a SWIR-band (B11/B12) matched-filter detector per scene, and aggregates per-scene results into time-signal outputs. Supports multiple STAC backends (Element84 Earth Search, Copernicus Data Space Ecosystem, EarthDaily) and emits a STAC Catalog containing methane enhancement heatmaps as Cloud-Optimized GeoTIFFs, PNG previews, and JSON statistics.",
+    "cost_estimate": 0.0,
+    "cost_unit": "platform dependent",
+    "keywords": [
+      "Climate",
+      "Sentinel-2",
+      "Methane",
+      "STAC",
+      "Data Analysis and Visualization"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "EarthDaily",
+        "organization": "EarthDaily",
+        "roles": [
+          "processor"
+        ],
+        "links": [
+          {
+            "href": "https://earthdaily.com/",
+            "title": "EarthDaily website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/earthdaily/methane-detection",
+            "title": "methane-detection source repository",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact EarthDaily through the public website."
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "ATMOSPHERE"
+          },
+          {
+            "id": "ATMOSPHERIC CHEMISTRY"
+          },
+          {
+            "id": "TRACE GASES"
+          },
+          {
+            "id": "METHANE"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "PNG"
+      },
+      {
+        "name": "JSON"
+      }
+    ],
+    "license": "MIT"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/cwl+yaml",
+      "title": "EOAP CWL Workflow Application Package",
+      "href": "https://raw.githubusercontent.com/earthdaily/methane-detection/main/app-package.cwl"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "Methane detection OGC API Processes endpoint",
+      "href": "https://pygeoapi-eoxhub.workspace.gtif-ukif.hub-otc.eox.at/processes/execute-methane-process"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "EOxHub Workspaces",
+      "href": "../../../../platform_catalog/eoxhub.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "EarthDaily",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "methane-detection documentation",
+      "href": "https://github.com/earthdaily/methane-detection#readme"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Source repository",
+      "href": "https://github.com/earthdaily/methane-detection"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "GTIF UKIF Client — Methane Detection Explorer",
+      "href": "https://gtif-ukif.github.io/gtif-ukif-client/explore/?x=15.0000&y=48.0000&z=4.0000&template=expert&indicator=EDA-methane-detection&datetime=2026-05-13"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Methane enhancement heatmap thumbnail",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3b491921dac899201e9cd1d12b9bdf2cd0129ca9/algorithm_catalog/earthdaily/methane_detection/records/thumbnail.png"
+    }
+  ]
+}
