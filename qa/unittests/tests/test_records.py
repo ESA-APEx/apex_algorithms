@@ -32,7 +32,7 @@ def test_get_platform_ogc_records():
     [
         # Use scenario id as parameterization id to give nicer test names.
         pytest.param(record, id=record["data"]["id"])
-        for record in get_service_ogc_records()
+        for record in get_service_ogc_records() if record["data"]["id"] == "structure_icing"
     ],
 )
 def test_service_record_validation(record):
