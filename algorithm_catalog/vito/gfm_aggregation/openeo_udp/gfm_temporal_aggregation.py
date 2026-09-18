@@ -47,6 +47,8 @@ STATISTICS = ["max", "min", "mean", "median", "sum", "count"]
 PROCESS_ID = "gfm_temporal_aggregation"
 DEFAULT_OUTPUT = Path(__file__).with_name(f"{PROCESS_ID}.json")
 
+BACKEND = "openeofed.dataspace.copernicus.eu"
+
 
 def _parameters() -> list[Parameter]:
     return [
@@ -93,34 +95,24 @@ def build_cube(
         url=GFM_STAC_URL,
         spatial_extent=spatial_extent,
         temporal_extent=temporal_extent,
-        bands=bands
+        bands=bands,
     )
 
-    def reducer(data):
-        return eop.if_(
-            eop.eq(statistic, "min"),
-            eop.min(data, ignore_nodata=True),
-            eop.if_(
-                eop.eq(statistic, "mean"),
-                eop.mean(data, ignore_nodata=True),
-                eop.if_(
-                    eop.eq(statistic, "median"),
-                    eop.median(data, ignore_nodata=True),
-                    eop.if_(
-                        eop.eq(statistic, "sum"),
-                        eop.sum(data, ignore_nodata=True),
-                        eop.if_(
-                            eop.eq(statistic, "count"),
-                            eop.count(data),
-                            eop.max(data, ignore_nodata=True),
-                        ),
-                    ),
-                ),
-            ),
+    # The GFM STAC collection names its temporal dimension "time" (not the openEO default "t").
+    reduced_cubes = {
+        name: cube.reduce_dimension(dimension="time", reducer=name) for name in STATISTICS
+    }
+
+    result = reduced_cubes["max"]
+    for name in reversed([name for name in STATISTICS if name != "max"]):
+        result = connection.datacube_from_process(
+            process_id="if",
+            value=eop.eq(statistic, name),
+            accept=reduced_cubes[name],
+            reject=result,
         )
 
-    # The GFM STAC collection names its temporal dimension "time" (not the openEO default "t").
-    return cube.reduce_dimension(dimension="time", reducer=reducer)
+    return result
 
 
 def build_udp(connection) -> dict:
@@ -170,18 +162,14 @@ def main() -> None:
     parser.add_argument(
         "--output", type=Path, default=DEFAULT_OUTPUT, help="Output JSON file."
     )
-    parser.add_argument(
-        "--backend",
-        default="openeofed.dataspace.copernicus.eu",
-        help="openEO backend URL.",
-    )
     args = parser.parse_args()
 
-    connection = openeo.connect(args.backend).authenticate_oidc()
+    connection = openeo.connect(BACKEND).authenticate_oidc()
 
     udp = build_udp(connection)
     args.output.write_text(json.dumps(udp, indent=2) + "\n")
     print(f"Wrote {args.output}")
+
 
 if __name__ == "__main__":
     main()
