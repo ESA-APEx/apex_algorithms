@@ -97,7 +97,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/92508fc59ce2457697c4dfacd6f5ebc585da12b0/openeo_udp/process_graph/delineate_anything_udp.json"
+      "href": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/refs/heads/main/openeo_udp/process_graph/delineate_anything_udp.json"
     },
     {
       "rel": "code",

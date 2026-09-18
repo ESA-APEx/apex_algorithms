@@ -7,7 +7,7 @@
     "process_graph": {
       "delineate_anything1": {
         "process_id": "delineate_anything",
-        "namespace": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/92508fc59ce2457697c4dfacd6f5ebc585da12b0/openeo_udp/process_graph/delineate_anything_udp.json",
+        "namespace": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/refs/heads/main/openeo_udp/process_graph/delineate_anything_udp.json",
         "arguments": {
           "geometry": {
             "type": "Polygon",
