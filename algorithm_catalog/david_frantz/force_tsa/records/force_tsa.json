@@ -106,12 +106,6 @@
         "href": "https://github.com/bcdev/apex-force-openeo"
     },
     {
-        "rel": "notebook",
-        "type": "application/x-ipynb+json",
-        "title": "Example notebook: Query, process, download results",
-        "href": "https://raw.githubusercontent.com/bcdev/apex-force-openeo/main/examples/run-level2-and-tsa/FORCE_level2_and_TSA.ipynb"
-    },
-    {
         "rel": "application",
         "type": "application/x-ipynb+json",
         "title": "Example notebook: Query, process, download results",
