@@ -29,171 +29,239 @@
               "arguments": {
                 "data": {
                   "from_parameter": "data"
-                },
-                "ignore_nodata": true
-              }
-            },
-            "mean1": {
-              "process_id": "mean",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                },
-                "ignore_nodata": true
-              }
-            },
-            "median1": {
-              "process_id": "median",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                },
-                "ignore_nodata": true
-              }
-            },
-            "sum1": {
-              "process_id": "sum",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                },
-                "ignore_nodata": true
-              }
-            },
-            "count1": {
-              "process_id": "count",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                }
-              }
-            },
-            "max1": {
-              "process_id": "max",
-              "arguments": {
-                "data": {
-                  "from_parameter": "data"
-                },
-                "ignore_nodata": true
-              }
-            },
-            "eq1": {
-              "process_id": "eq",
-              "arguments": {
-                "x": {
-                  "from_parameter": "statistic"
-                },
-                "y": "count"
-              }
-            },
-            "if1": {
-              "process_id": "if",
-              "arguments": {
-                "accept": {
-                  "from_node": "count1"
-                },
-                "reject": {
-                  "from_node": "max1"
-                },
-                "value": {
-                  "from_node": "eq1"
-                }
-              }
-            },
-            "eq2": {
-              "process_id": "eq",
-              "arguments": {
-                "x": {
-                  "from_parameter": "statistic"
-                },
-                "y": "sum"
-              }
-            },
-            "if2": {
-              "process_id": "if",
-              "arguments": {
-                "accept": {
-                  "from_node": "sum1"
-                },
-                "reject": {
-                  "from_node": "if1"
-                },
-                "value": {
-                  "from_node": "eq2"
-                }
-              }
-            },
-            "eq3": {
-              "process_id": "eq",
-              "arguments": {
-                "x": {
-                  "from_parameter": "statistic"
-                },
-                "y": "median"
-              }
-            },
-            "if3": {
-              "process_id": "if",
-              "arguments": {
-                "accept": {
-                  "from_node": "median1"
-                },
-                "reject": {
-                  "from_node": "if2"
-                },
-                "value": {
-                  "from_node": "eq3"
-                }
-              }
-            },
-            "eq4": {
-              "process_id": "eq",
-              "arguments": {
-                "x": {
-                  "from_parameter": "statistic"
-                },
-                "y": "mean"
-              }
-            },
-            "if4": {
-              "process_id": "if",
-              "arguments": {
-                "accept": {
-                  "from_node": "mean1"
-                },
-                "reject": {
-                  "from_node": "if3"
-                },
-                "value": {
-                  "from_node": "eq4"
-                }
-              }
-            },
-            "eq5": {
-              "process_id": "eq",
-              "arguments": {
-                "x": {
-                  "from_parameter": "statistic"
-                },
-                "y": "min"
-              }
-            },
-            "if5": {
-              "process_id": "if",
-              "arguments": {
-                "accept": {
-                  "from_node": "min1"
-                },
-                "reject": {
-                  "from_node": "if4"
-                },
-                "value": {
-                  "from_node": "eq5"
                 }
               },
               "result": true
             }
           }
+        }
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "time",
+        "reducer": {
+          "process_graph": {
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "time",
+        "reducer": {
+          "process_graph": {
+            "median1": {
+              "process_id": "median",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension4": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "time",
+        "reducer": {
+          "process_graph": {
+            "sum1": {
+              "process_id": "sum",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension5": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "time",
+        "reducer": {
+          "process_graph": {
+            "count1": {
+              "process_id": "count",
+              "arguments": {
+                "context": {
+                  "from_parameter": "context"
+                },
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension6": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "time",
+        "reducer": {
+          "process_graph": {
+            "max1": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "eq1": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "statistic"
+        },
+        "y": "count"
+      }
+    },
+    "if1": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "reducedimension5"
+        },
+        "reject": {
+          "from_node": "reducedimension6"
+        },
+        "value": {
+          "from_node": "eq1"
+        }
+      }
+    },
+    "eq2": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "statistic"
+        },
+        "y": "sum"
+      }
+    },
+    "if2": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "reducedimension4"
+        },
+        "reject": {
+          "from_node": "if1"
+        },
+        "value": {
+          "from_node": "eq2"
+        }
+      }
+    },
+    "eq3": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "statistic"
+        },
+        "y": "median"
+      }
+    },
+    "if3": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "reducedimension3"
+        },
+        "reject": {
+          "from_node": "if2"
+        },
+        "value": {
+          "from_node": "eq3"
+        }
+      }
+    },
+    "eq4": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "statistic"
+        },
+        "y": "mean"
+      }
+    },
+    "if4": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "reducedimension2"
+        },
+        "reject": {
+          "from_node": "if3"
+        },
+        "value": {
+          "from_node": "eq4"
+        }
+      }
+    },
+    "eq5": {
+      "process_id": "eq",
+      "arguments": {
+        "x": {
+          "from_parameter": "statistic"
+        },
+        "y": "min"
+      }
+    },
+    "if5": {
+      "process_id": "if",
+      "arguments": {
+        "accept": {
+          "from_node": "reducedimension1"
+        },
+        "reject": {
+          "from_node": "if4"
+        },
+        "value": {
+          "from_node": "eq5"
         }
       },
       "result": true
