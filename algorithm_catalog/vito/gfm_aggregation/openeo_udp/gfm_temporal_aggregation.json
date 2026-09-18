@@ -1,0 +1,377 @@
+{
+  "process_graph": {
+    "loadstac1": {
+      "process_id": "load_stac",
+      "arguments": {
+        "bands": {
+          "from_parameter": "bands"
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": {
+          "from_parameter": "temporal_extent"
+        },
+        "url": "https://stac.eodc.eu/api/v1/collections/GFM"
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "dimension": "time",
+        "reducer": {
+          "process_graph": {
+            "min1": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              }
+            },
+            "mean1": {
+              "process_id": "mean",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              }
+            },
+            "median1": {
+              "process_id": "median",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              }
+            },
+            "sum1": {
+              "process_id": "sum",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              }
+            },
+            "count1": {
+              "process_id": "count",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              }
+            },
+            "max1": {
+              "process_id": "max",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "ignore_nodata": true
+              }
+            },
+            "eq1": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "statistic"
+                },
+                "y": "count"
+              }
+            },
+            "if1": {
+              "process_id": "if",
+              "arguments": {
+                "accept": {
+                  "from_node": "count1"
+                },
+                "reject": {
+                  "from_node": "max1"
+                },
+                "value": {
+                  "from_node": "eq1"
+                }
+              }
+            },
+            "eq2": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "statistic"
+                },
+                "y": "sum"
+              }
+            },
+            "if2": {
+              "process_id": "if",
+              "arguments": {
+                "accept": {
+                  "from_node": "sum1"
+                },
+                "reject": {
+                  "from_node": "if1"
+                },
+                "value": {
+                  "from_node": "eq2"
+                }
+              }
+            },
+            "eq3": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "statistic"
+                },
+                "y": "median"
+              }
+            },
+            "if3": {
+              "process_id": "if",
+              "arguments": {
+                "accept": {
+                  "from_node": "median1"
+                },
+                "reject": {
+                  "from_node": "if2"
+                },
+                "value": {
+                  "from_node": "eq3"
+                }
+              }
+            },
+            "eq4": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "statistic"
+                },
+                "y": "mean"
+              }
+            },
+            "if4": {
+              "process_id": "if",
+              "arguments": {
+                "accept": {
+                  "from_node": "mean1"
+                },
+                "reject": {
+                  "from_node": "if3"
+                },
+                "value": {
+                  "from_node": "eq4"
+                }
+              }
+            },
+            "eq5": {
+              "process_id": "eq",
+              "arguments": {
+                "x": {
+                  "from_parameter": "statistic"
+                },
+                "y": "min"
+              }
+            },
+            "if5": {
+              "process_id": "if",
+              "arguments": {
+                "accept": {
+                  "from_node": "min1"
+                },
+                "reject": {
+                  "from_node": "if4"
+                },
+                "value": {
+                  "from_node": "eq5"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "gfm_temporal_aggregation",
+  "summary": "Temporal aggregation of Global Flood Monitoring (GFM) products",
+  "description": "Loads Copernicus Emergency Management Service Global Flood Monitoring (GFM) layers from the EODC STAC API (https://stac.eodc.eu/api/v1/collections/GFM) with `load_stac` and aggregates them over the given temporal extent with the selected statistic. Typical uses are the maximum observed flood extent (statistic='max'), the flood frequency (statistic='mean') or the number of flooded observations (statistic='sum'). Combine the bands 'ensemble_flood_extent' and 'reference_water_mask' to obtain the observed water extent.",
+  "returns": {
+    "description": "Data cube with the temporal dimension reduced to a single value per band.",
+    "schema": {
+      "type": "object",
+      "subtype": "datacube"
+    }
+  },
+  "categories": [
+    "flood",
+    "hydrology",
+    "copernicus"
+  ],
+  "links": [
+    {
+      "rel": "about",
+      "href": "https://extwiki.eodc.eu/GFM",
+      "title": "GFM Wiki"
+    },
+    {
+      "rel": "about",
+      "href": "https://docs.openeo.cloud/usecases/gfm/",
+      "title": "GFM use case in openEO Platform"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Spatial extent to load: a bounding box, a GeoJSON geometry or a vector data cube.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ]
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent [start, end) to aggregate over, e.g. ['2022-09-01', '2022-10-01'].",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bands",
+      "description": "GFM layers to load. One or more of: ensemble_flood_extent, ensemble_water_extent, ensemble_likelihood, reference_water_mask, exclusion_mask, advisory_flags, dlr_flood_extent, list_flood_extent, tuw_flood_extent, dlr_likelihood, list_likelihood, tuw_likelihood.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "optional": true,
+      "default": [
+        "ensemble_flood_extent"
+      ]
+    },
+    {
+      "name": "statistic",
+      "description": "Temporal reducer applied over the full temporal extent. 'max' yields the maximum (observed) flood extent, 'mean' the flood frequency, 'sum' the number of flooded observations and 'count' the number of valid observations.",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "max",
+          "min",
+          "mean",
+          "median",
+          "sum",
+          "count"
+        ]
+      },
+      "optional": true,
+      "default": "max"
+    }
+  ]
+}
