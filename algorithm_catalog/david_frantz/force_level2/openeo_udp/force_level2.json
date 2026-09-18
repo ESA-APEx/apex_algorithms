@@ -1,0 +1,469 @@
+{
+  "description": "# FORCE level 2\n\nFORCE (Framework for Operational Radiometric Correction for Environmental Monitoring) is a processing framework for Sentinel-2 and Landsat imagery. It supports the generation of Analysis Ready Data Cubes (level 2 processing) and many higher level processing operations such as time series analysis. FORCE is developed by Prof. David Frantz (Geoinformatics - Spatial Data Science, Trier University) and the FORCE Open Source community. Please make sure to [acknowledge their work accordingly](https://force-eo.readthedocs.io/en/latest/policy/citation.html) when processing with FORCE.\n\nThis process provides the FORCE [level 2 processing system](https://force-eo.readthedocs.io/en/latest/components/lower-level/level2/index.html) to produce Analysis Ready Data Cubes from Sentinel-2 L1C data.\nThe process supports [many of the parameters](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/guide/parametrization.html) of the FORCE level 2 processing system.\n\nThe FORCE toolbox was cloudified as part of the [APEx toolbox cloudification activity](https://apex.esa.int/services/toolbox-cloudification).\n\n> Please note that this is an experimental integration of FORCE into openEO, which is not suitable for large scale processing. For an overview of features and limitations compared to running FORCE locally, please consult the [official documentation](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/feature_overview.html).\n\n> Please be aware that FORCE processing uses FORCE's native data cube model instead of openEO data cubes. Therefore, further processing of the data in openEO is limited to the FORCE Time Series Analysis\n> process.\n\n## Features\n\n- Dedicated openEO process `force_level2` to generate FORCE Analysis Ready Data Cubes\n- STAC generation for FORCE data cubes produced by the process\n- Automatic Sentinel-2 and Copernicus DEM input data staging\n- Asynchronous further processing with FORCE Time Series Analysis on CDSE without download of level 2 products using OpenEO workspaces.\n\n\n## Example usage\n\n\n```Python\nimport openeo\nfrom openeo.rest.stac_resource import StacResource\nfrom openeo.internal.graph_building import PGNode\n\n\nconnection = openeo.connect(\"openeo.dataspace.copernicus.eu\").authenticate_oidc()\n\n\n# Select a STAC item to process (collections, catalogs and item collections are also supported!)\nstac_item_url = \"https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l1c/items/S2A_MSIL1C_20260419T100711_N0512_R022_T32TPQ_20260419T152521\"\n\n# Create the process graph\nprocessing_name = \"FORCE_level2\"\nforce_l2_stac_resource = StacResource(\n    graph=PGNode(\n        process_id=\"force_level2\",\n        arguments={\n            \"stac_url\": stac_item_url,\n            \"name\": processing_name,\n            \"do_brdf\": True,\n            # other FORCE level 2 parameters\n        },\n    ),\n    connection=connection,\n)\n\n# Run processing\nl2_job = force_l2_stac_resource.create_job(title=processing_name)\nl2_job.start_and_wait()\n\n# Download results (alternatively: Continue processing without download with Time Series Analysis. Check out the guide!)\n\nl2_results = l2_job.get_results()\nl2_results.download_files(\"force-level2-results\")\n```\n\n## Documentation\n\n- [FORCE on CDSE using openEO](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/): Main documentation site for the FORCE integration into CDSE openEO. Part of the APEx [toolbox documentation portal](https://esa-apex.github.io/apex_toolbox_documentation/docs/)\n    - [Features and Limitations](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/feature_overview.html)\n    - [User Guide](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/guide/intro.html)\n\n- [FORCE](https://force-eo.readthedocs.io/) Documentation of the FORCE processing engine\n- [Example notebooks](https://github.com/bcdev/apex-force-openeo/tree/main/examples)\n\n",
+  "id": "force_level2",
+  "parameters": [
+    {
+      "description": "URL pointing to a STAC catalog, ItemCollection or Item containing the input products to be used for the analysis. Exactly one of stac_url or stac_document must be provided. ",
+      "name": "stac_url",
+      "optional": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "STAC catalog, ItemCollection or Item (as a dictionary) containing the input products to be used for the analysis. Exactly one of stac_url or stac_document must be provided.",
+      "name": "stac_document",
+      "optional": true,
+      "schema": {
+        "type": "Any"
+      }
+    },
+    {
+      "description": "Name of the datacube. Example: bologna . Default: cube-<timestamp>",
+      "name": "name",
+      "optional": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "Area of interest as geojson feature, extent of the resulting cube. Example: { \"type\": \"Feature\", \"geometry\": { \"type\": \"Polygon\", \"coordinates\": [[[10.5,44.0],[10.5,45.0],[11.5,45.0],[11.5,44.0],[10.5,44.0]]] }, \"properties\": { \"name\": \"Bologna\" } } . Default: not set, extent determined by inputs",
+      "name": "aoi",
+      "optional": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "Tile size (in target units, commonly in meters) of the gridded output. tiles are square. Not used if projection is one of the predefined projections. Default: 30000",
+      "name": "tile_size",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Block size (in target units, commonly in meters) of the image chips. Blocks are stripes, i.e. they are as wide as the tile and as high as specified here. Not used if projection is one of the predefined projections. Default: 3000",
+      "name": "block_size",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Origin coordinate of the grid system in decimal degree (negative values for West/South). The upper left corner of tile X0000_Y0000 represents this point. It is a good choice to use a coordinate that is North-West of your study area \u2013 to avoid negative tile numbers. Not used if projection is one of the predefined projections. Default: -25.0",
+      "name": "origin_lon",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Origin coordinate of the grid system in decimal degree (negative values for West/South). The upper left corner of tile X0000_Y0000 represents this point. It is a good choice to use a coordinate that is North-West of your study area \u2013 to avoid negative tile numbers. Not used if projection is one of the predefined projections. Default: 60.0",
+      "name": "origin_lat",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Spatial resolution in meters of the FORCE data cube. Example: 10 . Default: 20",
+      "name": "resolution",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Defines the target coordinate system. This projection should ideally be valid for a large geographic extent. Two default projection / grid systems are predefined in FORCE: GLANCE7 and EQUI7. They can be specified via the projection parameter instead of giving a WKT string. The predefined options have their own settings for origin_lat, origin_lon, tile_size, block_size, thus values given as parameters will be ignored. EQUI7 consists of 7 Equi-Distant, continental projections with a tile size of 100km. GLANCE7 consists of 7 Equal-Area, continental projections, with a tile size of 150km. One datacube will be generated for each continent. Else, the projection must be given as WKT string. You can verify your projection (and convert to WKT from another format) using gdalsrsinfo. Default: GLANCE7",
+      "name": "projection",
+      "optional": true,
+      "schema": {
+        "anyOf": [
+          {
+            "enum": [
+              "GLANCE7",
+              "EQUI7"
+            ],
+            "type": "string"
+          },
+          {
+            "description": "WKT",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "description": "The resampling option for the reprojection; you can choose between Nearest Neighbor (NN), Bilinear (BL), Cubic Convolution (CC), Cubic Spline (CSP), Lanczos (LZ), Average (AVG), Mode (MODE), Max (MAX), Min (MIN), Median (MED), Q1 (Q1), Q3 (Q3), Sum (SUM), and RMS (RMS). Example: NN . Default: CC",
+      "name": "resampling",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "NN",
+          "BL",
+          "CC",
+          "CSP",
+          "LZ",
+          "AVG",
+          "MODE",
+          "MAX",
+          "MIN",
+          "MED",
+          "Q1",
+          "Q3",
+          "SUM",
+          "RMS"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Name of digital elevation model (Copernicus_30m supported on CDSE). Default: Copernicus_30m",
+      "name": "dem",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "Copernicus_30m"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Indicates whether atmospheric correction shall be performed. If True, Bottom-of-Atmosphere reflectance is computed. If False, only Top-of-Atmosphere reflectance is computed. Default: True",
+      "name": "do_atmo",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether topographic correction shall be performed. If True, a DEM need to be named. Default: True",
+      "name": "do_topo",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether BRDF correction shall be performed. If True, output is nadir BRDF adjusted reflectance instead of BOA reflectance (the output is named BOA nonetheless). Default: True",
+      "name": "do_brdf",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether adjacency effect correction shall be performed. Default: True",
+      "name": "do_adjacency",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether multiple scattering (True) or the single scattering approximation (False) shall be used in the radiative transfer calculations. Default: True",
+      "name": "do_multi_scattering",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether the internal AOD estimation (True) or externally generated AOD values shall be used (False). Only True is supported on CDSE. Default: True",
+      "name": "do_aod",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether confident cloud detections will be erased in the reflectance product, i.e. pixels are set to nodata. The cloud flag in the QAI product will still mark these pixels as clouds. Use this option if disk space is of concern. Default: False",
+      "name": "erase_clouds",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "indicates whether to cancel processing of images that exceed the given threshold. The processing will be canceled after cloud detection. Example: 99 . Default: 99",
+      "name": "max_cloud_cover_frame",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "This parameter works on a tile basis. It suppresses the output for chips (tiled image) that exceed the given threshold. Example: 99 . Default: 99",
+      "name": "max_cloud_cover_tile",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Buffer sizes (radius in meters) for cloud masks. Default: 300",
+      "name": "cloud_buffer",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Buffer sizes (radius in meters) for cirrus masks. Default: 0",
+      "name": "cirrus_buffer",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Buffer sizes (radius in meters) for cloud shadow masks. Default: 90",
+      "name": "shadow_buffer",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Buffer sizes (radius in meters) for snow masks. default: 30",
+      "name": "snow_buffer",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Threshold of the Fmask algorithm. Default: 0.225",
+      "name": "cloud_threshold",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Threshold of the Fmask algorithm. Default: 0.02",
+      "name": "shadow_threshold",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Defines the method used for improving the spatial resolution of Sentinel-2\u2019s 20 m bands to 10 m. Pixels flagged as cloud or shadow will be skipped. Following methods are available: IMPROPHE uses the ImproPhe code in a spectral-only setup; REGRESSION uses a multi-parameter regression (results are expected to be best, but processing time is significant); STARFM uses a spectral-only setup of the Spatial and Temporal Adaptive Reflectance Fusion Model (prediction artifacts may occur between land cover boundaries); NONE disables resolution merge; in this case, 20m bands are quadrupled. Default: IMPROPHE",
+      "name": "res_merge",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "IMPROPHE",
+          "REGRESSION",
+          "STARFM",
+          "NONE"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Defines whether impulse noise should be removed. Only applies to 8bit input data. Default: True",
+      "name": "impulse_noise",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Defines whether nodata pixels should be buffered by 1 pixel. Default: False",
+      "name": "buffer_nodata",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output format, which is either uncompressed flat binary image format aka ENVI Standard, GeoTiff, or COG. GeoTiff images are compressed with LZW and horizontal differencing; BigTiff support is enabled; the Tiff is structured with striped blocks according to the TILE_SIZE (X) and BLOCK_SIZE (Y) specifications. Metadata are written to the ENVI header or directly into the Tiff to the FORCE domain. If the size of the metadata exceeds the Tiff's limit, an external .aux.xml file is additionally generated. Valid values on CDSE: {GTiff, COG}",
+      "name": "output_format",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "GTiff",
+          "COG"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Indicates whether to output the cloud/cloud shadow/snow distance output. Note that this is NOT the cloud mask (which is sitting in the mandatory QAI product). This product can be used in force-level3; no other higher-level FORCE module is using this. Default: False",
+      "name": "output_dst",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether to output Aerosol Optical Depth map for the green band. No higher-level FORCE module is using this. Default: False",
+      "name": "output_aod",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether to output the Water Vapor map. No higher-level FORCE module is using this. Default: False",
+      "name": "output_wvp",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether to output the View Zenith map. This product can be used in force-level3; no other higher-level FORCE module is using this. Default: False",
+      "name": "output_vzn",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether to output the Haze Optimzed Transformation output. This product can be used in force-level3; no other higher-level FORCE module is using this. Default: False",
+      "name": "output_hot",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Indicates whether to output overview thumbnails? These are JPEGs at reduced spatial resolution, which feature an RGB overview + quality information overlayed (pink: cloud, red: cirrus, cyan: cloud shadow, yellow: snow, orange: saturated, green: subzero reflectance). No higher-level FORCE module is using this. Default: False",
+      "name": "output_ovv",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  ],
+  "returns": {
+    "description": "the data as a FORCE data cube",
+    "schema": {
+      "subtype": "datacube",
+      "type": "object"
+    }
+  },
+  "process_graph": {
+    "force_level_2": {
+      "process_id": "force_level_2",
+      "arguments": {
+        "stac_url": {
+          "from_parameter": "stac_url"
+        },
+        "stac_document": {
+          "from_parameter": "stac_document"
+        },
+        "name": {
+          "from_parameter": "name"
+        },
+        "aoi": {
+          "from_parameter": "aoi"
+        },
+        "tile_size": {
+          "from_parameter": "tile_size"
+        },
+        "block_size": {
+          "from_parameter": "block_size"
+        },
+        "origin_lon": {
+          "from_parameter": "origin_lon"
+        },
+        "origin_lat": {
+          "from_parameter": "origin_lat"
+        },
+        "resolution": {
+          "from_parameter": "resolution"
+        },
+        "projection": {
+          "from_parameter": "projection"
+        },
+        "resampling": {
+          "from_parameter": "resampling"
+        },
+        "dem": {
+          "from_parameter": "dem"
+        },
+        "do_atmo": {
+          "from_parameter": "do_atmo"
+        },
+        "do_topo": {
+          "from_parameter": "do_topo"
+        },
+        "do_brdf": {
+          "from_parameter": "do_brdf"
+        },
+        "do_adjacency": {
+          "from_parameter": "do_adjacency"
+        },
+        "do_multi_scattering": {
+          "from_parameter": "do_multi_scattering"
+        },
+        "do_aod": {
+          "from_parameter": "do_aod"
+        },
+        "erase_clouds": {
+          "from_parameter": "erase_clouds"
+        },
+        "max_cloud_cover_frame": {
+          "from_parameter": "max_cloud_cover_frame"
+        },
+        "max_cloud_cover_tile": {
+          "from_parameter": "max_cloud_cover_tile"
+        },
+        "cloud_buffer": {
+          "from_parameter": "cloud_buffer"
+        },
+        "cirrus_buffer": {
+          "from_parameter": "cirrus_buffer"
+        },
+        "shadow_buffer": {
+          "from_parameter": "shadow_buffer"
+        },
+        "snow_buffer": {
+          "from_parameter": "snow_buffer"
+        },
+        "cloud_threshold": {
+          "from_parameter": "cloud_threshold"
+        },
+        "shadow_threshold": {
+          "from_parameter": "shadow_threshold"
+        },
+        "res_merge": {
+          "from_parameter": "res_merge"
+        },
+        "impulse_noise": {
+          "from_parameter": "impulse_noise"
+        },
+        "buffer_nodata": {
+          "from_parameter": "buffer_nodata"
+        },
+        "output_format": {
+          "from_parameter": "output_format"
+        },
+        "output_dst": {
+          "from_parameter": "output_dst"
+        },
+        "output_aod": {
+          "from_parameter": "output_aod"
+        },
+        "output_wvp": {
+          "from_parameter": "output_wvp"
+        },
+        "output_vzn": {
+          "from_parameter": "output_vzn"
+        },
+        "output_hot": {
+          "from_parameter": "output_hot"
+        },
+        "output_ovv": {
+          "from_parameter": "output_ovv"
+        }
+      },
+      "result": true
+    }
+  }
+}
