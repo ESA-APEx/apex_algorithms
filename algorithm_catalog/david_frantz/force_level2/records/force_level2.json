@@ -115,7 +115,7 @@
         "rel": "application",
         "type": "application/x-ipynb+json",
         "title": "Example notebook: Query, process, download results",
-        "href": "https://github.com/bcdev/apex-force-openeo/blob/main/examples/run-level2-and-download/FORCE_level2_and_download_external_query.ipynb"
+        "href": "../openeo_udp/force_level2.json"
     },
     {
       "rel": "service",
