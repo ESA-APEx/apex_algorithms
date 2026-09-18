@@ -1,0 +1,42 @@
+[
+  {
+    "id": "delineate_anything",
+    "type": "openeo",
+    "description": "Delineate Anything field boundary detection on a small Sentinel-2 AOI over the Palouse agricultural area (WA/ID, USA).",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "delineate_anything1": {
+        "process_id": "delineate_anything",
+        "namespace": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/92508fc59ce2457697c4dfacd6f5ebc585da12b0/openeo_udp/process_graph/delineate_anything_udp.json",
+        "arguments": {
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [-117.0635, 46.7150],
+                [-116.9325, 46.7150],
+                [-116.9325, 46.8050],
+                [-117.0635, 46.8050],
+                [-117.0635, 46.7150]
+              ]
+            ]
+          },
+          "temporal_extent": [
+            "2024-05-01",
+            "2024-08-31"
+          ]
+        },
+        "result": true
+      }
+    },
+    "job_options": {
+      "udf-dependency-archives": [
+        "https://s3.waw3-1.cloudferro.com/project_dependencies/onnx_deps_python311.zip#onnx_deps",
+        "https://s3.waw3-1.cloudferro.com/project_dependencies/DelineateAnythingv2.zip#onnx_models"
+      ]
+    },
+    "reference_options": {
+      "pixel_tolerance": 1
+    }
+  }
+]
