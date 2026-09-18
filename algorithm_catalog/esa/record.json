@@ -1,0 +1,65 @@
+{
+  "id": "esa",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-09-18T00:00:00Z",
+    "updated": "2026-09-18T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "European Space Agency",
+    "description": "The European Space Agency (ESA) is Europe's gateway to space, coordinating Earth Observation missions and derived services.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "European Space Agency",
+        "links": [
+          {
+            "href": "https://www.esa.int",
+            "type": "text/html",
+            "title": "ESA Website",
+            "rel": "website"
+          }
+        ]
+      }
+    ],
+    "themes": [],
+    "acl": {
+      "admin": [
+        "@esa.int"
+      ]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "European Space Agency",
+      "href": "https://www.esa.int"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2015/03/esa_logo/15300550-1-eng-GB/ESA_logo_pillars.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2015/03/esa_logo/15300550-1-eng-GB/ESA_logo_pillars.png"
+    }
+  ]
+}
