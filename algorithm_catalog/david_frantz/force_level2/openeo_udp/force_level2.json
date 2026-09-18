@@ -78,21 +78,19 @@
       "description": "Defines the target coordinate system. This projection should ideally be valid for a large geographic extent. Two default projection / grid systems are predefined in FORCE: GLANCE7 and EQUI7. They can be specified via the projection parameter instead of giving a WKT string. The predefined options have their own settings for origin_lat, origin_lon, tile_size, block_size, thus values given as parameters will be ignored. EQUI7 consists of 7 Equi-Distant, continental projections with a tile size of 100km. GLANCE7 consists of 7 Equal-Area, continental projections, with a tile size of 150km. One datacube will be generated for each continent. Else, the projection must be given as WKT string. You can verify your projection (and convert to WKT from another format) using gdalsrsinfo. Default: GLANCE7",
       "name": "projection",
       "optional": true,
-      "schema": {
-        "anyOf": [
-          {
-            "enum": [
-              "GLANCE7",
-              "EQUI7"
-            ],
-            "type": "string"
-          },
-          {
-            "description": "WKT",
-            "type": "string"
-          }
-        ]
-      }
+      "schema": [
+        {
+          "enum": [
+            "GLANCE7",
+            "EQUI7"
+          ],
+          "type": "string"
+        },
+        {
+          "description": "WKT",
+          "type": "string"
+        }
+      ]
     },
     {
       "description": "The resampling option for the reprojection; you can choose between Nearest Neighbor (NN), Bilinear (BL), Cubic Convolution (CC), Cubic Spline (CSP), Lanczos (LZ), Average (AVG), Mode (MODE), Max (MAX), Min (MIN), Median (MED), Q1 (Q1), Q3 (Q3), Sum (SUM), and RMS (RMS). Example: NN . Default: CC",
