@@ -1,0 +1,985 @@
+{
+  "description": "# FORCE Time Series Analysis (TSA)\n\nFORCE (Framework for Operational Radiometric Correction for Environmental Monitoring) is a processing framework for Sentinel-2 and Landsat imagery. It supports the generation of Analysis Ready Data Cubes (level 2 processing) and many higher level processing operations such as time series analysis. FORCE is developed by Prof. David Frantz (Geoinformatics - Spatial Data Science, Trier University) and the FORCE Open Source community. Please make sure to [acknowledge their work accordingly](https://force-eo.readthedocs.io/en/latest/policy/citation.html) when processing with FORCE.\n\nThis process provides the FORCE Time Series Analysis, part of the [Higher Level Processing System](https://force-eo.readthedocs.io/en/latest/components/higher-level/index.html) to produce\nTime Series Statistics and other analysis products in the FORCE data cube format.\nThe process supports [many of the parameters](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/guide/parametrization.html) of the FORCE Time Series Analysis module.\n\nAs an input, the `force_tsa` process requires a STAC catalog referring to FORCE level 2 data cube as produced by the `force_level2` process.\n\nThe FORCE toolbox was cloudified as part of the [APEx toolbox cloudification activity](https://apex.esa.int/services/toolbox-cloudification).\n\n> Please note that this is an experimental integration of FORCE into openEO, which is not suitable for large scale processing. For an overview of features and limitations compared to running FORCE locally, please consult the [official documentation](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/feature_overview.html).\n\n> Please be aware that FORCE processing uses FORCE's native data cube model instead of openEO data cubes. Therefore, further processing of the data in openEO is limited to the FORCE Time Series Analysis\n> process.\n\n## Features\n\n- Dedicated openEO process `force_tsa` to generate FORCE Analysis Ready Data Cubes\n- STAC generation for FORCE data cubes produced by the process\n\n\n## Example usage\n\n\n```Python\nimport openeo\nfrom openeo.rest.stac_resource import StacResource\nfrom openeo.internal.graph_building import PGNode\n\n\nconnection = openeo.connect(\"openeo.dataspace.copernicus.eu\").authenticate_oidc()\n\n\n\n# Select a FORCE level2 data cube to process. You must run the `force_level2` process first to create such a cube.\n# See the user guide and example notebook for a full example on how to do this.\nWORKSPACE_URL = \"https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me\"\n\n# merge = <insert the merge path to your data cube here>\nl2_catalog_url = f\"{WORKSPACE_URL}/{merge}/catalog.json\"\n\n# Create the process graph\nprocessing_name = \"FORCE_TSA\"\n\ntsa_stac_resource = openeo.rest.stac_resource.StacResource(\n    graph=openeo.internal.graph_building.PGNode(\n        process_id=\"force_tsa\",\n        arguments={\n            \"stac_url\": l2_catalog_url\n            \"name\": processing_name,\n            \"date_range\": temporal_extent,\n            \"output_stm\": True,\n            # update process parameters\n            \"x_tile_range\": [30, 32],\n            \"y_tile_range\": [30, 30],\n            \"stm\": [\"AVG\", \"MAX\"],\n        },\n    ),\n    connection=connection,\n)\n\n# Run processing\ntsa_job = tsa_stac_resource.create_job(title=processing_name)\ntsa_job.start_and_wait()\n\n# Download results (alternatively: Continue processing without download with Time Series Analysis. Check out the guide!)\n\ntsa_results = tsa_job.get_results()\ntsa_results.download_files(\"force-tsa-results\")\n```\n\n## Documentation\n\n- [FORCE on CDSE using openEO](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/): Main documentation site for the FORCE integration into CDSE openEO. Part of the APEx [toolbox documentation portal](https://esa-apex.github.io/apex_toolbox_documentation/docs/)\n    - [Features and Limitations](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/feature_overview.html)\n    - [User Guide](https://esa-apex.github.io/apex_toolbox_documentation/docs/force/guide/intro.html)\n\n- [FORCE](https://force-eo.readthedocs.io/) Documentation of the FORCE processing engine\n- [Example notebooks](https://github.com/bcdev/apex-force-openeo/tree/main/examples)\n\n",
+  "id": "force_tsa",
+  "parameters": [
+    {
+      "description": "URL pointing to a STAC catalog or item describing a FORCE level 2 data cube that should be used as input for the TSA processing.",
+      "name": "stac_url",
+      "optional": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "Name of the datacube. Example: bologna . Default: cube-<timestamp>",
+      "name": "name",
+      "optional": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "Time extent for the analysis. All data between these dates will be used in the analysis. Format YYYY-MM-DD",
+      "name": "date_range",
+      "optional": false,
+      "schema": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "DOY range for filtering the time extent. Day-of-Years that are outside of the given interval will be ignored. Example: DATE_RANGE = 2010-01-01 2019-12-31, DOY_RANGE = 91 273 will use all April-September observations from 2010-2019. If you want to extend this window over years give DOY min > DOY max. Example: DATE_RANGE = 2010-01-01 2019-12-31, DOY_RANGE = 274 90 will use all October-March observations from 2010-2019. Type: Integer list. Valid values: [1,366]. Default: 1 366",
+      "name": "doy_range",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Analysis extent, given in tile numbers (see tile naming). Each existing tile falling into this square extent will be processed. A shapefile of the tiles can be generated with force-tabulate-grid.",
+      "name": "x_tile_range",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Analysis extent, given in tile numbers (see tile naming). Each existing tile falling into this square extent will be processed. A shapefile of the tiles can be generated with force-tabulate-grid.",
+      "name": "y_tile_range",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Allow-list of tiles. Can be used to further limit the analysis extent to non-square extents. The allow-list is intersected with the analysis extent, i.e. only tiles included in both the analysis extent AND the allow-list will be processed. Default: NULL",
+      "name": "file_tile",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "This parameter is used to define the size of the sub-tile processing units. Most efficient is to use a chunk size that coincides with the tile size. Using smaller chunks may be necessary if you cannot fit all necessary data into RAM. The tilesize must be dividable by the chunk size without remainder. Note that setting the chunk size to 0 as was done with the deprecated BLOCK_SIZE parameter is not permitted anymore.",
+      "name": "chunk_size",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Analysis resolution in metres. The tile (and chunk) size must be dividable by this resolution without remainder, e.g. 30m resolution with 100km tiles is not possible.Default: 20",
+      "name": "resolution",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "How to reduce spatial resolution for cases when the image resolution is higher than the analysis resolution. If FALSE, the resolution is degraded using Nearest Neighbor resampling (fast). If TRUE, an approx. Point Spread Function (Gaussian lowpass with FWHM = analysis resolution) is used to approximate the acquisition of data at lower spatial resolution",
+      "name": "reduce_psf",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "If you have spatially enhanced some Level 2 ARD using the FORCE Level 2 ImproPhe module, this switch specifies whether the data are used at original (False) or enhanced spatial resolution (True). If there are no improphe'd products, this switch doesn't have any effect. Default: False",
+      "name": "use_l2_improphe",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Sensors to be used in the analysis. Multi-sensor analyses are restricted to the overlapping bands. Each sensor needs a sensor definition in the runtime-data directory. New sensors can be added by the user. New bandnames can be added, too.Default: SEN2A, SEN2B, SEN2C",
+      "name": "sensors",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "SEN2A",
+          "SEN2B",
+          "SEN2C"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Target sensor that represents the combination of input sensors. A sensor definition for this target sensor needs to exist to make sure that processing those outputs will be possible. For example, if you combine Landsat 8 and Sentinel-2, the target sensor containing the overlapping bands could be LNDLG. If only using Sentinel-2 sensors, the target sensor could be SEN2L. Valid values are the same as for SENSORS. Default: SEN2L",
+      "name": "target_sensor",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "SEN2A",
+          "SEN2B",
+          "SEN2C",
+          "SEN2L"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Main product type to be used. Usually, this is a reflectance product like BOA. When using composites, you may use BAP. This can be anything, but make sure that the string can uniquely identify your product. As an example, do not use LEVEL2. Note that the product should contain the bands that are to be expected with the sensor used, e.g. 10 bands when sensor is SEN2A. Type: Character. Valid values: {BOA,TOA,IMP,BAP,SIG,...}. Default: BOA",
+      "name": "product_type_main",
+      "optional": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "Quality product type to be used. This should be a bit flag product like QAI. When using composites, you may use INF. This can be anything, but make sure that the product should contain quality bit flags as outputted by FORCE L2PS. As an exception, it is also possible to give NULL if you don't have any quality masks. In this case, FORCE will only be able to filter nodata values, but no other quality flags as defined with SCREEN_QAI. Valid values: {QAI,INF,NULL,...}. Default: QAI",
+      "name": "product_type_quality",
+      "optional": true,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "description": "Perform a spectral adjustment to Sentinel-2? This method can only be used with following sensors: SEN2A, SEN2B, SEN2C, SEN2D,LND04, LND05, LND07,  LND08, LND09, MOD01, MOD02. A material-specific spectral harmonization will be performed, which will convert the  spectral response of any of these sensors to Sentinel-2A. Non-existent bands will be  predicted, too. Default: False",
+      "name": "spectral_adjust",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Type: Character list. Valid values: {NODATA,CLOUD_OPAQUE,CLOUD_BUFFER,CLOUD_CIRRUS,CLOUD_SHADOW,SNOW,WATER,AOD_FILL,AOD_HIGH,AOD_INT,SUBZERO, SATURATION,SUN_LOW,ILLUMIN_NONE,ILLUMIN_POOR,ILLUMIN_LOW,SLOPED,WVP_NONE}. Default: NODATA CLOUD_OPAQUE CLOUD_BUFFER CLOUD_CIRRUS CLOUD_SHADOW SNOW SUBZERO SATURATION",
+      "name": "screen_qai",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Threshold for removing outliers. Triplets of observations are used to determine the overall noise in the time series by computing linearly interpolating between the bracketing observations. The RMSE of the residual between the middle value and the interpolation is the overall noise. Any observations, which have a residual larger than a multiple of the noise are iteratively filtered out (ABOVE_NOISE). Lower/Higher values filter more aggressively/conservatively. Likewise, any masked out observation (as determined by the SCREEN_QAI filter) can be restored if its residual is lower than a multiple of the noise (BELOW_NOISE). Higher/Lower values will restore observations more aggressively/conservative. Give 0 to both parameters to disable the filtering. ABOVE_NOISE = 3, BELOW_NOISE = 1 are parameters that have worked in some settings. Default: 0",
+      "name": "above_noise",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Threshold for removing outliers. Triplets of observations are used to determine the overall noise in the time series by computing linearly interpolating between the bracketing observations. The RMSE of the residual between the middle value and the interpolation is the overall noise. Any observations, which have a residual larger than a multiple of the noise are iteratively filtered out (ABOVE_NOISE). Lower/Higher values filter more aggressively/conservatively. Likewise, any masked out observation (as determined by the SCREEN_QAI filter) can be restored if its residual is lower than a multiple of the noise (BELOW_NOISE). Higher/Lower values will restore observations more aggressively/conservative. Give 0 to both parameters to disable the filtering. ABOVE_NOISE = 3, BELOW_NOISE = 1 are parameters that have worked in some settings. Default: 0",
+      "name": "below_noise",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Any index defined in indices.json can be used, as well as SMA, or any band name present in the SENSORS band combination",
+      "name": "index",
+      "optional": true,
+      "schema": {
+        "items": {
+          "enum": [
+            "B1",
+            "B2",
+            "B3",
+            "B4",
+            "B5",
+            "B6",
+            "B7",
+            "B8",
+            "B8A",
+            "B9",
+            "B10",
+            "B11",
+            "B12",
+            "SMA",
+            "NDVI",
+            "EVI",
+            "NBR",
+            "NDTI",
+            "ARVI",
+            "SAVI",
+            "SARVI",
+            "TC-BRIGHT",
+            "TC-GREEN",
+            "TC-WET",
+            "TC-DI",
+            "NDBI",
+            "NDWI",
+            "MNDWI",
+            "NDMI",
+            "NDSI",
+            "kNDVI",
+            "NDRE1",
+            "NDRE2",
+            "CIre",
+            "NDVIre1",
+            "NDVIre2",
+            "NDVIre3",
+            "NDVIre1n",
+            "NDVIre2n",
+            "NDVIre3n",
+            "MSRre",
+            "MSRren",
+            "CCI",
+            "EVI2",
+            "ContRemSWIR"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Any index defined in indices.json can be used, as well as SMA, or any band name present in the SENSORS band combination. Default: NONE",
+      "name": "standardize_tss",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "NONE",
+          "NORMALIZE",
+          "CENTER"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Output the quality-screened Time Series Stack? This is a layer stack of index values for each date. Default: False",
+      "name": "output_tss",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Interpolation method. You can choose between no, linear, moving average, Radial Basis Function or harmonic Interpolation. Harmonic interpolation can be used as a simple near-real time monitoring component. sensors can be added by the user. New bandnames can be added, too.Default: NONE",
+      "name": "interpolate",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "NONE",
+          "LINEAR",
+          "MOVING",
+          "RBF",
+          "HARMONIC"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Max temporal distance for the moving average filter in days. For each interpolation date, MOVING_MAX days before and after are considered. Default: 16",
+      "name": "moving_max",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Sigma (width of the Gaussian bell) for the RBF filter in days. For each interpolation date, a Gaussian kernel is used to smooth the observations. The smoothing effect is stronger with larger kernels and the chance of having nodata values is lower. Smaller kernels will follow the time series more closely but the chance of having nodata values is larger. Multiple kernels can be combined to take advantage of both small and large kernel sizes. The kernels are weighted according to the data density within each kernel. Default: 8 16 32",
+      "name": "rbf_sigma",
+      "optional": true,
+      "schema": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Cutoff density for the RBF filter. The Gaussian kernels have infinite width, which is computationally slow, and doesn't make much sense as observations that are way too distant (in terms of time) are considered. Thus, the tails of the kernel are cut off. This parameter specifies, which percentage of the area under the Gaussian should be used. Default: 0.95",
+      "name": "rbf_cutoff",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Whether a monotonic trend shall be considered in the harmonic interpolation. Default: True",
+      "name": "harmonic_trend",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Definition of how many modes per season are used for harmonic interpolation, i.e. uni-modal (1), bi-modal (2), or tri-modal (3). Default: 3",
+      "name": "harmonic_modes",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Subset of the time period to which the harmonic should be fitted.For example, if the analysis timeframe is DATE_RANGE = 2015-01-01 2022-06-20,all data from 2015-2022 will be considered. If HARMONIC_FIT_RANGE = 2015-01-01 2017-12-31,the harmonic will only be fitted to the first 3 years of data.",
+      "name": "harmonic_fit_range",
+      "optional": true,
+      "schema": {
+        "item": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Output of the near-real time product? The product will contain the residual between the extrapolated harmonic and the actual data following the defined end of the harmonic fit range. This option requires harmonic interpolation (interpolate) and a forecast period (harmonic_fit_range).",
+      "name": "output_nrt",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "This parameter gives the interpolation step in days. Default: 16",
+      "name": "int_day",
+      "optional": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Standardize the TSI time series with pixel mean and/or standard deviation. Default: NONE",
+      "name": "standardize_tsi",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "NONE",
+          "NORMALIZE",
+          "CENTER"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Output the Time Series Interpolation? This is a layer stack of index values for each interpolated date. Note that interpolation will be performed even if output_tsi = False - unless you specify interpolate = NONE.",
+      "name": "output_tsi",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether to output Spectral Temporal Metrics: Default: False",
+      "name": "output_stm",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Which Spectral Temporal Metrics should be computed? The STM output files will have as many bands as you specify metrics (in the same order). Currently available statistics are the average, standard deviation, minimum, maximum, range, skewness, kurtosis, any quantile from 1-99%, and interquartile range. Note that median is Q50. Default: NONE",
+      "name": "stm",
+      "optional": true,
+      "schema": {
+        "item": {
+          "enum": [
+            "MIN",
+            "Q01",
+            "Q05",
+            "Q10",
+            "Q20",
+            "Q25",
+            "Q30",
+            "Q40",
+            "Q50",
+            "Q60",
+            "Q70",
+            "Q75",
+            "Q80",
+            "Q90",
+            "Q95",
+            "Q99",
+            "MAX",
+            "AVG",
+            "STD",
+            "RNG",
+            "IQR",
+            "SKW",
+            "KRT",
+            "NUM"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Which statistic should be used for folding the time series? This parameter is only evaluated if one of the following outputs in this block is requested. Currently available statistics are the average, standard deviation, mini- mum, maximum, range, skewness, kurtosis, median, 10/25/75/90% quantiles, and interquartile range. Default: AVG",
+      "name": "fold_type",
+      "optional": true,
+      "schema": {
+        "item": {
+          "enum": [
+            "MIN",
+            "Q10",
+            "Q25",
+            "Q50",
+            "Q75",
+            "Q90",
+            "MAX",
+            "AVG",
+            "STD",
+            "RNG",
+            "IQR",
+            "SKW",
+            "KRT",
+            "NUM"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Standardize the FB* time series with pixel mean and/or standard deviation. Default: NONE",
+      "name": "standardize_fold",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "NONE",
+          "NORMALIZE",
+          "CENTER"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Output the Fold-by-Year/Quarter/Month/Week/DOY time series? These are layer stacks of folded index values for each year, quarter, month, week or DOY.",
+      "name": "output_fby",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output the Fold-by-Year/Quarter/Month/Week/DOY time series? These are layer stacks of folded index values for each year, quarter, month, week or DOY.",
+      "name": "output_fbq",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output the Fold-by-Year/Quarter/Month/Week/DOY time series? These are layer stacks of folded index values for each year, quarter, month, week or DOY.",
+      "name": "output_fbm",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output the Fold-by-Year/Quarter/Month/Week/DOY time series? These are layer stacks of folded index values for each year, quarter, month, week or DOY.",
+      "name": "output_fbw",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output the Fold-by-Year/Quarter/Month/Week/DOY time series? These are layer stacks of folded index values for each year, quarter, month, week or DOY.",
+      "name": "output_fbd",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output a linear trend analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this.",
+      "name": "output_try",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output a linear trend analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this.",
+      "name": "output_trq",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output a linear trend analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this.",
+      "name": "output_trm",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output a linear trend analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this.",
+      "name": "output_trw",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output a linear trend analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this.",
+      "name": "output_trd",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output an extended Change, Aftereffect, Trend (CAT) analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below.",
+      "name": "output_cay",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output an extended Change, Aftereffect, Trend (CAT) analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below.",
+      "name": "output_caq",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output an extended Change, Aftereffect, Trend (CAT) analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below.",
+      "name": "output_cam",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output an extended Change, Aftereffect, Trend (CAT) analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below.",
+      "name": "output_caw",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output an extended Change, Aftereffect, Trend (CAT) analysis on any of the folded time series? Note that the OUTPUT_FBX parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below.",
+      "name": "output_cad",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Threshold for detecting a start of season in the cumulative time series.Default: 0.2",
+      "name": "pol_start_threshold",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Threshold for detecting a mid of season in the cumulative time series.Default: 0.5",
+      "name": "pol_mid_threshold",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Threshold for detecting an end of season in the cumulative time series.Default: 0.8",
+      "name": "pol_end_threshold",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "Should the start of each phenological year be adapated? If FALSE, the start is static, i.e. Date of Early Minimum and Date of Late Minimum are the same for all years and 365 days apart. If TRUE, they differ from year to year and a phenological year is not forced to be 365 days long.",
+      "name": "pol_adaptive",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Which Polarmetrics should be computed? There will be a POL output file for each metric (with years as bands). Currently available are the dates of the early minimum, late minimum, peak of season, start of season, mid of season, end of season, early average vector, average vector, late average vector; lengths of the total season, green season, between average vectors; values of the early minimum, late minimum, peak of season, start of season, mid of season, end of season, early average vector, average vector, late average vector, base level, green amplitude, seasonal amplitude, peak amplitude, green season mean , green season variability, dates of start of phenological year, difference between start of phenological year and its longterm average; integrals of the total season, base level, base+total, green season, rising rate, falling rate; rates of average rising, average falling, maximum rising, maximum falling.",
+      "name": "pol",
+      "optional": true,
+      "schema": {
+        "item": {
+          "enum": [
+            "DEM",
+            "DLM",
+            "DPS",
+            "DSS",
+            "DMS",
+            "DES",
+            "DEV",
+            "DAV",
+            "DLV",
+            "LTS",
+            "LGS",
+            "LGV",
+            "VEM",
+            "VLM",
+            "VPS",
+            "VSS",
+            "VMS",
+            "VES",
+            "VEV",
+            "VAV",
+            "VLV",
+            "VBL",
+            "VGA",
+            "VSA",
+            "VPA",
+            "VGM",
+            "VGV",
+            "DPY",
+            "DPV",
+            "IST",
+            "IBL",
+            "IBT",
+            "IGS",
+            "IRR",
+            "IFR",
+            "RAR",
+            "RAF",
+            "RMR",
+            "RMF"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "description": "Standardize the POL time series with pixel mean and/or standard deviation.",
+      "name": "standardize_pol",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "NONE",
+          "NORMALIZE",
+          "CENTER"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Output the polar-transformed time series? These are layer stack of cartesian X- and Y-coordinates for each interpolated date. This results in two files, product IDs are PCX and PCY.",
+      "name": "output_pct",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output the Polarmetrics? These are layer stacks per polarmetric with as many bands as years.",
+      "name": "output_pol",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output a linear trend analysis on the requested Polarmetric time series? Note that the OUTPUT_POL parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below",
+      "name": "output_tro",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Compute and output an extended Change, Aftereffect, Trend (CAT) analysis on the requested Polarmetric time series? Note that the OUTPUT_POL parameters don't need to be TRUE to do this. See also the TREND PARAMETERS block below.",
+      "name": "output_cao",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "This parameter specifies the tail-type used for significance testing of the slope in the trend analysis. A left-, two-, or right-tailed t-test is performed.",
+      "name": "trend_tail",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "LEFT",
+          "TWO",
+          "RIGHT"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "Confidence level for significance testing of the slope in the trend analysis. Default: 0.95",
+      "name": "trend_conf",
+      "optional": true,
+      "schema": {
+        "type": "float"
+      }
+    },
+    {
+      "description": "In the Change, Aftereffect, Trend (CAT) analysis: do you want to put a penalty on non-permanent change for the change detection? This can help to reduce the effect of outliers.",
+      "name": "change_penalty",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Output format, which is either uncompressed flat binary image format aka ENVI Standard, GeoTiff, or COG. GeoTiff images are compressed with ZSTD and horizontal differencing; BigTiff support is enabled; the Tiff is internally tiled with 256x256 px blocks. Metadata are written to the ENVI header or directly into the Tiff to the FORCE domain. If the size of the metadata exceeds the Tiff's limit, an external .aux.xml file is additionally generated. Note that COG output is only possible when the chunk size matches the tile size. Default: GTiff",
+      "name": "output_format",
+      "optional": true,
+      "schema": {
+        "enum": [
+          "GTiff",
+          "COG"
+        ],
+        "type": "string"
+      }
+    },
+    {
+      "description": "controls whether the output is written as multi-band image, or whether the stack will be exploded into single-band files. Default: False",
+      "name": "output_explode",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Controls whether FORCE raises a warning or an error if no read or written bytes are detected. The default (False) will result in a warning. Default: False",
+      "name": "fail_if_empty",
+      "optional": true,
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  ],
+  "returns": {
+    "description": "the data as a FORCE higher level data cube",
+    "schema": {
+      "subtype": "datacube",
+      "type": "object"
+    }
+  },
+  "process_graph": {
+    "force_tsa": {
+      "process_id": "force_tsa",
+      "arguments": {
+        "stac_url": {
+          "from_parameter": "stac_url"
+        },
+        "name": {
+          "from_parameter": "name"
+        },
+        "date_range": {
+          "from_parameter": "date_range"
+        },
+        "doy_range": {
+          "from_parameter": "doy_range"
+        },
+        "x_tile_range": {
+          "from_parameter": "x_tile_range"
+        },
+        "y_tile_range": {
+          "from_parameter": "y_tile_range"
+        },
+        "file_tile": {
+          "from_parameter": "file_tile"
+        },
+        "chunk_size": {
+          "from_parameter": "chunk_size"
+        },
+        "resolution": {
+          "from_parameter": "resolution"
+        },
+        "reduce_psf": {
+          "from_parameter": "reduce_psf"
+        },
+        "use_l2_improphe": {
+          "from_parameter": "use_l2_improphe"
+        },
+        "sensors": {
+          "from_parameter": "sensors"
+        },
+        "target_sensor": {
+          "from_parameter": "target_sensor"
+        },
+        "product_type_main": {
+          "from_parameter": "product_type_main"
+        },
+        "product_type_quality": {
+          "from_parameter": "product_type_quality"
+        },
+        "spectral_adjust": {
+          "from_parameter": "spectral_adjust"
+        },
+        "screen_qai": {
+          "from_parameter": "screen_qai"
+        },
+        "above_noise": {
+          "from_parameter": "above_noise"
+        },
+        "below_noise": {
+          "from_parameter": "below_noise"
+        },
+        "index": {
+          "from_parameter": "index"
+        },
+        "standardize_tss": {
+          "from_parameter": "standardize_tss"
+        },
+        "output_tss": {
+          "from_parameter": "output_tss"
+        },
+        "interpolate": {
+          "from_parameter": "interpolate"
+        },
+        "moving_max": {
+          "from_parameter": "moving_max"
+        },
+        "rbf_sigma": {
+          "from_parameter": "rbf_sigma"
+        },
+        "rbf_cutoff": {
+          "from_parameter": "rbf_cutoff"
+        },
+        "harmonic_trend": {
+          "from_parameter": "harmonic_trend"
+        },
+        "harmonic_modes": {
+          "from_parameter": "harmonic_modes"
+        },
+        "harmonic_fit_range": {
+          "from_parameter": "harmonic_fit_range"
+        },
+        "output_nrt": {
+          "from_parameter": "output_nrt"
+        },
+        "int_day": {
+          "from_parameter": "int_day"
+        },
+        "standardize_tsi": {
+          "from_parameter": "standardize_tsi"
+        },
+        "output_tsi": {
+          "from_parameter": "output_tsi"
+        },
+        "output_stm": {
+          "from_parameter": "output_stm"
+        },
+        "stm": {
+          "from_parameter": "stm"
+        },
+        "fold_type": {
+          "from_parameter": "fold_type"
+        },
+        "standardize_fold": {
+          "from_parameter": "standardize_fold"
+        },
+        "output_fby": {
+          "from_parameter": "output_fby"
+        },
+        "output_fbq": {
+          "from_parameter": "output_fbq"
+        },
+        "output_fbm": {
+          "from_parameter": "output_fbm"
+        },
+        "output_fbw": {
+          "from_parameter": "output_fbw"
+        },
+        "output_fbd": {
+          "from_parameter": "output_fbd"
+        },
+        "output_try": {
+          "from_parameter": "output_try"
+        },
+        "output_trq": {
+          "from_parameter": "output_trq"
+        },
+        "output_trm": {
+          "from_parameter": "output_trm"
+        },
+        "output_trw": {
+          "from_parameter": "output_trw"
+        },
+        "output_trd": {
+          "from_parameter": "output_trd"
+        },
+        "output_cay": {
+          "from_parameter": "output_cay"
+        },
+        "output_caq": {
+          "from_parameter": "output_caq"
+        },
+        "output_cam": {
+          "from_parameter": "output_cam"
+        },
+        "output_caw": {
+          "from_parameter": "output_caw"
+        },
+        "output_cad": {
+          "from_parameter": "output_cad"
+        },
+        "pol_start_threshold": {
+          "from_parameter": "pol_start_threshold"
+        },
+        "pol_mid_threshold": {
+          "from_parameter": "pol_mid_threshold"
+        },
+        "pol_end_threshold": {
+          "from_parameter": "pol_end_threshold"
+        },
+        "pol_adaptive": {
+          "from_parameter": "pol_adaptive"
+        },
+        "pol": {
+          "from_parameter": "pol"
+        },
+        "standardize_pol": {
+          "from_parameter": "standardize_pol"
+        },
+        "output_pct": {
+          "from_parameter": "output_pct"
+        },
+        "output_pol": {
+          "from_parameter": "output_pol"
+        },
+        "output_tro": {
+          "from_parameter": "output_tro"
+        },
+        "output_cao": {
+          "from_parameter": "output_cao"
+        },
+        "trend_tail": {
+          "from_parameter": "trend_tail"
+        },
+        "trend_conf": {
+          "from_parameter": "trend_conf"
+        },
+        "change_penalty": {
+          "from_parameter": "change_penalty"
+        },
+        "output_format": {
+          "from_parameter": "output_format"
+        },
+        "output_explode": {
+          "from_parameter": "output_explode"
+        },
+        "fail_if_empty": {
+          "from_parameter": "fail_if_empty"
+        }
+      },
+      "result": true
+    }
+  }
+}
