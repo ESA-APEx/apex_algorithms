@@ -144,7 +144,9 @@
               "Climate",
               "Soils",
               "Radar",
-              "Methane"
+              "Methane",
+              "Floods", 
+              "Hydrology",
             ]
           },
           "minItems": 1,

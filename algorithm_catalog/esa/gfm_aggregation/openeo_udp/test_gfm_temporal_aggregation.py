@@ -6,7 +6,7 @@ writes a GeoTIFF with the maximum observed flood extent.
 """
 
 import openeo
-from gfm_temporal_aggregation import BACKEND, PROCESS_ID, build_cube
+from algorithm_catalog.esa.gfm_aggregation.openeo_udp.gfm_temporal_aggregation import BACKEND, PROCESS_ID, build_cube
 
 # Pakistan flood 2022, as in https://docs.openeo.cloud/usecases/gfm/
 SPATIAL_EXTENT = {"west": 67.5, "east": 70.0, "south": 24.5, "north": 26.0}
