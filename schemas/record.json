@@ -146,7 +146,7 @@
               "Radar",
               "Methane",
               "Floods", 
-              "Hydrology",
+              "Hydrology"
             ]
           },
           "minItems": 1,
