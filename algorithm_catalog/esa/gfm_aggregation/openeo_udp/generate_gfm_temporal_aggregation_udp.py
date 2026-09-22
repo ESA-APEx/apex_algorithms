@@ -128,14 +128,7 @@ def build_udp(connection) -> dict:
         process_graph=cube,
         process_id=PROCESS_ID,
         summary="Temporal aggregation of Global Flood Monitoring (GFM) products",
-        description=(
-            "Loads Copernicus Emergency Management Service Global Flood Monitoring (GFM) layers "
-            f"from the EODC STAC API ({GFM_STAC_URL}) with `load_stac` and aggregates them over "
-            "the given temporal extent with the selected statistic. Typical uses are the maximum "
-            "observed flood extent (statistic='max'), the flood frequency (statistic='mean') or "
-            "the number of flooded observations (statistic='sum'). Combine the bands "
-            "'ensemble_flood_extent' and 'reference_water_mask' to obtain the observed water extent."
-        ),
+        description=Path(__file__).parent.joinpath("description.md").read_text(),
         parameters=[spatial_extent, temporal_extent, bands, statistic],
         returns={
             "description": "Data cube with the temporal dimension reduced to a single value per band.",
