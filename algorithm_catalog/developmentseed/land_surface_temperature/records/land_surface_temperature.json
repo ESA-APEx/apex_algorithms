@@ -107,7 +107,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/land_surface_temperature/openeo_udp/land_surface_temperature.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/fd3ac36ff53548ce291388e7d8f897ecb01e46da/algorithm_catalog/developmentseed/land_surface_temperature/openeo_udp/land_surface_temperature.json"
     },
     {
       "rel": "code",
@@ -119,7 +119,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=land_surface_temperature&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/land_surface_temperature/openeo_udp/land_surface_temperature.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=land_surface_temperature&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/fd3ac36ff53548ce291388e7d8f897ecb01e46da/algorithm_catalog/developmentseed/land_surface_temperature/openeo_udp/land_surface_temperature.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "service",
@@ -149,13 +149,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Land Surface Temperature (Sentinel-3)",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/land_surface_temperature/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/fd3ac36ff53548ce291388e7d8f897ecb01e46da/algorithm_catalog/developmentseed/land_surface_temperature/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/land_surface_temperature/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/fd3ac36ff53548ce291388e7d8f897ecb01e46da/algorithm_catalog/developmentseed/land_surface_temperature/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
