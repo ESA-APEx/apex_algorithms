@@ -98,7 +98,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b4350d4e2c59d29708d44dc2ab89f3b20877bfa9/algorithm_catalog/developmentseed/ndvi_anomaly_detection/openeo_udp/ndvi_anomaly_detection.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndvi_anomaly_detection/openeo_udp/ndvi_anomaly_detection.json"
     },
     {
       "rel": "code",
@@ -110,13 +110,13 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ndvi_anomaly_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b4350d4e2c59d29708d44dc2ab89f3b20877bfa9/algorithm_catalog/developmentseed/ndvi_anomaly_detection/openeo_udp/ndvi_anomaly_detection.json&server=https://openeo.ds.io/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ndvi_anomaly_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndvi_anomaly_detection/openeo_udp/ndvi_anomaly_detection.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "Development Seed OpenEO Backend",
-      "href": "https://openeo.ds.io/"
+      "title": "Copernicus Data Space - Production API",
+      "href": "https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "notebook",
@@ -140,13 +140,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "NDVI Anomaly Detection",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b4350d4e2c59d29708d44dc2ab89f3b20877bfa9/algorithm_catalog/developmentseed/ndvi_anomaly_detection/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndvi_anomaly_detection/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/b4350d4e2c59d29708d44dc2ab89f3b20877bfa9/algorithm_catalog/developmentseed/ndvi_anomaly_detection/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndvi_anomaly_detection/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
