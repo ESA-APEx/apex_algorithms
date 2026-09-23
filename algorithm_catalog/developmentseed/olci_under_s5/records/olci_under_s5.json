@@ -101,7 +101,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/olci_under_s5/openeo_udp/olci_under_s5.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ed9c3d457da58c4b39b4fb4f37e3f5e0573fa3b6/algorithm_catalog/developmentseed/olci_under_s5/openeo_udp/olci_under_s5.json"
     },
     {
       "rel": "code",
@@ -113,7 +113,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=olci_under_s5&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/olci_under_s5/openeo_udp/olci_under_s5.json&server=https://openeofed.dataspace.copernicus.eu"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=olci_under_s5&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ed9c3d457da58c4b39b4fb4f37e3f5e0573fa3b6/algorithm_catalog/developmentseed/olci_under_s5/openeo_udp/olci_under_s5.json&server=https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "service",
@@ -143,13 +143,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "OLCI True Colour Under Sentinel-5P Products",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/olci_under_s5/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ed9c3d457da58c4b39b4fb4f37e3f5e0573fa3b6/algorithm_catalog/developmentseed/olci_under_s5/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/olci_under_s5/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ed9c3d457da58c4b39b4fb4f37e3f5e0573fa3b6/algorithm_catalog/developmentseed/olci_under_s5/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
