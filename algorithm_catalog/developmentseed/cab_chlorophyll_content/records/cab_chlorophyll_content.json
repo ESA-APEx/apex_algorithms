@@ -93,7 +93,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cab_chlorophyll_content/openeo_udp/cab_chlorophyll_content.json"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/91b1a6d203b1246e0ba4b791a7def5aa2ff92a37/algorithm_catalog/developmentseed/cab_chlorophyll_content/openeo_udp/cab_chlorophyll_content.json"
     },
     {
       "rel": "code",
@@ -105,7 +105,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cab_chlorophyll_content&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cab_chlorophyll_content/openeo_udp/cab_chlorophyll_content.json&server=https://openeo.dataspace.copernicus.eu/"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cab_chlorophyll_content&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/91b1a6d203b1246e0ba4b791a7def5aa2ff92a37/algorithm_catalog/developmentseed/cab_chlorophyll_content/openeo_udp/cab_chlorophyll_content.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
       "rel": "service",
@@ -135,13 +135,13 @@
       "rel": "preview",
       "type": "image/png",
       "title": "Leaf Chlorophyll Content Calculation",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cab_chlorophyll_content/records/preview.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/91b1a6d203b1246e0ba4b791a7def5aa2ff92a37/algorithm_catalog/developmentseed/cab_chlorophyll_content/records/preview.png"
     },
     {
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/cab_chlorophyll_content/records/thumbnail.png"
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/91b1a6d203b1246e0ba4b791a7def5aa2ff92a37/algorithm_catalog/developmentseed/cab_chlorophyll_content/records/thumbnail.png"
     },
     {
       "rel": "cite-as",
