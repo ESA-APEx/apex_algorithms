@@ -40,13 +40,13 @@
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "./images/logo_white.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/609fd11f1212b4caf953161bc22feaf6897722c6/algorithm_catalog/esa/images/logo_white.png"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "./images/logo_deepspace.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/609fd11f1212b4caf953161bc22feaf6897722c6/algorithm_catalog/esa/images/logo_deepspace.png"
         }
     ]
 }
