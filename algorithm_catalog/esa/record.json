@@ -40,13 +40,13 @@
             "rel": "logo-light",
             "type": "image/png",
             "title": "Logo",
-            "href": "../images/logo_white.png"
+            "href": "./images/logo_white.png"
         },
         {
             "rel": "logo-dark",
             "type": "image/png",
             "title": "Logo",
-            "href": "../images/logo_deepspace.png"
+            "href": "./images/logo_deepspace.png"
         }
     ]
 }
