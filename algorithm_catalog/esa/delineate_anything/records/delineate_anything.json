@@ -1,0 +1,169 @@
+{
+  "id": "delineate_anything",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-09-18T00:00:00Z",
+    "updated": "2026-09-18T00:00:00Z",
+    "type": "service",
+    "title": "Delineate Anything v2: Global Foundation Model for Field Boundary Detection",
+    "description": "Delineate Anything v2 is a resolution-agnostic global foundation model for agricultural field boundary detection from satellite imagery (Lavreniuk et al., ECCV 2026, arXiv:2607.19069). Built on a YOLO instance-segmentation backbone and trained on FBIS-73M — a 73-million-instance dataset spanning 61 countries and resolutions from 0.25 m to 10 m — provides an accurate and efficient delineation methodology. This APEx service wraps the openEO workflow published in the Delineate-Anything repository: it composes a Best-Available-Pixel (BAP) Sentinel-2 L2A RGB mosaic over the requested geometry and temporal window, then applies the Delineate Anything v2 ONNX model tile-wise (512 x 512 with overlap) via a Python UDF to return per-field instance labels as a GeoTIFF. The backbone of the model was transfered to the .onnx format, whilst the segmentation head was reimplemented within the UDF.",
+    "keywords": [
+      "Agriculture",
+      "Sentinel-2",
+      "Land Use/Land Cover Classification"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Mykola Lavreniuk",
+        "position": "Principal investigator of Delineate Anything (v1 & v2)",
+        "organization": "Space Research Institute NASU-SSAU",
+        "links": [
+          {
+            "href": "https://scholar.google.com/citations?user=-oFR-RYAAAAJ",
+            "title": "Google Scholar",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/Lavreniuk",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://huggingface.co/MykolaL/DelineateAnything",
+            "title": "Model on Hugging Face",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "European Space Agency",
+        "links": [
+          {
+            "href": "https://www.esa.int",
+            "title": "ESA Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Sentinel-2"
+          },
+          {
+            "id": "Agriculture"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/refs/heads/main/openeo_udp/process_graph/delineate_anything_udp.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/Lavreniuk/Delineate-Anything"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "European Space Agency",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/esa/delineate_anything/images/header.png"
+    },
+    {
+      "rel": "preview",
+      "type": "image/png",
+      "title": "Delineate Anything v2 - example instance segmentation output",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/esa/delineate_anything/images/header.png"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Delineate Anything project page",
+      "href": "https://lavreniuk.github.io/Delineate-Anything/"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Delineate Anything model card (Hugging Face)",
+      "href": "https://huggingface.co/MykolaL/DelineateAnything"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "Delineate Anything v2 (ECCV 2026, arXiv:2607.19069)",
+      "href": "https://arxiv.org/abs/2607.19069"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/html",
+      "title": "Delineate Anything (ECAI 2025, arXiv:2504.02534)",
+      "href": "https://arxiv.org/abs/2504.02534"
+    },
+    {
+      "rel": "related",
+      "type": "text/html",
+      "title": "APEx Delineate Anything Explorer",
+      "href": "https://explorer.delineate-anything.apex.esa.int/"
+    }
+  ]
+}
