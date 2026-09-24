@@ -1,0 +1,52 @@
+{
+  "id": "geoengine",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-07-13T00:00:00Z",
+    "updated": "2026-07-13T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "Geo Engine GmbH",
+    "description": "Geo Engine GmbH develops geospatial services for environmental analytics and sustainability reporting.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [],
+    "themes": [],
+    "license": "other",
+    "acl": {
+      "admin": ["@geoengine.de"]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "Geo Engine",
+      "href": "https://www.geoengine.de/en/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/svg+xml",
+      "title": "Geo Engine Logo",
+      "href": "http://localhost:4321/geoengine-white.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg+xml",
+      "title": "Geo Engine Logo",
+      "href": "http://localhost:4321/geoengine-black.svg"
+    }
+  ]
+}
