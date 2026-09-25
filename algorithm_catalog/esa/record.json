@@ -1,0 +1,61 @@
+{
+    "id": "esa",
+    "type": "Feature",
+    "conformsTo": [
+        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-05-26T00:00:00Z",
+        "updated": "2026-05-26T00:00:00Z",
+        "type": "algorithm_provider",
+        "title": "European Space Agency",
+        "description": "The European Space Agency (ESA) is Europe's gateway to space. ESA contributes Earth observation algorithms and services leveraging satellite imagery for agricultural and environmental monitoring.",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Mykola Lavreniuk",
+                "organization": "European Space Agency",
+                "emails": [],
+                "roles": [
+                    "principal investigator"
+                ]
+            }
+        ],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@esa.int"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "ESA",
+            "href": "https://www.esa.int/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2008/09/esa_logo1/9777051-3-eng-GB/ESA_logo1_pillars.jpg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2008/09/esa_logo1/9777051-3-eng-GB/ESA_logo1_pillars.jpg"
+        }
+    ]
+}

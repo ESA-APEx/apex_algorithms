@@ -1,0 +1,118 @@
+{
+  "id": "delineate_anything",
+  "type": "Feature",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-05-26T00:00:00Z",
+    "updated": "2026-05-26T00:00:00Z",
+    "type": "service",
+    "title": "Delineate Anything",
+    "description": "Resolution-agnostic agricultural field boundary delineation from satellite imagery. The service generates a Best-Available Pixel (BAP) RGB composite from Sentinel-2, runs YOLOv11 instance-segmentation ONNX inference on 512\u00d7512 px tiles, and post-processes the raw masks into individual field instances. Returns three bands: mask_probability (float), binary_mask (0/1), and instances (integer field labels).",
+    "cost_estimate": 0.05,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "Agriculture",
+      "Field Boundary Delineation",
+      "Instance Segmentation",
+      "Sentinel-2",
+      "YOLO"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Mykola Lavreniuk",
+        "organization": "European Space Agency",
+        "links": [
+          {
+            "href": "https://github.com/Lavreniuk/Delineate-Anything",
+            "title": "Delineate-Anything source repository",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "emails": [],
+        "contactInstructions": "Contact via GitHub",
+        "roles": [
+          "principal investigator"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Agriculture"
+          },
+          {
+            "id": "Land Use/Land Cover Classification"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      }
+    ],
+    "license": "AGPL-3.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/1d3241be444f46e8c9fe4e8b8de2b2366d17be3b/openeo_udp/process_graph/delineate_anything_udp.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "Git source repository",
+      "href": "https://github.com/Lavreniuk/Delineate-Anything"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "European Space Agency",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=delineate_anything&wizard~processUrl=https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/1d3241be444f46e8c9fe4e8b8de2b2366d17be3b/openeo_udp/process_graph/delineate_anything_udp.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "title": "Delineate Anything project page",
+      "href": "https://lavreniuk.github.io/Delineate-Anything/"
+    }
+  ]
+}
