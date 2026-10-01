@@ -1,0 +1,133 @@
+{
+    "id": "s2_sam",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-07-13T00:00:00Z",
+        "updated": "2026-08-11T00:00:00Z",
+        "type": "service",
+        "title": "Sentinel-2 based Spectral Angle Mapping (S2-SAM)",
+        "description": "Computes Spectral Angle Mapping (SAM) from a Sentinel-2 L2A BAP composite to identify the closest matching signature from a Sentinel-2-resampled USGS spectral library for geology and mining related targets.",
+        "keywords": [
+            "Geology",
+            "Mining",
+            "Mineral Mapping",
+            "Sentinel-2",
+            "Spectral Angle Mapping (SAM)",
+            "Remote Sensing"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Christoph Becker",
+                "position": "Researcher",
+                "organization": "VITO",
+                "links": [
+                    {
+                        "href": "https://www.vito.be/",
+                        "title": "VITO Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "contactInstructions": "Contact via VITO",
+                "roles": [
+                    "principal investigator"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "GEOLOGY"
+                    },
+                    {
+                        "id": "MINING"
+                    },
+                    {
+                        "id": "REMOTE SENSING"
+                    },
+                    {
+                        "id": "Sentinel-2 MSI"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "NetCDF"
+            }
+        ],
+        "license": "Proprietary",
+        "version": "1.0.0",
+        "publisher": {
+            "name": "TERRAVISION"
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json"
+        },
+        {
+            "rel": "code",
+            "type": "text/html",
+            "title": "S2-SAM source code",
+            "href": "https://github.com/ESA-APEx/apex_algorithms"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO Federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO Federation processing backend",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "TERRAVISION",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "notebook",
+            "type": "application/x-ipynb+json",
+            "title": "S2-SAM example notebook",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/dc4fe8715fc01539896db75f751278fe6189a59d/algorithm_catalog/terravision/s2_sam/notebook/s2_sam.ipynb"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=s2_sam&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c0f8d549a866737a3c276f9838fa0a019e7975be/algorithm_catalog/terravision/s2_sam/openeo_udp/s2_sam.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/dc4fe8715fc01539896db75f751278fe6189a59d/algorithm_catalog/terravision/s2_sam/records/thumbnail.png"
+        }
+    ]
+}
