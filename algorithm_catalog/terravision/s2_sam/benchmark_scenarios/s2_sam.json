@@ -73,10 +73,6 @@
                 "process_id": "save_result",
                 "result": true
             }
-        },
-        "reference_data": {
-            "job-results.json": "https://artifactory.vgt.vito.be/artifactory/auxdata-public/marketplace/cdse/job-results.json",
-            "openEO_2024-04-01Z.tif": "https://artifactory.vgt.vito.be/artifactory/auxdata-public/marketplace/cdse/openEO_2024-04-01Z.tif"
         }
     }
 ]
