@@ -118,6 +118,12 @@
             "type": "image/png",
             "title": "Thumbnail image",
             "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/records/thumbnail.png"
+        },
+        {
+            "rel": "example-output",
+            "type": "application/x-netcdf",
+            "title": "NDDI example output",
+            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP239!tests_test_benchmarks.py__test_run_benchmark_nddi_!actual/openEO.nc"
         }
     ]
 }
