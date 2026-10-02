@@ -25,9 +25,11 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
     # TODO: check for uniqueness of scenario IDs? Also make this a pre-commit lint tool?
     scenarios = []
     # old style glob is used to support symlinks
-    for path in glob.glob(
-        str((root or get_project_root()) / "algorithm_catalog") + "/**/*benchmark_scenarios*/*.json",
-        recursive=True,
+    for path in sorted(
+        glob.glob(
+            str((root or get_project_root()) / "algorithm_catalog") + "/**/*benchmark_scenarios*/*.json",
+            recursive=True,
+        )
     ):
         scenarios.extend(read_scenarios_file(path))
     return scenarios

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import openeo
 import pytest
-import requests
+from openeo.utils.http import session_with_retries
 
 _log = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ def get_openeo_backend(scenario, request):
 
 
 def create_openeo_connection(*, backend: str, origin: str | None = None) -> openeo.Connection:
-    session = requests.Session()
+    session = session_with_retries()
     session.params["_origin"] = origin
 
     _log.info(f"Connecting to {backend!r}")

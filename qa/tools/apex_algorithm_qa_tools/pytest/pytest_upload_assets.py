@@ -116,7 +116,7 @@ class S3UploadPlugin:
 
     def pytest_runtest_logreport(self, report: pytest.TestReport):
         # TODO #22: option to upload on other outcome as well?
-        if report.when == "call" and report.outcome == "failed":
+        if report.when == "call" and report.outcome == "failed" and self.collected_assets:
             self._upload_collected_assets(nodeid=report.nodeid, report=report)
 
         # Merge stats

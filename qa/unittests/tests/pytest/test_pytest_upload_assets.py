@@ -143,3 +143,45 @@ def test_upload_on_fail_xdist(
             r"\s+-\s+'hello.txt' uploaded to 'http://.*?/test-bucket-\w+/test-run-123!test_file_maker.py__test_fail_and_upload!hello.txt'",
         ]
     )
+
+
+def test_upload_on_fail_xdist_interleaved(
+    pytester: pytest.Pytester, moto_server, s3_client, s3_bucket, monkeypatch
+):
+    pytester.makeconftest(
+        """
+        pytest_plugins = [
+            "apex_algorithm_qa_tools.pytest.pytest_upload_assets",
+        ]
+        """
+    )
+    pytester.makepyfile(
+        test_file_maker="""
+            import pytest
+
+
+            @pytest.mark.parametrize("index", range(6))
+            def test_fail_and_upload(upload_assets_on_fail, tmp_path, index):
+                path = tmp_path / f"{index}.txt"
+                path.write_text("Hello world.")
+                upload_assets_on_fail(path)
+                assert 3 == 5
+        """
+    )
+
+    monkeypatch.setenv("APEX_ALGORITHMS_S3_ENDPOINT_URL", moto_server)
+    monkeypatch.setenv("APEX_ALGORITHMS_RUN_ID", "test-run-123")
+
+    run_result = pytester.runpytest_subprocess(
+        f"--upload-assets-s3-bucket={s3_bucket}",
+        "--numprocesses=3",
+    )
+    run_result.assert_outcomes(failed=6)
+    assert "INTERNALERROR" not in run_result.stdout.str()
+
+    object_listing = s3_client.list_objects(Bucket=s3_bucket)
+    assert len(object_listing["Contents"]) == 6
+    assert sorted(obj["Key"] for obj in object_listing["Contents"]) == [
+        f"test-run-123!test_file_maker.py__test_fail_and_upload_{index}_!{index}.txt"
+        for index in range(6)
+    ]
