@@ -242,7 +242,9 @@
     "udf-dependency-archives": [
       "https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps",
       "https://s3.waw3-1.cloudferro.com/swift/v1/amazonas/ml_models/amazonas_ai_cnn.zip#onnx_models"
-    ]
+    ],
+    "driver-memoryOverhead": "3g",
+    "executor-memoryOverhead": "4g"
   },
   "parameters": [
     {
