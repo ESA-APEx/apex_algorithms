@@ -75,7 +75,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/refs/heads/openeo_indices/src/main/python/utils/openeo_udp/nddi.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json"
         },
         {
             "rel": "code",
@@ -105,25 +105,19 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "NDDI example notebook",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4641a97855d00dbe243acf4a4fe8cfd8d8c984e0/algorithm_catalog/terravision/nddi/notebooks/nddi.ipynb"
-        },
-        {
-            "rel": "example-output",
-            "type": "application/x-netcdf",
-            "title": "NDDI example output",
-            "href": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP96!tests_test_benchmarks.py__test_run_benchmark_bsi_!actual/openEO.nc"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/notebooks/nddi.ipynb"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=NDDI&wizard%7EprocessUrl=https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/refs/heads/openeo_indices/src/main/python/utils/openeo_udp/nddi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=NDDI&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
         },
         {
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/7f1bc73312dbd291cf971a557dfe7f234af573fd/algorithm_catalog/terravision/nddi/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/records/thumbnail.png"
         }
     ]
 }

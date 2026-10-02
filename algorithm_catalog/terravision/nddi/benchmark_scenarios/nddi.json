@@ -18,7 +18,7 @@
                         "2025-05-31"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/5a816006b2948d2bcbc403c6bcdeb6792086082f/src/main/python/utils/openeo_udp/bsi.json",
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json",
                 "process_id": "NDDI"
             },
             "saveresult1": {
