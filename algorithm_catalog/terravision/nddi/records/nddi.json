@@ -75,7 +75,7 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3bcf371aec9c0b2b9996bc9c3dde2b6741939be/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json"
         },
         {
             "rel": "code",
@@ -105,19 +105,19 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "NDDI example notebook",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/notebooks/nddi.ipynb"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3bcf371aec9c0b2b9996bc9c3dde2b6741939be/algorithm_catalog/terravision/nddi/notebooks/nddi.ipynb"
         },
         {
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=nddi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=nddi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3bcf371aec9c0b2b9996bc9c3dde2b6741939be/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
         },
         {
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3bcf371aec9c0b2b9996bc9c3dde2b6741939be/algorithm_catalog/terravision/nddi/records/thumbnail.png"
         },
         {
             "rel": "example-output",
