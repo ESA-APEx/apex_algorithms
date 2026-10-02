@@ -13,7 +13,6 @@
         "title": "Normalized Difference Dust Index (NDDI)",
         "description": "Estimates the Normalized Difference Dust Index (NDDI) from Sentinel-2 satellite imagery.",
         "keywords": [
-            "Natural Hazards",
             "Sentinel-2",
             "Data Analysis and Visualization"
         ],
@@ -49,9 +48,6 @@
         "themes": [
             {
                 "concepts": [
-                    {
-                        "id": "DUST"
-                    },
                     {
                         "id": "REMOTE SENSING"
                     },
@@ -117,7 +113,7 @@
             "rel": "thumbnail",
             "type": "image/png",
             "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3bcf371aec9c0b2b9996bc9c3dde2b6741939be/algorithm_catalog/terravision/nddi/records/thumbnail.png"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/3a16d2e288a4bceac601a617118e0ba3f6dabb78/algorithm_catalog/terravision/nddi/records/thumbnail.png"
         },
         {
             "rel": "example-output",
