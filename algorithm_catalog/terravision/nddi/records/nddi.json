@@ -13,7 +13,7 @@
         "title": "Normalized Difference Dust Index (NDDI)",
         "description": "Estimates the Normalized Difference Dust Index (NDDI) from Sentinel-2 satellite imagery.",
         "keywords": [
-            "Dust",
+            "Natural Hazards",
             "Sentinel-2",
             "Data Analysis and Visualization"
         ],
@@ -111,7 +111,7 @@
             "rel": "webapp",
             "type": "text/html",
             "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=NDDI&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=nddi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
         },
         {
             "rel": "thumbnail",

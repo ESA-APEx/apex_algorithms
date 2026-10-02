@@ -19,7 +19,7 @@
                     ]
                 },
                 "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/64eac11fde74e02089695c2bf4f3d4e4c67a1372/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json",
-                "process_id": "NDDI"
+                "process_id": "nddi"
             },
             "saveresult1": {
                 "arguments": {
