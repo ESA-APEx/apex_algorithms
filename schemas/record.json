@@ -490,7 +490,8 @@
               "code",
               "thumbnail",
               "cite-as",
-              "notebook"
+              "notebook",
+              "related"
             ]
           },
           "type": {
