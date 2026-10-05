@@ -127,13 +127,13 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/esa/delineate_anything/images/header.png"
+      "href": "../images/header.png"
     },
     {
       "rel": "preview",
       "type": "image/png",
       "title": "Delineate Anything v2 - example instance segmentation output",
-      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/esa/delineate_anything/images/header.png"
+      "href": "../images/header.png"
     },
     {
       "rel": "about",
@@ -164,6 +164,12 @@
       "type": "text/html",
       "title": "APEx Delineate Anything Explorer",
       "href": "https://explorer.delineate-anything.apex.esa.int/"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=delineate_anything&wizard~processUrl=https://raw.githubusercontent.com/Lavreniuk/Delineate-Anything/refs/heads/main/openeo_udp/process_graph/delineate_anything_udp.json&server=https://openeofed.dataspace.copernicus.eu"
     }
   ]
 }
