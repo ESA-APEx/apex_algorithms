@@ -97,7 +97,7 @@
       "rel": "code",
       "type": "text/html",
       "title": "Git source repository",
-      "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/ParcelDelineation/"
+      "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/40_machine-learning/parcel-delineation"
     },
     {
       "rel": "service",
@@ -145,7 +145,7 @@
       "rel": "notebook",
       "type": "application/x-ipynb+json",
       "title": "Parcel Delineation",
-      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/Parcel%20delineation.ipynb"
+      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/40_machine-learning/parcel-delineation/parcel-delineation.ipynb"
     }
   ]
 }
