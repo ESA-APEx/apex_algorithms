@@ -1,0 +1,103 @@
+{
+    "id": "gfm_temporal_aggregation",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+        "https://apex.esa.int/core/openeo-udp"
+    ],
+    "geometry": null,
+    "properties": {
+        "created": "2026-09-22T09:00:00Z",
+        "updated": "2026-09-22T09:00:00Z",
+        "type": "service",
+        "title": "GFM Temporal Aggregation",
+        "description": "Aggregates Copernicus Global Flood Monitoring (GFM) layers over a selected area and time period using temporal statistics such as maximum, mean, sum, median, minimum, or count. It supports rapid flood-event summaries, including maximum observed flood extent, flood frequency, and counts of flooded or valid observations.",
+        "keywords": [
+            "Floods",
+            "Hydrology",
+            "Statistics"
+        ],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "APEx",
+                "email": "apex@esa.int",
+                "links": [
+                    {
+                        "href": "https://apex.esa.int/",
+                        "title": "APEx Website",
+                        "rel": "about",
+                        "type": "text/html"
+                    }
+                ],
+                "roles": [
+                    "prime investigator"
+                ]
+            }
+        ],
+        "themes": [
+            {
+                "concepts": [
+                    {
+                        "id": "Flooding"
+                    }
+                ],
+                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+            }
+        ],
+        "formats": [
+            {
+                "name": "GeoTiff"
+            }
+        ],
+        "license": "other"
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "application",
+            "type": "application/vnd.openeo+json;type=process",
+            "title": "openEO Process Definition",
+            "href": "../openeo_udp/gfm_temporal_aggregation.json"
+        },
+        {
+            "rel": "service",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "platform",
+            "type": "application/json",
+            "title": "CDSE openEO federation",
+            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+        },
+        {
+            "rel": "provider",
+            "type": "application/json",
+            "title": "APEx",
+            "href": "../../record.json"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=gfm_temporal_aggregation&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/esa/gfm_temporal_aggregation/openeo_udp/gfm_temporal_aggregation.json&server=https://openeofed.dataspace.copernicus.eu"
+        },
+        {
+            "rel": "thumbnail",
+            "type": "image/png",
+            "title": "Thumbnail image",
+            "href": "./thumbnail.png"
+        }
+    ]
+}
