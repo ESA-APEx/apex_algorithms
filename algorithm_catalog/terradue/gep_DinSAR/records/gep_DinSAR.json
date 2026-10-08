@@ -118,7 +118,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/s1-insar.0.4.11.cwl"
+      "href": "oci://cr.terradue.com/eo-services/app-packages/s1-slc-insar:1.3.2"
     },
     {
       "rel": "webapp",
