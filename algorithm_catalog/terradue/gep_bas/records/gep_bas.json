@@ -119,7 +119,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/burned-area-severity-one-shot.0.1.1.cwl"
+      "href": "oci://cr.terradue.com/eo-services/app-packages/burned-area-severity:3.0.1"
     },
     {
       "rel": "webapp",
