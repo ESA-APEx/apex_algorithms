@@ -117,7 +117,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/opensartoolkit-1_0_24.cwl"
+      "href": "oci://cr.terradue.com/app-packages/terradue/opensartoolkit:2.2.1"
     },
     {
       "rel": "webapp",
