@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 from pathlib import Path
@@ -39,6 +40,9 @@ def test_run_benchmark(
     upload_assets_on_fail,
     request,
 ):
+    os.environ["AWS_REQUEST_CHECKSUM_CALCULATION"] = "WHEN_REQUIRED"
+    os.environ["AWS_RESPONSE_CHECKSUM_VALIDATION"] = "WHEN_REQUIRED"
+
     track_metric("scenario_id", scenario.id)
     track_metric("scenario_type", scenario.type)
 
