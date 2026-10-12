@@ -129,6 +129,15 @@ class GithubApi:
             expected_status=201,
         )
 
+    def close_issue(self, issue_number: int) -> dict:
+        """Close an existing issue."""
+        return self.request(
+            method="PATCH",
+            path=f"/issues/{issue_number}",
+            data={"state": "closed"},
+            expected_status=200,
+        )
+
 
 class GithubContext:
     def __init__(
@@ -697,7 +706,7 @@ class GithubIssueHandler:
                     body=scenario_run_info.build_issue_body(),
                     labels=scenario_run_info.issue_labels(),
                 )
-            elif existing_issues:
+            elif failing_test and existing_issues:
                 for issue in existing_issues:
                     issue_number = issue["number"]
                     logger.info(
@@ -707,6 +716,13 @@ class GithubIssueHandler:
                         issue_number=issue_number,
                         body=scenario_run_info.build_comment_body(),
                     )
+            elif existing_issues:
+                for issue in existing_issues:
+                    issue_number = issue["number"]
+                    logger.info(
+                        f"Closing resolved issue #{issue_number} for passing scenario {scenario_id!r}"
+                    )
+                    self.github_api.close_issue(issue_number=issue_number)
             else:
                 logger.info(f"Nothing to do for {scenario_id=}")
 

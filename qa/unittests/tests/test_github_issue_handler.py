@@ -7,6 +7,7 @@ from apex_algorithm_qa_tools.github_issue_handler import (
     BENCHMARK_PHASE_LABEL_PREFIX,
     GithubApi,
     GithubContext,
+    GithubIssueHandler,
     PytestReportParser,
     ScenarioRunInfo,
     TerminalReportSection,
@@ -97,6 +98,21 @@ class TestGithubApi:
             issue_number=123, body="This is a test comment."
         )
         assert comment == {"id": 456, "body": "This is a test comment."}
+
+    def test_close_issue(self, requests_mock):
+        def handle_close_issue(request, context):
+            assert request.headers["Authorization"] == "Bearer t0k9n!"
+            assert request.method == "PATCH"
+            assert request.json() == {"state": "closed"}
+            return {"number": 123, "state": "closed"}
+
+        requests_mock.patch(
+            "https://api.github.com/repos/esa/apex/issues/123",
+            json=handle_close_issue,
+        )
+        api = GithubApi(repository="esa/apex", token="t0k9n!")
+        issue = api.close_issue(issue_number=123)
+        assert issue == {"number": 123, "state": "closed"}
 
 
 @pytest.fixture
@@ -514,3 +530,61 @@ class TestScenarioRunInfo:
             **Failure in test phase**: compare
             """
         )
+
+
+def test_github_issue_handler_closes_existing_issue_on_pass(monkeypatch):
+    class DummyApi:
+        def __init__(self):
+            self.closed = []
+
+        def list_issues(self, labels):
+            assert labels == [BENCHMARK_LABEL]
+            return [{"number": 42, "title": "Benchmark: s1"}]
+
+        def close_issue(self, issue_number):
+            self.closed.append(issue_number)
+
+        def create_issue(self, **kwargs):
+            raise AssertionError("create_issue should not be called")
+
+        def create_issue_comment(self, **kwargs):
+            raise AssertionError("create_issue_comment should not be called")
+
+    class DummyParser:
+        def parse_metrics_json(self, path):
+            return [{"scenario_id": "s1", "nodeid": "mod::test_s1", "outcome": "passed"}]
+
+        def extract_failure_logs(self, path):
+            return {}
+
+    class DummyScenario:
+        id = "s1"
+        backend = "openeo.test"
+        process_graph = {}
+        source = None
+
+    monkeypatch.setattr(
+        "apex_algorithm_qa_tools.github_issue_handler.PytestReportParser",
+        lambda: DummyParser(),
+    )
+
+    handler = GithubIssueHandler.__new__(GithubIssueHandler)
+    handler.github_context = GithubContext()
+    handler.github_api = DummyApi()
+    handler.central_label = BENCHMARK_LABEL
+    handler._benchmark_scenarios = [DummyScenario()]
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "github_issue_handler.py",
+            "--terminal-report",
+            "dummy_terminal.txt",
+            "--metrics-json",
+            "dummy_metrics.json",
+        ],
+    )
+
+    handler.main()
+
+    assert handler.github_api.closed == [42]
