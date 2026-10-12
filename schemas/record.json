@@ -143,7 +143,13 @@
               "Land Surface Temperature",
               "Climate",
               "Soils",
-              "Radar"
+              "Radar",
+              "Methane",
+              "Floods", 
+              "Hydrology",
+              "Geology",
+              "Mining/Drilling Site",
+              "Mineral Resources"
             ]
           },
           "minItems": 1,
@@ -484,7 +490,8 @@
               "code",
               "thumbnail",
               "cite-as",
-              "notebook"
+              "notebook",
+              "related"
             ]
           },
           "type": {

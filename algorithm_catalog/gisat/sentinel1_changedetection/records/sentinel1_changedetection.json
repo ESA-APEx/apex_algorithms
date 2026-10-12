@@ -8,11 +8,11 @@
   "geometry": null,
   "properties": {
     "created": "2025-09-09T00:00:00Z",
-    "updated": "2026-02-01T00:00:00Z",
+    "updated": "2026-10-02T00:00:00Z",
     "type": "service",
     "title": "Change detection using Sentinel-1 data",
     "description": "For a given geometry or set of geometries, detects changes in land cover using Sentinel-1 data. This algorithm implements a scalable workflow for Sentinel-1 SAR time-series change detection, based on the StatCubes design used in the Sentinel-1 for Science Amazonas project. It computes multi-temporal statistical descriptors on harmonised C-band backscatter series and applies robust change-detection logic to identify potential forest-disturbance events across large spatial domains.",
-    "cost_estimate": 0.01,
+    "cost_estimate": 0.025,
     "cost_unit": "platform credits per km²",
     "keywords": [
       "Change Detection Services",
