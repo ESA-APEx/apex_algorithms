@@ -95,6 +95,7 @@ def download_file(href: str, target: Path, user_token: str | None = None):
                     with target.open("wb") as fh:
                         for chunk in response.iter_content(chunk_size=1024 * 64):
                             fh.write(chunk)
+                    break
             except:
                 if response.status_code in [501, 502, 503, 504]:
                     time.sleep(10)
@@ -125,8 +126,9 @@ def download_headers(href: str, target: Path, user_token: str | None = None):
                             continue
                         with target.open("w") as fh:
                             fh.write(json.dumps({k.lower(): v for k, v in response.headers.items()}, indent=2))
+                        break
             except:
-                if response.status_code in [501, 502, 503]:
+                if response.status_code in [501, 502, 503, 504]:
                     time.sleep(10)
                 else:
                     raise
