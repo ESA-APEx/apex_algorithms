@@ -12,6 +12,9 @@ on:
 jobs:
   benchmarks:
     runs-on: ubuntu-latest
+    env:
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
     permissions:
       contents: read
       issues: write
