@@ -40,9 +40,6 @@ def test_run_benchmark(
     upload_assets_on_fail,
     request,
 ):
-    os.environ["AWS_REQUEST_CHECKSUM_CALCULATION"] = "WHEN_REQUIRED"
-    os.environ["AWS_RESPONSE_CHECKSUM_VALIDATION"] = "WHEN_REQUIRED"
-
     track_metric("scenario_id", scenario.id)
     track_metric("scenario_type", scenario.type)
 
@@ -101,13 +98,11 @@ def test_run_benchmark(
     artifacts = None
 
     with track_phase(phase="create-job"):
-        #runner.create_job()
-        pass
+        runner.create_job()
 
     with track_phase(phase="run-job"):
-        #max_minutes = request.config.getoption("--maximum-job-time-in-minutes")
-        #runner.run_job(max_minutes=max_minutes)
-        runner._job_id = "burned-area-severity-v3-0-4-87gsr"
+        max_minutes = request.config.getoption("--maximum-job-time-in-minutes")
+        runner.run_job(max_minutes=max_minutes)
 
     with track_phase(phase="collect-metadata"):
         artifacts = runner.collect_artifacts()
