@@ -70,7 +70,6 @@ def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path, he
         title=f"Downloading reference data for {scenario.id=} to {reference_dir=}",
         logger=_log.info,
     ):
-        headers["Authorization"] = headers["Authorization"].replace("a", "b")
         for path, source in scenario.reference_data.items():
             path = reference_dir / path
             if not path.is_relative_to(reference_dir):
@@ -94,7 +93,6 @@ def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path, he
                             response.raise_for_status()
                             with path.open("wb") as f:
                                 for chunk in response.iter_content(chunk_size=128):
-                                    _log.error(chunk)
                                     f.write(chunk)
                             break
                         except:
