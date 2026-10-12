@@ -58,14 +58,11 @@ class BenchmarkRunner(ABC):
     def download_actual(self, *, actual_dir: Path) -> list[Path]:
         pass
 
-    @abstractmethod
     def download_reference(self, scenario: BenchmarkScenario, reference_dir: Path) -> Path:
-        return self.download_reference(scenario, reference_dir)
+        return download_reference_data(scenario, reference_dir)
 
-    @abstractmethod
-    def can_check_job_results_validity(self):
+    def can_check_job_results_validity(self) -> bool:
         return False
 
-    @abstractmethod
     def assert_job_results_validity(self, reference_dir: Path, actual_dir: Path):
-        pass
+        raise NotImplementedError("This runner does not support custom result validation.")

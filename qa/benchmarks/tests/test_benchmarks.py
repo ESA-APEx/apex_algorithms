@@ -6,7 +6,6 @@ from pathlib import Path
 import pytest
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
-    download_reference_data,
     get_benchmark_scenarios,
 )
 from openeo.testing.results import assert_job_results_allclose
@@ -170,7 +169,7 @@ def test_run_benchmark(
     with track_phase(phase="compare", describe_exception=analyse_results_comparison_exception):
         # Compare actual results with reference data
         try:
-            if runner.can_check_job_results_validity:
+            if runner.can_check_job_results_validity():
                 runner.assert_job_results_validity(reference_dir, actual_dir)
             else:
                 assert_job_results_allclose(
