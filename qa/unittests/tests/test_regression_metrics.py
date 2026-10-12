@@ -26,6 +26,14 @@ def test_compute_threshold_stats_respects_min_margin_floor():
     assert stats["lower_limit"] == 8.0
 
 
+def test_compute_threshold_stats_uses_less_sensitive_default_sigma_multiplier():
+    stats = _compute_threshold_stats([10.0, 11.0, 12.0])
+
+    assert stats["k"] == 5.0
+    assert stats["upper_limit"] == 18.413
+    assert stats["lower_limit"] == 3.587
+
+
 def test_compute_baselines_skips_nan_and_limits_sample_window():
     historical_values = [
         {"costs": 1.0},
@@ -52,14 +60,14 @@ def test_check_reference_performance_can_do_upper():
     assert violations == ["[s1] regression in 'costs': actual=12.0 exceeds upper_limit=10.0"]
 
 
-def test_check_reference_performance_reports_below_lower_limit_when_present():
+def test_check_reference_performance_ignores_values_below_lower_limit():
     violations = _check_reference_performance(
         scenario_id="s1",
         reference_performance={"costs": {"lower_limit": 5.0, "upper_limit": 10.0}},
         tracked_metrics={"costs": 4.0},
     )
 
-    assert violations == ["[s1] regression in 'costs': actual=4.0 below lower_limit=5.0"]
+    assert violations == []
 
 
 def test_check_reference_performance_no_violations_within_band():
