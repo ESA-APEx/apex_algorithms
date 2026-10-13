@@ -117,7 +117,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "oci://ghcr.io/terradue/eoap-open-sar-toolkit/open-sar-toolkit:latest-dev"
+      "href": "oci://cr.terradue.com/app-packages/terradue/opensartoolkit:2.2.1"
     },
     {
       "rel": "webapp",

@@ -14,11 +14,9 @@
         "description": "Computes Spectral Angle Mapping (SAM) from a Sentinel-2 L2A BAP composite to identify the closest matching signature from a Sentinel-2-resampled USGS spectral library for geology and mining related targets.",
         "keywords": [
             "Geology",
-            "Mining",
-            "Mineral Mapping",
-            "Sentinel-2",
-            "Spectral Angle Mapping (SAM)",
-            "Remote Sensing"
+            "Mining/Drilling Site",
+            "Mineral Resources",
+            "Sentinel-2"
         ],
         "language": {
             "code": "en-US",
