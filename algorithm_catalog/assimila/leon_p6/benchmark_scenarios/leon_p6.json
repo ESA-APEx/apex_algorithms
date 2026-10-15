@@ -1,0 +1,32 @@
+[
+  {
+    "id": "leon_p6",
+    "type": "openeo",
+    "description": "Run the LEON-P6 forest-loss KPI workflow for a small area in Uganda.",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "leon_p6": {
+        "arguments": {
+          "spatial_extent": {
+            "west": 30.944,
+            "south": 1.273,
+            "east": 31.044,
+            "north": 1.373
+          }
+        },
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/LEON-P6/algorithm_catalog/assimila/leon_p6/openeo_udp/leon_p6.json",
+        "process_id": "leon_p6"
+      },
+      "save_result": {
+        "arguments": {
+          "data": {
+            "from_node": "leon_p6"
+          },
+          "format": "Parquet"
+        },
+        "process_id": "save_result",
+        "result": true
+      }
+    }
+  }
+]
