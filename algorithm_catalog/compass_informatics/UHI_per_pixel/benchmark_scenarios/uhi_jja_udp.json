@@ -18,6 +18,8 @@
       }
     },
     "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/96-cdse!tests_test_benchmarks.py__test_run_benchmark_UHI_per_pixel_!actual/job-results.json",
+      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/96-cdse!tests_test_benchmarks.py__test_run_benchmark_UHI_per_pixel_!actual/openEO.tif"
     },
     "reference_options": {
     }
