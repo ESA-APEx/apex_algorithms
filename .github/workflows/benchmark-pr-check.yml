@@ -35,7 +35,7 @@ jobs:
 
       - name: Run benchmark e2e
         env:
-          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE }}
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
         run: |
           pytest  \
             -vv \

@@ -23,6 +23,8 @@ def create_s3_filesystem() -> pyarrow.fs.S3FileSystem:
         or os.environ.get("AWS_SECRET_ACCESS_KEY"),
         endpoint_override=os.environ.get("APEX_ALGORITHMS_S3_ENDPOINT_URL")
         or os.environ.get("AWS_ENDPOINT_URL"),
+        region=os.environ.get("APEX_ALGORITHMS_S3_DEFAULT_REGION")
+        or os.environ.get("AWS_DEFAULT_REGION"),
     )
 
 
