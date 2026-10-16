@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -103,6 +104,9 @@ class Algorithm:
     service_links: List[ServiceLink] = None
     license: Optional[str] = None
     organization: Optional[str] = None
+    provider: Optional[str] = None
+    platforms: List[str] = dataclasses.field(default_factory=list)
+    keywords: List[str] = dataclasses.field(default_factory=list)
     # TODO more fields
 
     @classmethod
@@ -128,7 +132,13 @@ class Algorithm:
             raise InvalidMetadataError(f"Expected an APEX algorithm object, but got type {properties.get('type')!r}.")
 
         links = data.get("links", [])
-        udp_links = [UdpLink.from_link_object(link) for link in links if link.get("rel") == LINK_REL.UDP]
+        udp_links = [
+            UdpLink.from_link_object(link)
+            for link in links
+            if link.get("rel") == LINK_REL.UDP
+            and link.get("type", "application/vnd.openeo+json;type=process")
+            == "application/vnd.openeo+json;type=process"
+        ]
         if len(udp_links) > 1:
             raise InvalidMetadataError("Multiple UDP links found")
         # TODO: is having a UDP link a requirement? => No, it can also be an application package
@@ -152,6 +162,11 @@ class Algorithm:
             service_links=service_links,
             license=service_license,
             organization=pi_org,
+            provider=next(
+                (link["title"] for link in links if link.get("rel") == "provider" and link.get("title")), None
+            ),
+            platforms=[link["title"] for link in links if link.get("rel") == "platform" and link.get("title")],
+            keywords=properties.get("keywords") or [],
         )
 
 
@@ -159,8 +174,6 @@ class GithubAlgorithmRepository:
     """
     GitHub based algorithm repository.
     """
-
-    # TODO: caching
 
     def __init__(self, owner: str, repo: str, folder: str = "", branch: str = "main"):
         self.owner = owner
@@ -170,6 +183,7 @@ class GithubAlgorithmRepository:
         self._session = requests.Session()
         self._organizations = list(self._list_organizations())
         self._algorithms: Optional[dict] = None
+        self._record_cache: dict[str, Algorithm] = {}
 
 
     def _list_organizations(self):
@@ -203,18 +217,64 @@ class GithubAlgorithmRepository:
     def _get_listing(self, url=None):
         if url is None:
             url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}".strip("/")
-        resp = self._session.get(url, headers={"Accept": "application/vnd.github.object+json"})
+        resp = self._session.get(
+            url, headers={"Accept": "application/vnd.github.object+json"}, params={"ref": self.branch}
+        )
         resp.raise_for_status()
         listing = resp.json()
         return listing, url
 
-    def list_algorithms(self) -> List[str]:
-        # TODO: method to list names vs method to list parsed Algorithm objects?
+    def list_algorithms(
+        self,
+        *,
+        provider: Optional[Union[str, List[str]]] = None,
+        platform: Optional[Union[str, List[str]]] = None,
+        keywords: Optional[Union[str, List[str]]] = None,
+        details: bool = False,
+    ) -> Union[List[str], List[Algorithm]]:
+        """List folder IDs, or parsed records with ``details=True``.
+
+        Filters are case-insensitive exact matches, combined with AND. Provider
+        and platform lists match any value; keyword lists require all values.
+        Listings and records are cached for this repository instance's lifetime.
+        """
         if self._algorithms is None:
             self._algorithms = {org: list(self._list_algorithms(org)) for org in self._organizations}
-        return [ algorithm_name for algos in self._algorithms.values() for algorithm_name in algos]
+        names = [algorithm_name for algos in self._algorithms.values() for algorithm_name in algos]
+        if not details and provider is None and platform is None and keywords is None:
+            return names
+
+        def normalize(value):
+            if value is None:
+                return None
+            return {item.casefold() for item in ([value] if isinstance(value, str) else value)}
+
+        providers, platforms, required_keywords = map(normalize, (provider, platform, keywords))
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            algorithms = list(executor.map(self.get_algorithm, names))
+        return [
+            algorithm if details else name
+            for name, algorithm in zip(names, algorithms)
+            if (providers is None or (algorithm.provider is not None and algorithm.provider.casefold() in providers))
+            and (platforms is None or platforms.intersection(p.casefold() for p in algorithm.platforms))
+            and (required_keywords is None or required_keywords.issubset(k.casefold() for k in algorithm.keywords))
+        ]
+
+    def list_providers(self) -> List[str]:
+        """Return sorted, unique provider titles from cached catalog records."""
+        return sorted({a.provider for a in self.list_algorithms(details=True) if a.provider})
+
+    def list_platforms(self) -> List[str]:
+        """Return sorted, unique platform titles from cached catalog records."""
+        return sorted({p for a in self.list_algorithms(details=True) for p in a.platforms})
+
+    def list_keywords(self) -> List[str]:
+        """Return sorted, unique keywords from cached catalog records."""
+        return sorted({k for a in self.list_algorithms(details=True) for k in a.keywords})
 
     def get_algorithm(self, name: str) -> Algorithm:
+        if name in self._record_cache:
+            return self._record_cache[name]
         # TODO: get url from listing from API request, instead of hardcoding this raw url?
         all_algos = self.list_algorithms()
         orgs = [ org for org, algos in self._algorithms.items() if name in algos]
@@ -222,4 +282,6 @@ class GithubAlgorithmRepository:
             raise ValueError(f"Algorithm {name!r} not found in {all_algos}")
         url = f"https://raw.githubusercontent.com/{self.owner}/{self.repo}/{self.branch}/{self.folder}/{orgs[0]}/{name}/records/{name}.json"
         # TODO: how to make sure GitHub URL is requested with additional headers?
-        return Algorithm.from_ogc_api_record(url)
+        algorithm = Algorithm.from_ogc_api_record(url)
+        self._record_cache[name] = algorithm
+        return algorithm
