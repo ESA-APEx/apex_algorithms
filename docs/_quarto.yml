@@ -32,5 +32,6 @@ format:
   html:
     toc-depth: 4
     page-layout: full
+    highlight-style: solarized 
     theme: [cosmo, css/custom.scss]
 bread-crumbs: true
