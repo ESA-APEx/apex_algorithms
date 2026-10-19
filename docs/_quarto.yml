@@ -25,6 +25,7 @@ website:
       - href: index.md
         text: Welcome
       - href: catalogue.md
+      - href: toolbox.md
       - href: benchmarking.md
 
 format:

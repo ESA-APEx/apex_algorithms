@@ -268,6 +268,22 @@ class TestGithubAlgorithmRepository:
         assert listing
         assert all(re.fullmatch(r"[a-zA-Z0-9_-]+", item) for item in listing)
 
+    @pytest.mark.parametrize("token", [None, "test-token"])
+    def test_api_authentication(self, repo, requests_mock, token):
+        history_start = len(requests_mock.request_history)
+        authenticated_repo = GithubAlgorithmRepository(
+            owner="ESA-APEx", repo="apex_algorithms", folder="algorithm_catalog", token=token
+        )
+        assert authenticated_repo.get_algorithm("max_ndvi_composite").id == "max_ndvi_composite"
+
+        history = requests_mock.request_history[history_start:]
+        assert len(history) == 3
+        for request in history[:2]:
+            assert request.headers.get("Authorization") == (f"Bearer {token}" if token else None)
+            assert request.headers["Accept"] == "application/vnd.github.object+json"
+            assert request.qs == {"ref": ["main"]}
+        assert "Authorization" not in history[2].headers
+
     def test_get_algorithm(self, repo):
         algorithm = repo.get_algorithm("max_ndvi_composite")
         assert algorithm == Algorithm(
@@ -388,6 +404,39 @@ class TestGithubAlgorithmDiscovery:
         with pytest.raises(ValueError, match="not found"):
             repo.get_algorithm("unknown")
         assert requests_mock.call_count == 2
+
+    def test_discovery_skips_directories_without_records(self, repo, requests_mock, caplog):
+        root = "https://api.github.com/repos/test/catalog/contents/algorithm_catalog"
+        requests_mock.get(
+            f"{root}/folder",
+            json={"entries": [{"type": "dir", "name": name} for name in ["first", "second", "missing", "images"]]},
+        )
+        url = (
+            "https://raw.githubusercontent.com/test/catalog/custom/"
+            "algorithm_catalog/folder/images/records/images.json"
+        )
+        requests_mock.get(url, status_code=404)
+
+        assert repo.list_algorithms() == ["first", "second", "missing", "images"]
+        assert [algorithm.id for algorithm in repo.list_algorithms(details=True)] == ["first", "second", "missing"]
+        assert repo.list_algorithms(provider="VITO") == ["first"]
+        assert repo.list_providers() == ["Eurac Research", "VITO"]
+        assert repo.list_platforms() == ["Backend One", "Backend Two"]
+        assert repo.list_keywords() == ["Climate", "Land Cover"]
+        assert "images" in caplog.text
+        assert url in caplog.text
+        with pytest.raises(requests.HTTPError):
+            repo.get_algorithm("images")
+
+    @pytest.mark.parametrize("status_code", [403, 503])
+    def test_discovery_propagates_http_errors(self, repo, requests_mock, status_code):
+        requests_mock.get(
+            "https://raw.githubusercontent.com/test/catalog/custom/"
+            "algorithm_catalog/folder/first/records/first.json",
+            status_code=status_code,
+        )
+        with pytest.raises(requests.HTTPError):
+            repo.list_providers()
 
     def test_failed_record_is_not_cached(self, repo, requests_mock):
         url = (

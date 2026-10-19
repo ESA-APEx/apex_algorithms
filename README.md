@@ -8,6 +8,8 @@ For more information about the concepts and architecture used in this repository
 
 ## Discover algorithms with Python
 
+For a step-by-step walkthrough, open the [example notebook](examples/esa_apex_toolbox.ipynb).
+
 ```python
 from esa_apex_toolbox.algorithms import GithubAlgorithmRepository
 
@@ -50,6 +52,11 @@ uses the GitHub API and is subject to its rate limits. Listings and successfully
 parsed records are cached on the repository instance, including records loaded
 by `get_algorithm()`. Reuse the instance to avoid downloads; create a new one
 to refresh the catalog.
+
+Unfiltered ID listing may include auxiliary directories without records.
+Filtering, detailed results, and discovery helpers skip record URLs that return
+HTTP 404 and log a warning. Other HTTP errors and invalid records still raise
+errors, as do direct `get_algorithm()` calls for missing records.
 
 ## Contributing
 

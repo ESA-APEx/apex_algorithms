@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -176,12 +177,14 @@ class GithubAlgorithmRepository:
     GitHub based algorithm repository.
     """
 
-    def __init__(self, owner: str, repo: str, folder: str = "", branch: str = "main"):
+    def __init__(self, owner: str, repo: str, folder: str = "", branch: str = "main", *, token: str | None = None):
         self.owner = owner
         self.repo = repo
         self.folder = folder
         self.branch = branch
         self._session = requests.Session()
+        if token:
+            self._session.headers["Authorization"] = f"Bearer {token}"
         self._organizations = list(self._list_organizations())
         self._algorithms: dict | None = None
         self._record_cache: dict[str, Algorithm] = {}
@@ -233,6 +236,7 @@ class GithubAlgorithmRepository:
         Filters are case-insensitive exact matches, combined with AND. Provider
         and platform lists match any value; keyword lists require all values.
         Listings and records are cached for this repository instance's lifetime.
+        Metadata discovery skips missing records (HTTP 404) with a warning.
         """
         if self._algorithms is None:
             self._algorithms = {org: list(self._list_algorithms(org)) for org in self._organizations}
@@ -246,12 +250,22 @@ class GithubAlgorithmRepository:
             return {item.casefold() for item in ([value] if isinstance(value, str) else value)}
 
         providers, platforms, required_keywords = map(normalize, (provider, platform, keywords))
+
+        def load_algorithm(name: str) -> Algorithm | None:
+            try:
+                return self.get_algorithm(name)
+            except requests.HTTPError as error:
+                if error.response is None or error.response.status_code != 404:
+                    raise       
+                return None
+
         with ThreadPoolExecutor(max_workers=8) as executor:
-            algorithms = list(executor.map(self.get_algorithm, names))
+            algorithms = list(executor.map(load_algorithm, names))
         return [
             algorithm if details else name
             for name, algorithm in zip(names, algorithms)
-            if (providers is None or (algorithm.provider is not None and algorithm.provider.casefold() in providers))
+            if algorithm is not None
+            and (providers is None or (algorithm.provider is not None and algorithm.provider.casefold() in providers))
             and (platforms is None or platforms.intersection(p.casefold() for p in algorithm.platforms))
             and (required_keywords is None or required_keywords.issubset(k.casefold() for k in algorithm.keywords))
         ]
