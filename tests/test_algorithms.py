@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 
 import pytest
+import requests
 
 from esa_apex_toolbox.algorithms import (
     Algorithm,
@@ -81,6 +82,50 @@ class TestAlgorithm:
         }
         algorithm = Algorithm.from_ogc_api_record(data)
         assert algorithm.id == "minimal"
+        assert algorithm.provider is None
+        assert algorithm.platforms == []
+        assert algorithm.keywords == []
+
+    def test_discovery_metadata(self):
+        data = {
+            "id": "discovery",
+            "type": "Feature",
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "properties": {
+                "type": "service",
+                "keywords": ["Climate", "Land Cover"],
+                "contacts": [{"roles": ["principal investigator"], "organization": "Other organization"}],
+            },
+            "links": [
+                {"rel": "service", "href": "https://openeo.test/"},
+                {"rel": "provider", "title": "VITO"},
+                {"rel": "platform", "title": "Backend One"},
+                {"rel": "platform", "title": "Backend Two"},
+                {"rel": "platform"},
+            ],
+        }
+        algorithm = Algorithm.from_ogc_api_record(data)
+        assert algorithm.provider == "VITO"
+        assert algorithm.organization == "Other organization"
+        assert algorithm.platforms == ["Backend One", "Backend Two"]
+        assert algorithm.keywords == ["Climate", "Land Cover"]
+
+    def test_application_package_is_not_a_udp(self):
+        data = {
+            "id": "cwl",
+            "type": "Feature",
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "properties": {"type": "service"},
+            "links": [
+                {"rel": "service", "href": "https://processing.test/"},
+                {"rel": "application", "type": "application/cwl+yaml", "href": "https://processing.test/app.cwl"},
+            ],
+        }
+        assert Algorithm.from_ogc_api_record(data).udp_link is None
+        data["links"].append(
+            {"rel": "application", "type": "application/vnd.openeo+json;type=process", "href": "https://openeo.test/udp"}
+        )
+        assert Algorithm.from_ogc_api_record(data).udp_link == UdpLink(href="https://openeo.test/udp")
 
     def test_from_ogc_api_record_wrong_type(self):
         data = {
@@ -197,10 +242,21 @@ class TestAlgorithm:
 
 class TestGithubAlgorithmRepository:
     @pytest.fixture
-    def repo(self) -> GithubAlgorithmRepository:
-        # TODO: avoid depending on an actual GitHub repository. Mock it instead?
-        #       Or run this as an integration test?
-        #       https://github.com/ESA-APEx/esa-apex-toolbox-python/issues/4
+    def repo(self, requests_mock) -> GithubAlgorithmRepository:
+        root = "https://api.github.com/repos/ESA-APEx/apex_algorithms/contents/algorithm_catalog"
+        requests_mock.get(root, json={"entries": [{"type": "dir", "name": "vito"}]})
+        requests_mock.get(
+            f"{root}/vito", json={"entries": [{"type": "dir", "name": "max_ndvi_composite"}]}
+        )
+        record = (
+            Path(__file__).parent.parent
+            / "algorithm_catalog/vito/max_ndvi_composite/records/max_ndvi_composite.json"
+        )
+        requests_mock.get(
+            "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/main/"
+            "algorithm_catalog/vito/max_ndvi_composite/records/max_ndvi_composite.json",
+            text=record.read_text(),
+        )
         return GithubAlgorithmRepository(
             owner="ESA-APEx",
             repo="apex_algorithms",
@@ -211,6 +267,22 @@ class TestGithubAlgorithmRepository:
         listing = repo.list_algorithms()
         assert listing
         assert all(re.fullmatch(r"[a-zA-Z0-9_-]+", item) for item in listing)
+
+    @pytest.mark.parametrize("token", [None, "test-token"])
+    def test_api_authentication(self, repo, requests_mock, token):
+        history_start = len(requests_mock.request_history)
+        authenticated_repo = GithubAlgorithmRepository(
+            owner="ESA-APEx", repo="apex_algorithms", folder="algorithm_catalog", token=token
+        )
+        assert authenticated_repo.get_algorithm("max_ndvi_composite").id == "max_ndvi_composite"
+
+        history = requests_mock.request_history[history_start:]
+        assert len(history) == 3
+        for request in history[:2]:
+            assert request.headers.get("Authorization") == (f"Bearer {token}" if token else None)
+            assert request.headers["Accept"] == "application/vnd.github.object+json"
+            assert request.qs == {"ref": ["main"]}
+        assert "Authorization" not in history[2].headers
 
     def test_get_algorithm(self, repo):
         algorithm = repo.get_algorithm("max_ndvi_composite")
@@ -223,6 +295,9 @@ class TestGithubAlgorithmRepository:
                 title="openEO Process Definition",
             ),
             organization="VITO",
+            provider="VITO",
+            platforms=["CDSE openEO federation"],
+            keywords=["Vegetation", "Normalized Difference Vegetation Index (NDVI)", "Sentinel-2"],
             service_links=[
                 ServiceLink(
                     href="https://openeofed.dataspace.copernicus.eu",
@@ -230,3 +305,150 @@ class TestGithubAlgorithmRepository:
                 )
             ],
         )
+
+
+class TestGithubAlgorithmDiscovery:
+    @pytest.fixture
+    def repo(self, requests_mock):
+        root = "https://api.github.com/repos/test/catalog/contents/algorithm_catalog"
+        requests_mock.get(root, json={"entries": [{"type": "dir", "name": "folder"}]})
+        requests_mock.get(
+            f"{root}/folder",
+            json={"entries": [{"type": "dir", "name": name} for name in ["first", "second", "missing"]]},
+        )
+        for name, provider, platforms, keywords in [
+            ("first", "VITO", ["Backend One", "Backend Two"], ["Climate", "Land Cover"]),
+            ("second", "Eurac Research", ["Backend Two"], ["Climate"]),
+            ("missing", None, [], []),
+        ]:
+            record = {
+                "id": name,
+                "type": "Feature",
+                "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+                "properties": {"type": "service", "title": name.title(), "description": f"About {name}."},
+                "links": [{"rel": "service", "href": "https://openeo.test/"}],
+            }
+            if provider:
+                record["links"].append({"rel": "provider", "title": provider})
+                record["links"].extend({"rel": "platform", "title": platform} for platform in platforms)
+                record["properties"]["keywords"] = keywords
+            requests_mock.get(
+                f"https://raw.githubusercontent.com/test/catalog/custom/algorithm_catalog/folder/{name}/records/{name}.json",
+                json=record,
+            )
+        return GithubAlgorithmRepository("test", "catalog", folder="algorithm_catalog", branch="custom")
+
+    def test_default_ids_without_record_downloads(self, repo, requests_mock):
+        assert repo.list_algorithms() == ["first", "second", "missing"]
+        assert requests_mock.call_count == 2
+        assert repo.list_algorithms() == ["first", "second", "missing"]
+        assert requests_mock.call_count == 2
+        assert all(request.qs == {"ref": ["custom"]} for request in requests_mock.request_history)
+
+    @pytest.mark.parametrize("details", [False, True])
+    @pytest.mark.parametrize(
+        "filters, expected",
+        [
+            ({}, ["first", "second", "missing"]),
+            ({"provider": "vItO"}, ["first"]),
+            ({"provider": ["unknown", "EURAC RESEARCH"]}, ["second"]),
+            ({"provider": "folder"}, []),
+            ({"provider": "VIT"}, []),
+            ({"platform": "BACKEND TWO"}, ["first", "second"]),
+            ({"platform": ["unknown", "backend one"]}, ["first"]),
+            ({"keywords": "CLIMATE"}, ["first", "second"]),
+            ({"keywords": ["climate", "LAND COVER"]}, ["first"]),
+            ({"keywords": "Land"}, []),
+            ({"provider": "VITO", "platform": "backend two", "keywords": ["climate"]}, ["first"]),
+            ({"provider": "VITO", "platform": "unknown", "keywords": "Climate"}, []),
+            ({"keywords": ["Climate", "unknown"]}, []),
+            ({"provider": []}, []),
+            ({"platform": []}, []),
+            ({"keywords": []}, ["first", "second", "missing"]),
+        ],
+    )
+    def test_filters(self, repo, filters, expected, details):
+        result = repo.list_algorithms(**filters, details=details)
+        ids = [a.id for a in result] if details else result
+        assert ids == expected
+
+    def test_details(self, repo):
+        first, second, missing = repo.list_algorithms(details=True)
+        assert first.id == "first"
+        assert first.title == "First"
+        assert first.description == "About first."
+        assert first.provider == "VITO"
+        assert first.organization is None
+        assert first.platforms == ["Backend One", "Backend Two"]
+        assert first.keywords == ["Climate", "Land Cover"]
+        assert second.provider == "Eurac Research"
+        assert missing.provider is None
+        assert missing.platforms == []
+        assert missing.keywords == []
+
+    def test_cache_and_discovery_helpers(self, repo, requests_mock):
+        first = repo.get_algorithm("first")
+        assert requests_mock.call_count == 3
+        algorithms = repo.list_algorithms(details=True)
+        assert requests_mock.call_count == 5
+        assert algorithms[0] is first
+        assert repo.get_algorithm("first") is first
+        assert repo.list_algorithms(provider="VITO") == ["first"]
+        assert repo.list_algorithms(details=True) == algorithms
+        assert repo.list_providers() == ["Eurac Research", "VITO"]
+        assert repo.list_platforms() == ["Backend One", "Backend Two"]
+        assert repo.list_keywords() == ["Climate", "Land Cover"]
+        assert requests_mock.call_count == 5
+
+    def test_unknown_algorithm(self, repo, requests_mock):
+        with pytest.raises(ValueError, match="not found"):
+            repo.get_algorithm("unknown")
+        assert requests_mock.call_count == 2
+
+    def test_discovery_skips_directories_without_records(self, repo, requests_mock):
+        root = "https://api.github.com/repos/test/catalog/contents/algorithm_catalog"
+        requests_mock.get(
+            f"{root}/folder",
+            json={"entries": [{"type": "dir", "name": name} for name in ["first", "second", "missing", "images"]]},
+        )
+        url = (
+            "https://raw.githubusercontent.com/test/catalog/custom/"
+            "algorithm_catalog/folder/images/records/images.json"
+        )
+        requests_mock.get(url, status_code=404)
+
+        assert repo.list_algorithms() == ["first", "second", "missing", "images"]
+        assert [algorithm.id for algorithm in repo.list_algorithms(details=True)] == ["first", "second", "missing"]
+        assert repo.list_algorithms(provider="VITO") == ["first"]
+        assert repo.list_providers() == ["Eurac Research", "VITO"]
+        assert repo.list_platforms() == ["Backend One", "Backend Two"]
+        assert repo.list_keywords() == ["Climate", "Land Cover"]
+        with pytest.raises(requests.HTTPError):
+            repo.get_algorithm("images")
+
+    @pytest.mark.parametrize("status_code", [403, 503])
+    def test_discovery_propagates_http_errors(self, repo, requests_mock, status_code):
+        requests_mock.get(
+            "https://raw.githubusercontent.com/test/catalog/custom/"
+            "algorithm_catalog/folder/first/records/first.json",
+            status_code=status_code,
+        )
+        with pytest.raises(requests.HTTPError):
+            repo.list_providers()
+
+    def test_failed_record_is_not_cached(self, repo, requests_mock):
+        url = (
+            "https://raw.githubusercontent.com/test/catalog/custom/"
+            "algorithm_catalog/folder/first/records/first.json"
+        )
+        record = {
+            "id": "first",
+            "type": "Feature",
+            "conformsTo": ["https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+            "properties": {"type": "service"},
+            "links": [{"rel": "service", "href": "https://openeo.test/"}],
+        }
+        requests_mock.get(url, [{"status_code": 503}, {"json": record}])
+        with pytest.raises(requests.HTTPError):
+            repo.get_algorithm("first")
+        assert repo.get_algorithm("first").id == "first"
