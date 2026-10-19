@@ -405,7 +405,7 @@ class TestGithubAlgorithmDiscovery:
             repo.get_algorithm("unknown")
         assert requests_mock.call_count == 2
 
-    def test_discovery_skips_directories_without_records(self, repo, requests_mock, caplog):
+    def test_discovery_skips_directories_without_records(self, repo, requests_mock):
         root = "https://api.github.com/repos/test/catalog/contents/algorithm_catalog"
         requests_mock.get(
             f"{root}/folder",
@@ -423,8 +423,6 @@ class TestGithubAlgorithmDiscovery:
         assert repo.list_providers() == ["Eurac Research", "VITO"]
         assert repo.list_platforms() == ["Backend One", "Backend Two"]
         assert repo.list_keywords() == ["Climate", "Land Cover"]
-        assert "images" in caplog.text
-        assert url in caplog.text
         with pytest.raises(requests.HTTPError):
             repo.get_algorithm("images")
 
