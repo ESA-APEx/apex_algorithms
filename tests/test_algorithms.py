@@ -1,4 +1,5 @@
 import re
+import sys
 from pathlib import Path
 
 import pytest
@@ -6,6 +7,7 @@ import requests
 
 from esa_apex_toolbox.algorithms import (
     Algorithm,
+    AlgorithmList,
     GithubAlgorithmRepository,
     InvalidMetadataError,
     ServiceLink,
@@ -13,6 +15,104 @@ from esa_apex_toolbox.algorithms import (
 )
 
 DATA_ROOT = Path(__file__).parent / "data"
+
+
+class TestNotebookDisplay:
+    @pytest.fixture
+    def searchable_algorithms(self):
+        return AlgorithmList([
+            Algorithm(
+                id="forest_monitor", title="Forest Change", provider="VITO",
+                platforms=["CDSE federation"], keywords=["Climate", "Land Cover"],
+            ),
+            Algorithm(id="water", title="Water Quality", provider="Eurac", keywords=["Water"]),
+            Algorithm(id="minimal"),
+        ])
+
+    @pytest.mark.parametrize("query, expected", [
+        ("forest", ["forest_monitor"]),
+        ("MONITOR", ["forest_monitor"]),
+        ("vItO", ["forest_monitor"]),
+        ("FEDERATION", ["forest_monitor"]),
+        ("climate", ["forest_monitor"]),
+        ("vito land cover", ["forest_monitor"]),
+        ("  water   eurac ", ["water"]),
+        ("forest water", []),
+        ("not specified", []),
+        ("", ["forest_monitor", "water", "minimal"]),
+        ("   ", ["forest_monitor", "water", "minimal"]),
+    ])
+    def test_search(self, searchable_algorithms, query, expected):
+        from esa_apex_toolbox.notebook import _filter_algorithms
+
+        assert [algorithm.id for algorithm in _filter_algorithms(searchable_algorithms, query)] == expected
+        assert len(searchable_algorithms) == 3
+
+    def test_search_widget(self, searchable_algorithms):
+        pytest.importorskip("ipywidgets")
+        browser = searchable_algorithms.widget()
+        search, results = browser.children
+        assert "3 algorithms</caption>" in results.value
+        search.value = "climate vito"
+        assert "1 algorithm</caption>" in results.value
+        assert "forest_monitor" in results.value
+        assert "Water Quality" not in results.value
+        search.value = "no matches"
+        assert "No algorithms found" in results.value
+        search.value = ""
+        assert "3 algorithms</caption>" in results.value
+        assert "No algorithms found" in AlgorithmList().widget().children[1].value
+
+    def test_search_widget_missing_dependency(self, monkeypatch):
+        monkeypatch.setitem(sys.modules, "ipywidgets", None)
+        with pytest.raises(ImportError, match="notebook extra"):
+            AlgorithmList().widget()
+
+    def test_algorithm_details(self):
+        algorithm = Algorithm(
+            id="example", title="Example", description="First line\nSecond line", provider="VITO",
+            organization="Research team", platforms=["Backend"], keywords=["Climate"], license="Apache-2.0",
+            service_links=[ServiceLink("https://example.test/service", "Service")],
+            udp_link=UdpLink("https://example.test/process", "Process definition"),
+        )
+        html = algorithm._repr_html_()
+        values = ["Example", "First line\nSecond line", "VITO", "Research team", "Backend", "Climate", "Apache-2.0"]
+        for value in values:
+            assert value in html
+        assert 'href="https://example.test/service"' in html
+        assert 'href="https://example.test/process"' in html
+        assert 'rel="noopener noreferrer"' in html
+
+    def test_missing_metadata_and_empty_results(self):
+        assert "Not specified" in Algorithm(id="minimal")._repr_html_()
+        assert "Not available" in Algorithm(id="minimal")._repr_html_()
+        assert "No algorithms found" in AlgorithmList()._repr_html_()
+
+    def test_catalogue_is_still_a_list(self):
+        algorithm = Algorithm(id="example", title="Example")
+        algorithms = AlgorithmList([algorithm])
+        assert isinstance(algorithms, list)
+        assert algorithms == [algorithm]
+        assert algorithms[0] is algorithm
+        assert list(iter(algorithms)) == [algorithm]
+        html = algorithms._repr_html_()
+        assert "1 algorithm</caption>" in html
+        assert "<details>" in html
+        assert "<summary>Example</summary>" in html
+
+    @pytest.mark.parametrize("href", ["javascript:alert(1)", "data:text/html,unsafe", "//example.test", "https://["])
+    def test_unsafe_links_and_metadata(self, href):
+        algorithm = Algorithm(
+            id='<script>alert("id")</script>', title="<img src=x onerror=alert(1)>",
+            description="<script>alert(1)</script>", provider="<b>provider</b>",
+            service_links=[ServiceLink(href, "<img src=x>")], udp_link=UdpLink(href),
+        )
+        for html in [algorithm._repr_html_(), AlgorithmList([algorithm])._repr_html_()]:
+            assert "<script>" not in html
+            assert "<img" not in html
+            assert "<b>provider</b>" not in html
+            assert "<a href=" not in html
+            assert "&lt;script&gt;" in html
 
 
 class TestUdpLink:
@@ -373,6 +473,11 @@ class TestGithubAlgorithmDiscovery:
         assert ids == expected
 
     def test_details(self, repo):
+        algorithms = repo.list_algorithms(details=True)
+        assert isinstance(algorithms, AlgorithmList)
+        assert "3 algorithms</caption>" in algorithms._repr_html_()
+        assert type(repo.list_algorithms()) is list
+        assert type(repo.list_algorithms(provider="VITO")) is list
         first, second, missing = repo.list_algorithms(details=True)
         assert first.id == "first"
         assert first.title == "First"

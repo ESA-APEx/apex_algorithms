@@ -110,6 +110,11 @@ class Algorithm:
     platforms: list[str] = dataclasses.field(default_factory=list)
     keywords: list[str] = dataclasses.field(default_factory=list)
 
+    def _repr_html_(self) -> str:
+        from esa_apex_toolbox.notebook import algorithm_html
+
+        return algorithm_html(self)
+
     @classmethod
     def from_ogc_api_record(cls, src: dict | str | Path) -> Algorithm:
         """
@@ -170,6 +175,21 @@ class Algorithm:
             platforms=[link["title"] for link in links if link.get("rel") == "platform" and link.get("title")],
             keywords=properties.get("keywords") or [],
         )
+
+
+class AlgorithmList(list):
+    """A list of algorithms with an expandable HTML representation in notebooks."""
+
+    def widget(self):
+        """Build a searchable notebook browser with the optional notebook dependencies."""
+        from esa_apex_toolbox.notebook import algorithm_browser
+
+        return algorithm_browser(self)
+
+    def _repr_html_(self) -> str:
+        from esa_apex_toolbox.notebook import algorithms_html
+
+        return algorithms_html(self)
 
 
 class GithubAlgorithmRepository:
@@ -261,7 +281,7 @@ class GithubAlgorithmRepository:
 
         with ThreadPoolExecutor(max_workers=8) as executor:
             algorithms = list(executor.map(load_algorithm, names))
-        return [
+        matches = [
             algorithm if details else name
             for name, algorithm in zip(names, algorithms)
             if algorithm is not None
@@ -269,6 +289,7 @@ class GithubAlgorithmRepository:
             and (platforms is None or platforms.intersection(p.casefold() for p in algorithm.platforms))
             and (required_keywords is None or required_keywords.issubset(k.casefold() for k in algorithm.keywords))
         ]
+        return AlgorithmList(matches) if details else matches
 
     def list_providers(self) -> list[str]:
         """Return sorted, unique provider titles from cached catalog records."""

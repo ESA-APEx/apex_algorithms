@@ -151,6 +151,69 @@ Different filters combine with AND. `None` leaves a filter unrestricted.
 An empty provider or platform list matches nothing; an empty keyword list
 places no restriction on results.
 
+## Rich Notebook Displays
+
+In Jupyter, algorithms have a built-in HTML representation. Detailed catalogue
+results render as a table with provider, platform, and keyword columns. Expand
+an algorithm's title to see its description, metadata, service endpoints, and
+openEO process-definition link. Empty results show a clear empty state.
+
+```python
+from IPython.display import display
+
+algorithms = repo.list_algorithms(details=True)
+display(algorithms)
+
+algorithm = repo.get_algorithm("max_ndvi_composite")
+display(algorithm)
+```
+
+You can also leave either object as the last expression in a notebook cell.
+Use `details=True` for a rich catalogue view; the default ID-only listing
+remains a plain list. Detailed results are an `AlgorithmList`, a `list`
+subclass, so indexing, iteration, equality, and normal list operations still
+work. `print()` continues to produce ordinary text rather than HTML.
+
+The display needs no widget installation or JavaScript and performs no
+additional downloads. All metadata is shown as escaped text, not rendered
+HTML or Markdown; only HTTP(S) service and process links are clickable. It
+inherits the notebook's text colors and works in light and dark themes.
+Restart your kernel after upgrading the toolbox to load the rich display methods.
+
+### Search the Displayed Catalogue
+
+Install the optional notebook dependencies from the repository root:
+
+```bash
+python -m pip install -e ".[notebook]"
+```
+
+Then create a searchable view of any detailed result list:
+
+```python
+algorithms = repo.list_algorithms(details=True)
+display(algorithms.widget())
+```
+
+The search field matches **title/name, ID, provider, platforms, and keywords**.
+Matching is case-insensitive and uses substrings. Every whitespace-separated
+term must occur somewhere in those fields, so `vito sentinel` can match a
+provider and a keyword in the same algorithm. Clear the field to show all
+algorithms again. The table count reflects the visible matches, and an empty
+result shows "No algorithms found."
+
+Search updates as you type, makes no additional HTTP requests, and does not
+modify the underlying list. It searches only the loaded results, including any
+filters already applied through `list_algorithms()`. This local substring
+search is distinct from the repository API's exact-match filters.
+
+Interactive search uses `ipywidgets` and requires a live notebook kernel and
+a widget-enabled frontend. JupyterLab, Jupyter Notebook, and VS Code's Jupyter
+extension support widgets; installation may require restarting the kernel.
+Static HTML exports cannot run the Python search callback. Use
+`display(algorithms)` when you only need the expandable HTML table without
+widget dependencies.
+
 ## Inspect Algorithm Metadata
 
 Use a folder ID returned by `list_algorithms()` to retrieve one record:
