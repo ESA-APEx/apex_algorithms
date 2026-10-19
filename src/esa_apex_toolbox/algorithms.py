@@ -4,7 +4,6 @@ import dataclasses
 import json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import List, Optional, Union
 
 import requests
 
@@ -14,7 +13,7 @@ class LINK_REL:
     SERVICE = "service"
 
 
-def _load_json_resource(src: Union[dict, str, Path]) -> dict:
+def _load_json_resource(src: dict | str | Path) -> dict:
     """Load a JSON resource from a file or a string."""
     if isinstance(src, dict):
         return src
@@ -25,7 +24,7 @@ def _load_json_resource(src: Union[dict, str, Path]) -> dict:
         if src.strip().startswith("{"):
             # Assume the string is JSON payload
             return json.loads(src)
-        elif src.startswith("http://") or src.startswith("https://"):
+        elif src.startswith(("http://", "https://")):
             # Assume the string is a URL to a JSON resource
             resp = requests.get(src)
             resp.raise_for_status()
@@ -35,10 +34,10 @@ def _load_json_resource(src: Union[dict, str, Path]) -> dict:
             return _load_json_resource(Path(src))
     else:
         # TODO: support bytes, file-like objects, etc.
-        raise ValueError(f"Unsupported JSON resource type {type(src)}")
+        raise TypeError(f"Unsupported JSON resource type {type(src)}")
 
 
-def write_json(json_object: object, file_path: Union[str, Path]) -> None:
+def write_json(json_object: object, file_path: str | Path) -> None:
     with open(Path(file_path), "w") as f:
         j_str = json.dumps(json_object, indent=2)
         if not j_str.endswith("\n"):
@@ -53,7 +52,7 @@ class InvalidMetadataError(ValueError):
 @dataclasses.dataclass(frozen=True)
 class UdpLink:
     href: str
-    title: Optional[str] = None
+    title: str | None = None
 
     @classmethod
     def from_link_object(cls, data: dict) -> UdpLink:
@@ -63,7 +62,9 @@ class UdpLink:
         if data["rel"] != LINK_REL.UDP:
             raise InvalidMetadataError(f"Expected link with rel='{LINK_REL.UDP}' but got {data['rel']!r}")
         if "type" in data and data["type"] != "application/vnd.openeo+json;type=process":
-            raise InvalidMetadataError(f"Expected link with type='application/vnd.openeo+json;type=process' but got {data['type']!r}")
+            raise InvalidMetadataError(
+                f"Expected link with type='application/vnd.openeo+json;type=process' but got {data['type']!r}"
+            )
         if "href" not in data:
             raise InvalidMetadataError("Missing 'href' attribute in link object")
         return cls(
@@ -75,11 +76,11 @@ class UdpLink:
 @dataclasses.dataclass(frozen=True)
 class ServiceLink:
     href: str
-    title: Optional[str] = None
+    title: str | None = None
 
     @classmethod
     def from_link_object(cls, data: dict) -> ServiceLink:
-        """Parse a link object (dict/mapping) into a UdpLink object."""
+        """Parse a link object (dict/mapping) into a ServiceLink object."""
         if "rel" not in data:
             raise InvalidMetadataError("Missing 'rel' attribute in link object")
         if data["rel"] != LINK_REL.SERVICE:
@@ -98,19 +99,18 @@ class ServiceLink:
 @dataclasses.dataclass(frozen=True)
 class Algorithm:
     id: str
-    title: Optional[str] = None
-    description: Optional[str] = None
-    udp_link: Optional[UdpLink] = None
-    service_links: List[ServiceLink] = None
-    license: Optional[str] = None
-    organization: Optional[str] = None
-    provider: Optional[str] = None
-    platforms: List[str] = dataclasses.field(default_factory=list)
-    keywords: List[str] = dataclasses.field(default_factory=list)
-    # TODO more fields
+    title: str | None = None
+    description: str | None = None
+    udp_link: UdpLink | None = None
+    service_links: list[ServiceLink] | None = None
+    license: str | None = None
+    organization: str | None = None
+    provider: str | None = None
+    platforms: list[str] = dataclasses.field(default_factory=list)
+    keywords: list[str] = dataclasses.field(default_factory=list)
 
     @classmethod
-    def from_ogc_api_record(cls, src: Union[dict, str, Path]) -> Algorithm:
+    def from_ogc_api_record(cls, src: dict | str | Path) -> Algorithm:
         """
         Load an algorithm from an 'OGC API - Records' record object, specified
         as a dict, a JSON string, a file path, or a URL.
@@ -121,8 +121,9 @@ class Algorithm:
             raise InvalidMetadataError(f"Expected a GeoJSON 'Feature' object, but got type {data.get('type')!r}.")
         data_conforms_to = data.get("conformsTo", [])
         # TODO: Remove http reference once merged to main
-        if (("https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to) and
-                ("https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to)):
+        if ("https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to) and (
+            "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core" not in data_conforms_to
+        ):
             raise InvalidMetadataError(
                 f"Expected an 'OGC API - Records' record object, but got {data.get('conformsTo')!r}."
             )
@@ -182,27 +183,23 @@ class GithubAlgorithmRepository:
         self.branch = branch
         self._session = requests.Session()
         self._organizations = list(self._list_organizations())
-        self._algorithms: Optional[dict] = None
+        self._algorithms: dict | None = None
         self._record_cache: dict[str, Algorithm] = {}
 
-
     def _list_organizations(self):
-        org_listing, url = self._get_listing()
+        org_listing, _url = self._get_listing()
         for item in org_listing["entries"]:
-            if item["type"] == "dir" :
-                yield item['name']
+            if item["type"] == "dir":
+                yield item["name"]
 
     def _list_algorithms(self, organization):
         url = f"https://api.github.com/repos/{self.owner}/{self.repo}/contents/{self.folder}/{organization}".strip("/")
         org_listing, url = self._get_listing(url)
         for item in org_listing["entries"]:
-            if item["type"] == "dir" :
-                yield item['name']
+            if item["type"] == "dir":
+                yield item["name"]
 
-
-
-
-    def _list_files(self,url = None):
+    def _list_files(self, url=None):
         listing, url = self._get_listing(url)
         assert listing["type"] == "dir"
         for item in listing["entries"]:
@@ -211,8 +208,7 @@ class GithubAlgorithmRepository:
             if item["type"] == "dir":
                 # Recursively list files in organization subdirectories
                 subfolder = f"{url}/{item['name']}"
-                for subitem in self._list_files(url = subfolder):
-                    yield subitem
+                yield from self._list_files(url=subfolder)
 
     def _get_listing(self, url=None):
         if url is None:
@@ -227,11 +223,11 @@ class GithubAlgorithmRepository:
     def list_algorithms(
         self,
         *,
-        provider: Optional[Union[str, List[str]]] = None,
-        platform: Optional[Union[str, List[str]]] = None,
-        keywords: Optional[Union[str, List[str]]] = None,
+        provider: str | list[str] | None = None,
+        platform: str | list[str] | None = None,
+        keywords: str | list[str] | None = None,
         details: bool = False,
-    ) -> Union[List[str], List[Algorithm]]:
+    ) -> list[str] | list[Algorithm]:
         """List folder IDs, or parsed records with ``details=True``.
 
         Filters are case-insensitive exact matches, combined with AND. Provider
@@ -260,15 +256,15 @@ class GithubAlgorithmRepository:
             and (required_keywords is None or required_keywords.issubset(k.casefold() for k in algorithm.keywords))
         ]
 
-    def list_providers(self) -> List[str]:
+    def list_providers(self) -> list[str]:
         """Return sorted, unique provider titles from cached catalog records."""
         return sorted({a.provider for a in self.list_algorithms(details=True) if a.provider})
 
-    def list_platforms(self) -> List[str]:
+    def list_platforms(self) -> list[str]:
         """Return sorted, unique platform titles from cached catalog records."""
         return sorted({p for a in self.list_algorithms(details=True) for p in a.platforms})
 
-    def list_keywords(self) -> List[str]:
+    def list_keywords(self) -> list[str]:
         """Return sorted, unique keywords from cached catalog records."""
         return sorted({k for a in self.list_algorithms(details=True) for k in a.keywords})
 
@@ -277,7 +273,7 @@ class GithubAlgorithmRepository:
             return self._record_cache[name]
         # TODO: get url from listing from API request, instead of hardcoding this raw url?
         all_algos = self.list_algorithms()
-        orgs = [ org for org, algos in self._algorithms.items() if name in algos]
+        orgs = [org for org, algos in self._algorithms.items() if name in algos]
         if len(orgs) != 1:
             raise ValueError(f"Algorithm {name!r} not found in {all_algos}")
         url = f"https://raw.githubusercontent.com/{self.owner}/{self.repo}/{self.branch}/{self.folder}/{orgs[0]}/{name}/records/{name}.json"
