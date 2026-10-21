@@ -37,6 +37,20 @@ jobs:
         env:
           OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
         run: |
+          python - <<'PY'
+          import os
+
+          name = "OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE"
+          value = os.environ.get(name, "")
+          if not value:
+              raise SystemExit(f"{name}: empty or unavailable")
+          parts = value.split("/", 2)
+          if len(parts) != 3 or not all(parts):
+              raise SystemExit(
+                  f"{name}: expected provider_id/client_id/client_secret"
+              )
+          print(f"{name}: present and structurally valid")
+          PY
           pytest  \
             -vv \
             --log-cli-level=INFO \
