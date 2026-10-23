@@ -14,6 +14,7 @@ from esa_apex_toolbox.cwl_to_udp_utils import (
     get_cwl_inputs,
     cwl_input_to_parameters,
     load_string_from_any,
+    normalize_cwl_doc,
 )
 
 cwl_url = "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
@@ -53,7 +54,7 @@ def generate() -> dict:
     return build_process_dict(
         process_graph=stac_resource,
         process_id="sentinel1_sar_interferogram",
-        description=get_cwl_main(cwl_yaml).get("doc").rstrip(),
+        description=normalize_cwl_doc(get_cwl_main(cwl_yaml).get("doc")),
         parameters=parameters,
         returns= returns,
         categories=["sentinel-1", "InSAR"],

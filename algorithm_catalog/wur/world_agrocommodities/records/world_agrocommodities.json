@@ -87,7 +87,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.6/src/world_agrocommodities/udp/world_agrocommodities.json"
+      "href": "https://raw.githubusercontent.com/masolele/WAC/refs/tags/inference_udp_v0.0.8/src/world_agrocommodities/udp/world_agrocommodities.json"
     },
     {
       "rel": "code",

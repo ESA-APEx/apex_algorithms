@@ -14,4 +14,8 @@ The benchmarking section offers standardized tests and metrics to evaluate algor
 
 The catalogue lists all available algorithms, grouped by category and application. Each entry includes a description, usage examples, and links to source code and documentation, making it easy to discover and integrate algorithms into your projects.
 
+### Python Toolbox
+
+Use the [Python toolbox](toolbox.md) to discover algorithms, filter catalogue metadata, and inspect service endpoints from Python. The guide includes installation instructions and a link to an interactive example notebook.
+
 Start by browsing the catalogue or running benchmarks to find the optimal solutions for your tasks.

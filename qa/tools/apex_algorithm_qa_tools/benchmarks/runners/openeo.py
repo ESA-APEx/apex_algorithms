@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from apex_algorithm_qa_tools.benchmarks.openeo import (
     collect_openeo_metadata,
     create_openeo_connection,
     create_openeo_job,
-    download_openeo_results,
     get_openeo_backend,
     run_openeo_job,
 )
@@ -17,8 +17,9 @@ from apex_algorithm_qa_tools.benchmarks.runners.base import (
     BenchmarkRunner,
     BenchmarkRunnerArtifacts,
 )
-
 from apex_algorithm_qa_tools.scenarios.openeo import openEOBenchmarkScenario
+
+_log = logging.getLogger(__name__)
 
 
 class OpenEOBenchmarkRunner(BenchmarkRunner):
@@ -68,4 +69,25 @@ class OpenEOBenchmarkRunner(BenchmarkRunner):
     def download_actual(self, *, actual_dir: Path) -> list[Path]:
         if self._results is None:
             raise RuntimeError("Cannot download openEO results before collect_artifacts().")
-        return download_openeo_results(results=self._results, actual_dir=actual_dir)
+
+        if self.scenario.reference_options.get("download_as_collection"):
+            _log.info(f"Downloading results from {self._job.job_id} as STAC collection")
+            paths = self._results.download_as_collection(
+                target=actual_dir,
+                download_derived_from=True,
+                add_original_hrefs=True,
+                path_templates={
+                    # For now: use stable auto-increment based download filenames,
+                    # as workaround for unpredictable (UUID-based) filenames in openEO results.
+                    # Also see Open-EO/openeo-python-client#936 and eu-cdse/openeo-cdse-infra#1259
+                    "item": "item-{auto_increment:02d}{extension}",
+                    "asset": "asset-{auto_increment:03d}{extension}",
+                    "collection-asset": "collection-asset-{auto_increment}{extension}",
+                    "generic-link": "generic-{auto_increment}{extension}",
+                },
+            )
+        else:
+            _log.info(f"Downloading results from {self._job.job_id} the old-school way")
+            paths = self._results.download_files(target=actual_dir, include_stac_metadata=True)
+
+        return paths
