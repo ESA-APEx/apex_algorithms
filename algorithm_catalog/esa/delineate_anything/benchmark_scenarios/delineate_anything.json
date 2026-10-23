@@ -25,6 +25,15 @@
             "2024-05-01",
             "2024-08-31"
           ]
+        }
+      },
+      "save1": {
+        "process_id": "save_result",
+        "arguments": {
+          "data": {
+            "from_node": "delineate_anything1"
+          },
+          "format": "GEOJSON"
         },
         "result": true
       }
@@ -35,9 +44,7 @@
         "https://s3.waw3-1.cloudferro.com/project_dependencies/DelineateAnythingv2.zip#onnx_models"
       ]
     },
-    "reference_options": {
-      "pixel_tolerance": 1
-    },
+   
     "reference_data": {
       "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/95-cdse!tests_test_benchmarks.py__test_run_benchmark_delineate_anything_!actual/job-results.json",
       "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/95-cdse!tests_test_benchmarks.py__test_run_benchmark_delineate_anything_!actual/openEO.tif"
