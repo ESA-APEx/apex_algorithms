@@ -106,7 +106,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/s1-coherence-intensity-0_7_8"
+      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/s1-coherence-intensity-v1-4-0"
     },
     {
       "rel": "about",
