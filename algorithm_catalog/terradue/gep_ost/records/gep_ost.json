@@ -105,7 +105,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/opensartoolkit-1_0_24"
+      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/s1-insar-v1-4-0"
     },
     {
       "rel": "about",
