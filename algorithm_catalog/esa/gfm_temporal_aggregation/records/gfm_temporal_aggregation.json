@@ -73,7 +73,7 @@
             "rel": "service",
             "type": "application/json",
             "title": "CDSE openEO federation",
-            "href": "https://openeo.terrascope.be"
+            "href": "https://openeo.terrascope.be/openeo"
         },
         {
             "rel": "platform",
