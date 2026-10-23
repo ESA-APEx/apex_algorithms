@@ -91,18 +91,7 @@ class OGCBenchmarkRunner(BenchmarkRunner):
         # We currently don't need to download result assets,
         # we compare only the STAC items from the result FeatureCollection
         return []
-
-        if self._results is None:
-            raise RuntimeError("Cannot download OGC API results before collect_artifacts().")
-        
-        # Compare headers rather than entire files
-        return download_ogc_results_headers(
-            results_metadata=self._results,
-            actual_dir=actual_dir,
-            user_token=self.user_token,
-            details=self.result_details,
-        )
-
+    
     def download_reference(self, scenario: BenchmarkScenario, reference_dir: Path) -> Path:
         headers = {
             "Authorization": f"Bearer {self.user_token}"
