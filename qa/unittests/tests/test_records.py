@@ -4,7 +4,6 @@ import requests
 import pytest
 from copy import deepcopy
 from apex_algorithm_qa_tools.common import get_project_root
-from pathlib import Path
 from apex_algorithm_qa_tools.records import (
     get_service_ogc_records,
     get_service_ogc_record_schema,
@@ -89,51 +88,31 @@ def test_provider_record_validation(record):
     jsonschema.validate(instance=record["data"], schema=get_provider_ogc_record_schema())
 
 
-def _has_benchmark_scenarios(record_path: str) -> bool:
-    service_dir = Path(record_path).parent.parent
-    benchmark_dir = service_dir / "benchmark_scenarios"
-    return benchmark_dir.exists() and any(benchmark_dir.glob("*.json"))
-
-
 @pytest.mark.parametrize(
-    "record",
+    "invalid_certification",
     [
-        pytest.param(record, id=record["data"]["id"])
-        for record in get_service_ogc_records()
-        if record["data"]
-        .get("properties", {})
-        .get("validation", {})
-        .get("document", {})
-        .get("reviewed_by")
-        == "ESA"
+        {"category": "validated"},
+        {"funding": "esa"},
+        {"category": "community_contributed", "funding": "esa"},
+        {"category": "r_and_d", "funding": "third_party"},
+        {"category": "validated", "funding": "esa", "extra": "not-allowed"},
     ],
 )
-def test_service_record_with_esa_reviewed_validation_requires_benchmark_scenarios(record):
-    assert _has_benchmark_scenarios(record["path"]), (
-        f"Service '{record['data']['id']}' has ESA-reviewed validation metadata but no benchmark scenario files in "
-        f"{Path(record['path']).parent.parent / 'benchmark_scenarios'}"
-    )
-
-
-@pytest.mark.parametrize(
-    "invalid_validation",
-    [
-        {
-            "document": {
-                "href": "https://example.com/validation-report.pdf",
-                "reviewed_by": "Other",
-                "review_date": "2025-01-01",
-            },
-        },
-        {"document": {"href": "https://example.com/validation-report.pdf", "reviewed_by": "ESA"}},
-        {"document": {"href": "https://example.com/validation-report.pdf", "review_date": "2025-01-01"}},
-    ],
-)
-def test_service_record_validation_rejects_malformed_validation_metadata(
-    invalid_validation,
+def test_service_record_validation_rejects_malformed_certification_metadata(
+    invalid_certification,
 ):
     record = deepcopy(get_service_ogc_records()[0]["data"])
-    record["properties"]["validation"] = invalid_validation
+    record["properties"]["certification"] = invalid_certification
 
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())
+
+
+def test_service_record_validation_accepts_valid_certification_metadata():
+    record = deepcopy(get_service_ogc_records()[0]["data"])
+    record["properties"]["certification"] = {
+        "category": "validated",
+        "funding": "esa",
+    }
+
+    jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())
