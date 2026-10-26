@@ -39,10 +39,17 @@ def generate() -> dict:
         if "Directory" in cwl_type or '"File"' in cwl_type or "record" in cwl_type:
             continue
         cwl_id = cwl_input["id"].removeprefix("#main/")
-        name = re.sub(r"\W+", "_", cwl_id).strip("_")
+        # Prefer the CWL label for the user-facing parameter name; fall back to the id.
+        label = cwl_input.get("label")
+        source = label if isinstance(label, str) and label.strip() else cwl_id
+        name = re.sub(r"\W+", "_", source.strip()).strip("_").lower()
         while name in inputs:
             name += "_"
-        inputs[name] = _clean_input(cwl_input)
+        cleaned = _clean_input(cwl_input)
+        doc = normalize_cwl_doc(cleaned.get("doc")) if cleaned.get("doc") else ""
+        reference = f"(CWL input: `{cwl_id}`)"
+        cleaned["doc"] = f"{doc}\n\n{reference}" if doc else reference
+        inputs[name] = cleaned
         context[cwl_id] = {"from_parameter": name}
     parameters = cwl_input_to_parameters(inputs)
 
