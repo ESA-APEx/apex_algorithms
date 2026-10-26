@@ -41,7 +41,7 @@ def get_cwl_main(cwl_yaml):
     if cwl_graph is None:
         return cwl_yaml
     else:
-        return next((item for item in cwl_graph if item.get("id") == "main"), None)
+        return next((item for item in cwl_graph if item.get("id") in ("main", "#main")), None)
 
 
 def get_cwl_inputs(cwl_yaml):
@@ -143,8 +143,10 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
             return Parameter.temporal_interval(**arguments)
         elif cwl_type == "string":
             return Parameter.string(**arguments)
-        elif cwl_type == "int":
+        elif cwl_type in ("int", "long"):
             return Parameter.integer(**arguments)
+        elif cwl_type in ("float", "double"):
+            return Parameter.number(**arguments)
         elif isinstance(cwl_type, dict) and cwl_type.get("type") == "array":
             schema = {"type": "array", "items": None}
             if input_items := cwl_type.get("items"):
