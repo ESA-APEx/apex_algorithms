@@ -46,8 +46,8 @@
     },
    
     "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/95-cdse!tests_test_benchmarks.py__test_run_benchmark_delineate_anything_!actual/job-results.json",
-      "openEO.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/95-cdse!tests_test_benchmarks.py__test_run_benchmark_delineate_anything_!actual/openEO.tif"
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/delineate_anything/job-results.json",
+      "vectorcube.geojson": "https://s3.waw3-1.cloudferro.com/APEx-benchmarks/delineate_anything/vectorcube.geojson"
     }
   }
 ]

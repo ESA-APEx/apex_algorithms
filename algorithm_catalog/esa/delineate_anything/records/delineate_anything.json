@@ -127,13 +127,13 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "../images/header.png"
+      "href": "../images/delineate.png"
     },
     {
       "rel": "preview",
       "type": "image/png",
       "title": "Delineate Anything v2 - example instance segmentation output",
-      "href": "../images/header.png"
+      "href": "../images/delineate.png"
     },
     {
       "rel": "about",
