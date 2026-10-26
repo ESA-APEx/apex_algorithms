@@ -38,6 +38,18 @@
       "type": "text/html",
       "title": "McGill University",
       "href": "https://www.mcgill.ca"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://upload.wikimedia.org/wikipedia/en/thumb/2/29/McGill_University_CoA.svg/250px-McGill_University_CoA.svg.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://upload.wikimedia.org/wikipedia/en/thumb/2/29/McGill_University_CoA.svg/250px-McGill_University_CoA.svg.png"
     }
   ]
 }
