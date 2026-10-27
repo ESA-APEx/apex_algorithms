@@ -20,8 +20,7 @@
           "max_cloud_coverage": 9,
           "ndwi_threshold": 0.01,
           "simplify_tolerance": 10
-        },
-        "result": true
+        }
       },
       "saveresult1": {
         "process_id": "save_result",
