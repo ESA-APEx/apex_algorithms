@@ -6,9 +6,12 @@
     "process_graph": {
       "waterlines1": {
         "process_id": "waterlines_v1",
-        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/8637cd7600ff1abe2bebb6d7a1a322833f986ff5/algorithm_catalog/argans/waterlines/openeo_udp/waterlines.json",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/c9dddf4e841cacc745108a64546646222993848c/algorithm_catalog/argans/waterlines/openeo_udp/waterlines_v1.json",
         "arguments": {
-          "temporal_extent": ["2024-06-01", "2024-06-30"],
+          "temporal_extent": [
+            "2024-06-01",
+            "2024-06-30"
+          ],
           "spatial_extent": {
             "west": -95.145,
             "south": 29.062,
