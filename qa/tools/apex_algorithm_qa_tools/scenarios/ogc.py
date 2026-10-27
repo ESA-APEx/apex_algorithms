@@ -30,6 +30,7 @@ class OGCAPIBenchmarkScenario(BenchmarkScenario):
     application: str | None = None
     auth: OGCAPIAuth
     results: OGCAPIResults | None = None
+    properties: dict = dataclasses.field(default_factory=dict)
 
     @classmethod
     def from_dict(
@@ -50,6 +51,7 @@ class OGCAPIBenchmarkScenario(BenchmarkScenario):
             description=data.get("description"),
             endpoint=data["endpoint"],
             parameters=data.get("parameters", {}),
+            properties=data.get("properties", {}),
             auth=auth,
             namespace=namespace,
             application=application,

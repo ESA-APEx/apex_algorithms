@@ -54,6 +54,13 @@ The test suite supports two scenario types:
 
 ## Authentication
 
+OGC API process scenarios may define an optional `properties` object, for example
+`"properties": {"title": "APEx pattern-1 benchmark"}`. This is a Mate extension,
+not a standard OGC API Processes Part 1 execute field. Nonempty properties are
+included alongside `inputs` only when the endpoint hostname is exactly
+`processing.geohazards-tep.eu`; empty properties and properties for other hosts
+are omitted. The scenario's `parameters` remain the execute payload's `inputs`.
+
 The test suite defines a fixture `connection_factory` (in `conftest.py`)
 to create an authenticated `openeo.Connection` object for a given
 target openEO backend to be used by the benchmark tests.

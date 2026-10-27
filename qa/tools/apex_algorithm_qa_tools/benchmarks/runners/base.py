@@ -5,7 +5,10 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
-from apex_algorithm_qa_tools.scenarios import BenchmarkScenario
+from apex_algorithm_qa_tools.scenarios import (
+    BenchmarkScenario,
+    download_reference_data,
+)
 
 
 @dataclasses.dataclass
@@ -54,3 +57,12 @@ class BenchmarkRunner(ABC):
     @abstractmethod
     def download_actual(self, *, actual_dir: Path) -> list[Path]:
         pass
+
+    def download_reference(self, scenario: BenchmarkScenario, reference_dir: Path) -> Path:
+        return download_reference_data(scenario, reference_dir)
+
+    def can_check_job_results_validity(self) -> bool:
+        return False
+
+    def assert_job_results_validity(self, reference_dir: Path, actual_dir: Path):
+        raise NotImplementedError("This runner does not support custom result validation.")
