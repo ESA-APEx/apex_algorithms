@@ -107,7 +107,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/burned-area-severity-one-shot-0_1_1"
+      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/burned-area-severity-v3-0-4"
     },
     {
       "rel": "about",
