@@ -57,6 +57,36 @@ The following sections demonstrate how the various sections from the record are 
 
 In those cases where the service is not intended to be publicly available, the `properties.visibility` property in the record can be set to `private`. This ensures that the service will not be listed in the [APEx Algorithm Catalogue](https://algorithm-catalogue.apex.esa.int/). The default value for this property is `public`, meaning that if it is not specified, the service will be visible in the catalogue.
 
+## Certification Metadata and Categories
+
+Catalogue category badges are derived from optional structured metadata in the service record.
+
+- If `properties.certification` is omitted, the service is treated as **Community Contributed** (default).
+- If present, `properties.certification` must contain:
+  - `category`: `validated` or `r_and_d`
+  - `funding`: `esa` or `other`
+
+Example:
+
+```json
+"certification": {
+  "category": "validated",
+  "funding": "esa"
+}
+```
+
+Badge mapping:
+
+1. `category=validated` → **Validated**
+2. `category=r_and_d` → **R&D**
+3. no `certification` field → **Community Contributed**
+
+Suggested onboarding flow:
+
+1. Algorithm PI submits the record with default metadata (no `certification`) unless a reviewed category assignment is available.
+2. APEx/TO review confirms whether `validated` or `r_and_d` applies.
+3. Record is updated with the agreed `category` and `funding` values.
+
 ## Services Overview
 
 @tbl-overview-mapping illustrates how the various sections from the record are connected to the general overview of all the services in the APEx Service Catalogue as shown in @fig-overview.

@@ -1,10 +1,8 @@
 from pathlib import Path
-from typing import Any, Union, List
+from typing import Any, List, Union
 
 import requests
 import yaml
-
-import openeo
 from openeo.api.process import Parameter
 
 
@@ -19,12 +17,11 @@ def load_string_from_any(content: Union[str, Path]) -> str:
         resp.raise_for_status()
         return resp.text
     elif (
-            content.lower().endswith(".cwl")
-            or content.lower().endswith(".yaml")
-            and not "\n" in content
-            and not content.startswith("{")
+        content.lower().endswith(".cwl")
+        or content.lower().endswith(".yaml")
+        and "\n" not in content
+        and not content.startswith("{")
     ):
-
         with Path(content).open(mode="r", encoding="utf-8") as f:
             return f.read()
     else:
@@ -44,7 +41,7 @@ def get_cwl_main(cwl_yaml):
     if cwl_graph is None:
         return cwl_yaml
     else:
-        return next((item for item in cwl_graph if item.get("id") == "main"), None)
+        return next((item for item in cwl_graph if item.get("id") in ("main", "#main")), None)
 
 
 def get_cwl_inputs(cwl_yaml):
@@ -78,13 +75,13 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
         if isinstance(cwl_type, str) and cwl_type.endswith("?"):
             cwl_type = cwl_type[:-1]
             arguments["optional"] = True  # Hack
-            if not "default" in arguments:
+            if "default" not in arguments:
                 arguments["default"] = None
 
         if isinstance(cwl_type, list) and len(cwl_type) == 2 and "null" in cwl_type:
             cwl_type = next(t for t in cwl_type if t != "null")
             arguments["optional"] = True  # Hack
-            if not "default" in arguments:
+            if "default" not in arguments:
                 arguments["default"] = None
 
         if isinstance(cwl_type, str) and cwl_type.endswith("[]"):
@@ -138,16 +135,18 @@ def cwl_input_to_parameter(name: str, cwl_input_yaml: Any) -> Parameter:
                 {
                     "title": "No filter",
                     "description": "Don't filter spatially. All data is included in the data cube.",
-                    "type": "null"
-                }
+                    "type": "null",
+                },
             ]
             return Parameter(**arguments)
         if name == "temporal_extent":
             return Parameter.temporal_interval(**arguments)
         elif cwl_type == "string":
             return Parameter.string(**arguments)
-        elif cwl_type == "int":
+        elif cwl_type in ("int", "long"):
             return Parameter.integer(**arguments)
+        elif cwl_type in ("float", "double"):
+            return Parameter.number(**arguments)
         elif isinstance(cwl_type, dict) and cwl_type.get("type") == "array":
             schema = {"type": "array", "items": None}
             if input_items := cwl_type.get("items"):
