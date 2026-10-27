@@ -3,16 +3,13 @@ from pathlib import Path
 
 import openeo
 import yaml
-from openeo.api.process import Parameter
-from openeo.internal.graph_building import PGNode
-from openeo.rest.stac_resource import StacResource
 from openeo.rest.udp import build_process_dict
 
 from esa_apex_toolbox.algorithms import write_json
 from esa_apex_toolbox.cwl_to_udp_utils import (
-    get_cwl_main,
-    get_cwl_inputs,
     cwl_input_to_parameters,
+    get_cwl_inputs,
+    get_cwl_main,
     load_string_from_any,
     normalize_cwl_doc,
 )
@@ -57,6 +54,7 @@ def generate() -> dict:
         description=normalize_cwl_doc(get_cwl_main(cwl_yaml).get("doc")),
         parameters=parameters,
     )
+
 
 if __name__ == "__main__":
     j = generate()

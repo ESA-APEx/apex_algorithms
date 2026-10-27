@@ -87,7 +87,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "other"
+    "license": "other",
+    "certification": {
+      "category": "validated",
+      "funding": "esa"
+    }
   },
   "linkTemplates": [],
   "links": [

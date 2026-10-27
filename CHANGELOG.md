@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- Backwards-compatible algorithm discovery with case-insensitive provider,
+  platform, and keyword filters, plus `details=True` for parsed `Algorithm`
+  results. For example:
+  `repo.list_algorithms(provider="VITO", keywords=["Climate"], details=True)`.
+- `Algorithm.provider`, `Algorithm.platforms`, and `Algorithm.keywords`, with
+  safe defaults for missing discovery metadata.
+- `list_providers()`, `list_platforms()`, and `list_keywords()` discovery helpers.
+- Parallel raw record downloads and per-instance caching shared with
+  `get_algorithm()`; directory listings now honor the configured branch.
+
+### Fixed
+- Ignore non-UDP application links (such as CWL packages) when parsing UDP
+  metadata, allowing detailed discovery across the complete catalog.
+
 ## [released] - 2026-07-14
 
 ### Added

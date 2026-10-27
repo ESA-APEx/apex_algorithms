@@ -3,16 +3,15 @@ from pathlib import Path
 
 import openeo
 import yaml
-from openeo.api.process import Parameter
 from openeo.internal.graph_building import PGNode
 from openeo.rest.stac_resource import StacResource
 from openeo.rest.udp import build_process_dict
 
 from esa_apex_toolbox.algorithms import write_json
 from esa_apex_toolbox.cwl_to_udp_utils import (
-    get_cwl_main,
-    get_cwl_inputs,
     cwl_input_to_parameters,
+    get_cwl_inputs,
+    get_cwl_main,
     load_string_from_any,
     normalize_cwl_doc,
 )
@@ -45,10 +44,7 @@ def generate() -> dict:
 
     returns = {
         "description": "STAC metadata of the generated interferogram",
-        "schema": {
-            "type": "object",
-            "subtype": "stac"
-        }
+        "schema": {"type": "object", "subtype": "stac"},
     }
 
     return build_process_dict(
@@ -56,7 +52,7 @@ def generate() -> dict:
         process_id="sentinel1_sar_interferogram",
         description=normalize_cwl_doc(get_cwl_main(cwl_yaml).get("doc")),
         parameters=parameters,
-        returns= returns,
+        returns=returns,
         categories=["sentinel-1", "InSAR"],
     )
 
