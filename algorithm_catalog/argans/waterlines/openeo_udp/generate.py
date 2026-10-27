@@ -7,12 +7,11 @@ from openeo.api.process import Parameter
 from openeo.rest.connection import Connection
 from openeo.rest.datacube import DataCube
 from openeo.rest.udp import build_process_dict
-
 from s2_index import (
-    s2_index_mask,
-    DEFAULT_S2_COLLECTION,
     DEFAULT_MAX_CLOUD_COVER,
+    DEFAULT_S2_COLLECTION,
     WATERLAND_THRESHOLDS,
+    s2_index_mask,
 )
 
 
@@ -175,5 +174,5 @@ def generate() -> dict:
 
 
 if __name__ == "__main__":
-    with open(Path(__file__).parent / "waterlines.json", "w") as f:
+    with open(Path(__file__).parent / "waterlines_v1.json", "w") as f:
         json.dump(generate(), f, indent=2)
