@@ -9,7 +9,7 @@
     "updated": "2026-10-06T00:00:00Z",
     "type": "algorithm_provider",
     "title": "Assimila",
-    "description": "Assimila develops Earth observation and geospatial analytics solutions.",
+    "description": "Assimila uses satellite data and weather information to address real world problems.",
     "keywords": [],
     "language": {
       "code": "en-US",
@@ -25,7 +25,7 @@
     "themes": [],
     "license": "other",
     "acl": {
-      "admin": ["@vito.be"]
+      "admin": ["@assimila.eu", "@vito.be"]
     }
   },
   "linkTemplates": [],
@@ -34,7 +34,7 @@
       "rel": "website",
       "type": "text/html",
       "title": "Assimila",
-      "href": "https://www.assimila.eu"
+      "href": "https://www.assimila.earth"
     },
     {
       "rel": "logo-light",
