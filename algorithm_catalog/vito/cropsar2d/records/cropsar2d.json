@@ -95,19 +95,19 @@
             "rel": "application",
             "type": "application/vnd.openeo+json;type=process",
             "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92171ae86087fe8ddde737292032cd1fff167a3f/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f23a5f1ec3f5a67f1dc45b5abaae9ef61858124d/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json"
         },
         {
             "rel": "service",
             "type": "application/json",
-            "title": "VITO openEO backend",
-            "href": "https://openeo.vito.be/openeo"
+            "title": "Terrascope openEO backend",
+            "href": "https://openeo.terrascope.be/openeo"
         },
         {
             "rel": "platform",
             "type": "application/json",
             "title": "VITO",
-            "href": "../../../../platform_catalog/vito.json"
+            "href": "../../../../platform_catalog/terrascope.json"
         },
         {
             "rel": "provider",
@@ -119,7 +119,7 @@
             "rel": "notebook",
             "type": "application/x-ipynb+json",
             "title": "Example Jupyter Notebook to calculate the CropSAR products",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92171ae86087fe8ddde737292032cd1fff167a3f/algorithm_catalog/vito/cropsar2d/notebooks/execute-udp.ipynb"
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/78a0b08ee39177849435f0700013d31a2498a4cf/algorithm_catalog/vito/cropsar2d/notebooks/cropsar2d.ipynb"
         },
         {
             "rel": "thumbnail",
@@ -132,6 +132,12 @@
             "type": "image/tif",
             "title": "Example output",
             "href": "https://s3.waw3-1.cloudferro.com/apex-examples/cropsar2d/openEO.nc"
+        },
+        {
+            "rel": "webapp",
+            "type": "text/html",
+            "title": "OpenEO Web Editor",
+            "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=cropsar2d&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/f23a5f1ec3f5a67f1dc45b5abaae9ef61858124d/algorithm_catalog/vito/cropsar2d/openeo_udp/cropsar2d.json&server=https://openeo.terrascope.be"
         }
     ]
 }

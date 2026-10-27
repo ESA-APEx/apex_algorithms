@@ -1,0 +1,41 @@
+[
+    {
+        "id": "bsi",
+        "type": "openeo",
+        "description": "The Bare Soil Index (BSI) process uses Sentinel-2 imagery to identify patches of land that are bare (exposed soil) versus those covered by vegetation. It works by combining four different bands of light captured by the satellite: blue (B02), red (B04), near-infrared (B08), and shortwave infrared (B11), using the formula: \n $$BSI = ((B11 + B04) - (B02 + B08)) / ((B11 + B04) + (B02 + B08))$$. Bare soil and vegetation reflect these different wavelengths of light in distinct ways, healthy plants strongly reflect near-infrared light and absorb red and blue light, while bare soil reflects red and shortwave infrared light more evenly and lacks the strong near-infrared signature of plants. By comparing the combined red and shortwave-infrared signal against the combined blue and near-infrared signal, and then scaling the result so it always falls between -1 and 1, BSI produces a value that is easy to compare across different fields, dates, and lighting conditions. In general, higher (more positive) BSI values indicate bare or exposed soil, such as freshly plowed fields, fallow land, or areas with sparse crop cover, while lower (more negative) values indicate healthy, dense vegetation. This makes BSI especially useful in agriculture for monitoring field conditions, tracking planting and harvest cycles, detecting soil erosion, or identifying areas that may need attention before the next growing season.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "BSI1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "east": 5.1,
+                        "north": 51.23,
+                        "south": 51.21,
+                        "west": 5.05
+                    },
+                    "temporal_extent": [
+                        "2025-05-01",
+                        "2025-05-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/5a816006b2948d2bcbc403c6bcdeb6792086082f/src/main/python/utils/openeo_udp/bsi.json",
+                "process_id": "BSI"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "BSI1"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP96!tests_test_benchmarks.py__test_run_benchmark_bsi_!actual/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP96!tests_test_benchmarks.py__test_run_benchmark_bsi_!actual/openEO.nc"
+        }
+    }
+]

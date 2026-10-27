@@ -31,7 +31,7 @@ def generate() -> dict:
     """
     Generate the UDP process graph for CropSAR1d.
     """
-    eoconn = openeo.connect("openeo.vito.be").authenticate_oidc()
+    eoconn = openeo.connect("https://openeofed.dataspace.copernicus.eu").authenticate_oidc()
 
     # define input parameters
     print("defining parameters")

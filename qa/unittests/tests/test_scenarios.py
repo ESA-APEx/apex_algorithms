@@ -2,12 +2,11 @@ from pathlib import Path
 
 import jsonschema
 import pytest
-from apex_algorithm_qa_tools.scenarios import (
-    BenchmarkScenario,
-    get_benchmark_scenarios,
-    lint_benchmark_scenario,
-)
 
+from apex_algorithm_qa_tools.scenarios.common import get_benchmark_scenarios, lint_benchmark_scenario
+from apex_algorithm_qa_tools.scenarios.factory import _benchmark_factory
+from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
+from apex_algorithm_qa_tools.scenarios.openeo import openEOBenchmarkScenario
 
 def test_get_benchmark_scenarios():
     scenarios = get_benchmark_scenarios()
@@ -31,10 +30,11 @@ def test_lint_scenario(scenario: BenchmarkScenario):
     assert isinstance(scenario.source, Path) and scenario.source.exists()
 
 
-class TestBenchmarkScenario:
-    def test_init_minimal(self):
-        bs = BenchmarkScenario(
+class TestOpenEOBenchmarkScenario:
+    def test_openeo_init_minimal(self):
+        bs = openEOBenchmarkScenario(
             id="foo",
+            type="openeo",
             backend="openeo.test",
             process_graph={},
         )
@@ -46,8 +46,8 @@ class TestBenchmarkScenario:
         assert bs.reference_data == {}
         assert bs.reference_options == {}
 
-    def test_validation_minimal(self):
-        bs = BenchmarkScenario.from_dict(
+    def test_openeo_validation_minimal(self):
+        bs = openEOBenchmarkScenario.from_dict(
             {
                 "id": "foo",
                 "type": "openeo",
@@ -65,4 +65,40 @@ class TestBenchmarkScenario:
 
     def test_validation_missing_essentials(self):
         with pytest.raises(jsonschema.ValidationError):
-            BenchmarkScenario.from_dict({})
+            openEOBenchmarkScenario.from_dict({})
+
+
+class TestBenchmarkFactory:
+    def test_openeo_factory(self):
+        path = Path("dummy_scenarios.json")
+        scenario = _benchmark_factory(
+            item={
+                "id": "foo",
+                "type": "openeo",
+                "backend": "openeo.test",
+                "process_graph": {},
+            },
+            path=path,
+        )
+
+        assert isinstance(scenario, openEOBenchmarkScenario)
+        assert scenario.id == "foo"
+        assert scenario.type == "openeo"
+        assert scenario.source == path
+
+    def test_factory_missing_type(self):
+        with pytest.raises(
+            AssertionError,
+            match="Missing required 'type' field in benchmark scenario",
+        ):
+            _benchmark_factory(item={"type": None}, path=Path("dummy.json"))
+
+    def test_factory_unsupported_type(self):
+        with pytest.raises(
+            ValueError,
+            match="Unsupported benchmark scenario type: ogcapi-processes",
+        ):
+            _benchmark_factory(
+                item={"type": "ogcapi-processes"},
+                path=Path("dummy.json"),
+            )

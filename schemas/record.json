@@ -2,6 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "APEx Service - OGC API Record",
   "type": "object",
+  "required": [
+    "id",
+    "type",
+    "conformsTo",
+    "geometry",
+    "properties",
+    "links"
+  ],
   "properties": {
     "id": {
       "type": "string",
@@ -136,7 +144,14 @@
               "Climate",
               "Soils",
               "Radar",
-              "Coastal"
+              "Coastal",
+              "Radar",
+              "Methane",
+              "Floods",
+              "Hydrology",
+              "Geology",
+              "Mining/Drilling Site",
+              "Mineral Resources"
             ]
           },
           "minItems": 1,
@@ -420,6 +435,33 @@
         "license": {
           "type": "string",
           "description": "License that is applicable for the APEx service."
+        },
+        "certification": {
+          "type": "object",
+          "description": "Optional metadata used to derive catalogue certification and funding badges. If omitted, the service is treated as community contributed.",
+          "required": [
+            "category",
+            "funding"
+          ],
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Service category assigned during onboarding review.",
+              "enum": [
+                "validated",
+                "r_and_d"
+              ]
+            },
+            "funding": {
+              "type": "string",
+              "description": "Funding origin for the service.",
+              "enum": [
+                "esa",
+                "other"
+              ]
+            }
+          },
+          "additionalProperties": false
         }
       }
     },
@@ -477,7 +519,8 @@
               "code",
               "thumbnail",
               "cite-as",
-              "notebook"
+              "notebook",
+              "related"
             ]
           },
           "type": {

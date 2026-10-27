@@ -10,7 +10,7 @@
     "created": "2026-03-17T13:00:00Z",
     "updated": "2026-03-17T13:00:00Z",
     "type": "service",
-    "title": "Temperate forests optimized Leaf-Area-Index (LAI) product based on Sentinel-2",
+    "title": "Temperate forests optimized Leaf-Area-Index (LAI) product based on Sentinel-2 (EBV-enabling product)",
     "description": "Provides leaf area index (LAI) at 10m resolution from 2015 onwards for temperate forests.",
     "keywords": [
       "Vegetation",
@@ -63,7 +63,7 @@
         "name": "GeoTiff"
       }
     ],
-    "license": "proprietary"
+    "license": "MIT"
   },
   "linkTemplates": [],
   "links": [

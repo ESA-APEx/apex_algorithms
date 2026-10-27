@@ -1,0 +1,59 @@
+{
+    "id": "rayview",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-05-21T00:00:00Z",
+        "updated": "2026-05-21T00:00:00Z",
+        "type": "algorithm_provider",
+        "title": "Earth RayView Ltd",
+        "description": "Earth RayView Ltd is a UK-registered private limited company based in Oxford, England, co-founded by Dr Rui Song and Dr Chenchen Huang. The company specialises in applied Earth observation science, climate-energy modelling, and spatial decision-support services, with a particular focus on renewable-energy transitions.",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [
+            {
+                "name": "Rui Song",
+                "organization": "Earth RayView Ltd",
+                "emails": [
+                    {
+                        "value": "ruisong@earthrayview.co.uk"
+                    }
+                ],
+                "roles": [
+                    "principal investigator"
+                ]
+            }
+        ],
+        "themes": [],
+        "license": "other",
+        "acl": {
+            "admin": ["@earthrayview.co.uk"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "logo-light",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/5b07012daaa0eb6a1c2da25e21adb72f0d0670f3/algorithm_catalog/rayview/logo.png"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/png",
+            "title": "Logo",
+            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/5b07012daaa0eb6a1c2da25e21adb72f0d0670f3/algorithm_catalog/rayview/logo.png"
+        }
+    ]
+}

@@ -36,7 +36,7 @@
             "from_node": "dateshift1"
           }
         ],
-        "url": "https://stac.openeo.vito.be/collections/RAMONA_HERBACEOUS_BIOMASS"
+        "url": "https://eoresults.esa.int/stac/collections/ramona_hrb"
       }
     },
     "textconcat2": {

@@ -118,7 +118,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/s1-coherence-intensity.0.7.8.cwl"
+      "href": "oci://cr.terradue.com/eo-services/app-packages/s1-slc-coherence-intensity:1.3.2"
     },
     {
       "rel": "webapp",

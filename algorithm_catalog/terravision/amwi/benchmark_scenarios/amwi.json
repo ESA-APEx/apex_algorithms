@@ -1,0 +1,41 @@
+[
+    {
+        "id": "amwi",
+        "type": "openeo",
+        "description": "The Anomaly Weighted Index (AMWI) from Sentinel-2 imagery to identify areas that deviate from their expected spectral behaviour. AMWI highlights potential anomalies related to vegetation stress, crop damage, land degradation, environmental disturbances, flooding impacts, and other surface changes. In other words, it compares red and blue light reflected from the ground to highlight areas that stand out from their surroundings, such as dust, smoke, algae blooms, or unusual land surfaces, making it easier to spot potential anomalies at a glance.\n\n- **Positive AMWI values** indicate surfaces where red reflectance dominates over blue (e.g. vegetated or soil-dominated areas, or scenes with reduced blue-band scattering).\n- **Negative AMWI values** indicate surfaces or conditions where blue reflectance dominates (e.g. water bodies, shadow, haze/aerosol-affected pixels, or certain built-up materials).\n- **Values near zero** suggest a balanced red-blue response, typical of neutral or mixed surfaces.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "AMWI1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "east": 5.1,
+                        "north": 51.23,
+                        "south": 51.21,
+                        "west": 5.05
+                    },
+                    "temporal_extent": [
+                        "2025-05-01",
+                        "2025-05-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ITA-TECNOLOGIA/Ard-Terravision/5a816006b2948d2bcbc403c6bcdeb6792086082f/src/main/python/utils/openeo_udp/amwi.json",
+                "process_id": "AMWI"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "AMWI1"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP97!tests_test_benchmarks.py__test_run_benchmark_amwi_!actual/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP97!tests_test_benchmarks.py__test_run_benchmark_amwi_!actual/openEO.nc"
+        }
+    }
+]

@@ -41,12 +41,15 @@ with increased verbosity and live logging at DEBUG level:
 pytest -vv --log-cli-level=DEBUG -k '[max_ndvi]'
 ```
 
-## `openeo` client library
+## Client libraries
 
-The test suite heavily relies on the
-[`openeo` Python client library](https://open-eo.github.io/openeo-python-client/)
-to interact with the openEO backends, e.g. to create openEO jobs,
-wait for their completion, retrieve their results, ...
+The test suite supports two scenario types:
+- `openeo`: uses the
+    [`openeo` Python client library](https://open-eo.github.io/openeo-python-client/)
+    to create jobs, wait for completion and download results.
+- `ogcapi-processes`: uses the
+    `ogc-api-processes-client` Python library
+    to execute OGC API Processes, poll job status and download result assets.
 
 
 ## Authentication
