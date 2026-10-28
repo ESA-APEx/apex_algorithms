@@ -51,7 +51,7 @@
                         "2022-12-31"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/whittaker/openeo_udp/whittaker.json",
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/mogpr_to_py311/whittaker/openeo_udp/whittaker.json",
                 "process_id": "whittaker"
             }
         },
