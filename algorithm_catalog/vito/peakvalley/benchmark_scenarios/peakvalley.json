@@ -22,7 +22,7 @@
                         "2021-12-31"
                     ]
                 },
-                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/main/peakvalley/openeo_udp/peakvalley.json",
+                "namespace": "https://raw.githubusercontent.com/VITObelgium/openeo_algorithm_catalog/refs/heads/mogpr_to_py311/peakvalley/openeo_udp/peakvalley.json",
                 "process_id": "peakvalley"
             },
             "saveresult1": {
