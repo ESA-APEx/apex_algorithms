@@ -8,10 +8,10 @@
   "geometry": null,
   "properties": {
     "created": "2026-09-18T00:00:00Z",
-    "updated": "2026-09-18T00:00:00Z",
+    "updated": "2026-10-23T00:00:00Z",
     "type": "service",
     "title": "Delineate Anything v2: Global Foundation Model for Field Boundary Detection",
-    "description": "Delineate Anything v2 is a resolution-agnostic global foundation model for agricultural field boundary detection from satellite imagery (Lavreniuk et al., ECCV 2026, arXiv:2607.19069). Built on a YOLO instance-segmentation backbone and trained on FBIS-73M — a 73-million-instance dataset spanning 61 countries and resolutions from 0.25 m to 10 m — provides an accurate and efficient delineation methodology. This APEx service wraps the openEO workflow published in the Delineate-Anything repository: it composes a Best-Available-Pixel (BAP) Sentinel-2 L2A RGB mosaic over the requested geometry and temporal window, then applies the Delineate Anything v2 ONNX model tile-wise (512 x 512 with overlap) via a Python UDF to return per-field instance labels as a GeoTIFF. The backbone of the model was transfered to the .onnx format, whilst the segmentation head was reimplemented within the UDF.",
+    "description": "Delineate Anything v2 is a resolution-agnostic global foundation model for agricultural field boundary detection from satellite imagery (Lavreniuk et al., ECCV 2026, arXiv:2607.19069). Built on a YOLO instance-segmentation backbone and trained on FBIS-73M — a 73-million-instance dataset spanning 61 countries and resolutions from 0.25 m to 10 m — provides an accurate and efficient delineation methodology. This APEx service wraps the openEO workflow published in the Delineate-Anything repository: it composes a Best-Available-Pixel (BAP) Sentinel-2 L2A RGB mosaic over the requested geometry and temporal window, then applies the Delineate Anything v2 ONNX model tile-wise (512 x 512 with overlap) via a Python UDF. The resulting instance labels are polygonised and a vector UDF merges fields split by chunk seams, returning one polygon per detected field (with a stable `field_id`) as a vector cube, ready for export as GeoJSON. Optional `confidence_threshold` and `iou_threshold` parameters tune detection filtering. The backbone of the model was transfered to the .onnx format, whilst the segmentation head was reimplemented within the UDF.",
     "keywords": [
       "Agriculture",
       "Sentinel-2",
@@ -86,7 +86,7 @@
     ],
     "formats": [
       {
-        "name": "GeoTIFF"
+        "name": "GeoJSON"
       }
     ],
     "license": "CC-BY-4.0"
@@ -127,13 +127,13 @@
       "rel": "thumbnail",
       "type": "image/png",
       "title": "Thumbnail image",
-      "href": "../images/header.png"
+      "href": "../images/delineate.png"
     },
     {
       "rel": "preview",
       "type": "image/png",
       "title": "Delineate Anything v2 - example instance segmentation output",
-      "href": "../images/header.png"
+      "href": "../images/delineate.png"
     },
     {
       "rel": "about",
@@ -164,6 +164,12 @@
       "type": "text/html",
       "title": "APEx Delineate Anything Explorer",
       "href": "https://explorer.delineate-anything.apex.esa.int/"
+    },
+    {
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
+      "title": "Delineate Anything example notebook",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/esa/delineate_anything/delineate_anything_example.ipynb"
     },
     {
       "rel": "webapp",
