@@ -5,8 +5,11 @@ on:
     inputs:
       scenario:
         description: "Scenario name filter (passed to pytest -k). For example: 'biopar'"
-        required: true
+        required: false
         type: string
+        default: ""
+  schedule:
+    - cron: "37 */4 * * *"
   
 
 jobs:
@@ -47,11 +50,11 @@ jobs:
           cd qa/benchmarks
           mkdir report
           mkdir tmp_path_root
-          if [[ -z "${BENCHMARK_SCENARIO//[[:space:]]/}" ]]; then
-            echo "::error::A nonempty scenario filter is required."
-            exit 1
+          if [ -n "$BENCHMARK_SCENARIO" ]; then
+            filter_args=(-k "$BENCHMARK_SCENARIO")
+          else
+            filter_args=(--random-subset=1)
           fi
-          filter_args=(-k "$BENCHMARK_SCENARIO")
           pytest \
             -vv \
             --log-cli-level=INFO \
