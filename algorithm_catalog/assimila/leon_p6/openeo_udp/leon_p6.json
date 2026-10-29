@@ -1,0 +1,348 @@
+{
+  "process_graph": {
+    "forestbaseline1": {
+      "process_id": "forest_baseline",
+      "arguments": {
+        "canopy_cover_threshold": {
+          "from_parameter": "canopy_cover_threshold"
+        },
+        "min_connected_area": {
+          "from_parameter": "min_connected_area"
+        },
+        "natural_forest_threshold": {
+          "from_parameter": "natural_forest_threshold"
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        }
+      },
+      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/LEON-P6/algorithm_catalog/assimila/leon_p6/openeo_udp/forest_baseline.json"
+    },
+    "s1logisticprocessing1": {
+      "process_id": "s1_logistic_processing",
+      "arguments": {
+        "logistic_steepness_parameter": {
+          "from_parameter": "logistic_steepness_parameter"
+        },
+        "logistic_window_size": {
+          "from_parameter": "logistic_window_size"
+        },
+        "orbit_state": {
+          "from_parameter": "orbit_state"
+        },
+        "relative_orbit": {
+          "from_parameter": "relative_orbit"
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "spatial_resolution": {
+          "from_parameter": "spatial_resolution"
+        },
+        "speckle_filter_cv_noise": {
+          "from_parameter": "speckle_filter_cv_noise"
+        },
+        "speckle_filter_radius": {
+          "from_parameter": "speckle_filter_radius"
+        },
+        "speckle_filter_temporal_window": {
+          "from_parameter": "speckle_filter_temporal_window"
+        }
+      },
+      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/LEON-P6/algorithm_catalog/assimila/leon_p6/openeo_udp/s1_logistic_processing.json"
+    },
+    "deforestation1": {
+      "process_id": "deforestation",
+      "arguments": {
+        "flattening_threshold": {
+          "from_parameter": "flattening_threshold"
+        },
+        "forest_baseline_datacube": {
+          "from_node": "forestbaseline1"
+        },
+        "logistic_sse_threshold": {
+          "from_parameter": "logistic_sse_threshold"
+        },
+        "min_connected_area": {
+          "from_parameter": "min_connected_area"
+        },
+        "sentinel_1_datacube": {
+          "from_node": "s1logisticprocessing1"
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "spatial_resolution": {
+          "from_parameter": "spatial_resolution"
+        },
+        "temporal_variability_threshold": {
+          "from_parameter": "temporal_variability_threshold"
+        }
+      },
+      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/LEON-P6/algorithm_catalog/assimila/leon_p6/openeo_udp/deforestation.json"
+    },
+    "KPIs1": {
+      "process_id": "KPIs",
+      "arguments": {
+        "cropland_probability_threshold": {
+          "from_parameter": "cropland_probability_threshold"
+        },
+        "decimal_year_of_deforestation_datacube": {
+          "from_node": "deforestation1"
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "spatial_resolution": {
+          "from_parameter": "spatial_resolution"
+        }
+      },
+      "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/LEON-P6/algorithm_catalog/assimila/leon_p6/openeo_udp/KPIs.json",
+      "result": true
+    }
+  },
+  "id": "leon_p6",
+  "summary": "End-to-end forest-loss KPIs",
+  "description": "Detect deforestation from Sentinel-1 and aggregate forest-change KPIs by Uganda ADM-4 administrative unit. 1. Construct a 2020 natural-forest baseline. 2. Process Sentinel-1 backscatter and fit a logistic curve per pixel. 3. Detect the decimal year of deforestation. 4. Sum forest-stock, annual forest-loss, and forest-loss-to-cropland areas (ha) over ADM-4 geometries. The returned vector cube contains those KPIs per administrative unit.",
+  "returns": {
+    "description": "A vector cube, with columns (bands) for each KPI",
+    "schema": {
+      "type": "object",
+      "subtype": "vector-cube"
+    }
+  },
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "default": {
+        "west": 30.55,
+        "south": 1.07,
+        "east": 31.23,
+        "north": 1.55
+      },
+      "optional": true
+    },
+    {
+      "name": "canopy_cover_threshold",
+      "description": "Minimum canopy cover to be considered forest. Units: percent. Should be one of (10, 20, 30, 40, 50, 60, 70, 80, 90). A value of 30 implies > 30% canopy cover. ",
+      "schema": {
+        "type": "number"
+      },
+      "default": 30,
+      "optional": true
+    },
+    {
+      "name": "natural_forest_threshold",
+      "description": "Minimum likelihood to be considered natural forest. Units: fraction. A value of 0.08 implies > 8% likelihood. ",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.08,
+      "optional": true
+    },
+    {
+      "name": "min_connected_area",
+      "description": "Minimum connected area to be considered forest. Units: m^2",
+      "schema": {
+        "type": "number"
+      },
+      "default": 10000,
+      "optional": true
+    },
+    {
+      "name": "orbit_state",
+      "description": "The orbit state to process (ascending, descending)",
+      "schema": {
+        "type": "string"
+      },
+      "default": "ascending",
+      "optional": true
+    },
+    {
+      "name": "relative_orbit",
+      "description": "The relative orbit to process",
+      "schema": {
+        "type": "number"
+      },
+      "default": 101,
+      "optional": true
+    },
+    {
+      "name": "speckle_filter_radius",
+      "description": "The radius of the speckle filter. Units: pixels",
+      "schema": {
+        "type": "number"
+      },
+      "default": 2,
+      "optional": true
+    },
+    {
+      "name": "speckle_filter_cv_noise",
+      "description": "The coefficient of variation of the speckle noise. In multi-looked data, this takes the value of 1 / sqrt(ENL), where ENL is the Equivalent Number of Looks.",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.5,
+      "optional": true
+    },
+    {
+      "name": "speckle_filter_temporal_window",
+      "description": "The temporal window of the speckle filter. Units: pixels",
+      "schema": {
+        "type": "number"
+      },
+      "default": 5,
+      "optional": true
+    },
+    {
+      "name": "spatial_resolution",
+      "description": [
+        "The spatial resolution to process. Units: meters. ",
+        "Data are resampled to this resolution. "
+      ],
+      "schema": {
+        "type": "number"
+      },
+      "default": 30,
+      "optional": true
+    },
+    {
+      "name": "logistic_window_size",
+      "description": "The window size (number of observations) of the logistic curve fit",
+      "schema": {
+        "type": "number"
+      },
+      "default": 11,
+      "optional": true
+    },
+    {
+      "name": "logistic_steepness_parameter",
+      "description": "The steepness parameter of the logistic curve fit. Units: dimensionless",
+      "schema": {
+        "type": "number"
+      },
+      "default": -2.0,
+      "optional": true
+    },
+    {
+      "name": "temporal_variability_threshold",
+      "description": "Exclude any pixels with temporal standard deviation below this threshold. Units: dB",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.5,
+      "optional": true
+    },
+    {
+      "name": "flattening_threshold",
+      "description": "Exclude any pixels with flattening below this threshold. Units: dimensionless",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.12,
+      "optional": true
+    },
+    {
+      "name": "logistic_sse_threshold",
+      "description": "Exclude any pixels with Sum of Squared Errors (SSE) above this threshold. Units: dB^2",
+      "schema": {
+        "type": "number"
+      },
+      "default": 18.3,
+      "optional": true
+    },
+    {
+      "name": "cropland_probability_threshold",
+      "description": "Threshold for cropland probability, above which a pixel is considered cropland. Units: fraction",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.1,
+      "optional": true
+    }
+  ]
+}
