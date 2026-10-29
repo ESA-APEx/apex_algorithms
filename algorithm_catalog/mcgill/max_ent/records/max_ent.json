@@ -1,0 +1,115 @@
+{
+  "id": "max_ent",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "properties": {
+    "created": "2026-10-26T00:00:00Z",
+    "updated": "2026-10-26T00:00:00Z",
+    "type": "service",
+    "title": "MaxEnt Species Distribution Model",
+    "description": "Species distribution model using MaxEnt, based on GBIF occurrences and GEO BON STAC environmental layers. Implemented as a CWL pipeline.",
+    "cost_estimate": 0,
+    "cost_unit": "platform credits per km\u00b2",
+    "keywords": [
+      "Statistical Applications",
+      "Data Analysis and Visualization"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Emile Sonneveld",
+        "position": "Software Engineer",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://github.com/EmileSonneveld/",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "implementor"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "BIODIVERSITY"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTiff"
+      }
+    ],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/mcgill/max_ent/openeo_udp/max_ent.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "McGill University",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=max_ent&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/mcgill/max_ent/openeo_udp/max_ent.json&server=https://openeofed.dataspace.copernicus.eu"
+    }
+  ]
+}

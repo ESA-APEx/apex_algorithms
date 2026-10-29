@@ -1,0 +1,360 @@
+{
+  "process_graph": {
+    "runudf1": {
+      "process_id": "run_udf",
+      "arguments": {
+        "context": {
+          "SDM>runMaxent.yml@108|fc": {
+            "from_parameter": "feature_classes"
+          },
+          "SDM>runMaxent.yml@108|partition_type": {
+            "from_parameter": "partition_type"
+          },
+          "SDM>runMaxent.yml@108|rm": {
+            "from_parameter": "regularization_multiplier"
+          },
+          "SDM>selectBackground.yml@40|method_background": {
+            "from_parameter": "method_background"
+          },
+          "SDM>selectBackground.yml@40|n_background": {
+            "from_parameter": "number_of_background_points"
+          },
+          "STAC>createCollection.yml@153|collection_description": {
+            "from_parameter": "collection_description"
+          },
+          "STAC>createCollection.yml@153|collection_license": {
+            "from_parameter": "collection_license"
+          },
+          "STAC>createCollection.yml@153|collection_name": {
+            "from_parameter": "collection_name"
+          },
+          "condaPackURL": {
+            "from_parameter": "condapackurl"
+          },
+          "data>GBIFHeatmapFromSTAC.yml@139|taxa": {
+            "from_parameter": "taxonomic_group"
+          },
+          "data>loadFromStac.yml@144|collections_items": {
+            "from_parameter": "stac_1_collection_items"
+          },
+          "data>loadFromStac.yml@144|stac_url": {
+            "from_parameter": "stac_1_url"
+          },
+          "data>loadFromStac.yml@150|collections_items": {
+            "from_parameter": "stac_2_collection_items"
+          },
+          "data>loadFromStac.yml@150|stac_url": {
+            "from_parameter": "stac_2_url"
+          },
+          "environment": {
+            "from_parameter": "environment"
+          },
+          "pipeline@121": {
+            "from_parameter": "taxa_list"
+          },
+          "pipeline@128": {
+            "from_parameter": "spatial_resolution"
+          },
+          "pipeline@145": {
+            "from_parameter": "minimum_year_or_start_date"
+          },
+          "pipeline@146": {
+            "from_parameter": "maximum_year_or_end_date"
+          },
+          "pipeline@147": {
+            "from_parameter": "number_of_folds"
+          },
+          "pipeline@148": {
+            "from_parameter": "start_date"
+          },
+          "pipeline@149": {
+            "from_parameter": "end_date"
+          },
+          "pipeline@151": {
+            "from_parameter": "temporal_resolution"
+          },
+          "pipeline@46": {
+            "from_parameter": "number_of_runs"
+          }
+        },
+        "data": null,
+        "runtime": "EOAP-CWL",
+        "udf": "https://emilesonneveld.be/dropbox_proxy/work/VITO/VITO2026/BiaB/444/SDM_maxEnt_multi_STAC_tested.cwl"
+      },
+      "result": true
+    }
+  },
+  "id": "max_ent",
+  "description": "Description:\n## Introduction \nSpecies distributions are an important [Essential Biodiversity Variable (EBV)](https://geobon.org/ebvs/what-are-ebvs/) in the species populations class. Knowing where species are likely to occur is essential for understanding biodiversity patterns, identifying conservation priorities, assessing potential impacts of environmental change, and supporting biodiversity indicators. However, species occurrence data are often sparse, unevenly distributed, and affected by spatial and taxonomic sampling bias. Species distribution models (SDMs) help fill these gaps by estimating where suitable environmental conditions occur for a species based on known observations and environmental predictors (Peterson, 2001; Elith and Leathwick, 2009).  \n\nThe MaxEnt pipeline builds a species distribution model using occurrence records from the [Global Biodiversity Information Facility (GBIF)](https://www.gbif.org/) and environmental raster layers from the [GEO BON STAC catalog](https://stac.geobon.org/). The pipeline retrieves GBIF observations for the selected taxon or taxa, cleans occurrence coordinates, removes highly collinear environmental predictors, generates background points, and fits a MaxEnt model using the ENMeval R package (Kass et al. 2021). MaxEnt is a presence-background modeling approach, meaning it compares known species presences with background environmental conditions across the study area. The MaxEnt SDM is run by 1\\) partitioning occurrence and background points into subsets for training and evaluation, 2\\) building the model with different algorithmic settings (model tuning), and 3\\) evaluating their performance ([see package vignette](https://jamiemkass.github.io/ENMeval/articles/ENMeval-2.0-vignette.html#partition)). Lastly, the pipeline computes the 95% confidence interval using bootstrapping and cross validation techniques.  \n\nThe pipeline evaluates different MaxEnt settings, including feature classes and regularization multipliers, and selects a tuned model based on model performance. It produces a habitat suitability prediction raster, cleaned occurrence records, selected environmental predictors, a GBIF download DOI, and a raster summarizing variability among model runs.  \n## Uses\nThe MaxEnt pipeline can be used to estimate the potential distribution or relative habitat suitability of one or more species within a selected study area. Outputs can support conservation planning, sampling prioritization, identification of biodiversity hotspots, protected area planning, risk assessment for species of conservation concern, and environmental impact assessments.  \n\nThe results can also be used as inputs to other biodiversity analyses and indicators, such as identifying areas where species are likely to occur, mapping speciesrichness,comparing predicted habitat suitability across regions, or highlighting areas where additional occurrence sampling may be needed. Because the pipeline retrieves both GBIF observations and environmental predictor layers, it provides a reproducible workflow for generating species distribution maps from public biodiversity and environmental data. \n## Pipeline limitations\n* MaxEnt uses presence-background data, not confirmed absence data. Predictions should be interpreted as relative habitat suitability or relative occurrence potential, not confirmed species presence or absence.\n* GBIF records may contain spatial, taxonomic, and temporal biases. The pipeline applies coordinate-cleaning steps, but users should still inspect the cleaned presences and interpret results cautiously, especially for poorly sampled taxa or regions.\n* Model quality depends strongly on the number and quality of occurrence records. Very small numbers of cleaned presences may produce unreliable predictions.\n* The choice of environmental predictors, background sampling method, feature classes, regularization multipliers, and partitioning method can affect model outputs. Users should treat the model as sensitive to these settings, especially for final analyses.\n* Environmental predictors must be ecologically relevant to the species being modeled. Including many correlated or irrelevant predictors can reduce interpretability and increase overfitting risk.\n* The pipeline estimates suitability based on the predictor layers supplied by the user. It does not directly account for dispersal limits, biotic interactions, land-use barriers, species detectability, or future environmental change unless those factors are represented in the input data.\n* Larger study areas, finer spatial resolutions, more environmental predictors, and more model runs increase computation time and memory use.\n## Before you start\nA GBIF API key is required to run this pipeline and can be added into the runner.env file.  \n\nBefore running the pipeline, choose the taxon or taxa you want to model and make sure the names match the GBIF taxonomic backbone. Species names can be checked on the [GBIF website](https://www.gbif.org/).  \n\nSelect a study area using the bounding box and CRS input. The CRS and spatial resolution determine the scale of the analysis, so choose a CRS appropriate for the region and make sure the spatial resolution is in the units of that CRS.  \n\nChoose environmental predictor layers from the [STAC catalog](https://stac.geobon.org/) that are ecologically relevant to the species being modeled. For example, climate, vegetation, elevation, land cover, or habitat-related predictors may be appropriate depending on the species. Avoid including many predictors that represent the same underlying environmental gradient.\n\nAuthors:\nSarah Valentin (Pipeline development, https://orcid.org/0000-0002-9028-681X)\nGuillaume Larocque (Pipeline development, guillaume.larocque@mcgill.ca, https://orcid.org/0000-0002-5967-9156)\nFran\u00e7ois Rousseu (Pipeline development, https://orcid.org/0000-0002-2400-2479)\n\nExternal link: https://github.com/GEO-BON/biab-2.0/blob/main/scripts/SDM/runMaxent.R\n\nReferences:\nVollering et al. 2019\nnull\n\nPhillips et al. 2009\nnull\n\nBastion 2023\nnull\n\nKass et al. 2021\nnull\n\nElith and Leathwick, 2009\nnull\n\nPeterson, 2001\nnull",
+  "parameters": [
+    {
+      "name": "feature_classes",
+      "description": "MaxEnt feature classes control the shapes of relationships the model can learn between species occurrence and environmental predictors. Simpler classes, such as L or LQ, fit smoother, more constrained responses and are often safer for small datasets. More complex combinations, such as LQH or LQHP, can capture more flexible ecological responses but may overfit when occurrence records are limited. This pipeline tests all values provided here and selects the best-performing combination using the parameter selection method configured in the MaxEnt step. Accepted values are combinations of L (linear), Q (quadratic), P (product), H (hinge) or T (threshold).\n\n(CWL input: `SDM>runMaxent.yml@108|fc`)",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "optional": true,
+      "default": [
+        "L",
+        "LQ",
+        "LQHP"
+      ]
+    },
+    {
+      "name": "partition_type",
+      "description": "This option controls how ENMeval partitions presence and background data while tuning MaxEnt parameters.\nIt is recommended to start with random k-fold. If you suspect overfitting or spatial autocorrelation, switch to block or checkerboard because these partition data geographically rather than randomly, which makes evaluation more robust to spatial autocorrelation between nearby points. If you don't have enough occurrence points for spatial partitioning, use jackknife.\n\n   - Random k-fold \\- partitions groups randomly into a user-specified (K) number of bins, and runs the model k times, with each bin used once as testing. Recommended to start with 10 folds.\n  - Block \\- partitions the bounding box into four equally sized quadrants and assigns groups by quadrant. Because each fold is a large, contiguous geographic region, this tests how well the model transfers to broad, spatially distinct areas. This is a stricter test of spatial autocorrelation than checkerboard.\n  - Checkerboard 1 \\- generates a checkerboard grid from the study area and assigns groups based on which square the points fall in. Folds are smaller and spatially interspersed (alternating across the study area) rather than large contiguous blocks, so it tests spatial independence at a finer scale than block.\n  - Checkerboard 2 \\- Similar to checkerboard 1 but performs this separately for occurrence and background points\n  - Jackknife \\- Does not partition the background points into testing and training (uses them all), performs leave one out cross validation. Recommended for small datasets only.\n\n(CWL input: `SDM>runMaxent.yml@108|partition_type`)",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "randomkfold",
+          "jackknife",
+          "block",
+          "checkerboard1",
+          "checkerboard2"
+        ]
+      },
+      "default": "randomkfold",
+      "optional": true
+    },
+    {
+      "name": "regularization_multiplier",
+      "description": "Regularization multiplier values to evaluate for MaxEnt model tuning. The regularization multiplier controls how strongly MaxEnt penalizes model complexity. Lower values allow a more flexible model that may fit local patterns closely. Higher values produce smoother, more generalized predictions and reduce overfitting risk.\n\n(CWL input: `SDM>runMaxent.yml@108|rm`)",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "optional": true,
+      "default": [
+        0.5,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "method_background",
+      "description": "Background points are generated using one of the five available methods. Choosing the right method can help correct for sampling bias in the GBIF data. - `random`: background points are randomly sampled throughout the whole study extent. Good choice if your occurrence data has little spatial bias toward human activity/accessibility (e.g., roads, cities, well-surveyed areas). - `weighted_raster`: background points are sampled in proportion to the number of observations in the observation-density heatmap of the selected taxonomic group. Recommended for heavily biased data, or when occurrences are missing due to gaps in survey/study coverage. This is the more extreme correction of the two raster-based methods (weighted and unweighted). - `unweighted_raster`: background points are sampled only in cells where there are observations from a target group. Also addresses sampling bias and survey gaps, but more conservatively than weighted_raster. Recommended as the default of the two (weighted and unweighted). - `inclusion_buffer`: background points are sampled within a buffer around observations. Useful if you don't think your species is well represented by the target taxonomic group.  - `thickening`: background points are sampled in proportion to the local density of observations, within a buffer around each observation. Also useful when the target taxon group doesn't represent your species well, as an alternative to inclusion_buffer.\n\n(CWL input: `SDM>selectBackground.yml@40|method_background`)",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "random",
+          "inclusion_buffer",
+          "weighted_raster",
+          "unweighted_raster",
+          "thickening"
+        ]
+      },
+      "default": "random",
+      "optional": true
+    },
+    {
+      "name": "number_of_background_points",
+      "description": "Target number of background points to generate within the study extent. These points are used to represent the available environment.\nTypically it is recommended to start with 10000 points. If you have a very large study area you can increase this amount to fully capture the available environmental space. If you have a very small study area (i.e. fewer than 10000 pixels) you can reduce the number of background points.\n\n(CWL input: `SDM>selectBackground.yml@40|n_background`)",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 10000
+    },
+    {
+      "name": "collection_description",
+      "description": "Description of the STAC collection to be created as output.\n\n(CWL input: `STAC>createCollection.yml@153|collection_description`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "A STAC collection created from GeoTIFF files."
+    },
+    {
+      "name": "collection_license",
+      "description": "License for the STAC collection to be created as output. Default is \"CC-BY\".\n\n(CWL input: `STAC>createCollection.yml@153|collection_license`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "CC-BY"
+    },
+    {
+      "name": "collection_name",
+      "description": "Name of the STAC collection to be created as output. The collection name should be unique, using lowercase letters and hyphens only. Default is \"biab-collection\".\n\n(CWL input: `STAC>createCollection.yml@153|collection_name`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "biab-collection"
+    },
+    {
+      "name": "condapackurl",
+      "description": "Base URL to check for conda-pack environments.\n\n(CWL input: `condaPackURL`)",
+      "schema": {
+        "type": "string"
+      },
+      "default": "https://object-arbutus.alliancecan.ca/swift/v1/3857940e33774dca8ae21e4999fe402e/conda-pack/",
+      "optional": true
+    },
+    {
+      "name": "taxonomic_group",
+      "description": "Broad taxonomic group used to retrieve the GBIF observation-density heatmap for background-point sampling. Choose the group that best matches the modeled taxa, or all for all GBIF observations.\n\n(CWL input: `data>GBIFHeatmapFromSTAC.yml@139|taxa`)",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "reptiles",
+          "plants",
+          "mammals",
+          "birds",
+          "arthropods",
+          "amphibians",
+          "all"
+        ]
+      },
+      "default": "plants",
+      "optional": true
+    },
+    {
+      "name": "stac_1_collection_items",
+      "description": "To pull a specific collection item, input the collection name followed by | followed by the item ID (e.g. \"chelsa-clim|bio1\").\nTo extract a whole collection, type the collection name only (e.g. \"chelsa-clim\").\nIf pulling a layer that is tiled (e.g. https://stac.geobon.org/viewer/gfw-lossyear/_80N_180W), enter the collection name (e.g. gfw-lossyear) and a bounding box, and the script will assemble the tiles into a continuous layer automatically.\n\n(CWL input: `data>loadFromStac.yml@144|collections_items`)",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "optional": true,
+      "default": [
+        "chelsa-clim|bio1",
+        "chelsa-clim|bio2"
+      ]
+    },
+    {
+      "name": "stac_1_url",
+      "description": "URL of the first STAC catalog used to retrieve environmental predictor layers.\n\n(CWL input: `data>loadFromStac.yml@144|stac_url`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "https://stac.geobon.org/"
+    },
+    {
+      "name": "stac_2_collection_items",
+      "description": "Vector of strings. To pull specific collection items, input the collection name followed by '|' followed by item id (e.g. \"chelsa-clim|bio1\"). To extract a whole collection, type the collection name only (e.g. \"chelsa-clim\"). To pull collection items by date, write the collection name and provide a start date, end date, and temporal resolution. If pulling a layer that is tiled (e.g. https://stac.geobon.org/viewer/gfw-lossyear/_80N_180W), enter the collection name (e.g. gfw-lossyear), bounding box and time range if the layer is a time series, and the script will assemble the tiles into a continuous layer automatically.)\n\n(CWL input: `data>loadFromStac.yml@150|collections_items`)",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "optional": true,
+      "default": [
+        "chelsa-clim|bio4"
+      ]
+    },
+    {
+      "name": "stac_2_url",
+      "description": "URL of the second STAC catalog.\n\n(CWL input: `data>loadFromStac.yml@150|stac_url`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "https://io.biodiversite-quebec.ca/stac/"
+    },
+    {
+      "name": "environment",
+      "description": "Optional. URL (http/https) or file:// URI pointing to a BON in a Box runner.env file, necessary for scripts requiring credentials. If not provided, an empty one will be used. Relative paths are not supported.\n\n(CWL input: `environment`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "taxa_list",
+      "description": "Comma-separated list of [taxa](https://en.wikipedia.org/wiki/Taxon). Each value could be a species name, order, class, genus, kingdom or family, as long as it is an exact match with the GBIF taxonomic backbone. Individual species can be looked up [on the GBIF website](https://www.gbif.org/species/).\n\n(CWL input: `pipeline@121`)",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "optional": true,
+      "default": [
+        "Acer saccharum"
+      ]
+    },
+    {
+      "name": "spatial_resolution",
+      "description": "Target spatial resolution for the predictor rasters and GBIF heatmap. Units must match the selected CRS, for example meters for projected CRS or degrees for latitude-longitude CRS.\nChoosing a coarser resolution reduces computation time, but at the cost of fine-scale predictor detail. Variables like land cover and elevation may lose relevance at coarse scales, while broader-scale variables such as climate become comparatively more informative.\n\n(CWL input: `pipeline@128`)",
+      "schema": {
+        "type": "number"
+      },
+      "optional": true,
+      "default": 1000
+    },
+    {
+      "name": "minimum_year_or_start_date",
+      "description": "Earliest year for GBIF records. Accepts YYYY or YYYY-MM-DD; if a full date is supplied, only the year is used.\nIt is recommended to use an early start date (e.g. 1980) to maximize the number of occurrence records for a given species.\n\n(CWL input: `pipeline@145`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "1980"
+    },
+    {
+      "name": "maximum_year_or_end_date",
+      "description": "Latest year for GBIF records. Accepts YYYY or YYYY-MM-DD; if a full date is supplied, only the year is used.\n\n(CWL input: `pipeline@146`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "2024"
+    },
+    {
+      "name": "number_of_folds",
+      "description": "Number of folds for random k-fold MaxEnt partitioning when partition type = random k-fold. Can be left blank when another method is chosen.\n\n(CWL input: `pipeline@147`)",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 10
+    },
+    {
+      "name": "start_date",
+      "description": "Start date for time series layers. Can be in the format YYYY or YYYY-MM-DD. Leave blank if extracting items by name or to extract layers from all available dates.\n\n(CWL input: `pipeline@148`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "end_date",
+      "description": "End date for time series layers. Can be in the format YYYY or YYYY-MM-DD. Leave blank if extracting items by name or to extract layers from all available dates.\n\n(CWL input: `pipeline@149`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "temporal_resolution",
+      "description": "Temporal resolution to use when querying STAC items by date, in the format (\"P\", time interval, and time unit, e.g. \"P1Y\" is yearly, \"P1M\" is montly, and \"P1D\" is daily). Leave blank if not querying by date or if extracting layers from all available dates. If the temporal resolution is coarser than the temporal resolution of the time series, the layers will be aggregated with the aggregation method chosen below.\n\n(CWL input: `pipeline@151`)",
+      "schema": {
+        "type": "string"
+      },
+      "optional": true,
+      "default": "P1Y"
+    },
+    {
+      "name": "number_of_runs",
+      "description": "Number of bootstrap or cross-validation runs used when preparing SDM training and testing data.\n\n(CWL input: `pipeline@46`)",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 2
+    }
+  ]
+}

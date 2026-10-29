@@ -1,0 +1,55 @@
+{
+  "id": "mcgill",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-10-26T00:00:00Z",
+    "updated": "2026-10-26T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "McGill University",
+    "description": "",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [],
+    "themes": [],
+    "license": "other",
+    "acl": {
+      "admin": [
+        "@mcgill.ca",
+        "@vito.be"
+      ]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "McGill University",
+      "href": "https://www.mcgill.ca"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://upload.wikimedia.org/wikipedia/en/thumb/2/29/McGill_University_CoA.svg/250px-McGill_University_CoA.svg.png"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "https://upload.wikimedia.org/wikipedia/en/thumb/2/29/McGill_University_CoA.svg/250px-McGill_University_CoA.svg.png"
+    }
+  ]
+}
