@@ -1,0 +1,77 @@
+{
+  "id": "biois",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-07-13T00:00:00Z",
+    "updated": "2026-07-13T00:00:00Z",
+    "type": "ogc_backend",
+    "title": "BioIS - Biodiversity Indicator Service",
+    "short_title": "BioIS",
+    "description": "BioIS provides automated biodiversity indicator workflows and audit-ready ESG metrics for ESRS E4 and VSME B5 reporting.",
+    "keywords": ["Biodiversity", "ESG", "ESRS E4", "VSME B5"],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Geo Engine GmbH",
+        "organization": "Geo Engine GmbH",
+        "roles": ["operator"],
+        "links": [
+          {
+            "href": "https://biois.app.geoengine.io/",
+            "rel": "about",
+            "title": "BioIS",
+            "type": "text/html"
+          },
+          {
+            "href": "https://www.geoengine.de/en/",
+            "rel": "about",
+            "title": "Geo Engine",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact info@geoengine.de for onboarding and platform support.",
+        "emails": [
+          {
+            "value": "info@geoengine.de",
+            "roles": ["support"]
+          }
+        ]
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "BioIS",
+      "href": "https://biois.app.geoengine.io/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/svg+xml",
+      "title": "BioIS Logo",
+      "href": "https://biois.app.geoengine.io/assets/BioIS_White.svg"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/svg+xml",
+      "title": "BioIS Logo",
+      "href": "https://biois.app.geoengine.io/assets/BioIS_Black.svg"
+    }
+  ]
+}
