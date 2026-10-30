@@ -1,0 +1,21 @@
+[
+  {
+    "id": "compute_carbon_markets_ndvi",
+    "type": "openeo",
+    "description": "NDVI test run.",
+    "backend": "openeo.dataspace.copernicus.eu",
+    "process_graph": {
+      "computecarbonmarketsndvi1": {
+        "process_id": "compute_carbon_markets_ndvi",
+        "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/planetek/compute_carbon_markets_ndvi/openeo_udp/compute_carbon_markets_ndvi.json",
+        "arguments": {
+          "time": "2024-06-01/2024-06-30",
+          "area_name": "test-bari-farmland",
+          "feature_collection": "{\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n        {\n            \"type\": \"Feature\",\n            \"properties\": {},\n            \"geometry\": {\n                \"type\": \"Polygon\",\n                \"coordinates\": [[\n                    [16.60, 41.05],\n                    [16.65, 41.05],\n                    [16.65, 41.10],\n                    [16.60, 41.10],\n                    [16.60, 41.05]\n                ]]\n            }\n        }\n    ]\n}"
+        },
+        "result": true
+      }
+    },
+    "reference_data": {}
+  }
+]
