@@ -17,6 +17,7 @@ from apex_algorithm_qa_tools.metrics.performance_baselines import _compute_thres
 from apex_algorithm_qa_tools.common import get_project_root
 from apex_algorithm_qa_tools.scenarios.common import get_benchmark_scenarios
 from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
+from apex_algorithm_qa_tools.scenarios.ogc import OGCAPIBenchmarkScenario
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +128,15 @@ class GithubApi:
             path=f"/issues/{issue_number}/comments",
             data=data,
             expected_status=201,
+        )
+
+    def close_issue(self, issue_number: int) -> dict:
+        """Close an existing issue."""
+        return self.request(
+            method="PATCH",
+            path=f"/issues/{issue_number}",
+            data={"state": "closed"},
+            expected_status=200,
         )
 
 
@@ -350,11 +360,17 @@ class ScenarioRunInfo:
     def build_workflow_run_overview(self) -> str:
         scenario_link = self.get_scenario_link()
         workflow_run_url = self.github_context.get_workflow_run_url()
+        if isinstance(self.scenario, OGCAPIBenchmarkScenario):
+            service_label = "OGC API endpoint"
+            service_url = self.scenario.endpoint
+        else:
+            service_label = "openEO backend"
+            service_url = self.scenario.backend
         overview = textwrap.dedent(
             f"""
             **Benchmark scenario ID**: `{self.scenario.id}`
             **Benchmark scenario definition**: {scenario_link}
-            **openEO backend**: {self.scenario.backend}
+            **{service_label}**: {service_url}
             """
         )
         if workflow_run_url:
@@ -427,9 +443,14 @@ class ScenarioRunInfo:
         if contact_table:
             body += "\n\n### Contact Information\n\n" + contact_table
 
-        process_graph = json.dumps(self.scenario.process_graph, indent=2)
-        body += "\n\n### Process Graph"
-        body += f"\n\n```json\n{process_graph}\n```"
+        if isinstance(self.scenario, OGCAPIBenchmarkScenario):
+            inputs_label = "OGC API Parameters"
+            inputs = self.scenario.parameters
+        else:
+            inputs_label = "Process Graph"
+            inputs = self.scenario.process_graph
+        body += f"\n\n### {inputs_label}"
+        body += f"\n\n```json\n{json.dumps(inputs, indent=2)}\n```"
 
         body += "\n\n### Error Logs"
         body += f"\n\n```plaintext\n{self.failure_logs}\n```\n"
@@ -546,7 +567,9 @@ class PerformanceRegressionInfo:
         
         if link := _get_scenario_link(self.scenario, self.github_context):
             parts.append(f"**Definition**: {link}")
-        if self.scenario:
+        if isinstance(self.scenario, OGCAPIBenchmarkScenario):
+            parts.append(f"**OGC API endpoint**: {self.scenario.endpoint}")
+        elif self.scenario:
             parts.append(f"**Backend**: {self.scenario.backend}")
         if url := self.github_context.get_workflow_run_url():
             parts.append(f"**Workflow run**: {url}")
@@ -697,7 +720,7 @@ class GithubIssueHandler:
                     body=scenario_run_info.build_issue_body(),
                     labels=scenario_run_info.issue_labels(),
                 )
-            elif existing_issues:
+            elif failing_test and existing_issues:
                 for issue in existing_issues:
                     issue_number = issue["number"]
                     logger.info(
@@ -707,6 +730,13 @@ class GithubIssueHandler:
                         issue_number=issue_number,
                         body=scenario_run_info.build_comment_body(),
                     )
+            elif existing_issues:
+                for issue in existing_issues:
+                    issue_number = issue["number"]
+                    logger.info(
+                        f"Closing resolved issue #{issue_number} for passing scenario {scenario_id!r}"
+                    )
+                    self.github_api.close_issue(issue_number=issue_number)
             else:
                 logger.info(f"Nothing to do for {scenario_id=}")
 

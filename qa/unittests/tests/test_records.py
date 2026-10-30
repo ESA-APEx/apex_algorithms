@@ -2,6 +2,7 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+from copy import deepcopy
 import requests
 from apex_algorithm_qa_tools.common import get_project_root
 from apex_algorithm_qa_tools.records import (
@@ -95,3 +96,33 @@ def test_algorithm_provider_records_():
 )
 def test_provider_record_validation(record):
     jsonschema.validate(instance=record["data"], schema=get_provider_ogc_record_schema())
+
+
+@pytest.mark.parametrize(
+    "invalid_certification",
+    [
+        {"category": "validated"},
+        {"funding": "esa"},
+        {"category": "community_contributed", "funding": "esa"},
+        {"category": "r_and_d", "funding": "third_party"},
+        {"category": "validated", "funding": "esa", "extra": "not-allowed"},
+    ],
+)
+def test_service_record_validation_rejects_malformed_certification_metadata(
+    invalid_certification,
+):
+    record = deepcopy(get_service_ogc_records()[0]["data"])
+    record["properties"]["certification"] = invalid_certification
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())
+
+
+def test_service_record_validation_accepts_valid_certification_metadata():
+    record = deepcopy(get_service_ogc_records()[0]["data"])
+    record["properties"]["certification"] = {
+        "category": "validated",
+        "funding": "esa",
+    }
+
+    jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())

@@ -63,6 +63,10 @@ def main() -> None:
     else:
         print("[progress] GitHub issue reporting is disabled")
 
+    open_issues = (
+        {i["title"]: i for i in api.list_issues(labels=["performance-regression"])} if api else {}
+    )
+
     for index, scenario_id in enumerate(sorted(scenario_metrics_by_id), start=1):
         if index == 1 or index % 25 == 0 or index == total_scenarios:
             print(f"[progress] Processing scenario {index}/{total_scenarios}: {scenario_id}")
@@ -89,6 +93,8 @@ def main() -> None:
 
         if not violations:
             rows.append(f"- **{scenario_id}**: ok ({metric_name}={latest.get(metric_name, 'n/a')})")
+            if existing := open_issues.get(f"Performance regression: {scenario_id}"):
+                api.close_issue(existing["number"])
             continue
 
         regression_messages.extend(violations)
@@ -132,15 +138,7 @@ def main() -> None:
         body = regression_info.build_issue_body()
         labels = regression_info.issue_labels()
 
-        existing = next(
-            (
-                issue
-                for issue in api.list_issues(labels=["performance-regression"])
-                if issue["title"] == title
-            ),
-            None,
-        )
-        if existing:
+        if existing := open_issues.get(title):
             api.create_issue_comment(existing["number"], body)
         else:
             api.create_issue(title=title, body=body, labels=labels)

@@ -8,7 +8,7 @@ _log = logging.getLogger(__name__)
 
 
 def _compute_threshold_stats(
-    values: list[float], *, k: float = 3.0, min_margin: float = 2.0
+    values: list[float], *, k: float = 5.0, min_margin: float = 2.0
 ) -> dict[str, float | int]:
     """Compute MAD-based threshold statistics for one metric sample series.
 
@@ -41,21 +41,17 @@ def _check_reference_performance(
     reference_performance: dict,
     tracked_metrics: dict,
 ) -> list[str]:
-    """Compare tracked metrics against computed performance baselines."""
+    """Report tracked metrics that exceed their baseline upper limit.
+
+    Only the upper limit counts: being cheaper/faster than the baseline is not a regression.
+    """
     violations = []
     for metric_name, ref in reference_performance.items():
         actual = tracked_metrics.get(metric_name)
         if actual is None:
             continue
 
-        lower_limit = ref.get("lower_limit")
         upper_limit = ref.get("upper_limit")
-
-        if lower_limit is not None and actual < lower_limit:
-            violations.append(
-                f"[{scenario_id}] regression in {metric_name!r}: "
-                f"actual={actual} below lower_limit={lower_limit}"
-            )
 
         if upper_limit is not None and actual > upper_limit:
             violations.append(

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "gep_burned-area-severity-v3-0-4",
+    "type": "ogc_api_process",
+    "description": "Burned Area Severity (BAS) output regression benchmark. Supply reference outputs and confirm the process ID on this endpoint before enabling.",
+    "endpoint": "https://processing.geohazards-tep.eu/6e6f723235313539",
+    "application": "burned-area-severity-v3-0-4",
+    "properties": {
+      "title": "APEx burned-area-severity benchmark",
+      "labels": {
+        "project": "apex",
+        "purpose": "benchmark",
+        "algorithm": "gep-bas",
+        "scenario": "gep_burned-area-severity-v3-0-4"
+      }
+    },
+    "auth": {
+      "url": "https://iam.terradue.com",
+      "realm": "master"
+    },
+    "parameters": {
+      "pre_event": "https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=Name%20eq%20%27S2B_MSIL2A_20241108T101129_N0511_R022_T33TTG_20241108T124914.SAFE",
+      "post_event": "https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=Name%20eq%20%27S2B_MSIL2A_20241118T101219_N0511_R022_T33TTG_20241118T113501.SAFE",
+      "aoi": {
+        "type": "Polygon",
+        "bbox": [12.145, 42.033, 12.634, 42.298],
+        "coordinates": [
+          [
+            [12.145, 42.033],
+            [12.634, 42.033],
+            [12.634, 42.298],
+            [12.145, 42.298],
+            [12.145, 42.033]
+          ]
+        ]
+      }
+    },
+    "reference_data": {
+      "item-collection.json": "https://results.geohazards-tep.eu/6e6f723235313539/collections/burned-area-severity-v3-0-4-rlvcp-oljqid/items"
+    },
+    "reference_options": {
+      "rtol": 0.001,
+      "atol": 1,
+      "pixel_tolerance": 1
+    }
+  }
+]

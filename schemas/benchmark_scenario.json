@@ -99,6 +99,10 @@
           "type": "object",
           "description": "Input parameters passed to the OGC API process."
         },
+        "properties": {
+          "type": "object",
+          "description": "Mate extension properties, not a standard OGC API Processes Part 1 execute field. Sent only to processing.geohazards-tep.eu when nonempty."
+        },
         "results": {
           "type": "object",
           "description": "Details for accessing the results of the OGC API process.",

@@ -16,6 +16,7 @@ jobs:
       matrix:
         include:
           - benchmark_id: max_ndvi
+          - benchmark_id: gep_burned-area-severity-v3-0-4
           # Add more scenario ids here as needed.
           # - benchmark_id: max_ndvi_large
     steps:
@@ -35,7 +36,8 @@ jobs:
 
       - name: Run benchmark e2e
         env:
-          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE }}
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
+          OGC_AUTH_TOKEN: ${{ secrets.OGC_AUTH_TOKEN }}
         run: |
           pytest  \
             -vv \
