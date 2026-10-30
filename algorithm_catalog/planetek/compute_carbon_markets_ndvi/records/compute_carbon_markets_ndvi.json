@@ -14,27 +14,66 @@
     "description": "Computes NDVI over a feature collection and time range.",
     "cost_estimate": 0,
     "cost_unit": "platform credits per km\u00b2 per observation",
-    "keywords": ["Vegetation", "Normalized Difference Vegetation Index (NDVI)"],
+    "keywords": [
+      "Vegetation",
+      "Normalized Difference Vegetation Index (NDVI)"
+    ],
     "contacts": [
       {
         "name": "Daniele Mastrapasqua",
         "position": "Software Engineer",
         "organization": "Planetek",
-        "roles": ["implementor", "principal investigator"]
+        "roles": [
+          "implementor",
+          "principal investigator"
+        ]
       }
     ],
     "themes": [
-      {"concepts": [{"id": "Vegetation"}, {"id": "Normalized Difference Vegetation Index (NDVI)"}], "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"}
+      {
+        "concepts": [
+          {
+            "id": "Vegetation"
+          },
+          {
+            "id": "Normalized Difference Vegetation Index (NDVI)"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
     ],
-    "formats": [{"name": "GeoTiff"}],
+    "formats": [
+      {
+        "name": "GeoTiff"
+      }
+    ],
     "license": "other"
   },
   "linkTemplates": [],
   "links": [
-    {"rel": "application", "type": "application/vnd.openeo+json;type=process", "title": "openEO Process Definition",
-     "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/planetek/compute_carbon_markets_ndvi/openeo_udp/compute_carbon_markets_ndvi.json"},
-    {"rel": "service", "type": "application/json", "title": "CDSE openEO federation", "href": "https://openeofed.dataspace.copernicus.eu"},
-    {"rel": "platform", "type": "application/json", "title": "CDSE openEO federation", "href": "../../../../platform_catalog/cdse_openeo_federation.json"},
-    {"rel": "provider", "type": "application/json", "title": "Planetek", "href": "../../record.json"}
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/planetek/compute_carbon_markets_ndvi/openeo_udp/compute_carbon_markets_ndvi.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Planetek",
+      "href": "../../record.json"
+    }
   ]
 }
