@@ -107,6 +107,12 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=ndsi&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/92b77a4997e35889f3f1cc3a9f1dc1820235b5d1/algorithm_catalog/developmentseed/ndsi/openeo_udp/ndsi.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Studio",
+      "href": "https://studio.url/?project_url=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/ndsi/openeo_studio/project.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Copernicus Data Space - Production API",

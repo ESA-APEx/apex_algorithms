@@ -116,6 +116,12 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=flood_detection&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/9f17ad672fa4227806ec42b3d9c59b172318d998/algorithm_catalog/developmentseed/flood_detection/openeo_udp/flood_detection.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Studio",
+      "href": "https://studio.url/?project_url=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/flood_detection/openeo_studio/project.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Copernicus Data Space - Production API",

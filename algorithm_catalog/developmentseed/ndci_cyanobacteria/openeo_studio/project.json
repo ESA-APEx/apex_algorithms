@@ -1,0 +1,28 @@
+{
+  "id": "ndci_cyanobacteria",
+  "name": "NDCI - Cyanobacteria Chlorophyll-a Detection for Sentinel-2",
+  "description": "Detects and quantifies cyanobacteria chlorophyll-a concentrations in water bodies using the Normalized Difference Chlorophyll Index (NDCI) combined with a water-body mask and the Floating Algae Index (FAI). Conversion of the Sentinel Hub CyanoLakes evalscript (Kravitz & Matthews, 2020).",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./ndci_cyanobacteria.py",
+  "defaultBands": [
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B08",
+    "B8A",
+    "B11",
+    "B12"
+  ],
+  "temporalRange": [
+    "2025-05-12",
+    "2025-05-13"
+  ],
+  "boundingBox": [
+    12.0,
+    44.5,
+    14.0,
+    46.0
+  ],
+  "cloudCover": 20
+}

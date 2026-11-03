@@ -1,0 +1,25 @@
+{
+  "id": "s2_s1_forest_fire_progression",
+  "name": "Forest Fire Progression (S2/S1 Fusion)",
+  "description": "Multitemporal Sentinel-2 / Sentinel-1 data fusion that maps forest fire progression under cloud cover by combining optical burned-area indices at t1 with the SAR VH backscatter change between t1 and t2. Adapted from a SentinelHub Custom Script by Max Kampen.",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./s2_s1_forest_fire_progression.py",
+  "defaultBands": [
+    "B03",
+    "B04",
+    "B08",
+    "B11",
+    "B12"
+  ],
+  "temporalRange": [
+    "2025-07-29",
+    "2025-08-04"
+  ],
+  "boundingBox": [
+    2.58,
+    42.94,
+    2.95,
+    43.14
+  ],
+  "cloudCover": 40
+}

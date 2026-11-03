@@ -111,6 +111,12 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=apa_aquatic_plants_algae&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/ded25a7887e8486e5eccf06c51c92a5f5024c97b/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/openeo_udp/apa_aquatic_plants_algae.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Studio",
+      "href": "https://studio.url/?project_url=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/apa_aquatic_plants_algae/openeo_studio/project.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Copernicus Data Space - Production API",

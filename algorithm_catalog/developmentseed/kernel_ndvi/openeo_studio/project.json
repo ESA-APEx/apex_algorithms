@@ -1,0 +1,23 @@
+{
+  "id": "kernel_ndvi",
+  "name": "Kernel NDVI (kNDVI)",
+  "description": "Calculates Kernel NDVI (kNDVI) from Sentinel-2 L2A imagery, a nonlinear, Radial Basis Function kernel generalization of NDVI. This formulation reduces the saturation effect of standard NDVI in densely vegetated areas, improving sensitivity to sparse and moderate vegetation signals. The algorithm integrates the Sentinel-2 Scene Classification Layer (SCL) to detect and colorize non-vegetated pixels such as water, clouds, cloud shadows, and snow/ice. The algorithm produces both raw index values and an RGB composite visualization. Suitable for monitoring crop health, vegetation density gradients, and early signs of vegetation stress. Adapted from a SentinelHub Custom Script by Andr\u00e1s Zlinszky (@azlinszky).",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./kernel_ndvi.py",
+  "defaultBands": [
+    "B04",
+    "B08",
+    "SCL"
+  ],
+  "temporalRange": [
+    "2025-05-10",
+    "2025-05-12"
+  ],
+  "boundingBox": [
+    14.09,
+    45.174,
+    14.27,
+    45.25
+  ],
+  "cloudCover": 30
+}

@@ -1,0 +1,22 @@
+{
+  "id": "enhanced_vegetation_index",
+  "name": "Enhanced Vegetation Index 2 (EVI2)",
+  "description": "Calculates the Enhanced Vegetation Index 2 (EVI2) from Sentinel-2 L2A imagery. EVI2 is a two-band vegetation index derived from near-infrared (B08) and red (B04) reflectance, designed to strengthen the vegetation signal in dense canopies while reducing sensitivity to soil background and atmospheric influences. Results are rendered using a fixed threshold-to-RGB color ramp for intuitive interpretation from low to high vegetation signal. Adapted from a SentinelHub Custom Script by Authors not listed.",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./enhanced_vegetation_index.py",
+  "defaultBands": [
+    "B08",
+    "B04"
+  ],
+  "temporalRange": [
+    "2025-05-12",
+    "2025-05-13"
+  ],
+  "boundingBox": [
+    13.4986,
+    45.4166,
+    13.5876,
+    45.4558
+  ],
+  "cloudCover": 30
+}

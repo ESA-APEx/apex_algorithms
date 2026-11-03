@@ -115,6 +115,12 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=sand_oriented_land_cover_classification&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/eb52fb5d55ddc8bd725fbe8fd3c3368945ca3d93/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/openeo_udp/sand_oriented_land_cover_classification.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Studio",
+      "href": "https://studio.url/?project_url=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/sand_oriented_land_cover_classification/openeo_studio/project.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Copernicus Data Space - Production API",

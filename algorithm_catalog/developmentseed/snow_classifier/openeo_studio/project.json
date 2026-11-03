@@ -1,0 +1,25 @@
+{
+  "id": "snow_classifier",
+  "name": "Snow Classifier",
+  "description": "Detects snow from Sentinel-2 L2A imagery using the Normalized Difference Snow Index (NDSI) as the primary indicator, with the Normalized Difference Vegetation Index (NDVI) as an additional constraint for borderline pixels. Pixels classified as snow are rendered in a light beige color; remaining pixels keep a brightened true-color appearance. Converted from the Sentinel Hub Snow Classifier evalscript. Adapted from a SentinelHub Custom Script by Authors not listed.",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./snow_classifier.py",
+  "defaultBands": [
+    "B02",
+    "B03",
+    "B04",
+    "B08",
+    "B11"
+  ],
+  "temporalRange": [
+    "2019-10-26",
+    "2019-10-30"
+  ],
+  "boundingBox": [
+    13.4,
+    46.32,
+    13.54,
+    46.39
+  ],
+  "cloudCover": 30
+}

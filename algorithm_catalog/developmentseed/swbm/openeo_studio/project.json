@@ -1,0 +1,25 @@
+{
+  "id": "swbm",
+  "name": "Simple Water Bodies' Mapping (SWBM)",
+  "description": "Detects surface water in Sentinel-2 L2A scenes using an OR-ensemble of three normalized-difference indices (MNDWI, NDWI, SWI). Water pixels render blue; non-water pixels render as 2x true colour. Thresholds default to the Sentinel Hub evalscript values (MNDWI_thr=0.1, NDWI_thr=0.2, SWI_thr=0.03) and may be calibrated per scene using the histogram inspection procedure described in the original script. Adapted from a SentinelHub Custom Script by Mohor Gartner.",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./swbm.py",
+  "defaultBands": [
+    "B02",
+    "B03",
+    "B04",
+    "B08",
+    "B11"
+  ],
+  "temporalRange": [
+    "2022-08-01",
+    "2022-08-31"
+  ],
+  "boundingBox": [
+    6.1,
+    43.72,
+    6.27,
+    43.82
+  ],
+  "cloudCover": 30
+}

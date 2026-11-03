@@ -1,0 +1,27 @@
+{
+  "id": "apa_aquatic_plants_algae",
+  "name": "Aquatic Plants and Algae Detection (APA)",
+  "description": "Detects and visualizes aquatic plants and algae in water bodies from Sentinel-2 L2A reflectance using spectral indices (FAI, water-plants, NDWI, moisture) with Braaten-Cohen-Yang cloud masking. Based on the APA script by the University of Girona. Adapted from a SentinelHub Custom Script by Anna Peliova, Carla Garcia-Lozano, Josep Sitjar.",
+  "collectionId": "sentinel-2-l2a",
+  "algorithm": "./apa_aquatic_plants_algae.py",
+  "defaultBands": [
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B08",
+    "B8A",
+    "B11"
+  ],
+  "temporalRange": [
+    "2025-05-12",
+    "2025-05-13"
+  ],
+  "boundingBox": [
+    12.0,
+    44.5,
+    14.0,
+    46.0
+  ],
+  "cloudCover": 20
+}

@@ -116,6 +116,12 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=s2_s1_forest_fire_progression&wizard%7EprocessUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/764dea001324ece421e7fa1fa5bc646579a2e660/algorithm_catalog/developmentseed/s2_s1_forest_fire_progression/openeo_udp/s2_s1_forest_fire_progression.json&server=https://openeo.dataspace.copernicus.eu/"
     },
     {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Studio",
+      "href": "https://studio.url/?project_url=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/developmentseed/s2_s1_forest_fire_progression/openeo_studio/project.json"
+    },
+    {
       "rel": "service",
       "type": "application/json",
       "title": "Copernicus Data Space - Production API",
