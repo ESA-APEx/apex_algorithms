@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 from pathlib import Path
@@ -5,7 +6,6 @@ from pathlib import Path
 import pytest
 from apex_algorithm_qa_tools.scenarios import (
     BenchmarkScenario,
-    download_reference_data,
     get_benchmark_scenarios,
 )
 from openeo.testing.results import assert_job_results_allclose
@@ -42,12 +42,6 @@ def test_run_benchmark(
     track_metric("scenario_id", scenario.id)
     track_metric("scenario_type", scenario.type)
 
-    with track_phase(phase="connect"):
-        runner = create_benchmark_runner(
-            request=request,
-            scenario=scenario,
-        )
-
     report_path = None
     if request.config.getoption("--upload-benchmark-report"):
         report_data = {
@@ -73,6 +67,12 @@ def test_run_benchmark(
         upload_assets_on_fail(report_path)
 
     def _on_phase_exception(phase: str, exc: Exception):
+        _log.error(
+            "Benchmark scenario %s failed during phase %s",
+            scenario.id,
+            phase,
+            exc_info=(type(exc), exc, exc.__traceback__),
+        )
         if report_path is not None:
             report = json.loads(report_path.read_text())
             report["test_failed"] = True
@@ -87,6 +87,12 @@ def test_run_benchmark(
                 exc.add_note(f"Benchmark report: {report_url}")
 
     track_phase.on_exception = _on_phase_exception
+
+    with track_phase(phase="connect"):
+        runner = create_benchmark_runner(
+            request=request,
+            scenario=scenario,
+        )
 
     artifacts = None
 
@@ -130,7 +136,7 @@ def test_run_benchmark(
     actual_s3_urls = {k: v for k, v in actual_s3_urls.items() if v is not None}
 
     with track_phase(phase="download-reference"):
-        reference_dir = download_reference_data(scenario=scenario, reference_dir=tmp_path / "reference")
+        reference_dir = runner.download_reference(scenario=scenario, reference_dir=tmp_path / "reference")
 
     if report_path is not None:
         report = json.loads(report_path.read_text())
@@ -163,14 +169,17 @@ def test_run_benchmark(
     with track_phase(phase="compare", describe_exception=analyse_results_comparison_exception):
         # Compare actual results with reference data
         try:
-            assert_job_results_allclose(
-                actual=actual_dir,
-                expected=reference_dir,
-                tmp_path=tmp_path,
-                rtol=scenario.reference_options.get("rtol", 1e-3),
-                atol=scenario.reference_options.get("atol", 1),
-                pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 1),
-            )
+            if runner.can_check_job_results_validity():
+                runner.assert_job_results_validity(reference_dir, actual_dir)
+            else:
+                assert_job_results_allclose(
+                    actual=actual_dir,
+                    expected=reference_dir,
+                    tmp_path=tmp_path,
+                    rtol=scenario.reference_options.get("rtol", 1e-3),
+                    atol=scenario.reference_options.get("atol", 1),
+                    pixel_tolerance=scenario.reference_options.get("pixel_tolerance", 1),
+                )
         except AssertionError as e:
             msg = str(e)
             if scenario.reference_data:

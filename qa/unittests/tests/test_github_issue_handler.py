@@ -16,6 +16,7 @@ from apex_algorithm_qa_tools.github_issue_handler import (
 
 from apex_algorithm_qa_tools.scenarios.factory import read_scenarios_file
 from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
+from apex_algorithm_qa_tools.scenarios.ogc import OGCAPIAuth, OGCAPIBenchmarkScenario
 
 
 class TestGithubApi:
@@ -428,6 +429,24 @@ class TestScenarioRunInfo:
             **Workflow artifacts**: https://github.test/foorg/bar-pro/actions/runs/1234#artifacts
             """
         )
+
+    def test_build_ogc_issue_and_comment(self, github_context):
+        scenario = OGCAPIBenchmarkScenario(
+            id="ogc-test",
+            type="ogc-api",
+            endpoint="https://ogc.test/processes",
+            parameters={},
+            auth=OGCAPIAuth(url="https://auth.test", realm="test"),
+        )
+        run_info = ScenarioRunInfo(
+            scenario=scenario,
+            github_context=github_context,
+            test_metrics={"outcome": "failed", "test:phase:exception": "connect"},
+        )
+        assert "### OGC API Parameters" in run_info.build_issue_body()
+        for body in (run_info.build_issue_body(), run_info.build_comment_body()):
+            assert "**OGC API endpoint**: https://ogc.test/processes" in body
+            assert "**openEO backend**" not in body
 
     def test_build_workflow_run_overview_full(self, scenario_run_info):
         assert scenario_run_info.build_workflow_run_overview() == textwrap.dedent(

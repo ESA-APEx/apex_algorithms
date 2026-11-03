@@ -300,14 +300,14 @@
         }
       }
     },
-    "reducedimension3": {
-      "process_id": "reduce_dimension",
+    "applydimension1": {
+      "process_id": "apply_dimension",
       "arguments": {
         "data": {
           "from_node": "mergecubes1"
         },
         "dimension": "bands",
-        "reducer": {
+        "process": {
           "process_graph": {
             "max3": {
               "process_id": "max",
@@ -323,6 +323,18 @@
         }
       }
     },
+    "renamelabels3": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "bands",
+        "target": [
+          "dvi_max_clipped"
+        ]
+      }
+    },
     "mergecubes2": {
       "process_id": "merge_cubes",
       "arguments": {
@@ -330,7 +342,7 @@
           "from_node": "mask1"
         },
         "cube2": {
-          "from_node": "reducedimension3"
+          "from_node": "renamelabels3"
         }
       }
     },
@@ -345,7 +357,7 @@
         }
       }
     },
-    "applydimension1": {
+    "applydimension2": {
       "process_id": "apply_dimension",
       "arguments": {
         "data": {
@@ -740,11 +752,11 @@
         }
       }
     },
-    "renamelabels3": {
+    "renamelabels4": {
       "process_id": "rename_labels",
       "arguments": {
         "data": {
-          "from_node": "applydimension1"
+          "from_node": "applydimension2"
         },
         "dimension": "bands",
         "target": [
@@ -757,6 +769,19 @@
   "id": "ppi",
   "summary": "Satellite-based vegetation index designed to monitor vegetation growth cycles",
   "description": "The Plant Phenology Index (PPI) is a satellite-based vegetation index designed to monitor vegetation growth cycles (phenology) with improved sensitivity during early spring green-up and late autumn senescence. Unlike traditional indices like NDVI, PPI maintains a linear relationship with green leaf area index (LAI) across the entire growing season.\n\nThis openEO process calculates PPI using Sentinel-2 data and MDVI reference collections.\n",
+  "returns": {
+    "description": "Raster data cube with PPI values",
+    "schema": {
+      "type": "object",
+      "subtype": "datacube"
+    }
+  },
+  "default_synchronous_options": {
+    "logging-threshold": "warning"
+  },
+  "default_job_options": {
+    "logging-threshold": "info"
+  },
   "parameters": [
     {
       "name": "temporal_extent",
@@ -794,11 +819,5 @@
         "subtype": "geojson"
       }
     }
-  ],
-  "default_job_options": {
-    "logging-threshold": "info"
-  },
-  "default_synchronous_options": {
-    "logging-threshold": "warning"
-  }
+  ]
 }

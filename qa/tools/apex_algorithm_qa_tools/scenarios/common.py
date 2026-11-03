@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List
 
 import requests
+import time
 from apex_algorithm_qa_tools.common import (
     get_project_root,
 )
@@ -64,7 +65,7 @@ def lint_ogc_fields(scenario: OGCAPIBenchmarkScenario):
     assert isinstance(scenario.parameters, dict)
 
 
-def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path) -> Path:
+def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path, headers: dict=None) -> Path:
     with TimingLogger(
         title=f"Downloading reference data for {scenario.id=} to {reference_dir=}",
         logger=_log.info,
@@ -84,9 +85,22 @@ def download_reference_data(scenario: BenchmarkScenario, reference_dir: Path) ->
                             f.write(src_file.read())
                 else:
                     # Handle HTTP(S) URLs
-                    resp = requests.get(source, stream=True)
-                    with path.open("wb") as f:
-                        for chunk in resp.iter_content(chunk_size=128):
-                            f.write(chunk)
+                    retries = 3
+                    while retries > 0:
+                        retries -= 1
+                        try:
+                            response = requests.get(source, headers=headers, stream=True)
+                            response.raise_for_status()
+                            with path.open("wb") as f:
+                                for chunk in response.iter_content(chunk_size=128):
+                                    f.write(chunk)
+                            break
+                        except:
+                            if response.status_code in [501, 502, 503, 504]:
+                                time.sleep(10)
+                            else:
+                                _log.error("Error downloading reference data")
+                                response.raise_for_status()
+                            
 
     return reference_dir

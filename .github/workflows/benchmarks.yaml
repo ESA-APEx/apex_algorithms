@@ -9,12 +9,15 @@ on:
         type: string
         default: ""
   schedule:
-    - cron: "37 */6 * * *"
+    - cron: "37 */4 * * *"
   
 
 jobs:
   benchmarks:
     runs-on: ubuntu-latest
+    env:
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
     permissions:
       contents: read
       issues: write
@@ -39,8 +42,9 @@ jobs:
           OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE }}
           APEX_ALGORITHMS_S3_ACCESS_KEY_ID: ${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}
           APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}
-          APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
-          APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
+          APEX_ALGORITHMS_S3_ENDPOINT_URL: ${{ secrets.APEX_ALGORITHMS_S3_ENDPOINT_URL || 'https://s3.waw3-1.cloudferro.com' }}
+          APEX_ALGORITHMS_S3_DEFAULT_REGION: ${{ secrets.APEX_ALGORITHMS_S3_DEFAULT_REGION || 'waw3-1' }}
+          OGC_AUTH_TOKEN: ${{ secrets.OGC_AUTH_TOKEN }}
         run: |
           set -o pipefail
           cd qa/benchmarks
@@ -88,8 +92,8 @@ jobs:
         env:
           APEX_ALGORITHMS_S3_ACCESS_KEY_ID: ${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}
           APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}
-          APEX_ALGORITHMS_S3_ENDPOINT_URL: "https://s3.waw3-1.cloudferro.com"
-          APEX_ALGORITHMS_S3_DEFAULT_REGION: "waw3-1"
+          APEX_ALGORITHMS_S3_ENDPOINT_URL: ${{ vars.APEX_ALGORITHMS_S3_ENDPOINT_URL || 'https://s3.waw3-1.cloudferro.com' }}
+          APEX_ALGORITHMS_S3_DEFAULT_REGION: ${{ vars.APEX_ALGORITHMS_S3_DEFAULT_REGION || 'waw3-1' }}
         run: |
           python qa/benchmarks/merge_parquet.py \
             --s3-client "${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}" \

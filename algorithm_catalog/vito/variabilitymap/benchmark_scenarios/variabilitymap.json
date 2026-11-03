@@ -64,8 +64,9 @@
             }
         },
         "reference_data": {
-            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-examples/variabilitymap/job-results.json",
-            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-examples/variabilitymap/variabilitymap.nc"
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/113-cdse!tests_test_benchmarks.py__test_run_benchmark_variabilitymap_!actual/job-results.json",
+            "openEO_2022-11-13Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/113-cdse!tests_test_benchmarks.py__test_run_benchmark_variabilitymap_!actual/openEO_2022-11-13Z.tif",
+            "openEO_2022-12-06Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/113-cdse!tests_test_benchmarks.py__test_run_benchmark_variabilitymap_!actual/openEO_2022-12-06Z.tif"
         },
         "reference_options": {
             "atol": 0.1

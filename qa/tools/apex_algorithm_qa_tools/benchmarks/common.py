@@ -9,7 +9,8 @@ from urllib.parse import urlparse
 from apex_algorithm_qa_tools.pytest.pytest_track_metrics import MetricsTracker
 from apex_algorithm_qa_tools.benchmarks.runners.base import BenchmarkJobMetadata, BenchmarkResults
 import requests
-
+import time
+import json
 
 @dataclasses.dataclass
 class BenchmarkExecutionArtifacts:
@@ -85,10 +86,51 @@ def download_file(href: str, target: Path, user_token: str | None = None):
 
     if parsed.scheme in {"http", "https"}:
         headers = {"Authorization": f"Bearer {user_token}"} if user_token else None
-        with requests.get(href, headers=headers, stream=True) as response:
-            response.raise_for_status()
-            with target.open("wb") as fh:
-                for chunk in response.iter_content(chunk_size=1024 * 64):
-                    fh.write(chunk)
+        retries = 3
+        while retries > 0:
+            retries -= 1
+            try:
+                with requests.get(href, headers=headers, stream=True) as response:
+                    response.raise_for_status()
+                    with target.open("wb") as fh:
+                        for chunk in response.iter_content(chunk_size=1024 * 64):
+                            fh.write(chunk)
+                    break
+            except:
+                if response.status_code in [501, 502, 503, 504]:
+                    time.sleep(10)
+                else:
+                    raise
+    else:
+        raise ValueError(f"Unsupported URL scheme in href: {href!r}")
+
+
+def download_headers(href: str, target: Path, user_token: str | None = None):
+    parsed = urlparse(href)
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    if parsed.scheme in {"http", "https"}:
+        headers = {"Authorization": f"Bearer {user_token}", "Range": "bytes=0-1023"} if user_token else None
+        retries = 3
+        while retries > 0:
+            retries -= 1
+            next_href = href
+            try:
+                #  Follow redirects step by step to obtain headers of last response
+                while next_href:
+                    with requests.get(next_href, headers=headers, stream=True, allow_redirects=False) as response:
+                        response.raise_for_status()
+                        next_href = response.headers.get("location")
+                        if next_href:
+                            response.close()
+                            continue
+                        with target.open("w") as fh:
+                            fh.write(json.dumps({k.lower(): v for k, v in response.headers.items()}, indent=2))
+                        break
+            except:
+                if response.status_code in [501, 502, 503, 504]:
+                    time.sleep(10)
+                else:
+                    raise
     else:
         raise ValueError(f"Unsupported URL scheme in href: {href!r}")

@@ -40,7 +40,12 @@ def create_ppi_cube(connection: openeo.Connection, temporal_extent, geom):
         .rename_labels(dimension="bands", target=["dvi_soil_scalar"])
     )
 
-    dvi_max_clipped = dvi_max.merge_cubes(scalar_dvi).reduce_bands(reducer=lambda x: eop.max(x, ignore_nodata=True))
+    dvi_max_clipped = dvi_max.merge_cubes(
+        scalar_dvi
+    ).apply_dimension(
+        dimension="bands",
+        process=lambda x: eop.max(x, ignore_nodata=True)
+    ).rename_labels(dimension="bands", target=["dvi_max_clipped"])
 
     ppi_input = s2_masked.merge_cubes(dvi_max_clipped).merge_cubes(dvi_soil)
 
@@ -133,16 +138,11 @@ def generate() -> dict:
             temporal_extent,
             geom,
         ],
-        returns=None,  # TODO
-        categories=None,  # TODO
+        returns={"description": "Raster data cube with PPI values", "schema": {"type": "object", "subtype": "datacube"}},
+        default_synchronous_options={"logging-threshold": "warning"},
+        default_job_options={"logging-threshold": "info"},
     )
-    # TODO: cleaner way to inject these (https://github.com/Open-EO/openeo-python-client/issues/731)
-    process.update(
-        {
-            "default_job_options": {"logging-threshold": "info"},
-            "default_synchronous_options": {"logging-threshold": "warning"},
-        }
-    )
+
     return process
 
 

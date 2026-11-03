@@ -24,6 +24,7 @@ from apex_algorithm_qa_tools.benchmarks.auth import get_token_with_client_creden
 from apex_algorithm_qa_tools.benchmarks.common import (
     BenchmarkJobMetadata,
     download_file,
+    download_headers,
     ensure_safe_relative_target,
     to_jsonable,
 )
@@ -114,7 +115,11 @@ def create_ogc_api_client(*, endpoint: str, namespace: str, user_token: str) -> 
 
 
 def create_ogc_job(*, scenario) -> dict:
-    return {"inputs": {key: value for key, value in scenario.parameters.items()}}
+    job = {"inputs": scenario.parameters}
+    # Properties are a Mate extension to the execute payload.
+    if urlparse(scenario.endpoint).hostname == "processing.geohazards-tep.eu" and scenario.properties:
+        job["properties"] = scenario.properties
+    return job
 
 
 def _get_job_headers(user_token: str) -> dict:
@@ -206,7 +211,7 @@ def _extract_assets_from_feature_collection(feature_collection: dict, *, result_
     return assets
 
 
-def _extract_qualified_value_payload(qualified_value) -> object | None:
+def extract_qualified_value_payload(qualified_value) -> object | None:
     value = qualified_value.value
 
     # Primary path for non-union values.
@@ -232,9 +237,13 @@ def _extract_qualified_value_payload(qualified_value) -> object | None:
     return None
 
 
-def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token: str) -> BenchmarkResults:
+def get_ogc_results(*, api_client: ApiClientWrapper, job_id: str):
     result_api = ResultApi(api_client.api_client)
     results = result_api.get_result(job_id=job_id)
+    return results
+
+
+def process_ogc_results(*, results, job_id: str, user_token: str) -> BenchmarkResults:
     assets = {}
     _log.info(f"Collecting OGC API results for job {job_id} with {len(results)} outputs...")
     for result_name, result_value in results.items():
@@ -267,7 +276,7 @@ def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token
 
             if STAC_COLLECTION_SCHEMA == schema_reference:
                 _log.info(f"STAC Collection found in results: '{result_name}'")
-                collection_payload = _extract_qualified_value_payload(qualified_value)
+                collection_payload = extract_qualified_value_payload(qualified_value)
                 if not isinstance(collection_payload, dict):
                     _log.warning(
                         f"Processing result: '{result_name}' can not be processed, "
@@ -279,7 +288,7 @@ def collect_ogc_results(*, api_client: ApiClientWrapper, job_id: str, user_token
                 assets.update(collection.assets.to_dict())
             elif GEOJSON_FEATURECOLLECTION_SCHEMA == schema_reference:
                 _log.info(f"GeoJSON FeatureCollection found in results: '{result_name}'")
-                feature_collection = _extract_qualified_value_payload(qualified_value)
+                feature_collection = extract_qualified_value_payload(qualified_value)
                 if not isinstance(feature_collection, dict):
                     _log.warning(
                         f"Processing result: '{result_name}' can not be processed, "
@@ -349,6 +358,49 @@ def download_ogc_results(
             target = ensure_safe_relative_target(actual_dir, file_name)
             target.parent.mkdir(parents=True, exist_ok=True)
             download_file(
+                ref,
+                target,
+                user_token=user_token,
+            )
+            paths.append(target)
+        else:
+            target = ensure_safe_relative_target(actual_dir, f"{output_name}.json")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(output_data, indent=2), encoding="utf8")
+            paths.append(target)
+
+    return paths
+
+
+def download_ogc_results_headers(
+    *,
+    results_metadata: BenchmarkResults,
+    actual_dir: Path,
+    user_token: str | None = None,
+    details: OGCAPIResults | None = None,
+) -> list[Path]:
+    actual_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+
+    _log.info(f"Downloading headers of {len(results_metadata.assets)} OGC API results to {actual_dir=}")
+    results_path = actual_dir / "job-results.json"
+    results_path.write_text(json.dumps(dataclasses.asdict(results_metadata), indent=2), encoding="utf8")
+    paths.append(results_path)
+
+    for output_name, output_data in sorted(results_metadata.assets.items()):
+        output_data = to_jsonable(output_data)
+        _log.debug(f"Downloading headers of OGC API result '{output_name}' to {actual_dir=}")
+        if isinstance(output_data, dict):
+            ref = _extract_download_link_from_asset(output_data)
+            mimetype = output_data.get("type")
+            if not ref:
+                _log.warning(f"Result '{output_name}' does not contain a valid download link, skipping download.")
+                continue
+
+            file_name = _resolve_output_filename(output_name=output_name, href=ref, mimetype=mimetype)
+            target = ensure_safe_relative_target(actual_dir, file_name)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            download_headers(
                 ref,
                 target,
                 user_token=user_token,
