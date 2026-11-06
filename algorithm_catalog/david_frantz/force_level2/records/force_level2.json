@@ -32,29 +32,28 @@
         "organization": "Geoinformatics - Spatial Data Science, Trier University",
         "email": "david.frantz@uni-trier.de",
         "roles": [
-            "principal investigator"
+          "principal investigator"
         ],
         "links": [
-            {
-                "href": "https://www.uni-trier.de/universitaet/fachbereiche-faecher/fachbereich-vi/faecher/geoinformatik",
-                "title": "Fachverbund Geoinformatik - Universität Trier",
-                "rel": "about",
-                "type": "text/html"
-            },
-            {
-                "href": "https://github.com/davidfrantz/force",
-                "title": "FORCE source code repository - Github",
-                "rel": "about",
-                "type": "text/html"
-            },
-            {
-                "href": "https://force-eo.readthedocs.io/",
-                "title": "FORCE documentation",
-                "rel": "about",
-                "type": "text/html"
-            }
+          {
+            "href": "https://www.uni-trier.de/universitaet/fachbereiche-faecher/fachbereich-vi/faecher/geoinformatik",
+            "title": "Fachverbund Geoinformatik - Universität Trier",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/davidfrantz/force",
+            "title": "FORCE source code repository - Github",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://force-eo.readthedocs.io/",
+            "title": "FORCE documentation",
+            "rel": "about",
+            "type": "text/html"
+          }
         ]
-
       },
       {
         "name": "Hannes Neuschmidt",
@@ -94,22 +93,22 @@
   "linkTemplates": [],
   "links": [
     {
-        "rel": "about",
-        "type": "text/html",
-        "title": "Scientific Publication: FORCE - Landsat + Sentinel-2 Analysis Ready Data and Beyond",
-        "href": "https://doi.org/10.3390/rs11091124"
+      "rel": "about",
+      "type": "text/html",
+      "title": "Scientific Publication: FORCE - Landsat + Sentinel-2 Analysis Ready Data and Beyond",
+      "href": "https://doi.org/10.3390/rs11091124"
     },
     {
-        "rel": "code",
-        "type": "text/html",
-        "title": "Source code repository of the FORCE EO Application Package implementing this process",
-        "href": "https://github.com/bcdev/apex-force-openeo"
+      "rel": "code",
+      "type": "text/html",
+      "title": "Source code repository of the FORCE EO Application Package implementing this process",
+      "href": "https://github.com/bcdev/apex-force-openeo"
     },
     {
-        "rel": "application",
-        "type": "application/x-ipynb+json",
-        "title": "Example notebook: Query, process, download results",
-        "href": "../openeo_udp/force_level2.json"
+      "rel": "application",
+      "type": "application/x-ipynb+json",
+      "title": "Example notebook: Query, process, download results",
+      "href": "../openeo_udp/force_level2.json"
     },
     {
       "rel": "service",
@@ -120,7 +119,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {
@@ -130,10 +129,10 @@
       "href": "../../record.json"
     },
     {
-        "rel": "thumbnail",
-        "type": "image/png",
-        "title": "Thumbnail image",
-        "href": "./thumbnail.png"
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "./thumbnail.png"
     }
   ]
 }

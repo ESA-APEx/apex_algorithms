@@ -102,7 +102,6 @@
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
       "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/heads/main/scripts/udp/worldcereal_crop_extent.json"
-      
     },
     {
       "rel": "code",
@@ -119,7 +118,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {

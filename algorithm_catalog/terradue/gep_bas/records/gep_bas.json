@@ -94,7 +94,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "GEP",
       "href": "../../../../platform_catalog/gep.json"
     },
     {

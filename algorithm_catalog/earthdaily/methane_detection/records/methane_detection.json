@@ -107,7 +107,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "EOxHub Workspaces",
+      "title": "EOxHub",
       "href": "../../../../platform_catalog/eoxhub.json"
     },
     {
