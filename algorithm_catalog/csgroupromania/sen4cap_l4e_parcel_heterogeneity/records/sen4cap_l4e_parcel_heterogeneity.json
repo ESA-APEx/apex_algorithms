@@ -14,7 +14,12 @@
     "description": "# Description \n\nSen4CAP L4E Parcel Heterogeneity allows quantifying and mappping the internal variability of crops and land cover within individual agricultural fields as it performs the determination of the homogeneity of the parcels in terms of the crop uniformity.",
     "cost_estimate": 18,
     "cost_unit": "\u20ac per region corresponding to a S2 tile extent, per month",
-    "keywords": ["Agriculture", "Sentinel-1", "Sentinel-2", "Vegetation"],
+    "keywords": [
+      "Agriculture",
+      "Sentinel-1",
+      "Sentinel-2",
+      "Vegetation"
+    ],
     "language": {
       "code": "en-US",
       "name": "English (United States)"
@@ -99,7 +104,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "Tool Augmentation by user enhancements and Orchestration (TAO)",
+      "title": "TAO",
       "href": "../../../../platform_catalog/tao.json"
     },
     {

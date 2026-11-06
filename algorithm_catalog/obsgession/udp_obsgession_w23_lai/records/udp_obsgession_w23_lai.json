@@ -82,7 +82,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {
@@ -104,10 +104,10 @@
       "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/obsgession_lai/algorithm_catalog/obsgession/udp_obsgession_w23_lai/notebooks/execute-udp.ipynb"
     },
     {
-    "rel": "example-output",
-    "type": "image/tif",
-    "title": "Example output",
-    "href": "https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/EO4Diversity_LAI__2025-06-01Z.tif"
+      "rel": "example-output",
+      "type": "image/tif",
+      "title": "Example output",
+      "href": "https://s3.waw3-1.cloudferro.com/apex-examples/obsgession_lai/EO4Diversity_LAI__2025-06-01Z.tif"
     },
     {
       "rel": "thumbnail",

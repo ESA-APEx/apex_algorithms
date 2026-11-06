@@ -1,156 +1,156 @@
 {
-    "type": "Feature",
-    "conformsTo": [
-        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
-        "https://apex.esa.int/core/openeo-udp"
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "id": "variabilitymap",
+  "properties": {
+    "created": "2025-01-17T16:32:27Z",
+    "updated": "2025-01-17T16:32:27Z",
+    "type": "service",
+    "title": "Variability maps",
+    "description": "Daily crop performance calculation",
+    "keywords": [
+      "Agriculture",
+      "Sentinel-2"
     ],
-    "geometry": null,
-    "id": "variabilitymap",
-    "properties": {
-        "created": "2025-01-17T16:32:27Z",
-        "updated": "2025-01-17T16:32:27Z",
-        "type": "service",
-        "title": "Variability maps",
-        "description": "Daily crop performance calculation",
-        "keywords": [
-            "Agriculture",
-            "Sentinel-2"
-        ],
-        "language": {
-            "code": "en-US",
-            "name": "English (United States)"
-        },
-        "cost_estimate": 4,
-        "cost_unit": "platform credits per km²",
-        "contacts": [
-            {
-                "name": "Bram Janssen",
-                "position": "Researcher",
-                "organization": "VITO",
-                "links": [
-                    {
-                        "href": "https://www.vito.be/",
-                        "title": "VITO Website",
-                        "rel": "about",
-                        "type": "text/html"
-                    },
-                    {
-                        "href": "https://github.com/JanssenBrm",
-                        "title": "GitHub",
-                        "rel": "about",
-                        "type": "text/html"
-                    }
-                ],
-                "contactInstructions": "Contact via VITO",
-                "roles": [
-                    "principal investigator"
-                ]
-            },
-            {
-                "name": "Pratichhya Sharma",
-                "position": "Researcher",
-                "organization": "VITO",
-                "links": [
-                    {
-                        "href": "https://www.vito.be/",
-                        "title": "VITO Website",
-                        "rel": "about",
-                        "type": "text/html"
-                    },
-                    {
-                        "href": "https://github.com/pratichhya",
-                        "title": "GitHub",
-                        "rel": "about",
-                        "type": "text/html"
-                    }
-                ],
-                "contactInstructions": "Contact via VITO",
-                "roles": [
-                    "service provider"
-                ]
-            },
-            {
-                "name": "VITO",
-                "links": [
-                    {
-                        "href": "https://www.vito.be/",
-                        "title": "VITO Website",
-                        "rel": "about",
-                        "type": "text/html"
-                    }
-                ],
-                "contactInstructions": "SEE WEBSITE",
-                "roles": [
-                    "processor"
-                ]
-            }
-        ],
-        "themes": [
-            {
-                "concepts": [
-                    {
-                        "id": "Remote Sensing"
-                    },
-                    {
-                        "id": "Agriculture"
-                    }
-                ],
-                "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
-            }
-        ],
-        "formats": [
-            {
-                "name": "GeoTIFF"
-            },
-            {
-                "name": "netCDF"
-            }
-        ],
-        "license": "CC-BY-4.0"
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
     },
-    "linkTemplates": [],
-    "links": [
-        {
-            "rel": "application",
-            "type": "application/vnd.openeo+json;type=process",
-            "title": "openEO Process Definition",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/32ea3c9a6fa24fe063cb59164cd318cceb7209b0/openeo_udp/variabilitymap/variabilitymap.json"
-        },
-        {
-            "rel": "service",
-            "type": "application/json",
-            "title": "CDSE openEO federation",
-            "href": "https://openeofed.dataspace.copernicus.eu"
-        },
-        {
-            "rel": "platform",
-            "type": "application/json",
-            "title": "CDSE openEO federation",
-            "href": "../../../../platform_catalog/cdse_openeo_federation.json"
-        },
-        {
-            "rel": "provider",
-            "type": "application/json",
-            "title": "VITO",
-            "href": "../../record.json"
-        },
-        {
-            "rel": "example-output",
-            "type": "application/netcdf",
-            "title": "Example output",
-            "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
-        },
-        {
-            "rel": "webapp",
-            "type": "text/html",
-            "title": "OpenEO Web Editor",
-            "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=variabilitymap&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/openeo_udp/variabilitymap.json&server=https://openeofed.dataspace.copernicus.eu"
-        },
-        {
-            "rel": "thumbnail",
-            "type": "image/png",
-            "title": "Thumbnail image",
-            "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/records/thumbnail.jpg"
-        }
-    ]
+    "cost_estimate": 4,
+    "cost_unit": "platform credits per km²",
+    "contacts": [
+      {
+        "name": "Bram Janssen",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/JanssenBrm",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "principal investigator"
+        ]
+      },
+      {
+        "name": "Pratichhya Sharma",
+        "position": "Researcher",
+        "organization": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          },
+          {
+            "href": "https://github.com/pratichhya",
+            "title": "GitHub",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via VITO",
+        "roles": [
+          "service provider"
+        ]
+      },
+      {
+        "name": "VITO",
+        "links": [
+          {
+            "href": "https://www.vito.be/",
+            "title": "VITO Website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "SEE WEBSITE",
+        "roles": [
+          "processor"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "Remote Sensing"
+          },
+          {
+            "id": "Agriculture"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concept/c8fe757b-b530-4d67-a553-e4903f4430a5"
+      }
+    ],
+    "formats": [
+      {
+        "name": "GeoTIFF"
+      },
+      {
+        "name": "netCDF"
+      }
+    ],
+    "license": "CC-BY-4.0"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/32ea3c9a6fa24fe063cb59164cd318cceb7209b0/openeo_udp/variabilitymap/variabilitymap.json"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "VITO",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "example-output",
+      "type": "application/netcdf",
+      "title": "Example output",
+      "href": "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/variabilitymap/variabilitymap.nc"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=variabilitymap&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/openeo_udp/variabilitymap.json&server=https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "thumbnail",
+      "type": "image/png",
+      "title": "Thumbnail image",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/vito/variabilitymap/records/thumbnail.jpg"
+    }
+  ]
 }

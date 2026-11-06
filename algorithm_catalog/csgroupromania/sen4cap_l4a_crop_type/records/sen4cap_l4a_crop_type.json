@@ -105,7 +105,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "Tool Augmentation by user enhancements and Orchestration (TAO)",
+      "title": "TAO",
       "href": "../../../../platform_catalog/tao.json"
     },
     {

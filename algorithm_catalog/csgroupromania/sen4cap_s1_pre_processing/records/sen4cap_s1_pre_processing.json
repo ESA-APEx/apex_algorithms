@@ -14,7 +14,9 @@
     "description": "# Description \n\nThe purpose of the Sen4CAP S1 pre-processing module is to obtain the Amplitude and Coherence products from a pair of two S1 SLC products.",
     "cost_estimate": 1,
     "cost_unit": "\u20ac per input product (Amplitude or Coherence)",
-    "keywords": ["Sentinel-1"],
+    "keywords": [
+      "Sentinel-1"
+    ],
     "language": {
       "code": "en-US",
       "name": "English (United States)"
@@ -99,7 +101,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "Tool Augmentation by user enhancements and Orchestration (TAO)",
+      "title": "TAO",
       "href": "../../../../platform_catalog/tao.json"
     },
     {
