@@ -4,7 +4,7 @@
   "description": "Builds a cloud-free RGB mosaic from Sentinel-2 L2A imagery over a chosen time window. Uses the Scene Classification Layer (SCL) to identify valid, non-cloudy pixels, then takes the per-pixel, per-band median of valid reflectance values (B04, B03, B02 for R, G, B), falling back to the median of invalid values when no valid observation exists in the window. Suitable for producing a representative cloud-free view of an area over multi-week to multi-month periods. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./cloudless_mosaic.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

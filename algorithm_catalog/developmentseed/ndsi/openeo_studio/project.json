@@ -4,7 +4,7 @@
   "description": "Detects snow from Sentinel-2 L2A imagery using the Normalized Difference Snow Index (NDSI), computed from green and short-wave infrared (SWIR) reflectance. Pixels above a configurable NDSI threshold are classified as snow and rendered in blue; remaining pixels keep a brightened true-color appearance. Converted from the Sentinel Hub NDSI evalscript. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./ndsi.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

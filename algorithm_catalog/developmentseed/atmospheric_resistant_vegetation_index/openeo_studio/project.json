@@ -4,7 +4,7 @@
   "description": "Calculates the Atmospherically Resistant Vegetation Index (ARVI) from Sentinel-2 L2A imagery. ARVI extends standard NDVI by incorporating the blue band as a self-correction term for atmospheric scattering from haze, smoke, and aerosols, using an empirically derived weighting factor (y = 0.106). Suitable for monitoring crop health, detecting early vegetation stress, and mapping vegetation density gradients across regions with variable atmospheric conditions such as tropical or fire-affected areas. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./atmospheric_resistant_vegetation_index.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B04",
     "B8A"

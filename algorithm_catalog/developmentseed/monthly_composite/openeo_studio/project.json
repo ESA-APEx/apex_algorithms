@@ -4,7 +4,7 @@
   "description": "Builds a single cloud-free RGB composite from one month of Sentinel-2 L2A imagery by selecting, per pixel, the clearest greenest acquisition (maximum B08/B03 ratio after SCL cloud masking) and applying an enhanced natural-color stretch. Adapted from a SentinelHub Custom Script by Nicolas Karasiak.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./monthly_composite.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

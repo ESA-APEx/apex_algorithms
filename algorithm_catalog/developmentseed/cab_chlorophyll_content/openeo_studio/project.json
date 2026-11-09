@@ -4,7 +4,7 @@
   "description": "Calculates the leaf chlorophyll content (Cab, chlorophyll a+b) from Sentinel-2 L2A imagery using the SNAP biophysical neural network ported from SNAP. Cab is expressed in micrograms per square centimetre (\u00b5g/cm\u00b2) and is a key indicator of photosynthetic capacity, nitrogen status and vegetation stress. The neural network takes 8 spectral bands and 4 angular inputs (view and sun geometry) and applies the SNAP BVNet weights, denormalizing to physical units before dividing by 300 to map the 0-300 \u00b5g/cm\u00b2 display range to 0-1. Suitable for crop nitrogen and fertilization management, vegetation stress and disease detection, and phenology monitoring across croplands, forests, and natural ecosystems. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./cab_chlorophyll_content.py",
-  "defaultBands": [
+  "bands": [
     "B03",
     "B04",
     "B05",

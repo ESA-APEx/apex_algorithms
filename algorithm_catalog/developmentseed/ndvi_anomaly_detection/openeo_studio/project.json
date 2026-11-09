@@ -4,7 +4,7 @@
   "description": "Computes the per-pixel NDVI anomaly from Sentinel-2 L2A imagery by comparing the current month's mean NDVI against the same-month average over the previous N years. Negative values indicate vegetation loss (e.g. drought or crop loss), positive values indicate vegetation gain. Adapted from a SentinelHub Custom Script by Jean-Baptiste Pleynet.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./ndvi_anomaly_detection.py",
-  "defaultBands": [
+  "bands": [
     "B04",
     "B08",
     "SCL"

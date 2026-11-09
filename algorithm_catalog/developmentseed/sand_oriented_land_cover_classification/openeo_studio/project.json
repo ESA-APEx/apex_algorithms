@@ -4,7 +4,7 @@
   "description": "Classifies land cover by combining a Sentinel-1 GRD backscatter built-up test with a chain of Sentinel-2 spectral indices. Each pixel falls through a seven-way priority cascade: built-up (VH or VV > 0.2), shrub/grassland (0.2 < NDVI < 0.4), dense vegetation (NDVI >= 0.4), water (MNDWI > 0 and VH < 0.015), bare soil (BSI > 0.2), sand surfaces (MNDSI > 0.1, a purpose-built Modified Normalized Difference Sand Index), and an unclassified fallback. Testing radar first is what lets the cascade separate built-up areas from bare soil and sand before any optical index runs. Converted from the Sentinel Hub Sand-Oriented Land Cover Classification evalscript by the Regione del Veneto team. Adapted from a SentinelHub Custom Script by Niccolo Tolio, Andrea Semenzato, Umberto Trivelloni, Silvano De Zorzi, Daniele Piccolo, Mirko Frigerio, Alessandro La Rocca.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./sand_oriented_land_cover_classification.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

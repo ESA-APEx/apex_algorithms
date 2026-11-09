@@ -4,7 +4,7 @@
   "description": "Detects thick and thin clouds in Sentinel-2 L2A imagery using the Braaten-Cohen-Yang algorithm, which applies simple threshold tests on the green band, NDGR (green/red normalized difference), and a SWIR constraint to reduce snow misclassification. Renders thick clouds with a blue tint, thin clouds with a red tint, and clear pixels in natural color. Suitable for cloud masking and quality screening ahead of further environmental data analysis. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./cohen_braaten_yang_cloud_detection.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

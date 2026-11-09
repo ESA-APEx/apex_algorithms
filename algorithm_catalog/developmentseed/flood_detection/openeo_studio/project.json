@@ -4,7 +4,7 @@
   "description": "Single-date Sentinel-1/Sentinel-2 data fusion that visualizes flood extent under cloud cover by thresholding Sentinel-1 VV backscatter and compositing the result over a Sentinel-2 near-infrared background. Adapted from a SentinelHub Custom Script by William Ray, Maxim Lamare.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./flood_detection.py",
-  "defaultBands": [
+  "bands": [
     "B08"
   ],
   "temporalRange": [

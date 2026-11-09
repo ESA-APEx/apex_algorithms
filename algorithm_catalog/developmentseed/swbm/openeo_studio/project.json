@@ -4,7 +4,7 @@
   "description": "Detects surface water in Sentinel-2 L2A scenes using an OR-ensemble of three normalized-difference indices (MNDWI, NDWI, SWI). Water pixels render blue; non-water pixels render as 2x true colour. Thresholds default to the Sentinel Hub evalscript values (MNDWI_thr=0.1, NDWI_thr=0.2, SWI_thr=0.03) and may be calibrated per scene using the histogram inspection procedure described in the original script. Adapted from a SentinelHub Custom Script by Mohor Gartner.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./swbm.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

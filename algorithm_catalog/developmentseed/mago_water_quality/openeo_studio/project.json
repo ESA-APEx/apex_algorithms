@@ -4,7 +4,7 @@
   "description": "Estimates water-quality parameters (chlorophyll-a, cyanobacteria, turbidity, CDOM, TSS) in lakes, reservoirs, and large ponds from Sentinel-2 L2A imagery. The indicator is selectable at runtime via the 'indicator' parameter (0-7) and the color scale via 'min_value' / 'max_value'. Non-water pixels (NDWI < 0) are rendered in true color. Developed for Mediterranean inland waters by CETAQUA within the PRIMA MAGO project. Adapted from a SentinelHub Custom Script by CETAQUA.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./mago_water_quality.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

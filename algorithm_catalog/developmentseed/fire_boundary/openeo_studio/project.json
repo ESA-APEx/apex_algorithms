@@ -4,7 +4,7 @@
   "description": "Detects wildfire boundaries using Sentinel-2 B11 and B12 reflectance bands. The fire boundary coefficient highlights burned areas with enhanced contrast: bright values indicate fire-affected areas, dark values indicate unburned areas. Adapted from a SentinelHub Custom Script by Adzanil Rachmadhi Putra, Fatwa Ramdani.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./fire_boundary.py",
-  "defaultBands": [
+  "bands": [
     "B11",
     "B12"
   ],

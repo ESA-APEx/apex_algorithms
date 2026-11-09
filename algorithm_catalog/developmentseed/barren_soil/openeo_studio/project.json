@@ -4,7 +4,7 @@
   "description": "Visualizes barren and bare soil from Sentinel-2 L2A imagery using the Barren Soil Index (Nguyen et al., 2021), computed from SWIR, red, NIR and blue reflectance. The result is rendered as an RGB composite with BSI on the red channel, NIR on green and SWIR on blue, so vegetation renders green and barren ground renders red. Converted from the Sentinel Hub Barren Soil evalscript. Adapted from a SentinelHub Custom Script by Monja Sebela.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./barren_soil.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B04",
     "B08",

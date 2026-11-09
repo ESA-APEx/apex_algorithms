@@ -4,7 +4,7 @@
   "description": "Visualizes active wildfire occurrences from Sentinel-2 imagery using SWIR-based spectral thresholds blended into a base map that preserves soil, built-up areas, vegetation, and water bodies. Supports three rendering styles: a continuous fire intensity heatmap, and binary fire detection in red or yellow. Includes optional cloud avoidance logic to reduce false detections and burn-scar highlighting via the Normalized Burn Ratio (NBR) for post-fire impact assessment. Adapted from a SentinelHub Custom Script by Markuse, P.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./wildfire_visualization.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B03",
     "B04",

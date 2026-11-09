@@ -4,7 +4,7 @@
   "description": "Detects and maps burned areas using Sentinel-2 red-edge spectral bands. BAIS2 leverages the sensitivity of the red-edge region to chlorophyll content for discriminating burn severity at 20m resolution. Index values range from -1 to 1 for burn scars and 1 to 6 for active fires.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./bais2.py",
-  "defaultBands": [
+  "bands": [
     "B04",
     "B06",
     "B07",

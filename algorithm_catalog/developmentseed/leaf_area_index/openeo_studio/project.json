@@ -4,7 +4,7 @@
   "description": "Calculates the Leaf Area Index (LAI) from Sentinel-2 L2A imagery using a neural network algorithm ported from SNAP. LAI is a dimensionless index representing the one-sided green leaf area per unit of land area (m2/m2). The neural network takes 8 spectral bands and 4 angular inputs (view and sun geometry), applies the SNAP BVNet weights, and denormalizes the output to a physical LAI range before scaling it down by 3 for display. Suitable for monitoring crop growth, forest biomass, and vegetation density across croplands, forests, and plantations. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./leaf_area_index.py",
-  "defaultBands": [
+  "bands": [
     "B03",
     "B04",
     "B05",

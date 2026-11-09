@@ -4,7 +4,7 @@
   "description": "Calculates the Plant Senescence Reflectance Index (PSRI) from Sentinel-2 L2A imagery. PSRI tracks the progression of leaf senescence and natural vegetation aging using the red, blue, and vegetation red edge bands. Suitable for monitoring crop maturity and stress, detecting early signs of vegetation decline, and tracking seasonal senescence patterns across croplandxs and forests. Adapted from a SentinelHub Custom Script by Authors not listed.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./plant-senescence-reflectance-index.py",
-  "defaultBands": [
+  "bands": [
     "B02",
     "B04",
     "B06"

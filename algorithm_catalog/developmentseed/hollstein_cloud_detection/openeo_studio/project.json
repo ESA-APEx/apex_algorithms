@@ -4,7 +4,7 @@
   "description": "Classifies clouds, cirrus, shadow, water, snow and clear sky from Sentinel-2 L2A reflectance using the Hollstein et al. (2016) decision tree. This titiler variant omits the cirrus band B10 (unavailable in L2A) and substitutes blue/SWIR proxies for the two B10-based tests. Converted from the Sentinel Hub Hollstein evalscript. Adapted from a SentinelHub Custom Script by Andr\u00e9 Hollstein.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./hollstein_cloud_detection.py",
-  "defaultBands": [
+  "bands": [
     "B01",
     "B02",
     "B03",

@@ -4,7 +4,7 @@
   "description": "Visualizes urban areas and individual buildings using Sentinel-1 GRD VH and VV backscatter. VV backscatter is mapped to the green channel and VH to the blue channel, while strongly reflecting VH values (VH > 0.5) are added to the red channel, so buildings appear purple (VH-dominant), green (VV-dominant), or white (strong in both). This color separation helps distinguish built-up areas from surrounding terrain and supports tasks such as tracking urban expansion, estimating building types, and identifying buildings at risk from natural disturbances such as flooding. The method is less reliable in high-elevation regions, where snow and steep slopes can also appear bright in VH and VV. Adapted from a SentinelHub Custom Script by Monja B. \u0160ebela.",
   "collectionId": "sentinel-1-rtc",
   "algorithm": "./urban_areas.py",
-  "defaultBands": [
+  "bands": [
     "vh",
     "vv"
   ],

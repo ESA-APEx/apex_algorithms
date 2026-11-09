@@ -4,7 +4,7 @@
   "description": "Multi-temporal NDVI composite that assigns the mean NDVI of each of three calendar months to the red, green and blue channels, so colour encodes when in the season vegetation peaked and separates crops by growth stage. Adapted from a SentinelHub Custom Script by @HarelDan, Andr\u00e1s Zlinszky.",
   "collectionId": "sentinel-2-l2a",
   "algorithm": "./agriculture_growth_stage.py",
-  "defaultBands": [
+  "bands": [
     "B04",
     "B08",
     "SCL"
