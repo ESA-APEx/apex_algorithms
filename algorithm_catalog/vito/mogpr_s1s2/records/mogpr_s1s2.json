@@ -113,7 +113,11 @@
         "name": "JSON"
       }
     ],
-    "license": "other"
+    "license": "other",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [

@@ -70,7 +70,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "proprietary"
+    "license": "proprietary",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [

@@ -88,7 +88,11 @@
         "name": "JSON"
       }
     ],
-    "license": "MIT"
+    "license": "MIT",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [

@@ -88,7 +88,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "GPLV3.0"
+    "license": "GPLV3.0",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [

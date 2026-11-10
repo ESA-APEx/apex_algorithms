@@ -90,7 +90,11 @@
         "name": "CSV"
       }
     ],
-    "license": "CC-BY-4.0"
+    "license": "CC-BY-4.0",
+    "certification": {
+      "category": "validated",
+      "funding": "esa"
+    }
   },
   "linkTemplates": [],
   "links": [

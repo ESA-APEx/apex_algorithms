@@ -67,7 +67,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "CC-BY-NC"
+    "license": "CC-BY-NC",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
