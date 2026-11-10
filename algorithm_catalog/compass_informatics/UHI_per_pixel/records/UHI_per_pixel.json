@@ -45,7 +45,11 @@
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
-    ]
+    ],
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "links": [
     {
