@@ -109,6 +109,12 @@
       "href": "https://github.com/bcdev/apex-force-openeo"
     },
     {
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
+      "title": "Run FORCE TSA from Jupyter Notebook",
+      "href": "https://raw.githubusercontent.com/bcdev/apex-force-openeo/refs/heads/main/examples/jupyterlite/FORCE_TSA_jupyterlite.ipynb"
+    },
+    {
       "rel": "application",
       "type": "application/x-ipynb+json",
       "title": "Example notebook: Query, process, download results",

@@ -109,6 +109,12 @@
       "href": "https://github.com/bcdev/apex-force-openeo"
     },
     {
+      "rel": "notebook",
+      "type": "application/x-ipynb+json",
+      "title": "Run FORCE level 2 from Jupyter Notebook",
+      "href": "https://github.com/bcdev/apex-force-openeo/blob/main/examples/jupyterlite/FORCE_level2_jupyterlite.ipynb"
+    },
+    {
       "rel": "application",
       "type": "application/x-ipynb+json",
       "title": "Example notebook: Query, process, download results",
