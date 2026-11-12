@@ -40,6 +40,7 @@
         "updated",
         "type",
         "title",
+        "short_title",
         "description",
         "contacts",
         "themes"
@@ -64,6 +65,10 @@
         "title": {
           "type": "string",
           "description": "Title of the Platform"
+        },
+        "short_title": {
+          "type": "string",
+          "description": "Short title of the Platform, used in algorithm platform links"
         },
         "description": {
           "type": "string",

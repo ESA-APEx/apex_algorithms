@@ -74,7 +74,11 @@
         "name": "JPEG"
       }
     ],
-    "license": "other"
+    "license": "Other",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -93,7 +97,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "GEP",
       "href": "../../../../platform_catalog/gep.json"
     },
     {

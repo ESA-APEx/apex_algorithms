@@ -13,7 +13,7 @@
     "title": "WorldAgroCommodities (WAC) Processing Pipeline",
     "description": "This workflow is an end-to-end openEO pipeline for agricultural feature extraction and model inference using Sentinel-1 and Sentinel-2 data, a suite of preprocessing steps, vegetation indices, and a sliding-window ONNX model. The ML models were trained to classify agriculture activity for specific commodities in Africa, South-America or South-East Asia in the context of ESA's World AgroCommodities project",
     "cost_estimate": 0.125,
-    "cost_unit": "platform credits per km²",
+    "cost_unit": "platform credits per km\u00b2",
     "keywords": [
       "Agriculture",
       "Sentinel-2",
@@ -79,7 +79,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "CC-BY-4.0"
+    "license": "CC-BY-4.0",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -104,7 +108,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {

@@ -8,7 +8,7 @@
         "created": "2026-03-27T00:00:00Z",
         "updated": "2026-03-27T00:00:00Z",
         "type": "algorithm_provider",
-        "title": "German Aerospace Center",
+        "title": "DLR (German Aerospace Center)",
         "description": "",
         "keywords": [],
         "language": {
@@ -23,7 +23,7 @@
         ],
         "contacts": [],
         "themes": [],
-        "license": "other",
+        "license": "Other",
         "acl": {
             "admin": ["@dlr.de", "@vito.be"]
         }
@@ -38,15 +38,15 @@
         },
         {
             "rel": "logo-light",
-            "type": "image/jpg",
+            "type": "image/svg+xml",
             "title": "Logo",
-            "href": "https://www.dlr.de/en/images/2021/3/dlr-logo-black/@@images/image-1920-eab1f2d82466a627837d870181af2f68.jpeg"
+            "href": "https://www.dlr.de/static/media/Logo-en.bc10c5b6.svg"
         },
         {
             "rel": "logo-dark",
-            "type": "image/jpg",
+            "type": "image/svg+xml",
             "title": "Logo",
-            "href": "https://www.dlr.de/en/images/2021/3/dlr-logo-black/@@images/image-1920-eab1f2d82466a627837d870181af2f68.jpeg"
+            "href": "https://www.dlr.de/static/media/Logo-en.bc10c5b6.svg"
         }
     ]
 }

@@ -42,7 +42,7 @@ def pytest_addoption(parser):
         "--backend-filter",
         action="store",
         type=str,
-        help="A regex patter to filter the available scenarios by backend.",
+        help="A regex pattern to select scenarios by their original backend; scenarios without a backend are excluded.",
     )
     parser.addoption(
         "--maximum-job-time-in-minutes",
@@ -82,6 +82,21 @@ def pytest_collection_modifyitems(session, config, items):
     """
     Pytest hook to filter/reorder collected test items.
     """
+    backend_filter = config.getoption("--backend-filter")
+    if backend_filter:
+        selected = []
+        deselected = []
+        for item in items:
+            callspec = getattr(item, "callspec", None)
+            if callspec is not None and "scenario" in callspec.params:
+                backend = getattr(callspec.params["scenario"], "backend", None)
+                if backend is None or not re.match(backend_filter, backend):
+                    deselected.append(item)
+                    continue
+            selected.append(item)
+        config.hook.pytest_deselected(items=deselected)
+        items[:] = selected
+
     # Optionally, select a random subset of benchmarks to run.
     # based on https://alexwlchan.net/til/2024/run-random-subset-of-tests-in-pytest/
     subset_size = config.getoption("--random-subset")

@@ -184,7 +184,8 @@ def build_stats(catalog_root: Path, top_n: int) -> dict[str, Any]:
 			for keyword in keywords:
 				keyword_counter[keyword] += 1
 
-		providers.append({"id": provider_slug, "name": provider_name, "algorithm_count": public_algorithm_count})
+		if public_algorithm_count:
+			providers.append({"id": provider_slug, "name": provider_name, "algorithm_count": public_algorithm_count})
 	total_algorithms = sum(provider_counter.values())
 	total_providers = len(providers)
 	total_platforms = len(platform_counter)

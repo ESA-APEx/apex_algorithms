@@ -38,9 +38,9 @@ def test_get_platform_ogc_records():
 )
 def test_service_record_validation(record):
     ## Validate if record file is located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'
-    assert record["path"].endswith(
-        f"{record['data']['id']}/records/{record['data']['id']}.json"
-    ), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
+    assert record["path"].endswith(f"{record['data']['id']}/records/{record['data']['id']}.json"), (
+        f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
+    )
 
     ## Validate record against the service OGC record schema.
     jsonschema.validate(instance=record["data"], schema=get_service_ogc_record_schema())
@@ -54,9 +54,9 @@ def test_service_record_validation(record):
                 response = requests.head(href, timeout=10)
             except requests.RequestException as e:
                 raise Exception(f"Failed to request {href=}: {e}") from e
-            assert (
-                response.status_code in [200, 301, 302, 308, 401, 403]
-            ), f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            assert response.status_code in [200, 301, 302, 308, 401, 403], (
+                f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            )
 
 
 @pytest.mark.parametrize(
@@ -69,10 +69,26 @@ def test_service_record_validation(record):
 )
 def test_platform_record_validation(record):
     record_name = Path(record["path"]).name
-    assert (
-        record_name == f"{record['data']['id']}.json"
-    ), f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    assert record_name == f"{record['data']['id']}.json", (
+        f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    )
     jsonschema.validate(instance=record["data"], schema=get_platform_ogc_record_schema())
+
+
+@pytest.mark.parametrize(
+    "record",
+    [pytest.param(record, id=record["data"]["id"]) for record in get_service_ogc_records()],
+)
+def test_service_record_platform_link_titles(record):
+    platforms = {Path(platform["path"]).resolve(): platform["data"] for platform in get_platform_ogc_records()}
+    for link in record["data"].get("links", []):
+        if link["rel"] == "platform":
+            platform_path = (Path(record["path"]).parent / link["href"]).resolve()
+            platform = platforms[platform_path]
+            assert link.get("title") == platform["properties"]["short_title"], (
+                f"Platform link '{link['href']}' in record '{record['data']['id']}' "
+                f"must have title {platform['properties']['short_title']!r}"
+            )
 
 
 def test_algorithm_provider_records_():

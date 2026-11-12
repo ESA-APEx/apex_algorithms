@@ -86,7 +86,11 @@
                 "name": "JSON"
             }
         ],
-        "license": "proprietary"
+        "license": "Proprietary",
+      "certification": {
+        "category": "validated",
+        "funding": "other"
+      }
     },
     "linkTemplates": [],
     "links": [
