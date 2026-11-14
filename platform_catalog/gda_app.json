@@ -1,0 +1,62 @@
+{
+  "id": "gda_app",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+      "created": "2026-03-02T13:00:00Z",
+      "updated": "2026-11-13T11:00:00Z",
+    "type": "ogc_backend",
+    "title": "Global Development Assistance - Analytics & Processing Platform",
+    "description": "The cloud-based environment developed under ESA Global Development Assistance programme to harness Earth Observation for development aid operations",
+    "keywords": ["natural hazards","hazards planning"],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "GDA APP team",
+        "organization": "MEEO",
+        "position": "Operational and technical support",
+        "roles": [
+          "platform operations",
+          "technical support",
+          "user onboarding"
+        ],
+        "contactInstructions": "For any inquiries, please reach out to the Platform's User Engagement Team",
+        "email": "engage-gdaapp@meeo.it"
+      }
+    ],
+    "themes": [],
+    "license": "other"
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "MEEO",
+      "href": "https://meeo.it"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "MEEO Logo",
+      "href": "https://cloud.services.meeo.it/f/953183fe14a74ea7844b/"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "MEEO logo",
+      "href": "https://cloud.services.meeo.it/f/bd6c6c0e85f345abb3c0/"
+    }
+  ]
+}
