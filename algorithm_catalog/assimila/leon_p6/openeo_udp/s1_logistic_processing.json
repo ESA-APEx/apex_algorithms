@@ -1,0 +1,687 @@
+{
+  "process_graph": {
+    "loadcollection1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "VH"
+        ],
+        "id": "SENTINEL1_GRD",
+        "properties": {
+          "sar:instrument_mode": {
+            "process_graph": {
+              "eq1": {
+                "process_id": "eq",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": "IW"
+                },
+                "result": true
+              }
+            }
+          },
+          "sat:orbit_state": {
+            "process_graph": {
+              "eq2": {
+                "process_id": "eq",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "orbit_state"
+                  }
+                },
+                "result": true
+              }
+            }
+          },
+          "sat:relative_orbit": {
+            "process_graph": {
+              "eq3": {
+                "process_id": "eq",
+                "arguments": {
+                  "x": {
+                    "from_parameter": "value"
+                  },
+                  "y": {
+                    "from_parameter": "relative_orbit"
+                  }
+                },
+                "result": true
+              }
+            }
+          }
+        },
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "temporal_extent": [
+          "2019-10-01",
+          "2025-04-01"
+        ]
+      }
+    },
+    "sarbackscatter1": {
+      "process_id": "sar_backscatter",
+      "arguments": {
+        "coefficient": "sigma0-ellipsoid",
+        "contributing_area": false,
+        "data": {
+          "from_node": "loadcollection1"
+        },
+        "elevation_model": "COPERNICUS_30",
+        "ellipsoid_incidence_angle": false,
+        "local_incidence_angle": false,
+        "mask": false,
+        "noise_removal": true
+      }
+    },
+    "applyneighborhood1": {
+      "process_id": "apply_neighborhood",
+      "arguments": {
+        "data": {
+          "from_node": "sarbackscatter1"
+        },
+        "overlap": [
+          {
+            "dimension": "x",
+            "value": {
+              "from_parameter": "speckle_filter_radius"
+            },
+            "unit": "px"
+          },
+          {
+            "dimension": "y",
+            "value": {
+              "from_parameter": "speckle_filter_radius"
+            },
+            "unit": "px"
+          }
+        ],
+        "process": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "radius": {
+                    "from_parameter": "speckle_filter_radius"
+                  },
+                  "cv_noise": {
+                    "from_parameter": "speckle_filter_cv_noise"
+                  }
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nfrom typing import TypedDict\n\nfrom openeo.udf import inspect\nimport xarray as xr\n\n\nLOG_CODE = \"lee_speckle_filter\"\n\n\nclass Context(TypedDict):\n    # the radius of the circular filter in pixels. Should be at least 1.\n    # for example, radius=2 means that the filter will consider a 5x5 window.\n    radius: int\n\n    # coefficient of variation of the noise.\n    # For a look-count of N, this ~ 1 / sqrt(N)\n    cv_noise: float\n\n\ndef format_bytes(bytes_val: float) -> str:\n    for unit in [\"B\", \"KB\", \"MB\", \"GB\", \"TB\"]:\n        if bytes_val < 1024:\n            return f\"{bytes_val:.2f} {unit}\"\n        bytes_val /= 1024\n    return f\"{bytes_val:.2f} PB\"\n\n\ndef apply_datacube(cube: xr.DataArray, context: Context) -> xr.DataArray:\n    \"\"\"\n    Apply a circular Lee filter.\n\n    There is no special case for edge pixels.\n    Because we expect to be processing a buffered chunk of a larger image,\n    with an overlap of at least `radius` pixels on each side.\n\n    Arguments:\n        cube: xarray DataArray\n            Should have spatial dimensions \"x\" and \"y\" of size at least (2 * radius + 1).\n        context: user-provided arguments.\n    \"\"\"\n    inspect(\n        data=cube.sizes, message=\"Input cube dimensions\", code=LOG_CODE, level=\"debug\"\n    )\n    nan_pct = (cube.isnull().sum().item() / cube.size) * 100\n    inspect(\n        message=f\"NaNs in input cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n    inspect(\n        message=f\"Size of cube = {format_bytes(cube.nbytes)}\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    # parse and validate context\n\n    radius = context[\"radius\"]\n    if not isinstance(radius, int):\n        raise ValueError(\"radius should be an integer\")\n    if radius < 1:\n        raise ValueError(\"radius should be at least 1\")\n\n    cv_noise = context[\"cv_noise\"]\n    if not isinstance(cv_noise, float):\n        raise ValueError(\"cv_noise should be a number\")\n    if cv_noise <= 0:\n        raise ValueError(\"cv_noise should be positive\")\n\n    # circular kernel over dims (x_win, y_win)\n\n    kernel = xr.DataArray(\n        1.0,\n        dims=[\"x_win\", \"y_win\"],\n        coords={\n            \"x_win\": range(-radius, radius + 1),\n            \"y_win\": range(-radius, radius + 1),\n        },\n    )\n    kernel = kernel.where(kernel.x_win**2 + kernel.y_win**2 <= radius**2, 0.0)\n    kernel = kernel / kernel.sum()\n\n    # construct a rolling window over (x, y)\n    # adding dimensions (x_win, y_win) to the cube\n\n    window = cube.rolling(\n        x=2 * radius + 1,\n        y=2 * radius + 1,\n        # the window is centred on the pixel of interest in (x, y)\n        center=True,\n    ).construct(\n        x=\"x_win\",\n        y=\"y_win\",\n    )\n\n    # local mean and variance\n\n    mu = window.dot(kernel)\n    sigma2 = (window**2).dot(kernel) - mu**2\n\n    # avoid division by zero in homogeneous areas where local variance is ~0\n    eps = 1e-12\n    sigma2 = sigma2.where(sigma2 > eps, eps)\n    W = 1 - cv_noise**2 * mu**2 / sigma2\n    W = W.clip(min=0.0, max=1.0)\n\n    output = mu + W * (cube - mu)\n\n    nan_pct = (output.isnull().sum().item() / output.size) * 100\n    inspect(\n        message=f\"NaNs in returned cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    return output\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        },
+        "size": [
+          {
+            "dimension": "x",
+            "value": 128,
+            "unit": "px"
+          },
+          {
+            "dimension": "y",
+            "value": 128,
+            "unit": "px"
+          }
+        ]
+      }
+    },
+    "applyneighborhood2": {
+      "process_id": "apply_neighborhood",
+      "arguments": {
+        "data": {
+          "from_node": "applyneighborhood1"
+        },
+        "overlap": [
+          {
+            "dimension": "x",
+            "value": {
+              "from_parameter": "speckle_filter_radius"
+            },
+            "unit": "px"
+          },
+          {
+            "dimension": "y",
+            "value": {
+              "from_parameter": "speckle_filter_radius"
+            },
+            "unit": "px"
+          }
+        ],
+        "process": {
+          "process_graph": {
+            "runudf2": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "radius": {
+                    "from_parameter": "speckle_filter_radius"
+                  },
+                  "window_size": {
+                    "from_parameter": "speckle_filter_temporal_window"
+                  }
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nfrom typing import TypedDict\n\nfrom openeo.udf import inspect\nimport xarray as xr\n\n\nLOG_CODE = \"multitemporal_speckle_filter_atbd\"\n\n\nclass Context(TypedDict):\n    # the radius of the circular filter in pixels.\n    # Should be at least 1.\n    # for example, radius=2 means that the filter will consider a 5x5 window.\n    radius: int\n\n    # size of the temporal window (number of time steps to consider).\n    # Should be at least 3, and an odd number.\n    window_size: int\n\n\ndef format_bytes(bytes_val: float) -> str:\n    for unit in [\"B\", \"KB\", \"MB\", \"GB\", \"TB\"]:\n        if bytes_val < 1024:\n            return f\"{bytes_val:.2f} {unit}\"\n        bytes_val /= 1024\n    return f\"{bytes_val:.2f} PB\"\n\n\ndef apply_datacube(cube: xr.DataArray, context: Context) -> xr.DataArray:\n    \"\"\"\n    Apply a multitemporal speckle filter.\n    With a moving window.\n\n    This is the formulation from the ATBD.\n    It is an inverse local-mean weighted average.\n\n    There is no special case for edge pixels.\n    Because we expect to be processing a buffered chunk of a larger image,\n    with an overlap of at least `radius` pixels on each side.\n\n    Arguments:\n        cube: xarray DataArray\n            Should have spatial dimensions \"x\" and \"y\" of size at least (2 * `radius` + 1).\n            And temporal dimension \"t\" of size at least `window`.\n        context: user-provided arguments.\n    \"\"\"\n    inspect(\n        data=cube.sizes, message=\"Input cube dimensions\", code=LOG_CODE, level=\"debug\"\n    )\n    nan_pct = (cube.isnull().sum().item() / cube.size) * 100\n    inspect(\n        message=f\"NaNs in input cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n    inspect(\n        message=f\"Size of cube = {format_bytes(cube.nbytes)}\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    # parse and validate context\n\n    radius = context[\"radius\"]\n    if not isinstance(radius, int):\n        raise ValueError(\"radius should be an integer\")\n    if radius < 1:\n        raise ValueError(\"radius should be at least 1\")\n    window_size = context[\"window_size\"]\n    if not isinstance(window_size, int):\n        raise ValueError(\"window should be an integer\")\n    if window_size < 3 or window_size % 2 == 0:\n        raise ValueError(\"window should be an odd integer, at least 3\")\n\n    if cube.sizes[\"t\"] < window_size:\n        raise ValueError(\"Insufficient temporal data\")\n\n    # circular kernel over dims (x_win, y_win)\n\n    kernel = xr.DataArray(\n        1.0,\n        dims=[\"x_win\", \"y_win\"],\n        coords={\n            \"x_win\": range(-radius, radius + 1),\n            \"y_win\": range(-radius, radius + 1),\n        },\n    )\n    kernel = kernel.where(kernel.x_win**2 + kernel.y_win**2 <= radius**2, 0.0)\n    kernel = kernel / kernel.sum()\n\n    # construct a rolling window over (x, y)\n    # adding dimensions (x_win, y_win) to the cube\n\n    window = cube.rolling(\n        x=2 * radius + 1,\n        y=2 * radius + 1,\n        # the window is centred on the pixel of interest in (x, y)\n        center=True,\n    ).construct(\n        x=\"x_win\",\n        y=\"y_win\",\n    )\n\n    # local mean\n\n    mu = window.dot(kernel)\n\n    eps = 1e-12\n    if (abs(mu) < eps).any():\n        inspect(\n            message=\"Warning: local mean is close to zero for some pixels, which may lead to instability in the filter.\",\n            code=LOG_CODE,\n            level=\"warning\",\n        )\n\n    # numerator - normalised intensity\n    ni = cube / mu\n    # denominator\n    inv_mu = 1.0 / mu\n\n    # rolling window over time dimension\n\n    sum_ni = ni.rolling(t=window_size, center=True).sum()\n    sum_inv_mu = inv_mu.rolling(t=window_size, center=True).sum()\n\n    output = sum_ni / sum_inv_mu\n\n    nan_pct = (output.isnull().sum().item() / output.size) * 100\n    inspect(\n        message=f\"NaNs in returned cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    return output\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        },
+        "size": [
+          {
+            "dimension": "x",
+            "value": 128,
+            "unit": "px"
+          },
+          {
+            "dimension": "y",
+            "value": 128,
+            "unit": "px"
+          }
+        ]
+      }
+    },
+    "resamplespatial1": {
+      "process_id": "resample_spatial",
+      "arguments": {
+        "align": "upper-left",
+        "data": {
+          "from_node": "applyneighborhood2"
+        },
+        "method": "average",
+        "projection": null,
+        "resolution": {
+          "from_parameter": "spatial_resolution"
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "resamplespatial1"
+        },
+        "process": {
+          "process_graph": {
+            "log1": {
+              "process_id": "log",
+              "arguments": {
+                "base": 10,
+                "x": {
+                  "from_parameter": "x"
+                }
+              }
+            },
+            "multiply1": {
+              "process_id": "multiply",
+              "arguments": {
+                "x": 10.0,
+                "y": {
+                  "from_node": "log1"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "sd1": {
+              "process_id": "sd",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels1": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "dimension": "bands",
+        "target": [
+          "sd"
+        ]
+      }
+    },
+    "reducedimension2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "quantiles1": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.05
+                ]
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels2": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension2"
+        },
+        "dimension": "bands",
+        "target": [
+          "p05"
+        ]
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "renamelabels1"
+        },
+        "cube2": {
+          "from_node": "renamelabels2"
+        }
+      }
+    },
+    "reducedimension3": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "quantiles2": {
+              "process_id": "quantiles",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "probabilities": [
+                  0.95
+                ]
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels3": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension3"
+        },
+        "dimension": "bands",
+        "target": [
+          "p95"
+        ]
+      }
+    },
+    "mergecubes2": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes1"
+        },
+        "cube2": {
+          "from_node": "renamelabels3"
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "dimension": "t",
+        "process": {
+          "process_graph": {
+            "runudf3": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "window_size": {
+                    "from_parameter": "logistic_window_size"
+                  },
+                  "steepness_parameter": {
+                    "from_parameter": "logistic_steepness_parameter"
+                  }
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nfrom typing import TypedDict\n\nimport numpy as np\nfrom openeo.udf import inspect\nimport xarray as xr\n\n\nLOG_CODE = \"logistic_curve_sse\"\n\n\nclass Context(TypedDict):\n    # size of the temporal window (number of time steps to consider).\n    # Should be at least 3, and an odd number.\n    window_size: int\n\n    # ATBD says = -2.0\n    # which equates to a significant change over 3 images\n    steepness_parameter: float\n\n\ndef format_bytes(bytes_val: float) -> str:\n    for unit in [\"B\", \"KB\", \"MB\", \"GB\", \"TB\"]:\n        if bytes_val < 1024:\n            return f\"{bytes_val:.2f} {unit}\"\n        bytes_val /= 1024\n    return f\"{bytes_val:.2f} PB\"\n\n\ndef apply_datacube(cube: xr.DataArray, context: Context) -> xr.DataArray:\n    \"\"\"\n    Apply logistic curve as window function over dim \"t\".\n    This is kind of like a convolution, where we calculate sum squared error at each time.\n\n    Arguments:\n        cube: xarray DataArray.\n            dims (t, ...) where \"...\" indicates other broadcast-able dimensions.\n            Temporal dimension \"t\" of size at least `window`.\n\n        context: user-provided arguments.\n    \"\"\"\n    inspect(\n        data=cube.sizes, message=\"Input cube dimensions\", code=LOG_CODE, level=\"debug\"\n    )\n    nan_pct = (cube.isnull().sum().item() / cube.size) * 100\n    inspect(\n        message=f\"NaNs in input cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n    inspect(\n        message=f\"Size of cube = {format_bytes(cube.nbytes)}\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    # parse and validate context\n\n    window_size = context[\"window_size\"]\n    if not isinstance(window_size, int):\n        raise ValueError(\"window should be an integer\")\n    if window_size < 3 or window_size % 2 == 0:\n        raise ValueError(\"window should be an odd integer, at least 3\")\n    steepness_parameter = context[\"steepness_parameter\"]\n    if not isinstance(steepness_parameter, float):\n        raise ValueError(\"steepness_parameter should be a float\")\n\n    if cube.sizes[\"t\"] < window_size:\n        raise ValueError(\"Insufficient temporal data\")\n\n    # compute p05 and p95\n    # these have dims (...)\n\n    # .quantile() adds a non-dimension coordinate \"quantile\", which we drop\n    p05 = cube.quantile(0.05, dim=\"t\").drop_vars(\"quantile\")\n    p95 = cube.quantile(0.95, dim=\"t\").drop_vars(\"quantile\")\n\n    # amplitude\n    k = p95 - p05\n\n    # construct a rolling window over t\n    # adding dimension t_win to the cube\n\n    windows = cube.rolling(t=window_size, center=True).construct(\n        t=\"t_win\"\n    )  # dims (t, t_win, ...)\n\n    # window indices [0, 1, 2, 3, ...]\n    t_i = windows.t_win  # dims (t_win)\n\n    # midpoint of window\n    t_0 = window_size // 2\n\n    exponent = -1.0 * steepness_parameter * (t_i - t_0)  # dims (t_win)\n\n    predicted = p05 + k / (1 + np.exp(exponent))  # dims (t_win, ...)\n\n    diff = windows - predicted  # dims (t, t_win, ...)\n\n    # reduce over t_win\n    rss = (diff**2.0).sum(\n        dim=\"t_win\",\n        # do not skip NaN, because rss is used as an absolute value\n        skipna=False,\n    )\n\n    nan_pct = (rss.isnull().sum().item() / rss.size) * 100\n    inspect(\n        message=f\"NaNs in returned cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    return rss\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "reducedimension4": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "min1": {
+              "process_id": "min",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels4": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension4"
+        },
+        "dimension": "bands",
+        "target": [
+          "min_sse"
+        ]
+      }
+    },
+    "mergecubes3": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes2"
+        },
+        "cube2": {
+          "from_node": "renamelabels4"
+        }
+      }
+    },
+    "reducedimension5": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "dimension": "t",
+        "reducer": {
+          "process_graph": {
+            "runudf4": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {},
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nfrom typing import TypedDict\n\nfrom openeo.udf import inspect\nimport xarray as xr\n\n\nLOG_CODE = \"idxmin_t\"\n\n\nclass Context(TypedDict):\n    pass\n\n\ndef format_bytes(bytes_val: float) -> str:\n    for unit in [\"B\", \"KB\", \"MB\", \"GB\", \"TB\"]:\n        if bytes_val < 1024:\n            return f\"{bytes_val:.2f} {unit}\"\n        bytes_val /= 1024\n    return f\"{bytes_val:.2f} PB\"\n\n\ndef apply_datacube(cube: xr.DataArray, context: Context) -> xr.DataArray:\n    \"\"\"\n    Find the idxmin of dimension \"t\".\n    Convert from datetime to decimal year (float)\n\n    Arguments:\n        cube: xarray DataArray.\n            dims (t, ...) where \"...\" indicates other broadcast-able dimensions.\n        context: user-provided arguments.\n    \"\"\"\n    inspect(\n        data=cube.sizes, message=\"Input cube dimensions\", code=LOG_CODE, level=\"debug\"\n    )\n    nan_pct = (cube.isnull().sum().item() / cube.size) * 100\n    inspect(\n        message=f\"NaNs in input cube = {nan_pct:.2f}%\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n    inspect(\n        message=f\"Size of cube = {format_bytes(cube.nbytes)}\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    # Get the datetime coordinates for the minimums\n    min_times = cube.idxmin(dim=\"t\")\n    # this is now a cube of dtype datetime64\n\n    # not available in xarray 2024.7\n    # decimal_year = min_times.dt.decimal_year\n\n    year = min_times.dt.year\n    doy = min_times.dt.dayofyear\n    days_in_year = xr.where(min_times.dt.is_leap_year, 366, 365)\n\n    decimal_year = year + (doy - 1) / days_in_year\n\n    return decimal_year\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "renamelabels5": {
+      "process_id": "rename_labels",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension5"
+        },
+        "dimension": "bands",
+        "target": [
+          "min_sse_t"
+        ]
+      }
+    },
+    "mergecubes4": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "mergecubes3"
+        },
+        "cube2": {
+          "from_node": "renamelabels5"
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "s1_logistic_processing",
+  "summary": "Fit logistic curve to Sentinel 1 data",
+  "description": "Load and process Sentinel 1 data. 1. Apply Lee speckle filter. 2. Apply multitemporal speckle filter. 3. Resample to lower resolution. 4. Convert to dB. 5. Calculate standard deviation, 5th and 95th percentiles, and minimum sum of squared errors. 6. Apply logistic curve to find best fit detection. The returned DataCube has no time dimension, and contains the following bands: ['sd', 'p05', 'p95', 'min_sse', 'min_sse_t']. ",
+  "returns": {
+    "description": "A DataCube with dtype float",
+    "schema": {
+      "type": "object",
+      "subtype": "datacube"
+    }
+  },
+  "parameters": [
+    {
+      "name": "spatial_extent",
+      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "default": {
+        "west": 30.55,
+        "south": 1.07,
+        "east": 31.23,
+        "north": 1.55
+      },
+      "optional": true
+    },
+    {
+      "name": "orbit_state",
+      "description": "The orbit state to process (ascending, descending)",
+      "schema": {
+        "type": "string"
+      },
+      "default": "ascending",
+      "optional": true
+    },
+    {
+      "name": "relative_orbit",
+      "description": "The relative orbit to process",
+      "schema": {
+        "type": "number"
+      },
+      "default": 101,
+      "optional": true
+    },
+    {
+      "name": "speckle_filter_radius",
+      "description": "The radius of the speckle filter. Units: pixels",
+      "schema": {
+        "type": "number"
+      },
+      "default": 2,
+      "optional": true
+    },
+    {
+      "name": "speckle_filter_cv_noise",
+      "description": "The coefficient of variation of the speckle noise. In multi-looked data, this takes the value of 1 / sqrt(ENL), where ENL is the Equivalent Number of Looks.",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.5,
+      "optional": true
+    },
+    {
+      "name": "speckle_filter_temporal_window",
+      "description": "The temporal window of the speckle filter. Units: pixels",
+      "schema": {
+        "type": "number"
+      },
+      "default": 5,
+      "optional": true
+    },
+    {
+      "name": "spatial_resolution",
+      "description": [
+        "The spatial resolution to process. Units: meters. ",
+        "Data are resampled to this resolution. "
+      ],
+      "schema": {
+        "type": "number"
+      },
+      "default": 30,
+      "optional": true
+    },
+    {
+      "name": "logistic_window_size",
+      "description": "The window size (number of observations) of the logistic curve fit",
+      "schema": {
+        "type": "number"
+      },
+      "default": 11,
+      "optional": true
+    },
+    {
+      "name": "logistic_steepness_parameter",
+      "description": "The steepness parameter of the logistic curve fit. Units: dimensionless",
+      "schema": {
+        "type": "number"
+      },
+      "default": -2.0,
+      "optional": true
+    }
+  ]
+}
