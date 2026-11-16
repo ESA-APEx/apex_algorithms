@@ -1,0 +1,57 @@
+{
+  "process_graph": {
+    "runudf1": {
+      "process_id": "run_udf",
+      "arguments": {
+        "udf": "https://raw.githubusercontent.com/dmastrapasqua/cwl/refs/heads/master/compute-carbon-markets-ndvi.cwl",
+        "runtime": "EOAP-CWL",
+        "context": {
+          "time": {
+            "from_parameter": "time"
+          },
+          "area_name": {
+            "from_parameter": "area_name"
+          },
+          "feature_collection": {
+            "from_parameter": "feature_collection"
+          },
+          "output_dir": "output"
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "compute_carbon_markets_ndvi",
+  "summary": "Computes NDVI-based vegetation health anomalies over a user-defined area and time range.",
+  "description": "Computes NDVI over a feature collection and time range.",
+  "returns": {
+    "description": "STAC metadata of the generated NDVI collection",
+    "schema": {
+      "type": "object",
+      "subtype": "stac"
+    }
+  },
+  "parameters": [
+    {
+      "name": "time",
+      "description": "time",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "area_name",
+      "description": "area_name",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "feature_collection",
+      "description": "feature_collection",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}
