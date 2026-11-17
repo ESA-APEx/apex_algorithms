@@ -31,7 +31,9 @@
       {
         "name": "Adriaan Keurhorst",
         "email": "adriaan.keurhorst@compass.ie",
-        "roles": ["Author"]
+        "roles": [
+          "Author"
+        ]
       }
     ],
     "themes": [
@@ -43,14 +45,18 @@
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
-    ]
+    ],
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "links": [
     {
       "rel": "platform",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json",
       "type": "application/json",
-      "title": "Copernicus Data Space openEO Backend"
+      "title": "CDSE"
     },
     {
       "rel": "provider",

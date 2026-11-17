@@ -396,7 +396,7 @@ class TestGithubAlgorithmRepository:
             ),
             organization="VITO",
             provider="VITO",
-            platforms=["CDSE openEO federation"],
+            platforms=["CDSE"],
             keywords=["Vegetation", "Normalized Difference Vegetation Index (NDVI)", "Sentinel-2"],
             service_links=[
                 ServiceLink(

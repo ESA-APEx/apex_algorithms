@@ -8,7 +8,7 @@
         "created": "2025-12-03T13:00:00Z",
         "updated": "2025-12-03T13:00:00Z",
         "type": "algorithm_provider",
-        "title": "Vlaams Instituut voor Technologisch Onderzoek",
+        "title": "VITO (Vlaams Instituut voor Technologisch Onderzoek)",
         "description": "",
         "keywords": [],
         "language": {
@@ -23,7 +23,7 @@
         ],
         "contacts": [],
         "themes": [],
-        "license": "other",
+        "license": "Other",
         "acl": {
             "admin": ["@vito.be", "@solenix.ch", "@esa.int"]
         }

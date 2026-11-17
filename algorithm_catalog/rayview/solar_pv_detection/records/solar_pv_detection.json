@@ -70,7 +70,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "proprietary"
+    "license": "Proprietary",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -95,7 +99,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {

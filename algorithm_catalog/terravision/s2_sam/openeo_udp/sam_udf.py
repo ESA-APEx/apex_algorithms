@@ -118,7 +118,7 @@ def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
     inspect(data=cube.dims, message="SAM UDF: input cube dimensions", level='debug')
     inspect(data=cube.shape, message="SAM UDF: input cube shape", level='debug')
     # External reference library used for spectral matching.
-    csv_url = "https://artifactory.vgt.vito.be/artifactory/auxdata-public/openEO_terravision/S2_USGS_library498.csv"
+    csv_url = "https://auxdata.terrascope.be/openeo/testdata/openeo/terravision/S2_USGS_library498.csv"
     usgs_df = pd.read_csv(csv_url, sep=";")
     inspect(data=usgs_df.shape, message="SAM UDF: loaded USGS dataframe shape", level='debug')
 

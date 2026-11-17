@@ -1,5 +1,5 @@
 {
-    "id": "david_frantz",
+    "id": "universitat_trier",
     "type": "Feature",
     "conformsTo": [
         "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
@@ -8,8 +8,8 @@
         "created": "2026-05-15T14:00:00Z",
         "updated": "2026-05-15T14:00:00Z",
         "type": "algorithm_provider",
-        "title": "David Frantz",
-        "description": "Author ",
+        "title": "University of Trier",
+        "description": "Author David Frantz, University of Trier",
         "keywords": [],
         "language": {
             "code": "en-US",
@@ -23,7 +23,7 @@
         ],
         "contacts": [],
         "themes": [],
-        "license": "other",
+        "license": "Other",
         "acl": {
             "admin": []
         }

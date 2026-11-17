@@ -34,7 +34,7 @@
         }
         ],
         "themes": [],
-        "license": "other",
+        "license": "Other",
         "acl": {
             "admin": ["@gisat.cz","@vito.be"]
         }
