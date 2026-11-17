@@ -1,8 +1,12 @@
+import json
+import os
+import re
+import subprocess
+from copy import deepcopy
 from pathlib import Path
 
 import jsonschema
 import pytest
-from copy import deepcopy
 import requests
 from apex_algorithm_qa_tools.common import get_project_root
 from apex_algorithm_qa_tools.records import (
@@ -28,6 +32,45 @@ def test_get_platform_ogc_records():
 # TODO: tests to check uniqueness of records ids?
 
 
+def _git(*args: str) -> str | None:
+    try:
+        return subprocess.run(
+            ["git", *args], cwd=get_project_root(), capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def _get_current_branch_and_repo() -> tuple[str | None, str]:
+    """Branch and `owner/repo` that the current checkout lives on (PR head in CI, else local git)."""
+    default_repo = "ESA-APEx/apex_algorithms"
+    branch = os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME")
+    repo = None
+    event_path = os.environ.get("GITHUB_EVENT_PATH")
+    if event_path and Path(event_path).exists():
+        event = json.loads(Path(event_path).read_text())
+        repo = (event.get("pull_request", {}).get("head", {}).get("repo") or {}).get("full_name")
+    if not branch:
+        branch = _git("rev-parse", "--abbrev-ref", "HEAD")
+        if branch == "HEAD":
+            branch = None
+        if branch and not repo:
+            remote = _git("config", f"branch.{branch}.remote")
+            url = _git("remote", "get-url", remote) if remote else None
+            if url and (m := re.search(r"github\.com[:/]([^/]+/[^/]+?)(?:\.git)?$", url)):
+                repo = m.group(1)
+    return branch or None, repo or default_repo
+
+
+def _rewrite_main_link_to_current_branch(href: str) -> str:
+    """Point raw GitHub links of this repo at the current branch (and fork) instead of `main`."""
+    prefix = "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/"
+    branch, repo = _get_current_branch_and_repo()
+    if branch and href.startswith(prefix):
+        return f"https://raw.githubusercontent.com/{repo}/refs/heads/{branch}/" + href[len(prefix) :]
+    return href
+
+
 @pytest.mark.parametrize(
     "record",
     [
@@ -48,7 +91,7 @@ def test_service_record_validation(record):
     ## Validate if the links in the record is returning a 200 OK response.
     for link in record["data"].get("links", []):
         assert "href" in link, f"Link in record '{record['data']['id']}' is missing 'href' field"
-        href = link["href"]
+        href = _rewrite_main_link_to_current_branch(link["href"])
         if href.startswith("http"):
             try:
                 response = requests.head(href, timeout=10)
