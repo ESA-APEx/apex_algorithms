@@ -17,7 +17,7 @@ from esa_apex_toolbox.cwl_to_udp_utils import (
     normalize_cwl_doc,
 )
 
-cwl_url = "https://emilesonneveld.be/dropbox_proxy/work/VITO/VITO2026/BiaB/444/SDM_maxEnt_multi_STAC_tested.cwl"
+cwl_url = "https://raw.githubusercontent.com/GEO-BON/bon-in-a-box-pipelines-cwl/refs/heads/main/workflows-packed/SDM/SDM_maxEnt_multi_STAC.cwl"
 
 
 def _clean_input(cwl_input: dict) -> dict:
