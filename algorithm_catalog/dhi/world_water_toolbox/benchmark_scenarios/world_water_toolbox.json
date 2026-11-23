@@ -24,9 +24,6 @@
         "namespace": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/main/world_water_toolbox/udp/world_water_toolbox.json"
       }
     },
-    "reference_data": {
-      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-20768689435!tests_test_benchmarks.py__test_run_benchmark_esa_world_water_extent_!actual/job-results.json",
-      "openeo.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks/gh-21250263635!tests_test_benchmarks.py__test_run_benchmark_esa_world_water_extent_!actual/openeo.tif"
-    }
+    "reference_data": {}
   }
 ]
