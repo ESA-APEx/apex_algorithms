@@ -124,7 +124,8 @@
   ],
   "default_job_options": {
     "max-executors": 20,
-    "python-memory": "4500m",
+    "python-memory": "disable",
+    "executor-memoryOverhead": "5G",
     "executor-memory": "1g",
     "soft-errors": "true",
     "executor-cores": 1
