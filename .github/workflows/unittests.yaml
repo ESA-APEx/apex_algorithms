@@ -19,8 +19,10 @@ jobs:
           python -m pip install .[tests]
           python -m pip install qa/tools
           python -m pip install -r qa/unittests/requirements.txt
-      - name: Test with pytest
+      - name: Run pytest on esa_apex_toolbox
         run: |
           pytest
+      - name: Run pytest on qa/unittests
+        run: |
           cd qa/unittests
           pytest

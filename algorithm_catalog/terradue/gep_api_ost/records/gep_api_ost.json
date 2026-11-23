@@ -2,7 +2,7 @@
   "id": "gep_api_ost",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/ogc-api-processes"
   ],
   "geometry": null,
@@ -73,7 +73,11 @@
         "name": "JPEG"
       }
     ],
-    "license": "CC-BY-4.0"
+    "license": "CC-BY-4.0",
+    "certification": {
+      "category": "validated",
+      "funding": "esa"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -92,7 +96,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "GEP",
       "href": "../../../../platform_catalog/gep.json"
     },
     {
@@ -105,7 +109,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/opensartoolkit-v2-1-7"
+      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/opensartoolkit-v2-2-1"
     },
     {
       "rel": "about",
@@ -117,7 +121,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "oci://ghcr.io/terradue/eoap-open-sar-toolkit/open-sar-toolkit:latest-dev"
+      "href": "oci://cr.terradue.com/app-packages/terradue/opensartoolkit:2.2.1"
     },
     {
       "rel": "webapp",

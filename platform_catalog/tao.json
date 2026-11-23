@@ -2,13 +2,14 @@
   "id": "tao",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
   ],
   "properties": {
     "created": "2024-05-17T00:00:00Z",
     "updated": "2024-05-17T00:00:00Z",
     "type": "ogc_backend",
     "title": "Tool Augmentation by user enhancements and Orchestration (TAO)",
+    "short_title": "TAO",
     "description": "",
     "keywords": [],
     "language": {

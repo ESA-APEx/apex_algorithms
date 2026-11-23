@@ -12,13 +12,20 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
-from apex_algorithm_qa_tools.scenarios import (
-    BenchmarkScenario,
-    get_benchmark_scenarios,
-    get_project_root,
-)
+from apex_algorithm_qa_tools.metrics.performance_baselines import _compute_threshold_stats
+
+from apex_algorithm_qa_tools.common import get_project_root
+from apex_algorithm_qa_tools.scenarios.common import get_benchmark_scenarios
+from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
+from apex_algorithm_qa_tools.scenarios.ogc import OGCAPIBenchmarkScenario
 
 logger = logging.getLogger(__name__)
+
+
+#: Label applied to every benchmark issue — use this to filter all benchmark issues.
+BENCHMARK_LABEL = "benchmark"
+#: Prefix for the per-phase label, e.g. ``benchmark-phase:run-job``.
+BENCHMARK_PHASE_LABEL_PREFIX = "benchmark-phase"
 
 
 class GithubApi:
@@ -121,6 +128,15 @@ class GithubApi:
             path=f"/issues/{issue_number}/comments",
             data=data,
             expected_status=201,
+        )
+
+    def close_issue(self, issue_number: int) -> dict:
+        """Close an existing issue."""
+        return self.request(
+            method="PATCH",
+            path=f"/issues/{issue_number}",
+            data={"state": "closed"},
+            expected_status=200,
         )
 
 
@@ -269,6 +285,30 @@ class PytestReportParser:
         return logs
 
 
+def _get_contacts(scenario: BenchmarkScenario | None) -> list | None:
+    """Get contact information from corresponding OGC API record."""
+    if scenario and isinstance(scenario.source, Path):
+        paths = list((scenario.source.parent.parent / "records").glob("*.json"))
+        for path in paths:
+            try:
+                with path.open("r", encoding="utf8") as f:
+                    if contacts := json.load(f).get("properties", {}).get("contacts"):
+                        return contacts
+            except Exception:
+                pass
+    return None
+
+
+def _get_scenario_link(scenario: BenchmarkScenario | None, github_context: GithubContext) -> str | None:
+    """Generate URL to the scenario definition file at the specific commit."""
+    if scenario and isinstance(scenario.source, Path):
+        path = scenario.source
+        if path.is_absolute():
+            path = path.relative_to(get_project_root())
+        return github_context.get_file_permalink(path)
+    return None
+
+
 @dataclasses.dataclass(frozen=True)
 class ScenarioRunInfo:
     """Information about a benchmark scenario run"""
@@ -280,44 +320,57 @@ class ScenarioRunInfo:
 
     def get_contacts(self) -> list | None:
         """Get contact information from corresponding OGC API record."""
-        # Guess records path from benchmark scenario source.
-        if isinstance(self.scenario.source, Path):
-            paths = list(
-                (self.scenario.source.parent.parent / "records").glob("*.json")
-            )
-            logger.info(
-                f"Looking up contact info for {self.scenario.id} in {paths=} (from {self.scenario.source})"
-            )
-            for path in paths:
-                try:
-                    with path.open("r", encoding="utf8") as f:
-                        record = json.load(f)
-                    if contacts := record.get("properties", {}).get("contacts"):
-                        return contacts
-                except Exception as e:
-                    logger.warning(f"Failed to read contacts from {path}: {e!r}")
+        return _get_contacts(self.scenario)
 
     def get_scenario_link(self) -> str | None:
+        """Generate a URL to the scenario definition file at the specific commit."""
+        return _get_scenario_link(self.scenario, self.github_context)
+
+    def _get_failed_phase(self) -> str | None:
+        """Extract the base phase name from ``test:phase:exception``.
+
+        The metric value can be ``"run-job"`` or ``"compare:derived_from-change"``.
+        This returns just the phase part (before the first ``:``).
         """
-        Generate a URL to the scenario definition file at the specific commit.
-        """
-        if isinstance(self.scenario.source, Path):
-            path = self.scenario.source
-            if path.is_absolute():
-                path = path.relative_to(get_project_root())
-            return self.github_context.get_file_permalink(path)
+        phase_exception = self.test_metrics.get("test:phase:exception")
+        if phase_exception:
+            return phase_exception.split(":")[0]
+        return None
 
     def issue_title(self) -> str:
-        return f"Scenario Failure: {self.scenario.id}"
+        return f"Benchmark: {self.scenario.id}"
+
+    def issue_labels(self) -> List[str]:
+        """
+        Return GitHub labels to attach to the issue.
+
+        Every benchmark issue gets:
+        - ``benchmark`` — central label for filtering all benchmark issues
+        - ``benchmark-phase:<phase>`` — the phase that failed
+          (e.g. ``benchmark-phase:run-job`` or ``benchmark-phase:compare``)
+        """
+        labels: List[str] = [BENCHMARK_LABEL]
+
+        failed_phase = self._get_failed_phase()
+        if failed_phase:
+            labels.append(f"{BENCHMARK_PHASE_LABEL_PREFIX}:{failed_phase}")
+
+        return labels
 
     def build_workflow_run_overview(self) -> str:
         scenario_link = self.get_scenario_link()
         workflow_run_url = self.github_context.get_workflow_run_url()
+        if isinstance(self.scenario, OGCAPIBenchmarkScenario):
+            service_label = "OGC API endpoint"
+            service_url = self.scenario.endpoint
+        else:
+            service_label = "openEO backend"
+            service_url = self.scenario.backend
         overview = textwrap.dedent(
             f"""
             **Benchmark scenario ID**: `{self.scenario.id}`
             **Benchmark scenario definition**: {scenario_link}
-            **openEO backend**: {self.scenario.backend}
+            **{service_label}**: {service_url}
             """
         )
         if workflow_run_url:
@@ -390,9 +443,14 @@ class ScenarioRunInfo:
         if contact_table:
             body += "\n\n### Contact Information\n\n" + contact_table
 
-        process_graph = json.dumps(self.scenario.process_graph, indent=2)
-        body += "\n\n### Process Graph"
-        body += f"\n\n```json\n{process_graph}\n```"
+        if isinstance(self.scenario, OGCAPIBenchmarkScenario):
+            inputs_label = "OGC API Parameters"
+            inputs = self.scenario.parameters
+        else:
+            inputs_label = "Process Graph"
+            inputs = self.scenario.process_graph
+        body += f"\n\n### {inputs_label}"
+        body += f"\n\n```json\n{json.dumps(inputs, indent=2)}\n```"
 
         body += "\n\n### Error Logs"
         body += f"\n\n```plaintext\n{self.failure_logs}\n```\n"
@@ -404,19 +462,177 @@ class ScenarioRunInfo:
         return "Report of latest run:\n" + self.build_workflow_run_overview()
 
 
+@dataclasses.dataclass(frozen=True)
+class PerformanceRegressionInfo:
+    """Information about a performance regression for a benchmark scenario"""
+
+    scenario_id: str
+    github_context: GithubContext
+    violation: str
+    baseline: dict
+    latest_metrics: dict
+    history_values: List[float] = dataclasses.field(default_factory=list)
+    history_labels: List[str] = dataclasses.field(default_factory=list)
+    latest_label: str = "latest"
+    metric_name: str = "costs"
+    scenario: BenchmarkScenario | None = None
+
+    def issue_title(self) -> str:
+        return f"Performance regression: {self.scenario_id}"
+
+    def issue_labels(self) -> List[str]:
+        return ["performance-regression", BENCHMARK_LABEL]
+
+    @staticmethod
+    def _format_number(value: Any) -> str:
+        if isinstance(value, (int, float)):
+            return f"{float(value):.4f}".rstrip("0").rstrip(".")
+        return "n/a"
+
+    @staticmethod
+    def _decision_stats(values: List[float]) -> Dict[str, float] | None:
+        if not values:
+            return None
+        return _compute_threshold_stats(values)
+
+    def _format_mermaid_series(
+        self, values: List[float], label: str | None = None, *, label_at_end: bool = False
+    ) -> str:
+        """Format Mermaid xychart series and optionally annotate first or last point."""
+        formatted = [self._format_number(v) for v in values]
+        if label and formatted:
+            idx = -1 if label_at_end else 0
+            formatted[idx] = f'{formatted[idx]} "{label}"'
+        return ", ".join(formatted)
+
+    def _build_mermaid_cost_chart(self, baseline_val: Any, latest_val: Any) -> str:
+        history = [float(v) for v in self.history_values if isinstance(v, (int, float))]
+        latest = float(latest_val) if isinstance(latest_val, (int, float)) else None
+        stats = self._decision_stats(history)
+
+        observed = list(history)
+        labels = list(self.history_labels)
+        if len(labels) != len(history):
+            labels = [f"h{i+1}" for i in range(len(history))]
+        if latest is not None:
+            observed.append(latest)
+            labels.append(self.latest_label)
+
+        if len(observed) < 2:
+            return ""
+
+        median_val = stats["median"] if stats else None
+        mad_upper = stats["upper_limit"] if stats else None
+        mad_lower = stats["lower_limit"] if stats else None
+        mad_series = [median_val] * len(observed) if median_val is not None else []
+
+        mad_upper_series = [mad_upper] * len(observed) if mad_upper is not None else []
+        mad_lower_series = [mad_lower] * len(observed) if mad_lower is not None else []
+
+        ymax_candidates = (
+            observed
+            + mad_series
+            + mad_upper_series
+            + mad_lower_series
+        )
+        ymax = max(ymax_candidates) if ymax_candidates else 1.0
+        ymax = max(1.0, ymax * 1.1)
+
+        labels_text = ", ".join(f'"{x}"' for x in labels)
+        observed_text = self._format_mermaid_series(observed, label="observed", label_at_end=True)
+        mad_text = self._format_mermaid_series(mad_series, label="mad", label_at_end=True)
+        mad_upper_text = self._format_mermaid_series(mad_upper_series, label="mad upper", label_at_end=True)
+        mad_lower_text = self._format_mermaid_series(mad_lower_series, label="mad lower", label_at_end=True)
+
+        lines = [
+            "```mermaid",
+            "%%{init: {'theme':'base','themeVariables':{'xyChart':{'plotColorPalette':'#111111,#d32f2f,#f57c00,#1976d2'}}}}%%",
+            "xychart-beta",
+            f'    title "{self.metric_name} trend ({self.scenario_id})"',
+            f"    x-axis [{labels_text}]",
+            f'    y-axis "{self.metric_name}" 0 --> {self._format_number(ymax)}',
+            f"    line [{observed_text}]",
+        ]
+        if mad_series:
+            lines.append(f"    line [{mad_text}]")
+        if mad_upper_series:
+            lines.append(f"    line [{mad_upper_text}]")
+        if mad_lower_series:
+            lines.append(f"    line [{mad_lower_text}]")
+        lines.append("```")
+        return "\n".join(lines)
+
+    def build_issue_body(self) -> str:
+        parts = [f"**Scenario**: `{self.scenario_id}`"]
+        
+        if link := _get_scenario_link(self.scenario, self.github_context):
+            parts.append(f"**Definition**: {link}")
+        if isinstance(self.scenario, OGCAPIBenchmarkScenario):
+            parts.append(f"**OGC API endpoint**: {self.scenario.endpoint}")
+        elif self.scenario:
+            parts.append(f"**Backend**: {self.scenario.backend}")
+        if url := self.github_context.get_workflow_run_url():
+            parts.append(f"**Workflow run**: {url}")
+        
+        parts.append(f"\n### Regression\n\n{self.violation}")
+        
+        baseline_val = self.baseline.get("upper_limit", self.baseline.get("value", "n/a"))
+        latest_val = self.latest_metrics.get(self.metric_name, "n/a")
+        obs = len(self.history_values)
+        stats = self._decision_stats(self.history_values)
+        median_val = stats["median"] if stats else None
+        upper_limit = stats["upper_limit"] if stats else baseline_val
+        lower_limit = stats["lower_limit"] if stats else None
+
+        parts.append(
+            "\n".join(
+                [
+                    "### Summary",
+                    "",
+                    "| current | median | upper_limit | lower_limit | nr_observations |",
+                    "|---------|--------|-------------|-------------|---------------|",
+                    f"| {self._format_number(latest_val)} | {self._format_number(median_val)} | {self._format_number(upper_limit)} | {self._format_number(lower_limit)} | {obs} |",
+                ]
+            )
+        )
+
+        mermaid_chart = self._build_mermaid_cost_chart(baseline_val=baseline_val, latest_val=latest_val)
+        if mermaid_chart:
+            parts.append(f"""
+### Cost Plot 
+
+{mermaid_chart}
+""")
+        
+        if contacts := _get_contacts(self.scenario):
+            c = contacts[0]
+            info = c.get("contactInstructions", "")
+            if c.get("links"):
+                links = [f"[{l.get('title', 'link')}]({l.get('href', '#')})" for l in c["links"]]
+                info += " (" + ", ".join(links) + ")"
+            parts.append(f"""
+### Contact
+
+| Name | Organization | Contact |
+|------|--------------|---------|
+| {c.get('name', 'n/a')} | {c.get('organization', 'n/a')} | {info} |""")
+        
+        return "\n".join(parts)
+
+
 class GithubIssueHandler:
     def __init__(
         self,
         github_context: GithubContext | None = None,
         github_token: str | None = None,
-        issue_label: str = "benchmark-failure",
+        central_label: str = BENCHMARK_LABEL,
     ):
         self.github_context = github_context or GithubContext()
         self.github_api = GithubApi(
             repository=self.github_context.repository,
             token=github_token or self.github_context.token,
         )
-        self.issue_label = issue_label
+        self.central_label = central_label
         self._benchmark_scenarios = get_benchmark_scenarios()
 
     def get_benchmark_scenarios(self, scenario_id: str) -> BenchmarkScenario | None:
@@ -456,10 +672,10 @@ class GithubIssueHandler:
             f"Extracted {len(failure_logs)} failure logs from {cli_args.terminal_report}"
         )
 
-        # Collect existing GitHub issues
-        all_existing_issues = self.github_api.list_issues(labels=[self.issue_label])
+        # Collect existing GitHub issues by the central umbrella label
+        all_existing_issues = self.github_api.list_issues(labels=[self.central_label])
         logger.info(
-            f"Found {len(all_existing_issues)} existing issues labeled '{self.issue_label}'"
+            f"Found {len(all_existing_issues)} existing issues labeled '{self.central_label}'"
         )
 
         for test_report in test_reports:
@@ -502,9 +718,9 @@ class GithubIssueHandler:
                 self.github_api.create_issue(
                     title=issue_title,
                     body=scenario_run_info.build_issue_body(),
-                    labels=[self.issue_label],
+                    labels=scenario_run_info.issue_labels(),
                 )
-            elif existing_issues:
+            elif failing_test and existing_issues:
                 for issue in existing_issues:
                     issue_number = issue["number"]
                     logger.info(
@@ -514,6 +730,13 @@ class GithubIssueHandler:
                         issue_number=issue_number,
                         body=scenario_run_info.build_comment_body(),
                     )
+            elif existing_issues:
+                for issue in existing_issues:
+                    issue_number = issue["number"]
+                    logger.info(
+                        f"Closing resolved issue #{issue_number} for passing scenario {scenario_id!r}"
+                    )
+                    self.github_api.close_issue(issue_number=issue_number)
             else:
                 logger.info(f"Nothing to do for {scenario_id=}")
 

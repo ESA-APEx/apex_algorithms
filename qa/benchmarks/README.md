@@ -41,15 +41,25 @@ with increased verbosity and live logging at DEBUG level:
 pytest -vv --log-cli-level=DEBUG -k '[max_ndvi]'
 ```
 
-## `openeo` client library
+## Client libraries
 
-The test suite heavily relies on the
-[`openeo` Python client library](https://open-eo.github.io/openeo-python-client/)
-to interact with the openEO backends, e.g. to create openEO jobs,
-wait for their completion, retrieve their results, ...
+The test suite supports two scenario types:
+- `openeo`: uses the
+    [`openeo` Python client library](https://open-eo.github.io/openeo-python-client/)
+    to create jobs, wait for completion and download results.
+- `ogcapi-processes`: uses the
+    `ogc-api-processes-client` Python library
+    to execute OGC API Processes, poll job status and download result assets.
 
 
 ## Authentication
+
+OGC API process scenarios may define an optional `properties` object, for example
+`"properties": {"title": "APEx pattern-1 benchmark"}`. This is a Mate extension,
+not a standard OGC API Processes Part 1 execute field. Nonempty properties are
+included alongside `inputs` only when the endpoint hostname is exactly
+`processing.geohazards-tep.eu`; empty properties and properties for other hosts
+are omitted. The scenario's `parameters` remain the execute payload's `inputs`.
 
 The test suite defines a fixture `connection_factory` (in `conftest.py`)
 to create an authenticated `openeo.Connection` object for a given

@@ -2,7 +2,7 @@
   "id": "sentinel1_stats",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
@@ -88,7 +88,11 @@
         "name": "netCDF"
       }
     ],
-    "license": "CC-BY-4.0"
+    "license": "CC-BY-4.0",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -107,7 +111,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {

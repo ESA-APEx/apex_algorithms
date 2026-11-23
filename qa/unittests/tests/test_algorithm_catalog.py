@@ -20,7 +20,7 @@ def test_lint_algorithm_catalog_json_file(path):
     assert data["id"] == path.stem
     assert data["type"] == "Feature"
     assert (
-        "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
         in data["conformsTo"]
     )
 

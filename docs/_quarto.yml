@@ -25,11 +25,13 @@ website:
       - href: index.md
         text: Welcome
       - href: catalogue.md
+      - href: toolbox.md
       - href: benchmarking.md
 
 format:
   html:
     toc-depth: 4
     page-layout: full
+    highlight-style: solarized 
     theme: [cosmo, css/custom.scss]
 bread-crumbs: true

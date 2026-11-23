@@ -332,7 +332,7 @@ def test_track_phase_describe_derived_from_change(pytester: pytest.Pytester, tmp
 
     pytester.makeconftest(CONTENT_CONFTEST)
     src = f"""
-        from apex_algorithm_qa_tools.benchmarks import analyse_results_comparison_exception
+        from apex_algorithm_qa_tools.benchmarks.common import analyse_results_comparison_exception
         import openeo.testing.results
 
         def test_derived_from(track_phase):

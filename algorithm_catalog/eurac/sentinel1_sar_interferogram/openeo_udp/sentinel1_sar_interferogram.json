@@ -1,0 +1,243 @@
+{
+  "process_graph": {
+    "runcwltostac1": {
+      "process_id": "run_cwl_to_stac",
+      "arguments": {
+        "context": {
+          "InSAR_pairs": {
+            "from_parameter": "InSAR_pairs"
+          },
+          "burst_id": {
+            "from_parameter": "burst_id"
+          },
+          "coherence_window_rg": {
+            "from_parameter": "coherence_window_rg"
+          },
+          "coherence_window_az": {
+            "from_parameter": "coherence_window_az"
+          },
+          "n_rg_looks": {
+            "from_parameter": "n_rg_looks"
+          },
+          "n_az_looks": {
+            "from_parameter": "n_az_looks"
+          },
+          "polarization": {
+            "from_parameter": "polarization"
+          },
+          "sub_swath": {
+            "from_parameter": "sub_swath"
+          },
+          "spatial_extent": {
+            "from_parameter": "spatial_extent"
+          },
+          "temporal_baseline": {
+            "from_parameter": "temporal_baseline"
+          },
+          "temporal_extent": {
+            "from_parameter": "temporal_extent"
+          }
+        },
+        "cwl": "https://raw.githubusercontent.com/cloudinsar/s1-workflows/refs/heads/main/cwl/sar_interferogram.cwl"
+      },
+      "result": true
+    }
+  },
+  "id": "sentinel1_sar_interferogram",
+  "description": "This process generates a time series of Sentinel-1 interferometric coherence, wrapped interferograms, and unwrapped interferograms for user\u2011defined interferometric pairs. The area of interest is defined at burst level, using the Sentinel\u20111 burst_id and sub_swath, ensuring precise spatial targeting and consistent geometry across acquisitions. The interferometric pairs to be processed are explicitly provided by the user through the InSAR_pair list, allowing full control over temporal baselines.\nThe workflow is implemented using ESA SNAP operators and is defined as a Common Workflow Language (CWL) pipeline [sar_interferogram.cwl](https://github.com/cloudinsar/s1-workflows/blob/main/cwl/sar_interferogram.cwl).\nThe generated interferograms are fully suitable for multi\u2011temporal interferometric analysis. In particular, the outputs can be directly used as input to multi\u2011temporal InSAR toolkits such as MintPy, enabling time\u2011series deformation analysis using methods like SBAS or Persistent Scatterer approaches.\n\nAn example on how to use it:\n\n```python\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.dataspace.copernicus.eu\").authenticate_oidc()\nstac_resource = connection.datacube_from_process(\n  \"sentinel1_sar_interferogram\",\n  namespace=\"https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/main/algorithm_catalog/eurac/sentinel1_sar_interferogram/openeo_udp/sentinel1_sar_interferogram.json\",\n  **{\n      \"InSAR_pairs\": [\n          [\n              \"2018-01-28\",\n              \"2018-02-03\"\n          ]\n      ],\n      \"burst_id\": 329488,\n      \"coherence_window_az\": 2,\n      \"coherence_window_rg\": 10,\n      \"n_az_looks\": 1,\n      \"n_rg_looks\": 4,\n      \"polarization\": \"VH\",\n      \"sub_swath\": \"IW2\"\n  }\n)\n\njob = stac_resource.create_job(title=\"sentinel1_sar_interferogram test\")\njob.start_and_wait()\njob.get_results().download_files()\n```",
+  "returns": {
+    "description": "STAC metadata of the generated interferogram",
+    "schema": {
+      "type": "object",
+      "subtype": "stac"
+    }
+  },
+  "categories": [
+    "sentinel-1",
+    "InSAR"
+  ],
+  "parameters": [
+    {
+      "name": "InSAR_pairs",
+      "description": "The list of [primary date, secondary date] pairs used to compute the interferogram. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/input_selection/InSAR_workflow_input_selection.ipynb) to create the list of insar pairs based on your requirements.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "burst_id",
+      "description": "The Sentinel-1 burst identifier. Use [this notebook](https://github.com/cloudinsar/s1-workflows/blob/main/input_selection/InSAR_workflow_input_selection.ipynb) to find a fitting `burst_id`.\n Alternatively, the burst id map can be downloaded here: [Burst ID Maps 2022-05-30](https://sar-mpc.eu/files/S1_burstid_20220530.zip).",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "coherence_window_rg",
+      "description": "Coherence window size in range direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 10
+    },
+    {
+      "name": "coherence_window_az",
+      "description": "Coherence window size in azimuth direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 2
+    },
+    {
+      "name": "n_rg_looks",
+      "description": "Multi-look window size in range direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 4
+    },
+    {
+      "name": "n_az_looks",
+      "description": "Multi-look window size in azimuth direction",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": 1
+    },
+    {
+      "name": "polarization",
+      "description": "polarization",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "VV",
+          "VH"
+        ]
+      }
+    },
+    {
+      "name": "sub_swath",
+      "description": "Sub-swath identifier",
+      "schema": {
+        "type": "string",
+        "enum": [
+          "IW1",
+          "IW2",
+          "IW3"
+        ]
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "spatial_extent",
+      "description": "Specifies area where to search for bursts. If multiple bursts are found, the one with the lowest id number will be selected. This parameter can be used instead of `burst_id` and `sub_swath`.",
+      "schema": [
+        {
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "type": "number",
+              "description": "West (lower left corner, coordinate axis 1)."
+            },
+            "south": {
+              "type": "number",
+              "description": "South (lower left corner, coordinate axis 2)."
+            },
+            "east": {
+              "type": "number",
+              "description": "East (upper right corner, coordinate axis 1)."
+            },
+            "north": {
+              "type": "number",
+              "description": "North (upper right corner, coordinate axis 2)."
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as [WKT2 CRS string](https://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "title": "EPSG Code",
+                  "minimum": 1000
+                },
+                {
+                  "type": "string",
+                  "subtype": "wkt2-definition",
+                  "title": "WKT2 definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "temporal_baseline",
+      "description": "Should be a multiple of 6. This is used to select how many days the secondary date will be after the primary for each date pair. To be used in combination with `spatial_extent`, replaces `InSAR_pairs` when selecting the burst automatically.",
+      "schema": {
+        "type": "integer"
+      },
+      "optional": true,
+      "default": null
+    },
+    {
+      "name": "temporal_extent",
+      "description": "Temporal extent as [start_date, end_date], e.g., ['2024-08-01', '2024-09-30']. Specify at least a period equivalent to the selected temporal baseline * 2 to make sure at least one pair gets found. E.g. for a temporal baseline of 12 days, select at least a 24 days interval.",
+      "schema": {
+        "type": "array",
+        "subtype": "temporal-interval",
+        "uniqueItems": true,
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "anyOf": [
+            {
+              "type": "string",
+              "subtype": "date-time",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "subtype": "date",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "optional": true,
+      "default": null
+    }
+  ]
+}

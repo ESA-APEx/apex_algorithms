@@ -1,0 +1,41 @@
+[
+    {
+        "id": "nddi",
+        "type": "openeo",
+        "description": "The Normalized Difference Dust Index (NDDI) process uses Sentinel-2 imagery to detect sand and dust storms (SDS) by comparing the reflectance in the shortwave infrared (SWIR, B12) and blue (B02) bands. It works by calculating the normalized difference between these two bands using the formula: \n $$NDDI = (B12 - B02) / (B12 + B02)$$. Dust storms typically have high NDDI values, while clouds and dust-free surfaces have lower values. This index helps to distinguish dust from clouds and monitor dust storm events over time.",
+        "backend": "openeofed.dataspace.copernicus.eu",
+        "process_graph": {
+            "NDDI1": {
+                "arguments": {
+                    "spatial_extent": {
+                        "east": 5.1,
+                        "north": 51.23,
+                        "south": 51.21,
+                        "west": 5.05
+                    },
+                    "temporal_extent": [
+                        "2025-05-01",
+                        "2025-05-31"
+                    ]
+                },
+                "namespace": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/d3bcf371aec9c0b2b9996bc9c3dde2b6741939be/algorithm_catalog/terravision/nddi/openeo_udp/nddi.json",
+                "process_id": "nddi"
+            },
+            "saveresult1": {
+                "arguments": {
+                    "data": {
+                        "from_node": "NDDI1"
+                    },
+                    "format": "NetCDF",
+                    "options": {}
+                },
+                "process_id": "save_result",
+                "result": true
+            }
+        },
+        "reference_data": {
+            "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP239!tests_test_benchmarks.py__test_run_benchmark_nddi_!actual/job-results.json",
+            "openEO.nc": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP239!tests_test_benchmarks.py__test_run_benchmark_nddi_!actual/openEO.nc"
+        }
+    }
+]

@@ -2,6 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "APEx Service - OGC API Record",
   "type": "object",
+  "required": [
+    "id",
+    "type",
+    "conformsTo",
+    "geometry",
+    "properties",
+    "links"
+  ],
   "properties": {
     "id": {
       "type": "string",
@@ -25,7 +33,7 @@
       "anyOf": [
         {
           "contains": {
-            "const": "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+            "const": "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
           }
         }
       ],
@@ -106,6 +114,8 @@
             "enum": [
               "Agriculture",
               "Land Use/Land Cover Classification",
+              "Land Use/Land Cover Change",
+              "Deforestation",
               "Vegetation",
               "Normalized Difference Vegetation Index (NDVI)",
               "Leaf Area Index (LAI)",
@@ -126,10 +136,21 @@
               "ECMWF ERA5",
               "Data Analysis and Visualization",
               "Statistical Applications",
+              "Forests",
+              "Statistics",
+              "Change Detection Services",
               "Surface Water",
               "Urban Heat Island",
               "Land Surface Temperature",
-              "Climate"
+              "Climate",
+              "Soils",
+              "Radar",
+              "Methane",
+              "Floods", 
+              "Hydrology",
+              "Geology",
+              "Mining/Drilling Site",
+              "Mineral Resources"
             ]
           },
           "minItems": 1,
@@ -412,7 +433,45 @@
         },
         "license": {
           "type": "string",
-          "description": "License that is applicable for the APEx service."
+          "description": "License that is applicable for the APEx service. (Extend the list as needed.)",
+          "enum": [
+            "Proprietary",
+            "MIT",
+            "Apache-2.0",
+            "CC-BY-SA-4.0",
+            "CC-BY-4.0",
+            "CC-BY-NC",
+            "CC-BY-SA-4.0",
+            "GPLV3.0",
+            "Other"
+          ]
+        },
+        "certification": {
+          "type": "object",
+          "description": "Optional metadata used to derive catalogue certification and funding badges. If omitted, the service is treated as community contributed.",
+          "required": [
+            "category",
+            "funding"
+          ],
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Service category assigned during onboarding review.",
+              "enum": [
+                "validated",
+                "r_and_d"
+              ]
+            },
+            "funding": {
+              "type": "string",
+              "description": "Funding origin for the service.",
+              "enum": [
+                "esa",
+                "other"
+              ]
+            }
+          },
+          "additionalProperties": false
         }
       }
     },
@@ -470,7 +529,8 @@
               "code",
               "thumbnail",
               "cite-as",
-              "notebook"
+              "notebook",
+              "related"
             ]
           },
           "type": {

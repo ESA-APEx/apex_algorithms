@@ -2,7 +2,7 @@
   "id": "parcel_delineation",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
@@ -83,7 +83,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "CC-BY-4.0"
+    "license": "CC-BY-4.0",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -97,7 +101,7 @@
       "rel": "code",
       "type": "text/html",
       "title": "Git source repository",
-      "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/ParcelDelineation/"
+      "href": "https://github.com/Open-EO/openeo-community-examples/tree/main/python/40_machine-learning/parcel-delineation"
     },
     {
       "rel": "service",
@@ -108,7 +112,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {
@@ -145,7 +149,7 @@
       "rel": "notebook",
       "type": "application/x-ipynb+json",
       "title": "Parcel Delineation",
-      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/ParcelDelineation/Parcel%20delineation.ipynb"
+      "href": "https://raw.githubusercontent.com/Open-EO/openeo-community-examples/refs/heads/main/python/40_machine-learning/parcel-delineation/parcel-delineation.ipynb"
     }
   ]
 }

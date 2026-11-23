@@ -3,9 +3,10 @@
   "stac_version": "1.0.0",
   "id": "UHI_per_pixel",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
+  "geometry": null,
   "properties": {
     "created": "2026-03-06T00:00:00Z",
     "updated": "2026-03-06T00:00:00Z",
@@ -30,7 +31,9 @@
       {
         "name": "Adriaan Keurhorst",
         "email": "adriaan.keurhorst@compass.ie",
-        "roles": ["Author"]
+        "roles": [
+          "Author"
+        ]
       }
     ],
     "themes": [
@@ -42,14 +45,18 @@
         ],
         "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
       }
-    ]
+    ],
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "links": [
     {
       "rel": "platform",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json",
       "type": "application/json",
-      "title": "Copernicus Data Space openEO Backend"
+      "title": "CDSE"
     },
     {
       "rel": "provider",

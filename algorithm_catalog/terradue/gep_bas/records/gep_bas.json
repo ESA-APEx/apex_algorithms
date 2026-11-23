@@ -2,7 +2,7 @@
   "id": "gep_bas",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/ogc-api-processes"
   ],
   "geometry": null,
@@ -75,7 +75,11 @@
         "name": "JPEG"
       }
     ],
-    "license": "CC-BY-4.0"
+    "license": "CC-BY-4.0",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -94,7 +98,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "GEP",
       "href": "../../../../platform_catalog/gep.json"
     },
     {
@@ -107,7 +111,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://ades.gep.terradue.com/gep/wps3/processes/burned-area-severity-one-shot-0_1_1"
+      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/burned-area-severity-v3-0-4"
     },
     {
       "rel": "about",
@@ -119,7 +123,7 @@
       "rel": "application",
       "type": "application/cwl+yaml",
       "title": "Service Application Package",
-      "href": "https://repository.terradue.com/artifactory/gep/app-packages/production/burned-area-severity-one-shot.0.1.1.cwl"
+      "href": "oci://cr.terradue.com/eo-services/app-packages/burned-area-severity:3.0.1"
     },
     {
       "rel": "webapp",

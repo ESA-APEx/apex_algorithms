@@ -2,7 +2,7 @@
   "id": "worldcover_statistics",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
@@ -17,7 +17,7 @@
     "keywords": [
       "Land Use/Land Cover Classification",
       "Data Analysis and Visualization",
-      "Statistical Applications"
+      "Statistics"
     ],
     "language": {
       "code": "en-US",
@@ -72,7 +72,11 @@
         "name": "CSV"
       }
     ],
-    "license": "proprietary"
+    "license": "Proprietary",
+    "certification": {
+      "category": "validated",
+      "funding": "other"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -91,7 +95,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {

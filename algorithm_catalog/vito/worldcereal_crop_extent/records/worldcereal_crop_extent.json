@@ -2,7 +2,7 @@
   "id": "worldcereal_crop_extent",
   "type": "Feature",
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
     "https://apex.esa.int/core/openeo-udp"
   ],
   "geometry": null,
@@ -89,7 +89,11 @@
         "name": "GeoTIFF"
       }
     ],
-    "license": "other"
+    "license": "Other",
+    "certification": {
+      "category": "validated",
+      "funding": "esa"
+    }
   },
   "linkTemplates": [],
   "links": [
@@ -97,7 +101,7 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://worldcereal.github.io/worldcereal-classification/udp/worldcereal_crop_extent.json"
+      "href": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/heads/main/scripts/udp/worldcereal_crop_extent.json"
     },
     {
       "rel": "code",
@@ -114,7 +118,7 @@
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "CDSE openEO federation",
+      "title": "CDSE",
       "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {

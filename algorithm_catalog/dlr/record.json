@@ -1,0 +1,52 @@
+{
+    "id": "dlr",
+    "type": "Feature",
+    "conformsTo": [
+        "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+    ],
+    "properties": {
+        "created": "2026-03-27T00:00:00Z",
+        "updated": "2026-03-27T00:00:00Z",
+        "type": "algorithm_provider",
+        "title": "DLR (German Aerospace Center)",
+        "description": "",
+        "keywords": [],
+        "language": {
+            "code": "en-US",
+            "name": "English (United States)"
+        },
+        "languages": [
+            {
+                "code": "en-US",
+                "name": "English (United States)"
+            }
+        ],
+        "contacts": [],
+        "themes": [],
+        "license": "Other",
+        "acl": {
+            "admin": ["@dlr.de", "@vito.be"]
+        }
+    },
+    "linkTemplates": [],
+    "links": [
+        {
+            "rel": "website",
+            "type": "text/html",
+            "title": "German Aerospace Center",
+            "href": "https://www.dlr.de/"
+        },
+        {
+            "rel": "logo-light",
+            "type": "image/svg+xml",
+            "title": "Logo",
+            "href": "https://www.dlr.de/static/media/Logo-en.bc10c5b6.svg"
+        },
+        {
+            "rel": "logo-dark",
+            "type": "image/svg+xml",
+            "title": "Logo",
+            "href": "https://www.dlr.de/static/media/Logo-en.bc10c5b6.svg"
+        }
+    ]
+}

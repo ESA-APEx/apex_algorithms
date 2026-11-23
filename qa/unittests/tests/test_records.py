@@ -1,16 +1,17 @@
-import jsonschema
-import requests
-
-import pytest
-from apex_algorithm_qa_tools.common import get_project_root
 from pathlib import Path
+
+import jsonschema
+import pytest
+from copy import deepcopy
+import requests
+from apex_algorithm_qa_tools.common import get_project_root
 from apex_algorithm_qa_tools.records import (
-    get_service_ogc_records,
-    get_service_ogc_record_schema,
-    get_platform_ogc_records,
     get_platform_ogc_record_schema,
-    get_provider_ogc_records,
+    get_platform_ogc_records,
     get_provider_ogc_record_schema,
+    get_provider_ogc_records,
+    get_service_ogc_record_schema,
+    get_service_ogc_records,
 )
 
 
@@ -37,8 +38,10 @@ def test_get_platform_ogc_records():
 )
 def test_service_record_validation(record):
     ## Validate if record file is located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'
-    assert record["path"].endswith(f"{record["data"]["id"]}/records/{record['data']['id']}.json"), f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
-    
+    assert record["path"].endswith(f"{record['data']['id']}/records/{record['data']['id']}.json"), (
+        f"Record file is not located at the expected path '*/{record['data']['id']}/records/{record['data']['id']}.json'"
+    )
+
     ## Validate record against the service OGC record schema.
     jsonschema.validate(instance=record["data"], schema=get_service_ogc_record_schema())
 
@@ -47,8 +50,13 @@ def test_service_record_validation(record):
         assert "href" in link, f"Link in record '{record['data']['id']}' is missing 'href' field"
         href = link["href"]
         if href.startswith("http"):
-            response = requests.head(href)
-            assert response.status_code in [200, 301, 302, 308, 401, 403], f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            try:
+                response = requests.head(href, timeout=10)
+            except requests.RequestException as e:
+                raise Exception(f"Failed to request {href=}: {e}") from e
+            assert response.status_code in [200, 301, 302, 308, 401, 403], (
+                f"Link '{href}' in record '{record['data']['id']}' is not returning a valid response (200, 301, 302, 308, 401, 403), got {response.status_code}"
+            )
 
 
 @pytest.mark.parametrize(
@@ -61,8 +69,26 @@ def test_service_record_validation(record):
 )
 def test_platform_record_validation(record):
     record_name = Path(record["path"]).name
-    assert record_name == f"{record['data']['id']}.json", f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    assert record_name == f"{record['data']['id']}.json", (
+        f"Record file name '{record_name}' does not match record id '{record['data']['id']}'"
+    )
     jsonschema.validate(instance=record["data"], schema=get_platform_ogc_record_schema())
+
+
+@pytest.mark.parametrize(
+    "record",
+    [pytest.param(record, id=record["data"]["id"]) for record in get_service_ogc_records()],
+)
+def test_service_record_platform_link_titles(record):
+    platforms = {Path(platform["path"]).resolve(): platform["data"] for platform in get_platform_ogc_records()}
+    for link in record["data"].get("links", []):
+        if link["rel"] == "platform":
+            platform_path = (Path(record["path"]).parent / link["href"]).resolve()
+            platform = platforms[platform_path]
+            assert link.get("title") == platform["properties"]["short_title"], (
+                f"Platform link '{link['href']}' in record '{record['data']['id']}' "
+                f"must have title {platform['properties']['short_title']!r}"
+            )
 
 
 def test_algorithm_provider_records_():
@@ -86,3 +112,33 @@ def test_algorithm_provider_records_():
 )
 def test_provider_record_validation(record):
     jsonschema.validate(instance=record["data"], schema=get_provider_ogc_record_schema())
+
+
+@pytest.mark.parametrize(
+    "invalid_certification",
+    [
+        {"category": "validated"},
+        {"funding": "esa"},
+        {"category": "community_contributed", "funding": "esa"},
+        {"category": "r_and_d", "funding": "third_party"},
+        {"category": "validated", "funding": "esa", "extra": "not-allowed"},
+    ],
+)
+def test_service_record_validation_rejects_malformed_certification_metadata(
+    invalid_certification,
+):
+    record = deepcopy(get_service_ogc_records()[0]["data"])
+    record["properties"]["certification"] = invalid_certification
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())
+
+
+def test_service_record_validation_accepts_valid_certification_metadata():
+    record = deepcopy(get_service_ogc_records()[0]["data"])
+    record["properties"]["certification"] = {
+        "category": "validated",
+        "funding": "esa",
+    }
+
+    jsonschema.validate(instance=record, schema=get_service_ogc_record_schema())

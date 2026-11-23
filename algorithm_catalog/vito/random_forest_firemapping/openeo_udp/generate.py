@@ -9,7 +9,7 @@ from eo_extractor import s1_features , s2_features
 
 def generate() -> dict:
 
-    connection  = openeo.connect("openeo.vito.be").authenticate_oidc()
+    connection  = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
 
     # define input parameter
     spatial_extent = Parameter.spatial_extent(
