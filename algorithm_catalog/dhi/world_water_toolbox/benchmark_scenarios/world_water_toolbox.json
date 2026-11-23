@@ -3,7 +3,7 @@
     "id": "world_water_toolbox",
     "type": "openeo",
     "description": "benchmark scenario for ESA World Water Toolbox",
-    "backend": "openeo.dataspace.copernicus.eu",
+    "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "world_water_toolbox": {
         "process_id": "world_water_toolbox",
@@ -24,6 +24,10 @@
         "namespace": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/main/world_water_toolbox/udp/world_water_toolbox.json"
       }
     },
-    "reference_data": {}
+    "reference_data": {
+      "job-results.json": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP293!tests_test_benchmarks.py__test_run_benchmark_world_water_toolbox_!actual/job-results.json",
+      "monthly_water_2024-01-01Z.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP293!tests_test_benchmarks.py__test_run_benchmark_world_water_toolbox_!actual/monthly_water_2024-01-01Z.tif",
+      "water_indicators.tif": "https://s3.waw3-1.cloudferro.com/apex-benchmarks-internal/HP293!tests_test_benchmarks.py__test_run_benchmark_world_water_toolbox_!actual/water_indicators.tif"
+    }
   }
 ]

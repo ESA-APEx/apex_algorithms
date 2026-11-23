@@ -1,5 +1,5 @@
 {
-  "id": "esa_world_water_extent",
+  "id": "world_water_toolbox",
   "type": "Feature",
   "conformsTo": [
     "http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
@@ -8,10 +8,10 @@
   "geometry": null,
   "properties": {
     "created": "2025-03-12T00:00:00Z",
-    "updated": "2025-03-12T00:00:00Z",
+    "updated": "2026-11-23T00:00:00Z",
     "type": "service",
-    "title": "ESA World Water extent",
-    "description": "Monitoring of water bodies at any region globally from 2016 onwards, based on Sentinel-1 and Sentinel-2 data.",
+    "title": "ESA World Water Toolbox",
+    "description": "Computes monthly water probabilities (water_probability), binary water masks (surface_water) and annual water indicators (Hydro-period Classification, Hydro-period Seasonality, Minimum Water Extent, Maximum Water Extent, Mean Surface Water Frequency) for a given period, from Sentinel-1 and Sentinel-2, provided by DHI. `output` selects 'all', 'indicators' or 'monthly'; `output_format` selects GTiff or netCDF.",
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
     "keywords": [
@@ -93,19 +93,19 @@
       "rel": "application",
       "type": "application/vnd.openeo+json;type=process",
       "title": "openEO Process Definition",
-      "href": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/new-udp/world_water_toolbox/single_month_extent_udp.json"
+      "href": "https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/main/world_water_toolbox/udp/world_water_toolbox.json"
     },
     {
       "rel": "service",
       "type": "application/json",
-      "title": "Terrascope openEO",
-      "href": "https://openeo.vito.be/openeo"
+      "title": "CDSE openEO federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "platform",
       "type": "application/json",
-      "title": "Terrascope openeEO",
-      "href": "../../../../platform_catalog/terrascope.json"
+      "title": "CDSE",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
     },
     {
       "rel": "provider",
@@ -117,7 +117,7 @@
       "rel": "webapp",
       "type": "text/html",
       "title": "OpenEO Web Editor",
-      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=worldwater_water_extent&wizard%7EprocessUrl=https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/new-udp/world_water_toolbox/single_month_extent_udp.json&server=openeo.vito.be"
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=world_water_toolbox&wizard%7EprocessUrl=https://raw.githubusercontent.com/DHI-GRAS/worldwater-toolbox/refs/heads/main/world_water_toolbox/udp/world_water_toolbox.json&server=openeofed.dataspace.copernicus.eu"
     },
     {
       "rel": "about",
