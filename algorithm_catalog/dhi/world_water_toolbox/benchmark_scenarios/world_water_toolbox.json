@@ -3,7 +3,7 @@
     "id": "world_water_toolbox",
     "type": "openeo",
     "description": "benchmark scenario for ESA World Water Toolbox",
-    "backend": "openeo.terrascope.be",
+    "backend": "openeo.dataspace.copernicus.eu",
     "process_graph": {
       "world_water_toolbox": {
         "process_id": "world_water_toolbox",
