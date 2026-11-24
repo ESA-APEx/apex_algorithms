@@ -10,7 +10,7 @@
     "created": "2025-03-12T00:00:00Z",
     "updated": "2026-11-23T00:00:00Z",
     "type": "service",
-    "title": "ESA World Water Toolbox",
+    "title": "World Water Toolbox",
     "description": "Computes monthly water probabilities (water_probability), binary water masks (surface_water) and annual water indicators (Hydro-period Classification, Hydro-period Seasonality, Minimum Water Extent, Maximum Water Extent, Mean Surface Water Frequency) for a given period, from Sentinel-1 and Sentinel-2, provided by DHI. `output` selects 'all', 'indicators' or 'monthly'; `output_format` selects GTiff or netCDF.",
     "cost_estimate": 0.1,
     "cost_unit": "platform credits per km\u00b2",
