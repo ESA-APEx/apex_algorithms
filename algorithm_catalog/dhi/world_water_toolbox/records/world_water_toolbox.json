@@ -54,6 +54,10 @@
         ]
       }
     ],
+    "certification": {
+      "category": "validated",
+      "funding": "esa"
+    },
     "themes": [
       {
         "concepts": [
