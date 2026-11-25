@@ -1,6 +1,6 @@
 [
   {
-    "id": "worldcereal_crop_extent_20km",
+    "id": "worldcereal_crop_extent_performance_regression",
     "type": "openeo",
     "description": "WorldCereal crop extent regression test on a 20x20 km area (maximum supported job size)",
     "regression": true,

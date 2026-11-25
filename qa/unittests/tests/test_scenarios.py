@@ -30,6 +30,18 @@ def test_regression_flag():
 
 
 @pytest.mark.parametrize(
+    ["id", "regression"],
+    [("foo_performance_regression", False), ("foo", True)],
+)
+def test_lint_regression_flag_requires_matching_name(id, regression):
+    scenario = openEOBenchmarkScenario(
+        id=id, type="openeo", backend="openeo.dataspace.copernicus.eu", process_graph={}, regression=regression
+    )
+    with pytest.raises(AssertionError, match="_performance_regression"):
+        lint_benchmark_scenario(scenario)
+
+
+@pytest.mark.parametrize(
     "scenario",
     [pytest.param(s, id=s.id) for s in get_regression_scenarios()],
 )
@@ -39,9 +51,10 @@ def test_lint_regression_scenario(scenario: BenchmarkScenario):
 
 def _scenario_with_extent(spatial_extent) -> openEOBenchmarkScenario:
     return openEOBenchmarkScenario(
-        id="regression",
+        id="foo_performance_regression",
         type="openeo",
         backend="openeofed.dataspace.copernicus.eu",
+        regression=True,
         process_graph={
             "node": {
                 "process_id": "foo",

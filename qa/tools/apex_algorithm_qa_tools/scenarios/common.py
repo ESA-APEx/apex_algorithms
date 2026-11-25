@@ -36,6 +36,7 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
 
 
 REGRESSION_MIN_SIDE_KM = 20
+REGRESSION_ID_SUFFIX = "_performance_regression"
 
 
 def get_regression_scenarios(root=None) -> List[BenchmarkScenario]:
@@ -86,6 +87,10 @@ def lint_common_fields(scenario: BenchmarkScenario):
     To be used in unit tests and pre-commit hooks.
     """
     assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
+    assert scenario.regression == scenario.id.endswith(REGRESSION_ID_SUFFIX), (
+        f"[{scenario.id}] scenarios with `regression: true` (and only those) "
+        f"must have an id ending in {REGRESSION_ID_SUFFIX!r}"
+    )
 
 
 def lint_benchmark_scenario(scenario: BenchmarkScenario):
