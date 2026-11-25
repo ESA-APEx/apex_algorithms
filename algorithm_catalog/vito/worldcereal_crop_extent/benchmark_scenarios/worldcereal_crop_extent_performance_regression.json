@@ -37,12 +37,15 @@
       }
     },
     "job_options": {
-      "driver-memory": "4g",
-      "executor-memory": "2g",
-      "executor-memoryOverhead": "4g",
+      "driver-memory": "2G",
+      "driver-memoryOverhead": "2G",
+      "driver-cores": 1,
+      "executor-memory": "3500m",
+      "executor-memoryOverhead": "2500m",
       "executor-request-cores": "1400m",
-      "max-executors": 20,
-      "python-memory": "disable",
+      "executor-cores": 1,
+      "max-executors": 10,
+      "python-memory": "4G",
       "soft-errors": 0.1
     }
   }
