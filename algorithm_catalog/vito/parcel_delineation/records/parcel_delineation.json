@@ -128,7 +128,7 @@
       "href": "https://editor.openeo.org/?wizard=UDP&wizard~process=parceldelination&wizard~processUrl=https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/4edc975de279d2800e5d5367032340090d554761/algorithm_catalog/vito/parcel_delineation/openeo_udp/parcel_delineation.json&server=https://openeo.dataspace.copernicus.eu"
     },
     {
-      "rel": "explorer",
+      "rel": "webapp",
       "type": "text/html",
       "title": "Geospatial Explorer",
       "href": "https://explorer.demo-execution.apex.esa.int/workflows/vito/parcel_delineation"
