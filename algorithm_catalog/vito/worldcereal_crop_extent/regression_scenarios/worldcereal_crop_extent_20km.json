@@ -1,0 +1,51 @@
+[
+  {
+    "id": "worldcereal_crop_extent_20km",
+    "type": "openeo",
+    "description": "WorldCereal crop extent regression test on a 20x20 km area (maximum supported job size)",
+    "backend": "openeofed.dataspace.copernicus.eu",
+    "process_graph": {
+      "worldcerealcropextent1": {
+        "process_id": "worldcereal_crop_extent",
+        "namespace": "https://raw.githubusercontent.com/WorldCereal/worldcereal-classification/refs/tags/worldcereal_crop_extent_v3.1.0/scripts/udp/worldcereal_crop_extent.json",
+        "arguments": {
+          "spatial_extent": {
+            "west": 654300,
+            "east": 674300,
+            "south": 5601434,
+            "north": 5621434,
+            "crs": "EPSG:32631",
+            "srs": "EPSG:32631"
+          },
+          "temporal_extent": [
+            "2020-11-01",
+            "2021-10-31"
+          ],
+          "orbit_state": "DESCENDING",
+          "season_ids": [
+            "tc-s1"
+          ],
+          "season_windows": {
+            "tc-s1": [
+              "2020-12-01",
+              "2021-07-31"
+            ]
+          }
+        },
+        "result": true
+      }
+    },
+    "job_options": {
+      "driver-memory": "4g",
+      "executor-memory": "2g",
+      "executor-memoryOverhead": "4g",
+      "executor-request-cores": "1400m",
+      "max-executors": 20,
+      "python-memory": "disable",
+      "soft-errors": 0.1
+    },
+    "reference_options": {
+      "atol": 10
+    }
+  }
+]

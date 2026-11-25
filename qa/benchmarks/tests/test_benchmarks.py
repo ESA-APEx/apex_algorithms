@@ -3,11 +3,7 @@ import json
 import logging
 from pathlib import Path
 
-import pytest
-from apex_algorithm_qa_tools.scenarios import (
-    BenchmarkScenario,
-    get_benchmark_scenarios,
-)
+from apex_algorithm_qa_tools.scenarios import BenchmarkScenario
 from openeo.testing.results import assert_job_results_allclose
 
 from apex_algorithm_qa_tools.benchmarks.runners.factory import (
@@ -23,14 +19,7 @@ from apex_algorithm_qa_tools.benchmarks.common import (
 _log = logging.getLogger(__name__)
 
 
-@pytest.mark.parametrize(
-    "scenario",
-    [
-        # Use scenario id as parameterization id to give nicer test names.
-        pytest.param(uc, id=uc.id)
-        for uc in get_benchmark_scenarios()
-    ],
-)
+# `scenario` is parametrized in conftest.py (benchmark or regression scenarios)
 def test_run_benchmark(
     scenario: BenchmarkScenario,
     tmp_path: Path,

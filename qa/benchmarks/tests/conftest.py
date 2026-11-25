@@ -8,6 +8,8 @@ from typing import Callable
 import openeo
 import pytest
 import requests
+from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
+from apex_algorithm_qa_tools.scenarios.common import get_regression_scenarios
 
 # TODO: how to make sure the logging/printing from this plugin is actually visible by default?
 _log = logging.getLogger(__name__)
@@ -31,6 +33,11 @@ def pytest_addoption(parser):
         "--dummy",
         action="store_true",
         help="Toggle to only run dummy benchmarks/tests (instead of skipping them)",
+    )
+    parser.addoption(
+        "--regression",
+        action="store_true",
+        help="Run the whitelisted regression scenarios instead of the benchmark scenarios.",
     )
     parser.addoption(
         "--override-backend",
@@ -75,6 +82,16 @@ def pytest_ignore_collect(collection_path, config):
         return True
     else:
         return None
+
+
+def pytest_generate_tests(metafunc):
+    if "scenario" in metafunc.fixturenames:
+        if metafunc.config.getoption("--regression"):
+            scenarios = get_regression_scenarios()
+        else:
+            scenarios = get_benchmark_scenarios()
+        # Use scenario id as parameterization id to give nicer test names.
+        metafunc.parametrize("scenario", [pytest.param(s, id=s.id) for s in scenarios])
 
 
 @pytest.hookimpl(trylast=True)

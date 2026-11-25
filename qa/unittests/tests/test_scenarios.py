@@ -3,7 +3,13 @@ from pathlib import Path
 import jsonschema
 import pytest
 
-from apex_algorithm_qa_tools.scenarios.common import get_benchmark_scenarios, lint_benchmark_scenario
+from apex_algorithm_qa_tools.scenarios.common import (
+    get_benchmark_scenarios,
+    get_regression_scenarios,
+    get_regression_whitelist,
+    lint_benchmark_scenario,
+    lint_regression_scenario,
+)
 from apex_algorithm_qa_tools.scenarios.factory import _benchmark_factory
 from apex_algorithm_qa_tools.scenarios.scenario import BenchmarkScenario
 from apex_algorithm_qa_tools.scenarios.openeo import openEOBenchmarkScenario
@@ -14,6 +20,64 @@ def test_get_benchmark_scenarios():
 
 
 # TODO: tests to check uniqueness of scenario ids?
+
+
+def test_regression_whitelist_ids_exist():
+    whitelist = get_regression_whitelist()
+    assert len(whitelist) > 0
+    assert {s.id for s in get_regression_scenarios()} == set(whitelist)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [pytest.param(s, id=s.id) for s in get_regression_scenarios()],
+)
+def test_lint_regression_scenario(scenario: BenchmarkScenario):
+    lint_regression_scenario(scenario)
+
+
+def _scenario_with_extent(spatial_extent) -> openEOBenchmarkScenario:
+    return openEOBenchmarkScenario(
+        id="regression",
+        type="openeo",
+        backend="openeofed.dataspace.copernicus.eu",
+        process_graph={
+            "node": {
+                "process_id": "foo",
+                "arguments": {"spatial_extent": spatial_extent},
+                "result": True,
+            }
+        },
+    )
+
+
+@pytest.mark.parametrize(
+    "spatial_extent",
+    [
+        {"west": 0, "east": 20000, "south": 0, "north": 20000, "crs": "EPSG:32631"},
+        {"west": 5.0, "east": 5.3, "south": 51.0, "north": 51.2},
+    ],
+)
+def test_lint_regression_scenario_accepts_large_extent(spatial_extent):
+    lint_regression_scenario(_scenario_with_extent(spatial_extent))
+
+
+@pytest.mark.parametrize(
+    "spatial_extent",
+    [
+        {"west": 0, "east": 19000, "south": 0, "north": 20000, "crs": "EPSG:32631"},
+        # 0.3 degrees longitude is only ~16 km wide at 60N
+        {"west": 5.0, "east": 5.3, "south": 60.0, "north": 60.2, "crs": "EPSG:4326"},
+    ],
+)
+def test_lint_regression_scenario_rejects_small_extent(spatial_extent):
+    with pytest.raises(AssertionError, match="20x20 km"):
+        lint_regression_scenario(_scenario_with_extent(spatial_extent))
+
+
+def test_lint_regression_scenario_requires_extent():
+    with pytest.raises(AssertionError, match="spatial extent"):
+        lint_regression_scenario(_scenario_with_extent(None))
 
 
 @pytest.mark.parametrize(

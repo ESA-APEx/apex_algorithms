@@ -1,12 +1,130 @@
 name: "Regression Testing"
 
+# Weekly run of the whitelisted large-area (>= 20x20 km) regression scenarios
+# (see qa/benchmarks/regression_whitelist.json), separate from the benchmarks.
+# Each scenario compares its output against reference data and tracks metrics
+# in a dedicated parquet dataset, which is then checked for cost regressions.
+
 on:
   workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Single whitelisted regression scenario id (empty: all)"
+        required: false
+        type: string
+        default: ""
   schedule:
-    - cron: "0 6 * * 1"
+    # Sunday night, when the cluster is quiet
+    - cron: "0 2 * * 0"
+
+# Never let two regression runs overlap.
+concurrency:
+  group: regression-testing
+  cancel-in-progress: false
+
+env:
+  METRICS_S3_KEY: metrics/regression/v1/metrics.parquet
 
 jobs:
+  select:
+    runs-on: ubuntu-latest
+    outputs:
+      scenarios: ${{ steps.select.outputs.scenarios }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: select
+        env:
+          SCENARIO: ${{ inputs.scenario }}
+        run: |
+          python - <<'EOF'
+          import json, os
+          ids = json.load(open("qa/benchmarks/regression_whitelist.json"))["scenarios"]
+          if os.environ.get("SCENARIO"):
+              ids = [i for i in ids if i == os.environ["SCENARIO"]]
+          if not ids:
+              raise SystemExit("No whitelisted regression scenarios selected")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"scenarios={json.dumps(ids)}\n")
+          EOF
+
+  regression:
+    needs: select
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      # Limit load on the processing clusters.
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        scenario: ${{ fromJSON(needs.select.outputs.scenarios) }}
+    env:
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install benchmark dependencies
+        run: |
+          python -m pip install qa/tools
+          python -m pip install -r qa/benchmarks/requirements.txt
+      - name: Run regression scenario
+        shell: bash
+        env:
+          SCENARIO_ID: ${{ matrix.scenario }}
+          OPENEO_AUTH_METHOD: client_credentials
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
+          OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_CDSEFED }}
+          OPENEO_AUTH_CLIENT_CREDENTIALS_EGI: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_EGI }}
+          OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE: ${{ secrets.OPENEO_AUTH_CLIENT_CREDENTIALS_TERRASCOPE }}
+          APEX_ALGORITHMS_S3_ACCESS_KEY_ID: ${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}
+          APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}
+          APEX_ALGORITHMS_S3_ENDPOINT_URL: ${{ secrets.APEX_ALGORITHMS_S3_ENDPOINT_URL || 'https://s3.waw3-1.cloudferro.com' }}
+          APEX_ALGORITHMS_S3_DEFAULT_REGION: ${{ secrets.APEX_ALGORITHMS_S3_DEFAULT_REGION || 'waw3-1' }}
+          OGC_AUTH_TOKEN: ${{ secrets.OGC_AUTH_TOKEN }}
+        run: |
+          set -o pipefail
+          cd qa/benchmarks
+          mkdir report
+          mkdir tmp_path_root
+          pytest \
+            "tests/test_benchmarks.py::test_run_benchmark[${SCENARIO_ID}]" \
+            --regression \
+            -vv \
+            --log-cli-level=INFO \
+            --maximum-job-time-in-minutes=240 \
+            --html report/report.html --self-contained-html \
+            --track-metrics-json=report/metrics.json \
+            --track-metrics-parquet-s3-bucket="apex-benchmarks" \
+            --track-metrics-parquet-s3-key="$METRICS_S3_KEY" \
+            --track-metrics-parquet-partitioning="YYYYMM" \
+            --basetemp=tmp_path_root \
+            --upload-assets-s3-bucket="apex-benchmarks" | tee pytest_output.txt
+
+      - name: GitHub Issue Handler
+        if: ${{ always() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python qa/tools/apex_algorithm_qa_tools/github_issue_handler.py \
+            --terminal-report qa/benchmarks/pytest_output.txt \
+            --metrics-json qa/benchmarks/report/metrics.json
+
+      - name: upload report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: report-${{ matrix.scenario }}
+          path: qa/benchmarks/report/
+
   regression-analysis:
+    needs: regression
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,7 +144,7 @@ jobs:
         run: |
           python -m apex_algorithm_qa_tools.report_performance_regressions \
             --s3-bucket apex-benchmarks \
-            --s3-key metrics/v1/metrics.parquet
+            --s3-key "$METRICS_S3_KEY"
         env:
           APEX_ALGORITHMS_S3_ACCESS_KEY_ID: ${{ secrets.APEX_ALGORITHMS_S3_ACCESS_KEY_ID }}
           APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY: ${{ secrets.APEX_ALGORITHMS_S3_SECRET_ACCESS_KEY }}

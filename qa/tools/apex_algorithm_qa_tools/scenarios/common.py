@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import glob
+import json
 import logging
+import math
 import re
 from pathlib import Path
 from typing import List
@@ -32,6 +34,65 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
     ):
         scenarios.extend(read_scenarios_file(path))
     return scenarios
+
+
+REGRESSION_MIN_SIDE_KM = 20
+
+
+def get_regression_whitelist(root=None) -> List[str]:
+    """Scenario ids of regression scenarios that are enabled for (scheduled) runs."""
+    path = (root or get_project_root()) / "qa" / "benchmarks" / "regression_whitelist.json"
+    return json.loads(path.read_text(encoding="utf-8"))["scenarios"]
+
+
+def get_regression_scenarios(root=None) -> List[BenchmarkScenario]:
+    """Whitelisted scenarios from `algorithm_catalog/**/regression_scenarios/*.json`."""
+    whitelist = set(get_regression_whitelist(root))
+    scenarios = []
+    # old style glob is used to support symlinks
+    for path in glob.glob(
+        str((root or get_project_root()) / "algorithm_catalog") + "/**/*regression_scenarios*/*.json",
+        recursive=True,
+    ):
+        scenarios.extend(s for s in read_scenarios_file(path) if s.id in whitelist)
+    return scenarios
+
+
+def _find_bboxes(data):
+    if isinstance(data, dict):
+        if {"west", "east", "south", "north"} <= data.keys():
+            yield data
+        else:
+            for value in data.values():
+                yield from _find_bboxes(value)
+    elif isinstance(data, list):
+        for value in data:
+            yield from _find_bboxes(value)
+
+
+def _bbox_size_km(bbox: dict) -> tuple[float, float]:
+    """Approximate (width, height) in km. Non-4326 CRSs are assumed to be in metres."""
+    width = bbox["east"] - bbox["west"]
+    height = bbox["north"] - bbox["south"]
+    if str(bbox.get("crs", 4326)).upper() in {"4326", "EPSG:4326"}:
+        mid_lat = math.radians((bbox["north"] + bbox["south"]) / 2)
+        return width * 111.32 * math.cos(mid_lat), height * 110.57
+    return width / 1000, height / 1000
+
+
+def lint_regression_scenario(scenario: BenchmarkScenario):
+    """Benchmark lint plus a minimum spatial extent of 20x20 km."""
+    lint_benchmark_scenario(scenario)
+
+    data = getattr(scenario, "process_graph", None) or getattr(scenario, "parameters", None)
+    bboxes = list(_find_bboxes(data))
+    assert bboxes, f"[{scenario.id}] no spatial extent (west/east/south/north) found"
+    for bbox in bboxes:
+        width, height = _bbox_size_km(bbox)
+        assert min(width, height) >= REGRESSION_MIN_SIDE_KM, (
+            f"[{scenario.id}] spatial extent {width:.1f}x{height:.1f} km is smaller than "
+            f"{REGRESSION_MIN_SIDE_KM}x{REGRESSION_MIN_SIDE_KM} km"
+        )
 
 
 def lint_common_fields(scenario: BenchmarkScenario):
