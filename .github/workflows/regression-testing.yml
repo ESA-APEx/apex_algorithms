@@ -43,14 +43,12 @@ jobs:
           MAX_SCENARIOS: 4
         run: |
           python - <<'EOF'
-          import json, os, random
-          from apex_algorithm_qa_tools.scenarios.common import get_regression_scenarios
-          ids = [s.id for s in get_regression_scenarios()]
-          if os.environ.get("SCENARIO"):
-              ids = [i for i in ids if i == os.environ["SCENARIO"]]
-          else:
-              # Limit the weekly load: random subset of max N scenarios.
-              ids = random.sample(ids, k=min(len(ids), int(os.environ["MAX_SCENARIOS"])))
+          import json, os
+          from apex_algorithm_qa_tools.scenarios.common import select_regression_scenario_ids
+          ids = select_regression_scenario_ids(
+              scenario=os.environ.get("SCENARIO"),
+              max_scenarios=int(os.environ["MAX_SCENARIOS"]),
+          )
           if not ids:
               raise SystemExit("No regression scenarios selected")
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:

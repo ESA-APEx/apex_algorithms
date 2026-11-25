@@ -3,6 +3,7 @@ from __future__ import annotations
 import glob
 import logging
 import math
+import random
 import re
 from pathlib import Path
 from typing import List
@@ -42,6 +43,16 @@ REGRESSION_ID_SUFFIX = "_performance_regression"
 def get_regression_scenarios(root=None) -> List[BenchmarkScenario]:
     """Benchmark scenarios flagged with `"regression": true` (large area, weekly runs)."""
     return [s for s in get_benchmark_scenarios(root) if s.regression]
+
+
+def select_regression_scenario_ids(
+    root=None, *, scenario: str | None = None, max_scenarios: int = 4
+) -> List[str]:
+    """Regression scenario ids to run: the requested one, or a random subset to limit load."""
+    ids = [s.id for s in get_regression_scenarios(root)]
+    if scenario:
+        return [i for i in ids if i == scenario]
+    return random.sample(ids, k=min(len(ids), max_scenarios))
 
 
 def _find_bboxes(data):
