@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Parallel raw record downloads and per-instance caching shared with
   `get_algorithm()`; directory listings now honor the configured branch.
 - Separate weekly regression test flow (max 2 scenarios in parallel) for
-  whitelisted `regression_scenarios` of at least 20x20 km, with output
+  whitelisted benchmark scenarios of at least 20x20 km, with output
   comparison and a dedicated metrics dataset. First scenario:
   `worldcereal_crop_extent_20km`.
 

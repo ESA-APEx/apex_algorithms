@@ -9,7 +9,10 @@ import openeo
 import pytest
 import requests
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
-from apex_algorithm_qa_tools.scenarios.common import get_regression_scenarios
+from apex_algorithm_qa_tools.scenarios.common import (
+    get_regression_scenarios,
+    get_regression_whitelist,
+)
 
 # TODO: how to make sure the logging/printing from this plugin is actually visible by default?
 _log = logging.getLogger(__name__)
@@ -89,7 +92,9 @@ def pytest_generate_tests(metafunc):
         if metafunc.config.getoption("--regression"):
             scenarios = get_regression_scenarios()
         else:
-            scenarios = get_benchmark_scenarios()
+            # Regression scenarios are too heavy for the frequent benchmark runs.
+            whitelist = set(get_regression_whitelist())
+            scenarios = [s for s in get_benchmark_scenarios() if s.id not in whitelist]
         # Use scenario id as parameterization id to give nicer test names.
         metafunc.parametrize("scenario", [pytest.param(s, id=s.id) for s in scenarios])
 

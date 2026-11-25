@@ -46,16 +46,9 @@ def get_regression_whitelist(root=None) -> List[str]:
 
 
 def get_regression_scenarios(root=None) -> List[BenchmarkScenario]:
-    """Whitelisted scenarios from `algorithm_catalog/**/regression_scenarios/*.json`."""
+    """Benchmark scenarios that are whitelisted for the (large area) regression runs."""
     whitelist = set(get_regression_whitelist(root))
-    scenarios = []
-    # old style glob is used to support symlinks
-    for path in glob.glob(
-        str((root or get_project_root()) / "algorithm_catalog") + "/**/*regression_scenarios*/*.json",
-        recursive=True,
-    ):
-        scenarios.extend(s for s in read_scenarios_file(path) if s.id in whitelist)
-    return scenarios
+    return [s for s in get_benchmark_scenarios(root) if s.id in whitelist]
 
 
 def _find_bboxes(data):

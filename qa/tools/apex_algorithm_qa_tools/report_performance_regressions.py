@@ -18,7 +18,6 @@ from apex_algorithm_qa_tools.metrics.performance_baselines import (
     _compute_baselines,
 )
 from apex_algorithm_qa_tools.scenarios import get_benchmark_scenarios
-from apex_algorithm_qa_tools.scenarios.common import get_regression_scenarios
 
 
 def main() -> None:
@@ -52,9 +51,7 @@ def main() -> None:
     regression_messages = []
     rows = []
 
-    benchmark_scenarios = {
-        scenario.id: scenario for scenario in get_benchmark_scenarios() + get_regression_scenarios()
-    }
+    benchmark_scenarios = {scenario.id: scenario for scenario in get_benchmark_scenarios()}
     total_scenarios = len(scenario_metrics_by_id)
     print(f"[progress] Evaluating {total_scenarios} scenario(s)")
 
