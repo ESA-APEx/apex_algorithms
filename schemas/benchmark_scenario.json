@@ -28,6 +28,10 @@
         "reference_options": {
           "type": "object",
           "description": "Options to fine-tune how actual and reference results should be compared."
+        },
+        "regression": {
+          "type": "boolean",
+          "description": "Run this scenario in the weekly regression flow (performance tracking only, area of at least 20x20 km) instead of the regular benchmarks."
         }
       },
       "required": [

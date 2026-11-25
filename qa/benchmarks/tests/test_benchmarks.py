@@ -110,6 +110,10 @@ def test_run_benchmark(
             track_metric=track_metric,
         )
 
+    if scenario.regression:
+        # Regression runs only track performance metrics, no output comparison (for now).
+        return
+
     with track_phase(phase="download-actual"):
         actual_dir = tmp_path / "actual"
         paths = runner.download_actual(actual_dir=actual_dir)

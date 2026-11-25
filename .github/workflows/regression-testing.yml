@@ -1,15 +1,15 @@
 name: "Regression Testing"
 
-# Weekly run of the whitelisted large-area (>= 20x20 km) regression scenarios
-# (see qa/benchmarks/regression_whitelist.json), separate from the benchmarks.
-# Each scenario compares its output against reference data and tracks metrics
-# in a dedicated parquet dataset, which is then checked for cost regressions.
+# Weekly run of the large-area (>= 20x20 km) benchmark scenarios flagged with
+# `"regression": true`, separate from the regular benchmarks.
+# Only performance metrics are tracked (no output comparison), in a dedicated
+# parquet dataset, which is then checked for cost regressions.
 
 on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: "Single whitelisted regression scenario id (empty: all)"
+        description: "Single regression scenario id (empty: all)"
         required: false
         type: string
         default: ""
@@ -32,17 +32,23 @@ jobs:
       scenarios: ${{ steps.select.outputs.scenarios }}
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install qa/tools
       - id: select
         env:
           SCENARIO: ${{ inputs.scenario }}
         run: |
           python - <<'EOF'
           import json, os
-          ids = json.load(open("qa/benchmarks/regression_whitelist.json"))["scenarios"]
+          from apex_algorithm_qa_tools.scenarios.common import get_regression_scenarios
+          ids = [s.id for s in get_regression_scenarios()]
           if os.environ.get("SCENARIO"):
               ids = [i for i in ids if i == os.environ["SCENARIO"]]
           if not ids:
-              raise SystemExit("No whitelisted regression scenarios selected")
+              raise SystemExit("No regression scenarios selected")
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"scenarios={json.dumps(ids)}\n")
           EOF

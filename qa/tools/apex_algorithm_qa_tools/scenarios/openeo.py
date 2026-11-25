@@ -45,6 +45,7 @@ class openEOBenchmarkScenario(BenchmarkScenario):
             job_options=data.get("job_options"),
             reference_data=data.get("reference_data", {}),
             reference_options=data.get("reference_options", {}),
+            regression=data.get("regression", False),
             source=source,
         )
 

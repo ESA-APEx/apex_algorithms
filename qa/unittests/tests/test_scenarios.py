@@ -6,7 +6,6 @@ import pytest
 from apex_algorithm_qa_tools.scenarios.common import (
     get_benchmark_scenarios,
     get_regression_scenarios,
-    get_regression_whitelist,
     lint_benchmark_scenario,
     lint_regression_scenario,
 )
@@ -22,10 +21,12 @@ def test_get_benchmark_scenarios():
 # TODO: tests to check uniqueness of scenario ids?
 
 
-def test_regression_whitelist_ids_exist():
-    whitelist = get_regression_whitelist()
-    assert len(whitelist) > 0
-    assert {s.id for s in get_regression_scenarios()} == set(whitelist)
+def test_regression_flag():
+    data = {"id": "r", "type": "openeo", "backend": "openeo.test", "process_graph": {}}
+    assert openEOBenchmarkScenario.from_dict(data).regression is False
+    assert openEOBenchmarkScenario.from_dict({**data, "regression": True}).regression is True
+    with pytest.raises(jsonschema.ValidationError):
+        openEOBenchmarkScenario.from_dict({**data, "regression": "yes"})
 
 
 @pytest.mark.parametrize(

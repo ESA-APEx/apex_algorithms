@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import glob
-import json
 import logging
 import math
 import re
@@ -39,16 +38,9 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
 REGRESSION_MIN_SIDE_KM = 20
 
 
-def get_regression_whitelist(root=None) -> List[str]:
-    """Scenario ids of regression scenarios that are enabled for (scheduled) runs."""
-    path = (root or get_project_root()) / "qa" / "benchmarks" / "regression_whitelist.json"
-    return json.loads(path.read_text(encoding="utf-8"))["scenarios"]
-
-
 def get_regression_scenarios(root=None) -> List[BenchmarkScenario]:
-    """Benchmark scenarios that are whitelisted for the (large area) regression runs."""
-    whitelist = set(get_regression_whitelist(root))
-    return [s for s in get_benchmark_scenarios(root) if s.id in whitelist]
+    """Benchmark scenarios flagged with `"regression": true` (large area, weekly runs)."""
+    return [s for s in get_benchmark_scenarios(root) if s.regression]
 
 
 def _find_bboxes(data):

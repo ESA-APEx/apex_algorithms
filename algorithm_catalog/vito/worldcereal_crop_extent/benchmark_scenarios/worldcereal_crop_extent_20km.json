@@ -3,6 +3,7 @@
     "id": "worldcereal_crop_extent_20km",
     "type": "openeo",
     "description": "WorldCereal crop extent regression test on a 20x20 km area (maximum supported job size)",
+    "regression": true,
     "backend": "openeofed.dataspace.copernicus.eu",
     "process_graph": {
       "worldcerealcropextent1": {
@@ -43,9 +44,6 @@
       "max-executors": 20,
       "python-memory": "disable",
       "soft-errors": 0.1
-    },
-    "reference_options": {
-      "atol": 10
     }
   }
 ]

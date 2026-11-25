@@ -16,10 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `list_providers()`, `list_platforms()`, and `list_keywords()` discovery helpers.
 - Parallel raw record downloads and per-instance caching shared with
   `get_algorithm()`; directory listings now honor the configured branch.
-- Separate weekly regression test flow (max 2 scenarios in parallel) for
-  whitelisted benchmark scenarios of at least 20x20 km, with output
-  comparison and a dedicated metrics dataset. First scenario:
-  `worldcereal_crop_extent_20km`.
+- Separate weekly regression flow (max 2 scenarios in parallel) for benchmark
+  scenarios flagged with `"regression": true` (at least 20x20 km): tracks
+  performance metrics in a dedicated dataset and opens GitHub issues on cost
+  regressions. First scenario: `worldcereal_crop_extent_20km`.
 
 ### Fixed
 - Ignore non-UDP application links (such as CWL packages) when parsing UDP

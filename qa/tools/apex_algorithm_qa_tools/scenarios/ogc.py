@@ -57,6 +57,7 @@ class OGCAPIBenchmarkScenario(BenchmarkScenario):
             application=application,
             reference_data=data.get("reference_data", {}),
             reference_options=data.get("reference_options", {}),
+            regression=data.get("regression", False),
             source=source,
             results=results,
         )
