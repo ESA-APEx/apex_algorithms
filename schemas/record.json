@@ -529,7 +529,8 @@
               "thumbnail",
               "cite-as",
               "notebook",
-              "related"
+              "related",
+              "explorer"
             ]
           },
           "type": {
