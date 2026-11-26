@@ -82,25 +82,41 @@ def test_select_regression_scenario_ids_explicit_scenario(catalog_root, scenario
     assert select_regression_scenario_ids(catalog_root, scenario=scenario, max_scenarios=1) == expected
 
 
-def _collected_benchmark_ids(*args) -> set[str]:
-    result = subprocess.run(
+def _collect_benchmarks(*args) -> subprocess.CompletedProcess:
+    return subprocess.run(
         [sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", *args],
         cwd=get_project_root() / "qa" / "benchmarks",
         capture_output=True,
         text=True,
         encoding="utf-8",
     )
+
+
+def _collected_benchmarks(*args) -> set[tuple[str, str]]:
+    """(test function, scenario id) pairs collected by the benchmark suite."""
+    result = _collect_benchmarks(*args)
     assert result.returncode == 0, result.stdout + result.stderr
-    return set(re.findall(r"test_run_benchmark\[([^\]]+)\]", result.stdout))
+    return set(re.findall(r"(test_run_\w+)\[([^\]]+)\]", result.stdout))
 
 
 def test_benchmark_runs_never_collect_regression_scenarios():
-    regular = _collected_benchmark_ids()
-    regression = _collected_benchmark_ids("--regression")
+    regression_ids = {s.id for s in get_regression_scenarios()}
+    regular = _collected_benchmarks()
+    regression = _collected_benchmarks("-m", "regression")
 
     assert regular and regression
-    assert regression == {s.id for s in get_regression_scenarios()}
-    assert not regular & regression
+    assert {test for test, _ in regular} == {"test_run_benchmark"}
+    assert not {scenario_id for _, scenario_id in regular} & regression_ids
+    assert regression == {("test_run_regression", scenario_id) for scenario_id in regression_ids}
+
+
+def test_regression_scenario_node_id_only_runs_with_regression_marker():
+    # Workflows select a single scenario by node id (e.g. benchmark-pr-check.yml).
+    scenario_id = get_regression_scenarios()[0].id
+    node_id = f"tests/test_benchmarks.py::test_run_regression[{scenario_id}]"
+
+    assert _collect_benchmarks(node_id).returncode == pytest.ExitCode.NO_TESTS_COLLECTED
+    assert _collected_benchmarks(node_id, "-m", "regression") == {("test_run_regression", scenario_id)}
 
 
 @pytest.mark.parametrize(

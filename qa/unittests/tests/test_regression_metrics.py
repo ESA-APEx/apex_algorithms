@@ -1,18 +1,25 @@
 import datetime
 
 import pyarrow
+import pytest
 from apex_algorithm_qa_tools.github_issue_handler import (
     GithubContext,
     PerformanceRegressionInfo,
 )
 from apex_algorithm_qa_tools.metrics.parquet_metrics import (
     load_recent_scenario_metrics_map,
+    scenario_id_from_nodeid,
 )
 from apex_algorithm_qa_tools.metrics.performance_baselines import (
     _check_reference_performance,
     _compute_baselines,
     _compute_threshold_stats,
 )
+
+
+@pytest.mark.parametrize("test_name", ["test_run_benchmark", "test_run_regression"])
+def test_scenario_id_from_nodeid_ignores_test_function(test_name):
+    assert scenario_id_from_nodeid(f"tests/test_benchmarks.py::{test_name}[scenario-a]") == "scenario-a"
 
 
 def test_compute_threshold_stats_respects_min_margin_floor():

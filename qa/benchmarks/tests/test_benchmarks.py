@@ -3,7 +3,11 @@ import json
 import logging
 from pathlib import Path
 
-from apex_algorithm_qa_tools.scenarios import BenchmarkScenario
+import pytest
+from apex_algorithm_qa_tools.scenarios import (
+    BenchmarkScenario,
+    get_benchmark_scenarios,
+)
 from openeo.testing.results import assert_job_results_allclose
 
 from apex_algorithm_qa_tools.benchmarks.runners.factory import (
@@ -19,8 +23,7 @@ from apex_algorithm_qa_tools.benchmarks.common import (
 _log = logging.getLogger(__name__)
 
 
-# `scenario` is parametrized in conftest.py (benchmark or regression scenarios)
-def test_run_benchmark(
+def _run_job(
     scenario: BenchmarkScenario,
     tmp_path: Path,
     track_metric,
@@ -28,6 +31,7 @@ def test_run_benchmark(
     upload_assets_on_fail,
     request,
 ):
+    """Run the scenario's job and track its metrics; returns (runner, report_path)."""
     track_metric("scenario_id", scenario.id)
     track_metric("scenario_type", scenario.type)
 
@@ -110,9 +114,44 @@ def test_run_benchmark(
             track_metric=track_metric,
         )
 
-    if scenario.regression:
-        # Regression runs only track performance metrics, no output comparison (for now).
-        return
+    return runner, report_path
+
+
+@pytest.mark.regression
+@pytest.mark.parametrize(
+    "scenario",
+    [pytest.param(s, id=s.id) for s in get_benchmark_scenarios() if s.regression],
+)
+def test_run_regression(
+    scenario: BenchmarkScenario,
+    tmp_path: Path,
+    track_metric,
+    track_phase,
+    upload_assets_on_fail,
+    request,
+):
+    # Regression runs only track performance metrics, no output comparison (for now).
+    _run_job(scenario, tmp_path, track_metric, track_phase, upload_assets_on_fail, request)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        # Use scenario id as parameterization id to give nicer test names.
+        pytest.param(s, id=s.id)
+        for s in get_benchmark_scenarios()
+        if not s.regression
+    ],
+)
+def test_run_benchmark(
+    scenario: BenchmarkScenario,
+    tmp_path: Path,
+    track_metric,
+    track_phase,
+    upload_assets_on_fail,
+    request,
+):
+    runner, report_path = _run_job(scenario, tmp_path, track_metric, track_phase, upload_assets_on_fail, request)
 
     with track_phase(phase="download-actual"):
         actual_dir = tmp_path / "actual"

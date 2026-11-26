@@ -101,8 +101,8 @@ jobs:
           mkdir report
           mkdir tmp_path_root
           pytest \
-            "tests/test_benchmarks.py::test_run_benchmark[${SCENARIO_ID}]" \
-            --regression \
+            "tests/test_benchmarks.py::test_run_regression[${SCENARIO_ID}]" \
+            -m regression \
             -vv \
             --log-cli-level=INFO \
             --maximum-job-time-in-minutes=240 \
