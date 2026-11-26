@@ -84,7 +84,10 @@ def pytest_ignore_collect(collection_path, config):
 
 
 def pytest_generate_tests(metafunc):
-    if "scenario" in metafunc.fixturenames:
+    already_parametrized = any(
+        m.args and "scenario" in str(m.args[0]) for m in metafunc.definition.iter_markers("parametrize")
+    )
+    if "scenario" in metafunc.fixturenames and not already_parametrized:
         regression = bool(metafunc.config.getoption("--regression"))
         # Regression scenarios are too heavy for the frequent benchmark runs.
         scenarios = [s for s in get_benchmark_scenarios() if s.regression == regression]
