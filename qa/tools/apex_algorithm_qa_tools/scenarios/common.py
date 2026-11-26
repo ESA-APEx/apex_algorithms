@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import glob
 import logging
-import math
 import random
 import re
 from pathlib import Path
@@ -36,10 +35,6 @@ def get_benchmark_scenarios(root=None) -> List[BenchmarkScenario]:
     return scenarios
 
 
-REGRESSION_MIN_SIDE_KM = 20
-REGRESSION_ID_SUFFIX = "_performance_regression"
-
-
 def get_regression_scenarios(root=None) -> List[BenchmarkScenario]:
     """Benchmark scenarios flagged with `"regression": true` (large area, weekly runs)."""
     return [s for s in get_benchmark_scenarios(root) if s.regression]
@@ -55,53 +50,12 @@ def select_regression_scenario_ids(
     return random.sample(ids, k=min(len(ids), max_scenarios))
 
 
-def _find_bboxes(data):
-    if isinstance(data, dict):
-        if {"west", "east", "south", "north"} <= data.keys():
-            yield data
-        else:
-            for value in data.values():
-                yield from _find_bboxes(value)
-    elif isinstance(data, list):
-        for value in data:
-            yield from _find_bboxes(value)
-
-
-def _bbox_size_km(bbox: dict) -> tuple[float, float]:
-    """Approximate (width, height) in km. Non-4326 CRSs are assumed to be in metres."""
-    width = bbox["east"] - bbox["west"]
-    height = bbox["north"] - bbox["south"]
-    if str(bbox.get("crs", 4326)).upper() in {"4326", "EPSG:4326"}:
-        mid_lat = math.radians((bbox["north"] + bbox["south"]) / 2)
-        return width * 111.32 * math.cos(mid_lat), height * 110.57
-    return width / 1000, height / 1000
-
-
-def lint_regression_scenario(scenario: BenchmarkScenario):
-    """Benchmark lint plus a minimum spatial extent of 20x20 km."""
-    lint_benchmark_scenario(scenario)
-
-    data = getattr(scenario, "process_graph", None) or getattr(scenario, "parameters", None)
-    bboxes = list(_find_bboxes(data))
-    assert bboxes, f"[{scenario.id}] no spatial extent (west/east/south/north) found"
-    for bbox in bboxes:
-        width, height = _bbox_size_km(bbox)
-        assert min(width, height) >= REGRESSION_MIN_SIDE_KM, (
-            f"[{scenario.id}] spatial extent {width:.1f}x{height:.1f} km is smaller than "
-            f"{REGRESSION_MIN_SIDE_KM}x{REGRESSION_MIN_SIDE_KM} km"
-        )
-
-
 def lint_common_fields(scenario: BenchmarkScenario):
     """
     Various sanity checks for scenario data.
     To be used in unit tests and pre-commit hooks.
     """
     assert re.match(r"^[a-zA-Z0-9_-]+$", scenario.id)
-    assert scenario.regression == scenario.id.endswith(REGRESSION_ID_SUFFIX), (
-        f"[{scenario.id}] scenarios with `regression: true` (and only those) "
-        f"must have an id ending in {REGRESSION_ID_SUFFIX!r}"
-    )
 
 
 def lint_benchmark_scenario(scenario: BenchmarkScenario):

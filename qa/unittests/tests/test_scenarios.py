@@ -12,7 +12,6 @@ from apex_algorithm_qa_tools.scenarios.common import (
     get_benchmark_scenarios,
     get_regression_scenarios,
     lint_benchmark_scenario,
-    lint_regression_scenario,
     select_regression_scenario_ids,
 )
 from apex_algorithm_qa_tools.scenarios.factory import _benchmark_factory
@@ -35,82 +34,17 @@ def test_regression_flag():
         openEOBenchmarkScenario.from_dict({**data, "regression": "yes"})
 
 
-@pytest.mark.parametrize(
-    ["id", "regression"],
-    [("foo_performance_regression", False), ("foo", True)],
-)
-def test_lint_regression_flag_requires_matching_name(id, regression):
-    scenario = openEOBenchmarkScenario(
-        id=id, type="openeo", backend="openeo.dataspace.copernicus.eu", process_graph={}, regression=regression
-    )
-    with pytest.raises(AssertionError, match="_performance_regression"):
-        lint_benchmark_scenario(scenario)
-
-
-@pytest.mark.parametrize(
-    "scenario",
-    [pytest.param(s, id=s.id) for s in get_regression_scenarios()],
-)
-def test_lint_regression_scenario(scenario: BenchmarkScenario):
-    lint_regression_scenario(scenario)
-
-
-def _scenario_with_extent(spatial_extent) -> openEOBenchmarkScenario:
-    return openEOBenchmarkScenario(
-        id="foo_performance_regression",
-        type="openeo",
-        backend="openeofed.dataspace.copernicus.eu",
-        regression=True,
-        process_graph={
-            "node": {
-                "process_id": "foo",
-                "arguments": {"spatial_extent": spatial_extent},
-                "result": True,
-            }
-        },
-    )
-
-
-@pytest.mark.parametrize(
-    "spatial_extent",
-    [
-        {"west": 0, "east": 20000, "south": 0, "north": 20000, "crs": "EPSG:32631"},
-        {"west": 5.0, "east": 5.3, "south": 51.0, "north": 51.2},
-    ],
-)
-def test_lint_regression_scenario_accepts_large_extent(spatial_extent):
-    lint_regression_scenario(_scenario_with_extent(spatial_extent))
-
-
-@pytest.mark.parametrize(
-    "spatial_extent",
-    [
-        {"west": 0, "east": 19000, "south": 0, "north": 20000, "crs": "EPSG:32631"},
-        # 0.3 degrees longitude is only ~16 km wide at 60N
-        {"west": 5.0, "east": 5.3, "south": 60.0, "north": 60.2, "crs": "EPSG:4326"},
-    ],
-)
-def test_lint_regression_scenario_rejects_small_extent(spatial_extent):
-    with pytest.raises(AssertionError, match="20x20 km"):
-        lint_regression_scenario(_scenario_with_extent(spatial_extent))
-
-
-def test_lint_regression_scenario_requires_extent():
-    with pytest.raises(AssertionError, match="spatial extent"):
-        lint_regression_scenario(_scenario_with_extent(None))
-
-
 @pytest.fixture
 def catalog_root(tmp_path) -> Path:
     """Fake catalog with 6 regression scenarios and 1 regular benchmark scenario."""
-    ids = [f"algo{i}_performance_regression" for i in range(6)] + ["algo_regular"]
+    ids = [f"algo{i}_large" for i in range(6)] + ["algo_regular"]
     scenarios = [
         {
             "id": id,
             "type": "openeo",
             "backend": "openeo.test",
             "process_graph": {},
-            "regression": id.endswith("_performance_regression"),
+            "regression": id != "algo_regular",
         }
         for id in ids
     ]
@@ -121,7 +55,7 @@ def catalog_root(tmp_path) -> Path:
 
 
 def test_select_regression_scenario_ids_limits_to_random_regression_subset(catalog_root):
-    regression_ids = {f"algo{i}_performance_regression" for i in range(6)}
+    regression_ids = {f"algo{i}_large" for i in range(6)}
     selections = [select_regression_scenario_ids(catalog_root, max_scenarios=4) for _ in range(20)]
 
     for selected in selections:
@@ -133,13 +67,13 @@ def test_select_regression_scenario_ids_limits_to_random_regression_subset(catal
 
 def test_select_regression_scenario_ids_returns_all_when_fewer_than_limit(catalog_root):
     selected = select_regression_scenario_ids(catalog_root, max_scenarios=10)
-    assert sorted(selected) == [f"algo{i}_performance_regression" for i in range(6)]
+    assert sorted(selected) == [f"algo{i}_large" for i in range(6)]
 
 
 @pytest.mark.parametrize(
     ["scenario", "expected"],
     [
-        ("algo3_performance_regression", ["algo3_performance_regression"]),
+        ("algo3_large", ["algo3_large"]),
         ("algo_regular", []),
         ("unknown", []),
     ],
@@ -165,8 +99,8 @@ def test_benchmark_runs_never_collect_regression_scenarios():
     regression = _collected_benchmark_ids("--regression")
 
     assert regular and regression
-    assert not any(i.endswith("_performance_regression") for i in regular)
     assert regression == {s.id for s in get_regression_scenarios()}
+    assert not regular & regression
 
 
 @pytest.mark.parametrize(

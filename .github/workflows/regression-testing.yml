@@ -1,6 +1,6 @@
 name: "Regression Testing"
 
-# Weekly run of the large-area (>= 20x20 km) benchmark scenarios flagged with
+# Weekly run of the large-area benchmark scenarios flagged with
 # `"regression": true`, separate from the regular benchmarks.
 # Only performance metrics are tracked (no output comparison), in a dedicated
 # parquet dataset, which is then checked for cost regressions.
