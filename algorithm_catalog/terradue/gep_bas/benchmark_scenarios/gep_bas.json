@@ -1,17 +1,17 @@
 [
   {
-    "id": "gep_burned-area-severity-v3-0-4",
+    "id": "gep_burned-area-severity-v3-0-5",
     "type": "ogc_api_process",
     "description": "Burned Area Severity (BAS) output regression benchmark. Supply reference outputs and confirm the process ID on this endpoint before enabling.",
-    "endpoint": "https://processing.geohazards-tep.eu/6e6f723235313539",
-    "application": "burned-area-severity-v3-0-4",
+    "endpoint": "https://processing.geohazards-tep.eu/apex",
+    "application": "burned-area-severity-v3-0-5",
     "properties": {
       "title": "APEx burned-area-severity benchmark",
       "labels": {
         "project": "apex",
         "purpose": "benchmark",
         "algorithm": "gep-bas",
-        "scenario": "gep_burned-area-severity-v3-0-4"
+        "scenario": "gep_burned-area-severity-v3-0-5"
       }
     },
     "auth": {
