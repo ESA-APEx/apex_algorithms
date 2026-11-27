@@ -111,7 +111,7 @@
       "rel": "service",
       "type": "application/json",
       "title": "Service Endpoint",
-      "href": "https://processing.geohazards-tep.eu/44454d3235313539/processes/burned-area-severity-v3-0-4"
+      "href": "https://processing.geohazards-tep.eu/apex/processes/burned-area-severity-v3-0-5"
     },
     {
       "rel": "about",
