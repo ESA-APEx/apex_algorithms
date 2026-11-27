@@ -11,7 +11,7 @@
         "project": "apex",
         "purpose": "benchmark",
         "algorithm": "gep-bas",
-        "scenario": "gep_burned-area-severity-v3-0-5"
+        "scenario": "gep_burned-area-severity-v3-0-5-scenario"
       }
     },
     "auth": {
@@ -19,24 +19,24 @@
       "realm": "master"
     },
     "parameters": {
-      "pre_event": "https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=Name%20eq%20%27S2B_MSIL2A_20241108T101129_N0511_R022_T33TTG_20241108T124914.SAFE",
-      "post_event": "https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=Name%20eq%20%27S2B_MSIL2A_20241118T101219_N0511_R022_T33TTG_20241118T113501.SAFE",
+      "pre_event": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2A_MSIL2A_20220702T105631_N0510_R094_T30TXQ_20240701T074946",
+      "post_event": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2A_MSIL2A_20220801T105631_N0510_R094_T30TXQ_20240716T103744",
       "aoi": {
         "type": "Polygon",
-        "bbox": [12.145, 42.033, 12.634, 42.298],
         "coordinates": [
           [
-            [12.145, 42.033],
-            [12.634, 42.033],
-            [12.634, 42.298],
-            [12.145, 42.298],
-            [12.145, 42.033]
+            [-1.24427, 44.30235],
+            [-0.39298, 44.30235],
+            [-0.39298, 44.71332],
+            [-1.24427, 44.71332],
+            [-1.24427, 44.30235]
           ]
-        ]
+        ],
+        "bbox": [-1.24427, 44.30235, -0.39298, 44.71332]
       }
     },
     "reference_data": {
-      "item-collection.json": "https://results.geohazards-tep.eu/6e6f723235313539/collections/burned-area-severity-v3-0-4-rlvcp-oljqid/items"
+      "item-collection.json": "https://results.geohazards-tep.eu/apex/collections/burned-area-severity-v3-0-5-r6jzd-ydbi42/items"
     },
     "reference_options": {
       "rtol": 0.001,
