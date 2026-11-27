@@ -16,7 +16,7 @@ jobs:
       matrix:
         include:
           - benchmark_id: max_ndvi
-          - benchmark_id: gep_burned-area-severity-v3-0-4
+          - benchmark_id: gep_burned-area-severity-v3-0-5
           # Add more scenario ids here as needed.
           # - benchmark_id: max_ndvi_large
     steps:
