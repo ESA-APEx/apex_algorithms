@@ -1,0 +1,52 @@
+{
+  "id": "assimila",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"
+  ],
+  "properties": {
+    "created": "2026-10-06T00:00:00Z",
+    "updated": "2026-10-06T00:00:00Z",
+    "type": "algorithm_provider",
+    "title": "Assimila",
+    "description": "Assimila uses satellite data and weather information to address real world problems.",
+    "keywords": [],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [],
+    "themes": [],
+    "license": "other",
+    "acl": {
+      "admin": ["@assimila.eu", "@vito.be"]
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "website",
+      "type": "text/html",
+      "title": "Assimila",
+      "href": "https://www.assimila.earth"
+    },
+    {
+      "rel": "logo-light",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "TODO"
+    },
+    {
+      "rel": "logo-dark",
+      "type": "image/png",
+      "title": "Logo",
+      "href": "TODO"
+    }
+  ]
+}

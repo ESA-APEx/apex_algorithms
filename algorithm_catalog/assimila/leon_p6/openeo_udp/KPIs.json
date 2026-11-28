@@ -1,0 +1,382 @@
+{
+  "process_graph": {
+    "filterbbox1": {
+      "process_id": "filter_bbox",
+      "arguments": {
+        "data": {
+          "from_parameter": "decimal_year_of_deforestation_datacube"
+        },
+        "extent": {
+          "from_parameter": "spatial_extent"
+        }
+      }
+    },
+    "loadstac1": {
+      "process_id": "load_stac",
+      "arguments": {
+        "bands": [
+          "crops"
+        ],
+        "spatial_extent": {
+          "from_parameter": "spatial_extent"
+        },
+        "url": "https://s3.waw3-2.cloudferro.com/swift/v1/leon-p6/mean-crops/item.json"
+      }
+    },
+    "dropdimension1": {
+      "process_id": "drop_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "loadstac1"
+        },
+        "name": "t"
+      }
+    },
+    "resamplecubespatial1": {
+      "process_id": "resample_cube_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "dropdimension1"
+        },
+        "method": "near",
+        "target": {
+          "from_node": "filterbbox1"
+        }
+      }
+    },
+    "filterbands1": {
+      "process_id": "filter_bands",
+      "arguments": {
+        "bands": [
+          "crops"
+        ],
+        "data": {
+          "from_node": "resamplecubespatial1"
+        }
+      }
+    },
+    "apply1": {
+      "process_id": "apply",
+      "arguments": {
+        "data": {
+          "from_node": "filterbands1"
+        },
+        "process": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "operator": "gt",
+                  "argument": {
+                    "from_parameter": "cropland_probability_threshold"
+                  }
+                },
+                "data": {
+                  "from_parameter": "x"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nfrom typing import TypedDict\n\nimport numpy as np\nimport xarray as xr\n\nfrom openeo.udf import inspect\n\nLOG_CODE = \"binary_operator\"\n\n\nclass Context(TypedDict):\n    operator: str\n    argument: float | int\n\n\nOPERATORS = {\n    \"gte\": np.greater_equal,\n    \"gt\": np.greater,\n    \"lte\": np.less_equal,\n    \"lt\": np.less,\n}\n\n\ndef apply_datacube(cube: xr.DataArray, context: Context) -> xr.DataArray:\n    \"\"\"\n    Apply a binary (2 argument) operator to a cube.\n\n    Example:\n\n    ```\n    context.operator = \"gte\"\n    context.argument = 30\n    result = (cube >= 30)\n    ```\n\n    Why not just use native openEO processes?\n    Because there seems to be a bug related to Parameters.\n    https://forum.dataspace.copernicus.eu/t/udp-parameter-not-applied/5282/3\n\n    Arguments:\n        cube: xarray DataArray\n        context: user-provided arguments.\n    \"\"\"\n    # parse and validate context\n    operator_name = context[\"operator\"]\n    try:\n        operator = OPERATORS[operator_name]\n    except KeyError:\n        raise ValueError(f\"Invalid operator: {operator_name}\")\n\n    argument = context[\"argument\"]\n    if not isinstance(argument, float | int):\n        raise TypeError(f\"Invalid argument: {argument}\")\n\n    inspect(\n        message=f\"applying {operator_name}(cube, {argument})\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    return operator(cube, argument)\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "convertdatatype1": {
+      "process_id": "convert_data_type",
+      "arguments": {
+        "data": {
+          "from_node": "apply1"
+        },
+        "data_type": "bool"
+      }
+    },
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "convertdatatype1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "arrayelement1": {
+              "process_id": "array_element",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "label": "crops"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "adddimension1": {
+      "process_id": "add_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "reducedimension1"
+        },
+        "label": "cropland",
+        "name": "bands",
+        "type": "bands"
+      }
+    },
+    "mergecubes1": {
+      "process_id": "merge_cubes",
+      "arguments": {
+        "cube1": {
+          "from_node": "filterbbox1"
+        },
+        "cube2": {
+          "from_node": "adddimension1"
+        }
+      }
+    },
+    "applydimension1": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "mergecubes1"
+        },
+        "dimension": "bands",
+        "process": {
+          "process_graph": {
+            "runudf2": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "years": [
+                    2020,
+                    2021,
+                    2022,
+                    2023,
+                    2024
+                  ],
+                  "spatial_resolution": {
+                    "from_parameter": "spatial_resolution"
+                  }
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nfrom typing import TypedDict\n\nimport numpy as np\nimport xarray as xr\nfrom openeo.metadata import CollectionMetadata\n\nfrom openeo.udf import inspect\n\nLOG_CODE = \"raster_kpis\"\n\n# 1 ha = 10000 m^2\nM2_PER_HA = 10000\n\n\nclass Context(TypedDict):\n    # calendar years to emit deforestation / forest-loss-to-cropland bands for\n    years: list[int]\n\n    # I can't find a way to access pixel size (spatial resolution) within the UDF\n\n    # spatial resolution / linear pixel size (units: m)\n    spatial_resolution: float\n\n\ndef format_bytes(bytes_val: float) -> str:\n    for unit in [\"B\", \"KB\", \"MB\", \"GB\", \"TB\"]:\n        if bytes_val < 1024:\n            return f\"{bytes_val:.2f} {unit}\"\n        bytes_val /= 1024\n    return f\"{bytes_val:.2f} PB\"\n\n\ndef parse_years(years) -> list[int]:\n    if not isinstance(years, list | tuple):\n        raise TypeError(\"years should be a list\")\n    if len(years) == 0:\n        raise ValueError(\"years should not be empty\")\n\n    for year in years:\n        if not isinstance(year, int):\n            raise TypeError(f\"Invalid year: {year}\")\n\n    if len(years) != len(set(years)):\n        raise ValueError(\"years should be unique\")\n\n    return years\n\n\ndef parse_spatial_resolution(spatial_resolution) -> float:\n    if not isinstance(spatial_resolution, float | int):\n        raise TypeError(\"spatial_resolution should be a float\")\n    if spatial_resolution <= 0:\n        raise ValueError(\"spatial_resolution should be positive\")\n    return float(spatial_resolution)\n\n\ndef output_band_names(years: list[int]) -> list[str]:\n    names = [\"forest_stock_baseline_ha\"]\n    for y in years:\n        names.append(f\"deforestation_{y}_ha\")\n        names.append(f\"forest_loss_to_cropland_{y}_ha\")\n    return names\n\n\ndef as_mask(mask: xr.DataArray) -> xr.DataArray:\n    \"\"\"\n    Truthy finite = on. NaN and 0 are off.\n    \"\"\"\n    return np.isfinite(mask) & (mask != 0)\n\n\ndef apply_datacube(cube: xr.DataArray, context: Context) -> xr.DataArray:\n    \"\"\"\n    Convert year-of-deforestation, forest baseline, and cropland masks into\n    raster KPI layers (units: ha).\n\n    The input cube must have 3 bands labeled:\n        - \"year_of_deforestation\": decimal year\n        - \"forest_baseline\": 0/1 mask (NaN treated as 0)\n        - \"cropland\": 0/1 mask (NaN treated as 0)\n\n    Arguments:\n        cube: xarray DataArray\n            Should have a \"bands\" dimension with the labels above.\n        context: user-provided arguments.\n\n    Returns:\n        DataArray with bands:\n            forest_stock_baseline_ha,\n            deforestation_{year}_ha for each context year,\n            forest_loss_to_cropland_{year}_ha for each context year.\n    \"\"\"\n    inspect(\n        data=cube.sizes, message=\"Input cube dimensions\", code=LOG_CODE, level=\"debug\"\n    )\n    inspect(\n        message=f\"Size of cube = {format_bytes(cube.nbytes)}\",\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    years = parse_years(context[\"years\"])\n    spatial_resolution = parse_spatial_resolution(context[\"spatial_resolution\"])\n    pixel_area_ha = spatial_resolution * spatial_resolution / M2_PER_HA\n\n    inspect(\n        message=(\n            f\"years = {years}, spatial_resolution = {spatial_resolution} m, \"\n            f\"pixel_area = {pixel_area_ha} ha\"\n        ),\n        code=LOG_CODE,\n        level=\"debug\",\n    )\n\n    if \"bands\" not in cube.dims:\n        raise ValueError(\"cube must have a bands dimension\")\n\n\n    year_of_deforestation = cube.sel(bands=\"year_of_deforestation\", drop=True)\n    forest_baseline = cube.sel(bands=\"forest_baseline\", drop=True)\n    forest_baseline_mask = as_mask(forest_baseline)\n    cropland = cube.sel(bands=\"cropland\", drop=True)\n    cropland_mask = as_mask(cropland)\n\n    layers: list[xr.DataArray] = [forest_baseline_mask]\n    for y in years:\n        deforestation_y = (year_of_deforestation >= y) & (year_of_deforestation < (y + 1))\n        layers.append(deforestation_y)\n        forest_loss_to_cropland_y = (deforestation_y & cropland_mask)\n        layers.append(forest_loss_to_cropland_y)\n\n    names = output_band_names(years)\n    return xr.concat(layers, dim=\"bands\").assign_coords(bands=names) * pixel_area_ha\n\n\ndef apply_metadata(metadata: CollectionMetadata, context: Context) -> CollectionMetadata:\n    \"\"\"\n    Returns the expected cube metadata, after applying this UDF, based on input metadata.\n    \"\"\"\n    years = parse_years(context[\"years\"])\n    names = output_band_names(years)\n    # source=None replaces the whole band list, including a change of length.\n    return metadata.rename_labels(dimension=\"bands\", target=names)\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "loadurl1": {
+      "process_id": "load_url",
+      "arguments": {
+        "format": "GeoJSON",
+        "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbHumanitarian/UGA/ADM4/geoBoundaries-UGA-ADM4.geojson"
+      }
+    },
+    "applydimension2": {
+      "process_id": "apply_dimension",
+      "arguments": {
+        "context": {
+          "spatial_extent": {
+            "from_parameter": "spatial_extent"
+          }
+        },
+        "data": {
+          "from_node": "loadurl1"
+        },
+        "dimension": "geometry",
+        "process": {
+          "process_graph": {
+            "runudf3": {
+              "process_id": "run_udf",
+              "arguments": {
+                "context": {
+                  "spatial_extent": {
+                    "from_parameter": "spatial_extent"
+                  }
+                },
+                "data": {
+                  "from_parameter": "data"
+                },
+                "runtime": "Python",
+                "udf": "\"\"\"\nThis is an openEO UDF (User Defined Function).\nhttps://open-eo.github.io/openeo-python-client/udf.html\n\nIt targets the \"python\" runtime, version 3.11.\nhttps://openeofed.dataspace.copernicus.eu/?discover=0&udf-runtime=Python\n\"\"\"\n\nimport typing\n\nimport geopandas as gpd\nimport shapely\nimport xarray as xr\nfrom pyproj import CRS, Transformer\nfrom shapely.ops import transform\n\nfrom openeo.udf import inspect\n\nLOG_CODE = \"vectorcube_filter_bbox\"\n\n\nclass BBox(typing.TypedDict):\n    west: float\n    south: float\n    east: float\n    north: float\n    crs: typing.NotRequired[str]  # default: EPSG:4326\n\n\nclass Context(typing.TypedDict):\n    # see spatial_extent in https://openeo.org/documentation/1.0/processes.html#load_collection\n    spatial_extent: BBox\n\n\ndef apply_vectorcube(\n    geometries: gpd.GeoDataFrame, cube: xr.DataArray, context: Context\n) -> tuple[gpd.GeoDataFrame, xr.DataArray]:\n    \"\"\"\n    Filter out geometries that are not completely contained within the spatial extent.\n\n    Arguments:\n        geometries: input geometries as a geopandas.GeoDataFrame.\n            This contains the actual shapely geometries and optional properties.\n        cube: a data cube with dimensions (geometries, time, bands) where time and bands are optional.\n            The dimension \"geometries\" may be called \"geometry\".\n            The coordinates for the geometry dimension are integers\n            and match the index of the geometries in the geometries parameter.\n        context: user-provided arguments.\n    \"\"\"\n    n_geoms = len(geometries)\n    inspect(message=f\"Number of gpd rows = {n_geoms}\", code=LOG_CODE, level=\"info\")\n    inspect(\n        data=cube.sizes, message=\"Input cube dimensions\", code=LOG_CODE, level=\"info\"\n    )\n\n    # parse and validate context\n    spatial_extent = context[\"spatial_extent\"]\n    bbox_crs = spatial_extent.get(\"crs\", \"EPSG:4326\")\n    bbox = shapely.geometry.box(\n        minx=spatial_extent[\"west\"],\n        miny=spatial_extent[\"south\"],\n        maxx=spatial_extent[\"east\"],\n        maxy=spatial_extent[\"north\"],\n    )\n\n    # handle CRS conversion to the CRS of the geopandas dataframe, if necessary\n    source_crs = CRS.from_user_input(bbox_crs)\n    target_crs = geometries.crs or CRS.from_epsg(4326)\n\n    if not source_crs.equals(target_crs):\n        transformer = Transformer.from_crs(source_crs, target_crs, always_xy=True)\n        bbox = transform(transformer.transform, bbox)\n\n    keep = geometries.geometry.within(bbox)  # boolean Series\n\n    n_keep = sum(keep)\n    inspect(\n        message=f\"Keeping {n_keep} of {n_geoms} geometries within bbox\",\n        code=LOG_CODE,\n        level=\"info\",\n    )\n\n    # Series of bool\n    keep_labels = geometries.index[keep]\n    # Reindex\n    # This is necessary because openEO makes some assumptions that the table index is exactly positional.\n    geometries = geometries.loc[keep].reset_index(drop=True)\n\n    # now remove any data from `cube` for the geometries that we dropped\n\n    if \"geometry\" in cube.dims:\n        geom_dim = \"geometry\"\n    elif \"geometries\" in cube.dims:\n        geom_dim = \"geometries\"\n    else:\n        raise ValueError(f\"Cube has no geometry dimension; dims={cube.dims}\")\n\n    cube = cube.sel({geom_dim: keep_labels})\n    cube = cube.assign_coords({geom_dim: geometries.index})\n\n    return geometries, cube\n",
+                "version": "3.11"
+              },
+              "result": true
+            }
+          }
+        }
+      }
+    },
+    "aggregatespatial1": {
+      "process_id": "aggregate_spatial",
+      "arguments": {
+        "data": {
+          "from_node": "applydimension1"
+        },
+        "geometries": {
+          "from_node": "applydimension2"
+        },
+        "reducer": {
+          "process_graph": {
+            "sum1": {
+              "process_id": "sum",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  },
+  "id": "KPIs",
+  "summary": "Forect loss KPIs",
+  "description": "Aggregate forest-stock and deforestation KPIs by Uganda ADM-4 administrative unit, from a forest baseline mask and a decimal-year deforestation cube. 1. Spatially filter ADM-4 boundaries, and the deforestation cube to the requested extent. 2. Load cropland probability, resample it onto the same grid, and threshold it into a cropland mask. 3. Build annual deforestation masks (2020-2024) and the subset of those pixels that overlap cropland. 4. Convert each pixel mask to area in hectares and sum over ADM-4 geometries. The returned vector cube contains forest-stock baseline, annual forest loss, and annual forest-loss-to-cropland areas (ha) per administrative unit.",
+  "returns": {
+    "description": "A vector cube, with columns (bands) for each KPI",
+    "schema": {
+      "type": "object",
+      "subtype": "vector-cube"
+    }
+  },
+  "parameters": [
+    {
+      "name": "decimal_year_of_deforestation_datacube",
+      "description": "The decimal year of deforestation datacube to process. Dimensions: [bands, y, x]. Bands: [year_of_deforestation, forest_baseline]. ",
+      "schema": {
+        "type": "object",
+        "subtype": "datacube"
+      }
+    },
+    {
+      "name": "spatial_extent",
+      "description": "Limits the data to process to the specified bounding box or polygons.\n\nFor raster data, the process loads the pixel into the data cube if the point\nat the pixel center intersects with the bounding box or any of the polygons\n(as defined in the Simple Features standard by the OGC).\n\nFor vector data, the process loads the geometry into the data cube if the geometry\nis fully within the bounding box or any of the polygons (as defined in the\nSimple Features standard by the OGC). Empty geometries may only be in the\ndata cube if no spatial extent has been provided.\n\nEmpty geometries are ignored.\n\nSet this parameter to null to set no limit for the spatial extent.",
+      "schema": [
+        {
+          "title": "Bounding Box",
+          "type": "object",
+          "subtype": "bounding-box",
+          "required": [
+            "west",
+            "south",
+            "east",
+            "north"
+          ],
+          "properties": {
+            "west": {
+              "description": "West (lower left corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "south": {
+              "description": "South (lower left corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "east": {
+              "description": "East (upper right corner, coordinate axis 1).",
+              "type": "number"
+            },
+            "north": {
+              "description": "North (upper right corner, coordinate axis 2).",
+              "type": "number"
+            },
+            "base": {
+              "description": "Base (optional, lower left corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "height": {
+              "description": "Height (optional, upper right corner, coordinate axis 3).",
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
+            },
+            "crs": {
+              "description": "Coordinate reference system of the extent, specified as as [EPSG code](http://www.epsg-registry.org/) or [WKT2 CRS string](http://docs.opengeospatial.org/is/18-010r7/18-010r7.html). Defaults to `4326` (EPSG code 4326) unless the client explicitly requests a different coordinate reference system.",
+              "anyOf": [
+                {
+                  "title": "EPSG Code",
+                  "type": "integer",
+                  "subtype": "epsg-code",
+                  "minimum": 1000,
+                  "examples": [
+                    3857
+                  ]
+                },
+                {
+                  "title": "WKT2",
+                  "type": "string",
+                  "subtype": "wkt2-definition"
+                }
+              ],
+              "default": 4326
+            }
+          }
+        },
+        {
+          "title": "Vector data cube",
+          "description": "Limits the data cube to the bounding box of the given geometries in the vector data cube. For raster data, all pixels inside the bounding box that do not intersect with any of the polygons will be set to no data (`null`). Empty geometries are ignored.",
+          "type": "object",
+          "subtype": "datacube",
+          "dimensions": [
+            {
+              "type": "geometry"
+            }
+          ]
+        },
+        {
+          "title": "No filter",
+          "description": "Don't filter spatially. All data is included in the data cube.",
+          "type": "null"
+        }
+      ],
+      "default": {
+        "west": 30.55,
+        "south": 1.07,
+        "east": 31.23,
+        "north": 1.55
+      },
+      "optional": true
+    },
+    {
+      "name": "spatial_resolution",
+      "description": [
+        "The spatial resolution to process. Units: meters. ",
+        "Data are resampled to this resolution. "
+      ],
+      "schema": {
+        "type": "number"
+      },
+      "default": 30,
+      "optional": true
+    },
+    {
+      "name": "cropland_probability_threshold",
+      "description": "Threshold for cropland probability, above which a pixel is considered cropland. Units: fraction",
+      "schema": {
+        "type": "number"
+      },
+      "default": 0.1,
+      "optional": true
+    }
+  ]
+}

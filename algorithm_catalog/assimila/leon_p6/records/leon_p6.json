@@ -1,0 +1,115 @@
+{
+  "id": "leon_p6",
+  "type": "Feature",
+  "conformsTo": [
+    "https://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core",
+    "https://apex.esa.int/core/openeo-udp"
+  ],
+  "geometry": null,
+  "bbox": [30.944, 1.273, 31.044, 1.373],
+  "properties": {
+    "created": "2026-10-06T00:00:00Z",
+    "updated": "2026-10-06T00:00:00Z",
+    "type": "service",
+    "title": "LEON-P6 forest-loss KPIs",
+    "description": "Detect deforestation from Sentinel-1 and aggregate forest-change KPIs by Uganda ADM-4 administrative unit. 1. Construct a 2020 natural-forest baseline. 2. Process Sentinel-1 backscatter and fit a logistic curve per pixel. 3. Detect the decimal year of deforestation. 4. Sum forest-stock, annual forest-loss, and forest-loss-to-cropland areas (ha) over ADM-4 geometries. The returned vector cube contains those KPIs per administrative unit.",
+    "keywords": [
+      "Deforestation",
+      "Forests",
+      "Change Detection Services",
+      "Sentinel-1",
+      "Statistics"
+    ],
+    "language": {
+      "code": "en-US",
+      "name": "English (United States)"
+    },
+    "languages": [
+      {
+        "code": "en-US",
+        "name": "English (United States)"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Assimila",
+        "organization": "Assimila",
+        "links": [
+          {
+            "href": "https://www.assimila.eu",
+            "title": "Assimila website",
+            "rel": "about",
+            "type": "text/html"
+          }
+        ],
+        "contactInstructions": "Contact via Assimila",
+        "roles": ["provider"]
+      }
+    ],
+    "themes": [
+      {
+        "concepts": [
+          {
+            "id": "FORESTS"
+          },
+          {
+            "id": "DEFORESTATION"
+          },
+          {
+            "id": "REMOTE SENSING"
+          }
+        ],
+        "scheme": "https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords"
+      }
+    ],
+    "formats": [
+      {
+        "name": "Parquet"
+      }
+    ],
+    "license": "other",
+    "version": "1.0.0",
+    "publisher": {
+      "name": "Assimila"
+    }
+  },
+  "linkTemplates": [],
+  "links": [
+    {
+      "rel": "application",
+      "type": "application/vnd.openeo+json;type=process",
+      "title": "openEO Process Definition",
+      "href": "https://raw.githubusercontent.com/ESA-APEx/apex_algorithms/refs/heads/LEON-P6/algorithm_catalog/assimila/leon_p6/openeo_udp/leon_p6.json"
+    },
+    {
+      "rel": "code",
+      "type": "text/html",
+      "title": "LEON-P6 source code",
+      "href": "https://github.com/Assimila/LEON-P6"
+    },
+    {
+      "rel": "service",
+      "type": "application/json",
+      "title": "CDSE openEO Federation",
+      "href": "https://openeofed.dataspace.copernicus.eu"
+    },
+    {
+      "rel": "platform",
+      "type": "application/json",
+      "title": "CDSE openEO Federation processing backend",
+      "href": "../../../../platform_catalog/cdse_openeo_federation.json"
+    },
+    {
+      "rel": "provider",
+      "type": "application/json",
+      "title": "Assimila",
+      "href": "../../record.json"
+    },
+    {
+      "rel": "webapp",
+      "type": "text/html",
+      "title": "OpenEO Web Editor",
+      "href": "https://editor.openeo.org/?wizard=UDP&wizard%7Eprocess=leon_p6&wizard%7EprocessUrl=https%3A%2F%2Fraw.githubusercontent.com%2FESA-APEx%2Fapex_algorithms%2Frefs%2Fheads%2FLEON-P6%2Falgorithm_catalog%2Fassimila%2Fleon_p6%2Fopeneo_udp%2Fleon_p6.json&server=https%3A%2F%2Fopeneofed.dataspace.copernicus.eu"
+    }
+  ]
+}
