@@ -26,6 +26,7 @@ class BenchmarkScenario(ABC):
     description: str | None = None
     reference_data: dict = dataclasses.field(default_factory=dict)
     reference_options: dict = dataclasses.field(default_factory=dict)
+    regression: bool = False
     source: str | Path | None = None
 
     @classmethod

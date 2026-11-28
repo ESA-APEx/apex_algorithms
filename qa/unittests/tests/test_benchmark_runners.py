@@ -42,15 +42,20 @@ def test_openeo_runner_defaults(openeo_runner, tmp_path):
         openeo_runner.assert_job_results_validity(reference_dir, tmp_path / "actual")
 
 
-@pytest.mark.parametrize("custom_validation", [False, True])
-def test_benchmark_validation_routing(monkeypatch, openeo_runner, tmp_path, custom_validation):
+@pytest.fixture
+def benchmark_module(monkeypatch):
     # Load the real benchmark entry point without collecting catalogue scenarios.
     monkeypatch.setattr("apex_algorithm_qa_tools.scenarios.get_benchmark_scenarios", lambda: [])
     path = Path(__file__).parents[2] / "benchmarks/tests/test_benchmarks.py"
     spec = importlib.util.spec_from_file_location("benchmark_entrypoint", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    return module
 
+
+@pytest.mark.parametrize("custom_validation", [False, True])
+def test_benchmark_validation_routing(monkeypatch, benchmark_module, openeo_runner, tmp_path, custom_validation):
+    module = benchmark_module
     runner = openeo_runner
     monkeypatch.setattr(module, "create_benchmark_runner", lambda **kwargs: runner)
     monkeypatch.setattr(runner, "create_job", Mock())
@@ -82,3 +87,32 @@ def test_benchmark_validation_routing(monkeypatch, openeo_runner, tmp_path, cust
             actual=tmp_path / "actual", expected=tmp_path / "reference",
             tmp_path=tmp_path, rtol=1e-3, atol=1, pixel_tolerance=1,
         )
+
+
+def test_regression_run_tracks_job_metrics_without_comparing_outputs(
+    monkeypatch, benchmark_module, openeo_runner, tmp_path
+):
+    runner = openeo_runner
+    monkeypatch.setattr(benchmark_module, "create_benchmark_runner", lambda **kwargs: runner)
+    for name in ["create_job", "run_job", "download_actual", "download_reference", "assert_job_results_validity"]:
+        monkeypatch.setattr(runner, name, Mock())
+    monkeypatch.setattr(runner, "collect_artifacts", Mock(return_value=BenchmarkRunnerArtifacts(
+        job_id="j-123", job_metadata=BenchmarkJobMetadata(cost=None, usage=[]),
+        results_metadata=BenchmarkResults(assets={}),
+    )))
+    compare = Mock()
+    monkeypatch.setattr(benchmark_module, "assert_job_results_allclose", compare)
+    track_metric = Mock()
+
+    benchmark_module.test_run_regression(
+        scenario=runner.scenario, tmp_path=tmp_path, track_metric=track_metric,
+        track_phase=Mock(side_effect=lambda **kwargs: nullcontext()),
+        upload_assets_on_fail=Mock(), request=runner.request,
+    )
+
+    runner.run_job.assert_called_once()
+    track_metric.assert_any_call("job_id", "j-123")
+    runner.download_actual.assert_not_called()
+    runner.download_reference.assert_not_called()
+    runner.assert_job_results_validity.assert_not_called()
+    compare.assert_not_called()

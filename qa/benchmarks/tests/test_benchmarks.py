@@ -23,15 +23,7 @@ from apex_algorithm_qa_tools.benchmarks.common import (
 _log = logging.getLogger(__name__)
 
 
-@pytest.mark.parametrize(
-    "scenario",
-    [
-        # Use scenario id as parameterization id to give nicer test names.
-        pytest.param(uc, id=uc.id)
-        for uc in get_benchmark_scenarios()
-    ],
-)
-def test_run_benchmark(
+def _run_job(
     scenario: BenchmarkScenario,
     tmp_path: Path,
     track_metric,
@@ -39,6 +31,7 @@ def test_run_benchmark(
     upload_assets_on_fail,
     request,
 ):
+    """Run the scenario's job and track its metrics; returns (runner, report_path)."""
     track_metric("scenario_id", scenario.id)
     track_metric("scenario_type", scenario.type)
 
@@ -120,6 +113,45 @@ def test_run_benchmark(
             artifacts.results_metadata,
             track_metric=track_metric,
         )
+
+    return runner, report_path
+
+
+@pytest.mark.regression
+@pytest.mark.parametrize(
+    "scenario",
+    [pytest.param(s, id=s.id) for s in get_benchmark_scenarios() if s.regression],
+)
+def test_run_regression(
+    scenario: BenchmarkScenario,
+    tmp_path: Path,
+    track_metric,
+    track_phase,
+    upload_assets_on_fail,
+    request,
+):
+    # Regression runs only track performance metrics, no output comparison (for now).
+    _run_job(scenario, tmp_path, track_metric, track_phase, upload_assets_on_fail, request)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        # Use scenario id as parameterization id to give nicer test names.
+        pytest.param(s, id=s.id)
+        for s in get_benchmark_scenarios()
+        if not s.regression
+    ],
+)
+def test_run_benchmark(
+    scenario: BenchmarkScenario,
+    tmp_path: Path,
+    track_metric,
+    track_phase,
+    upload_assets_on_fail,
+    request,
+):
+    runner, report_path = _run_job(scenario, tmp_path, track_metric, track_phase, upload_assets_on_fail, request)
 
     with track_phase(phase="download-actual"):
         actual_dir = tmp_path / "actual"
